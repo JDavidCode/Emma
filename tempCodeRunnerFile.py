@@ -1,1 +1,2 @@
-    print(similitud)
+
+cM.commands()

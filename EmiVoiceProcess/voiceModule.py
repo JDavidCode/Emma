@@ -1,4 +1,5 @@
 import speech_recognition as SR
+import EmiDatabase.EmiDataConnect as bM
 import pyttsx3
 
 recognize = SR.Recognizer()
@@ -7,20 +8,20 @@ engVoice = eng.getProperty("voices")
 
 
 def engVoiceConfig():
-    eng.setProperty("rate", 160) #Velocidad del Habla de la Maquina
+    eng.setProperty("rate", 145) #Velocidad del Habla de la Maquina
     eng.setProperty("volume", 1) #Volumen de la maquina
     eng.setProperty("voice", engVoice[0].id) #Seleccion de Voz
     return(0)
 
 def voiceProcess():
     with SR.Microphone() as source:
-        print("Escuchando")
-        minput = recognize.listen(source)  #Entrada de mic / micInput
-        recognizeOuput = recognize.recognize_google(minput, language="es-ES") # salida de texto
-        print(recognizeOuput)
-    return (recognizeOuput)
+        while True:
+            minput = recognize.listen(source)  #Entrada de mic / micInput
+            recognizeOuput = recognize.recognize_google(minput, language="es-ES") # salida de texto
+            bM.BDInput(recognizeOuput)
+            return (recognizeOuput)
 
-def talkProcess(text):
+def talkP(text):
     eng.say(text)
     eng.runAndWait()
     return(0)

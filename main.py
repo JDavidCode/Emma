@@ -1,6 +1,5 @@
-import EmiDatabase.EmiDataConnect as bM
+import EmiDatabase.EmiData as bM
 import EmiVoiceProcess.voiceModule as vM
-import EmiDatabase.EmiCommands as cM
 
 vM.micConfig()
-vM.voiceProcess()
+bM.commands()

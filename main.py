@@ -1,5 +1,4 @@
-import EmiData as bM
-import EmiVoiceProcess.voiceModule as vM
+import EmiBasicProcess.DataModule as bM
+import EmiBasicProcess.voiceModule as vM
 
-vM.micConfig()
 bM.commands()

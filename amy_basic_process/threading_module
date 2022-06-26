@@ -1,0 +1,12 @@
+#BasePythonLibraries
+import logging
+import threading
+#ImportedPythonLibraries
+#AppLibraries
+import voice_module as vM
+
+def voiceModuleThreads():
+    while True:
+        vM.inBackProcess()
+
+voiceModuleThreads()

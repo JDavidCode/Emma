@@ -1,0 +1,8 @@
+List of Pips
+~pyttsx3
+~pyWhatkit
+~flask
+~vosk
+~pyaudio
+~SpeechReconition
+~supersqlite

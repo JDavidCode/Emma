@@ -3,40 +3,37 @@ import pywhatkit as PWK
 import wikipedia as WK
 import amy_basic_process.voice_module as vM
 
-wLanguaje = WK.set_lang('es')
+wLanguaje = WK.set_lang('en')
 
-appdic = {'Discord'  : r"C:\Users\J David\AppData\Local\Discord\Update.exe",
-          'Spotify'  : r"",
-          'WhatsApp' : r"C:\Users\J David\AppData\Local\WhatsApp\Update.exe"
-}
+appdic = {'Discord': r"C:\Users\J David\AppData\Local\Discord\Update.exe",
+          'Spotify': r"",
+          'WhatsApp': r"C:\Users\J David\AppData\Local\WhatsApp\Update.exe",
+          'studio': r"D:\Apps\FL Studio\FL.exe"
+          }
+
 
 def YTPlayer(index):
-    if 'Busca' in index:
-        index.replace('Busca', '')
-    if 'Reproduce' in index:  
-        index.replace('Reproduce', '')
+    if 'play on' in index:
+        index.replace('play on', '')
     PWK.playonyt(index)
     return 0
 
+
 def WhatIS(index):
-    if 'Leo' in index:
-        index = index.replace('Leo sobre', '')
-        PWK.search(index)                       
-    if 'Lee' in index:                               
-        index = index.replace('Lee sobre', '')      
-        wiki = WK.summary(index, 1)
-        vM.talkP(wiki)
+    wiki = WK.summary(index, 1)
+    vM.talkProcess.talk(wiki)
     return 0
 
+
 def OpenApp(index):
-    diccionary = appdic
-    asd = 'WhatsApp'
-    index = index.replace('Abre', '')
-    for key in diccionary:
-        if index in diccionary.keys(): #if parametrodefuncion in diccionary
-            os.startfile(diccionary[index]) 
-            break
-        else:
-            print('No esta la app')
-            break
-    return 0
+    keys = appdic.keys()
+    if index in keys:
+        get = appdic.get(index)
+        print(get)
+        os.startfile(get)
+
+    return
+
+
+if __name__ == '__main__':
+    pass

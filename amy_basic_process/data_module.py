@@ -1,39 +1,38 @@
-#BasePythonLibraries
-from ast import IsNot
-import re
+# BasePythonLibraries
 from difflib import SequenceMatcher as sm
-from traceback import print_tb
-#ImportedPythonLibraries
+# ImportedPythonLibraries
 import mysql.connector as sql
-#AppLibraries
+# AppLibraries
 import amy_basic_process.voice_module as vM
 import amy_basic_process.task_module as tK
+import amy_basic_process.tools_module as tools
 
 #################################################################################
 #################################################################################
 #################################################################################
 
-#root 1234
-#Emi Password 2k3/XekPx3E6dqaN
+# root 1234
+# Emi Password 2k3/XekPx3E6dqaN
 try:
     conn = sql.connect(
-    host= '127.0.0.1',
-    user= 'Emi',
-    password= '2k3/XekPx3E6dqaN',
-    db= 'emi'
+        host='127.0.0.1',
+        user='Emi',
+        password='2k3/XekPx3E6dqaN',
+        db='emi'
     )
 except:
     print('An error has ocurred while trying connect')
 cursor = conn.cursor()
 if conn.is_connected():
-        print('Database has been connected')
-        info_server=conn.get_server_info()
-        print(info_server)
+    print('Database has been connected')
+    info_server = conn.get_server_info()
+    print(info_server)
 
-class amyData:
+
+class AmyData:
     def __init__():
         pass
-    
+
     def dataWriter():
         tableI = input('Inserte el nombre de la tabla: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
@@ -56,7 +55,6 @@ class amyData:
         conn.commit()
         print('Datos registrados con exito')
 
-    
     def dataUpdater():
         tableI = input('Inserte el nombre de la tabla: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
@@ -99,29 +97,33 @@ class amyData:
         print('Datos Eliminados con exito con exito')
 
     def dataReader(index):
-        if '\'' in index:
-            patron = '[\']'
-            regex = re.compile(patron)
-            index = regex.sub('', index)
-        #toda cadena que llegue a la base de datos debe llegar sin simbolos
-        sql = "SELECT * FROM chatdata WHERE input LIKE('{}')".format(index)
+        data = index
+        data = tools.DataTool.strClearer(index)
+        data2, indexer = tools.DataTool.taskIndexer(data)
+        print(indexer)
+        # toda cadena que llegue a la base de datos debe llegar sin simbolos
+        sql = "SELECT * FROM chatdata WHERE input LIKE('{}')".format(data)
         cursor.execute(sql)
         for fila in cursor:
             cID = fila[0]
             vIn = fila[1]
             eAns = fila[2]
-            similitud = sm(None,vIn,index).ratio()
-            #WARNING ENGINE VOICE ONLY WORK IN OFFLINE MODE
+            similitud = sm(None, vIn, data).ratio()
+            # WARNING ENGINE VOICE ONLY WORK IN OFFLINE MODE
             if similitud > 0.65 and eAns != None:
                 vM.talkProcess.talk(eAns)
-        sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(index)
-        cursor.execute(sql)
+
+        sql2 = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(data2)
+        cursor.execute(sql2)
         for fila in cursor:
             cID = fila[0]
             vIn = fila[1]
             eAns = fila[2]
             eFunc = fila[3]
-            similitud = sm(None,vIn,index).ratio()
+            similitud = sm(None, vIn, data2).ratio()
+            # FUNCION DE RESPALDO PARA LLAMAR A LA FUNCION
+            print(similitud)
+            indexer = indexer
             if similitud > 0.70:
                 vM.talkProcess.talk(eAns)
                 eval(eFunc)

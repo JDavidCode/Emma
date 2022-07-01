@@ -5,4 +5,5 @@ List of Pips
 ~vosk
 ~pyaudio
 ~SpeechReconition
-~supersqlite
+~mysql-connector-python
+~TextBlob

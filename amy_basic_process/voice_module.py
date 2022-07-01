@@ -1,29 +1,31 @@
-#BasePythonLibraries
+# BasePythonLibraries
 import time
-#ImportedPythonLibraries
+# ImportedPythonLibraries
 import pyaudio as pya
 from vosk import Model, KaldiRecognizer
 import speech_recognition as sr
-import pyttsx3 
-#AppLibraries
+import pyttsx3
+# AppLibraries
 import amy_basic_process.data_module as dM
 
 eng = pyttsx3.init()
 engVoice = eng.getProperty('voices')
 pyMic = pya.PyAudio()
 
-#Online Voice Recognizer
+# Online Voice Recognizer
 recognizer = sr.Recognizer()
 mic = sr.Microphone()
 
-#Offline Voice Recognizer
-model = Model('vosk_models/en-model')
+# Offline Voice Recognizer
+model = Model('resources/vosk_models/en-model')
 rec = KaldiRecognizer(model, 16000)
-stream = pyMic.open(format=pya.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+stream = pyMic.open(format=pya.paInt16, channels=1,
+                    rate=16000, input=True, frames_per_buffer=8192)
 
 #################################################################################
 #################################################################################
 #################################################################################
+
 
 class talkProcess:
     def __init__():
@@ -32,7 +34,7 @@ class talkProcess:
     def talk(text):
         eng.say(text)
         eng.runAndWait()
-        return 
+        return
 
     def engVoiceConfig():
         eng.setProperty('voice', engVoice[1].id)
@@ -50,13 +52,13 @@ class ListenInBack:
         while True:
             data = stream.read(4000, exception_on_overflow=False)
             if rec.AcceptWaveform(data):
-                result=rec.Result()
-                result=result[14:-3]
-                print(result)
-                dM.amyData.dataReader(result)
-
-            else: 
+                result = rec.Result()
+                result = result[14:-3]
+                dM.AmyData.dataReader(result)
+            else:
                 pass
+
+
 '''
     def micConfig():
         with mic as source:
@@ -88,4 +90,3 @@ class ListenInBack:
 
 if __name__ == '__main__':
     pass
-

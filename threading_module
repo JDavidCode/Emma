@@ -1,7 +1,7 @@
-#BasePythonLibraries
+# BasePythonLibraries
 import logging
-#ImportedPythonLibraries
-#AppLibraries
-import amy_basic_process.voice_module as vM    
+# ImportedPythonLibraries
+# AppLibraries
+import amy_basic_process.voice_module as vM
 
 vM.ListenInBack.inBackOffline()

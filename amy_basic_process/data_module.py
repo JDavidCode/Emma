@@ -1,15 +1,12 @@
 # BasePythonLibraries
-from difflib import SequenceMatcher as sm
+import random
 # ImportedPythonLibraries
 import mysql.connector as sql
-# AppLibraries
-import amy_basic_process.voice_module as vM
-import amy_basic_process.task_module as tK
-import amy_basic_process.tools_module as tools
 
 #################################################################################
-#################################################################################
-#################################################################################
+
+taskIndexer = ['play on', 'read about', 'open', 'stop code', 'configure your voice',
+               'update in base', 'remove in base', 'insert in base', 'reload module']
 
 # root 1234
 # Emi Password 2k3/XekPx3E6dqaN
@@ -32,6 +29,51 @@ if conn.is_connected():
 class AmyData:
     def __init__():
         pass
+
+    def chatIndexer(index):
+        indexer = (index, )
+        eAns = []
+        sql = "SELECT * FROM chatdata WHERE input=%s"
+        cursor.execute(sql, indexer)
+        for fila in cursor:
+            iClass = fila[1]
+            if iClass != None:
+                indexer = (iClass, )
+                sql = "SELECT * FROM chatdata WHERE class=%s"
+                cursor.execute(sql, indexer)
+                for fila in cursor:
+                    eAns.append(fila[3])
+                x = len(eAns)-1
+                ran = random.randint(0, x)
+                eAns = eAns[ran]
+                return eAns
+            else:
+                return index
+        return index
+
+    def taskIndexer(index):
+        data = index
+        eAns = []
+        eFunc = []
+        task = ''
+        charts = ''
+        loader = False
+
+        for i in taskIndexer:
+            if i in index:
+                task = i
+                data = data.replace(i, '')
+                charts = len(data)
+                data = data[1:charts]
+                loader = True
+
+        sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
+        cursor.execute(sql)
+        for fila in cursor:
+            eAns = fila[2]
+            eFunc = fila[3]
+
+        return eAns, eFunc, data, loader
 
     def dataWriter():
         tableI = input('Inserte el nombre de la tabla: ')
@@ -96,37 +138,6 @@ class AmyData:
         conn.commit()
         print('Datos Eliminados con exito con exito')
 
-    def dataReader(index):
-        data = index
-        data = tools.DataTool.strClearer(index)
-        data2, indexer = tools.DataTool.taskIndexer(data)
-        print(indexer)
-        # toda cadena que llegue a la base de datos debe llegar sin simbolos
-        sql = "SELECT * FROM chatdata WHERE input LIKE('{}')".format(data)
-        cursor.execute(sql)
-        for fila in cursor:
-            cID = fila[0]
-            vIn = fila[1]
-            eAns = fila[2]
-            similitud = sm(None, vIn, data).ratio()
-            # WARNING ENGINE VOICE ONLY WORK IN OFFLINE MODE
-            if similitud > 0.65 and eAns != None:
-                vM.talkProcess.talk(eAns)
-
-        sql2 = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(data2)
-        cursor.execute(sql2)
-        for fila in cursor:
-            cID = fila[0]
-            vIn = fila[1]
-            eAns = fila[2]
-            eFunc = fila[3]
-            similitud = sm(None, vIn, data2).ratio()
-            # FUNCION DE RESPALDO PARA LLAMAR A LA FUNCION
-            print(similitud)
-            indexer = indexer
-            if similitud > 0.70:
-                vM.talkProcess.talk(eAns)
-                eval(eFunc)
 
 #################################################################################
 #################################################################################

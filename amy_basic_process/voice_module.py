@@ -5,8 +5,6 @@ import pyaudio as pya
 from vosk import Model, KaldiRecognizer
 import speech_recognition as sr
 import pyttsx3
-# AppLibraries
-import amy_basic_process.data_module as dM
 
 eng = pyttsx3.init()
 engVoice = eng.getProperty('voices')
@@ -47,14 +45,14 @@ class ListenInBack:
     def __init__():
         pass
 
-    def inBackOffline():
+    def Listener():
         stream.start_stream()
         while True:
             data = stream.read(4000, exception_on_overflow=False)
             if rec.AcceptWaveform(data):
                 result = rec.Result()
                 result = result[14:-3]
-                dM.AmyData.dataReader(result)
+                return result
             else:
                 pass
 

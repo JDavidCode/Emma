@@ -1,7 +1,46 @@
 # BasePythonLibraries
 import logging
+import threading
 # ImportedPythonLibraries
 # AppLibraries
+import amy_basic_process.tools_module as tools
 import amy_basic_process.voice_module as vM
+import amy_basic_process.data_module as dM
+import amy_basic_process.task_module as tK
 
-vM.ListenInBack.inBackOffline()
+
+class Cores:
+    def __init__(self) -> None:
+        pass
+
+    def MainCore():
+        input_ = vM.ListenInBack.Listener()
+        ToolKit = tools.miscellaneousTools
+        dTools = tools.DataTools
+        rTools = tools.rootTools
+        talk = vM.talkProcess
+        db = dM.AmyData
+        data = ToolKit.strClearer(input_)
+
+        eAns, task, indexer, loader = db.taskIndexer(data)
+        chatIndexer = db.chatIndexer(data)
+
+        # Chat
+        if data != chatIndexer:
+            talk.talk(chatIndexer)
+        # Task
+        elif loader == True:
+            talk.talk(eAns)
+            eval(task)
+        else:
+            pass
+
+    def run(self):
+        thread = threading.Thread(target=self.MainCore, daemon=True)
+        while True:
+            thread.start()
+
+
+if __name__ == '__main__':
+    while True:
+        Cores.MainCore()

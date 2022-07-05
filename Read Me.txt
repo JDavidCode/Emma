@@ -7,3 +7,4 @@ List of Pips
 ~SpeechReconition
 ~mysql-connector-python
 ~TextBlob
+~Pandas

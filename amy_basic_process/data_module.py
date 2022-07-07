@@ -39,13 +39,12 @@ class AmyData:
         # Getting data from JSON
         with open(directory) as f:
             direct = json.load(f)
-            for i in direct[0].values():
+            for i in direct["taskIndexer"]:
                 for y in i:
                     x = 0
                     diccionary['indexer'].append(i[x])
                     x += 1
             f.close()
-        print(diccionary['indexer'])
         # Getting data from db
         for i in cursor:
             for y in i:

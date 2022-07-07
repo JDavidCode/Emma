@@ -1,6 +1,9 @@
 # BasePythonLibraries
 import logging
-import threading
+import time
+from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
+
 # ImportedPythonLibraries
 # AppLibraries
 import amy_basic_process.tools_module as tools
@@ -38,9 +41,11 @@ class Cores:
             pass
 
     def dataAutoUpdater():
-        pass
+        dM.AmyData.jsonTaskUpdater()
 
 
 if __name__ == '__main__':
+    worker = ThreadPoolExecutor(max_workers=4)
     while True:
-        Cores.MainCore()
+        worker.submit(Cores.dataAutoUpdater())
+        worker.submit(Cores.MainCore())

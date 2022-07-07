@@ -22,6 +22,8 @@ class Cores:
         db = dM.AmyData
         data = ToolKit.strClearer(input_)
 
+        print(input_)
+
         eAns, task, indexer, loader = db.taskIndexer(data)
         chatIndexer = db.chatIndexer(data)
 
@@ -35,10 +37,8 @@ class Cores:
         else:
             pass
 
-    def run(self):
-        thread = threading.Thread(target=self.MainCore, daemon=True)
-        while True:
-            thread.start()
+    def dataAutoUpdater():
+        pass
 
 
 if __name__ == '__main__':

@@ -1,12 +1,12 @@
 # BasePythonLibraries
+from multiprocessing.managers import DictProxy
 import random
+import json
 # ImportedPythonLibraries
 import mysql.connector as sql
-
+import amy_basic_process.tools_module as tools
 #################################################################################
 
-taskIndexer = ['play on', 'read about', 'open', 'stop code', 'configure your voice',
-               'update in base', 'remove in base', 'insert in base', 'reload module']
 
 # root 1234
 # Emi Password 2k3/XekPx3E6dqaN
@@ -29,6 +29,33 @@ if conn.is_connected():
 class AmyData:
     def __init__():
         pass
+
+    def jsonTaskUpdater():
+        directory = 'resources\\json\\task_Directory.json'
+        diccionary = {"indexer": []}
+        dbDiccionary = {"taskIndexer": []}
+        sql = "SELECT input FROM taskdata"
+        cursor.execute(sql)
+        # Getting data from JSON
+        with open(directory) as f:
+            direct = json.load(f)
+            for i in direct[0].values():
+                for y in i:
+                    x = 0
+                    diccionary['indexer'].append(i[x])
+                    x += 1
+            f.close()
+        print(diccionary['indexer'])
+        # Getting data from db
+        for i in cursor:
+            for y in i:
+                dbDiccionary['taskIndexer'].append(y)
+        # if there is new data in db, json has to be update
+        with open(directory, 'w') as f:
+            for i in dbDiccionary:
+                if i not in diccionary['indexer']:
+                    json.dump(dbDiccionary, f, indent=2)
+                    break
 
     def chatIndexer(index):
         indexer = (index, )
@@ -53,6 +80,9 @@ class AmyData:
 
     def taskIndexer(index):
         data = index
+        json_type = 'list'
+        taskIndexer = tools.DataTools.jsonLoader(
+            'resources\\json\\task_Directory.json', json_type)
         eAns = []
         eFunc = []
         task = ''
@@ -64,7 +94,7 @@ class AmyData:
                 task = i
                 data = data.replace(i, '')
                 charts = len(data)
-                data = data[1:charts]
+                data = data[1: charts]
                 loader = True
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)

@@ -1,0 +1,1 @@
+                    print(type(direct[i]))

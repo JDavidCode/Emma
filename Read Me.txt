@@ -8,3 +8,4 @@ List of Pips
 ~mysql-connector-python
 ~TextBlob
 ~Pandas
+~pycaw (Audio)

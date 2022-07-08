@@ -4,12 +4,19 @@ import time
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 
-# ImportedPythonLibraries
-# AppLibraries
-import amy_basic_process.tools_module as tools
+# Tools Libraries
+import tools.miscellaneous as miscellaneousTools
+import tools.data as dataTools
+import tools.root as rootTools
+import tools.os as sTools
+
+# Task Libraries
+from amy_basic_process.task_module import osModule as osTask
+from amy_basic_process.task_module import webModule as webTask
+
+# ETC
 import amy_basic_process.voice_module as vM
 import amy_basic_process.data_module as dM
-import amy_basic_process.task_module as tK
 
 
 class Cores:
@@ -18,9 +25,10 @@ class Cores:
 
     def MainCore():
         input_ = vM.ListenInBack.Listener()
-        ToolKit = tools.miscellaneousTools
-        dTools = tools.DataTools
-        rTools = tools.rootTools
+        ToolKit = miscellaneousTools.ToolKit
+        dTools = dataTools.toolKit
+        rTools = rootTools.toolKit
+        osTools = sTools.toolKit
         talk = vM.talkProcess
         db = dM.AmyData
         data = ToolKit.strClearer(input_)

@@ -4,7 +4,7 @@ import random
 import json
 # ImportedPythonLibraries
 import mysql.connector as sql
-import amy_basic_process.tools_module as tools
+from tools.data import toolKit as tools
 #################################################################################
 
 
@@ -80,7 +80,7 @@ class AmyData:
     def taskIndexer(index):
         data = index
         json_type = 'list'
-        taskIndexer = tools.DataTools.jsonLoader(
+        taskIndexer = tools.jsonLoader(
             'resources\\json\\task_Directory.json', json_type)
         eAns = []
         eFunc = []
@@ -105,12 +105,12 @@ class AmyData:
         return eAns, eFunc, data, loader
 
     def dataWriter():
-        tableI = input('Inserte el nombre de la tabla: ')
+        tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:
-            return print('No se ha encontrado la tabla en la base de datos')
-        val1 = input('Inserte el valor de Entrada: ')
-        val2 = input('Inserte el valor de Salida: ')
+            return print('could not find table in database')
+        val1 = input('Set input value\'s: ')
+        val2 = input('Set output value\'s: ')
         if tableI == 'chatdata':
             sql = "INSERT INTO chatdata (input, answer) VALUES(%s, %s)"
             val = (val1, val2)
@@ -119,21 +119,21 @@ class AmyData:
             val = (val1, val2)
         elif tableI == 'taskdata':
             sql = "INSERT INTO chatdata (input, answer) VALUES(%s, %s)"
-            val3 = input('Inserte el nombre de funcion: ')
+            val3 = input('Set task name: ')
             val = (val1, val2, val3)
-        print('Registrando datos, por favor espere...')
+        print('Uploading data, please wait...')
         cursor.execute(sql, val)
         conn.commit()
-        print('Datos registrados con exito')
+        print('Data has been uploaded')
 
     def dataUpdater():
-        tableI = input('Inserte el nombre de la tabla: ')
+        tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:
-            return print('No se ha encontrado la tabla en la base de datos')
-        val1 = input('Inserte el valor de Entrada: ')
-        val2 = input('Inserte el valor de Salida: ')
-        val4 = input('Inserte el id de la funcion a actualizar: ')
+            return print('could not find table in database')
+        val1 = input('Set input value\'s: ')
+        val2 = input('Set output value\'s: ')
+        val4 = input('Insert the data id to update: ')
         if tableI == 'chatdata':
             sql = "UPDATE chatdata SET input=%s, answer=%s WHERE id=%s"
             val = (val1, val2, val4)
@@ -142,30 +142,30 @@ class AmyData:
             val = (val1, val2, val4)
         elif tableI == 'taskdata':
             sql = "UPDATE taskdata SET input=%s, answer=%s, task=%s WHERE id=%s"
-            val3 = input('Inserte el nombre de funcion: ')
+            val3 = input('Set task name: ')
             val = (val1, val2, val3, val4)
 
-        print('Actualizando datos, por favor espere...')
+        print('Updating data, please wait...')
         cursor.execute(sql, val)
         conn.commit()
-        print('Datos actualizados con exito con exito')
+        print('Data has been updated')
 
     def dataRemover():
-        tableI = input('Inserte el nombre de la tabla: ')
+        tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:
-            return print('No se ha encontrado la tabla en la base de datos')
-        val = [input('Inserte el ID de el dato a eliminar: ')]
+            return print('could not find table in database')
+        val = [input('Insert the data id to remove: ')]
         if tableI == 'chatdata':
             sql = "DELETE FROM chatdata WHERE id=%s"
         elif tableI == 'funfacts':
             sql = "DELETE FROM funfacts WHERE id=%s"
         elif tableI == 'taskdata':
             sql = sql = "DELETE FROM taskdata WHERE id=%s"
-        print('Eliminando datos, por favor espere...')
+        print('Deleting data, please wait...')
         cursor.execute(sql, val)
         conn.commit()
-        print('Datos Eliminados con exito con exito')
+        print('Data has been removed')
 
 
 #################################################################################

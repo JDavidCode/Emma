@@ -5,7 +5,6 @@ import pyaudio as pya
 from vosk import Model, KaldiRecognizer
 import speech_recognition as sr
 import pyttsx3
-import amy_basic_process.tools_module as tools
 
 eng = pyttsx3.init()
 engVoice = eng.getProperty('voices')

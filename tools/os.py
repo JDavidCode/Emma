@@ -4,8 +4,6 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from tools.data import toolKit as tools
 
-v = -15
-
 
 class toolKit:
     def __init__(self):
@@ -16,9 +14,8 @@ class toolKit:
         interface = devices.Activate(
             IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
-        volumeRange = volume.GetVolumeRange()
-
-        global v
+        volume_Range = volume.GetVolumeRange()
+        v = volume.GetChannelVolumeLevel(1)
 
         if index == 'up':
             v += 5

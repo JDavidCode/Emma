@@ -3,8 +3,12 @@
         "moduleDirectory" : {
             "data": "amy_basic_process.data_module",
             "voice": "amy_basic_process.voice_module",
-            "tools": "amy_basic_process.tools_module",
-            "task": "amy_basic_process.task_module"
+            "task": "amy_basic_process.task_module",
+            "data tools": "tools.data",
+            "generators tools": "tools.generators",
+            "miscellaneous tools": "tools.miscellaneous",
+            "system": "tools.os",
+            "root": "tools.root"
         }
     }
 ]

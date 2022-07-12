@@ -2,12 +2,10 @@
 import os
 # ImportedPythonLibraries
 import pywhatkit as PWK
-import wikipedia as WK
+import wikipedia as wk
 from tools.data import toolKit as tools
 
 #################################################################################
-
-wLanguaje = WK.set_lang('en')
 
 
 class webModule:
@@ -19,8 +17,16 @@ class webModule:
         return 0
 
     def WhatIS(index):
-        wiki = WK.summary(index, 1)
-        return wiki
+        wLanguaje = wk.set_lang('en')
+        result = ''
+        try:
+            search = wk.search(index)
+            result = wk.summary(search, 10)
+            print(result)
+        except:
+            print("some error has ocurred while trying colect data")
+            pass
+        return result
 
 
 class osModule:

@@ -1,11 +1,18 @@
 List of Pips
 ~pyttsx3
 ~pyWhatkit
-~flask
 ~vosk
 ~pyaudio
-~SpeechReconition
-~mysql-connector-python
+~pycaw (Audio)
 ~TextBlob
 ~Pandas
-~pycaw (Audio)
+~NumPy
+~matplotlib
+
+API'S
+~flask
+~SpeechReconition
+~Metatrader5
+~mysql-connector-python
+
+TABLIb get Trading Indicators

@@ -18,6 +18,9 @@ class toolKit:
             for i in key:
                 if index in i:
                     index = diccionary.get(i)
+                    print(index)
                     importlib.reload(sys.modules[index])
+                    print("module", i, "has been reloaded")
+                    importlib.invalidate_caches(sys.modules[index])
         except:
             pass

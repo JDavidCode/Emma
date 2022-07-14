@@ -1,0 +1,17 @@
+List of Pips
+~pyttsx3
+~vosk
+~pyaudio
+~pycaw (Audio)
+~TextBlob
+~Pandas
+~NumPy
+~matplotlib
+
+API'S
+~flask
+~SpeechReconition
+~Metatrader5
+~mysql-connector-python
+
+Ta-Lib get Trading Indicators

@@ -7,26 +7,10 @@ List of Pips
 ~Pandas
 ~NumPy
 ~matplotlib
-
+~scipy
 API'S
 ~flask
 ~SpeechReconition
 ~Metatrader5
 ~mysql-connector-python
-
-Ta-Lib get Trading Indicators
-
-SERVER IP
-192.168.1.6
-
-
-            spr = dataFormat[y]['spread']
-            mTDif = dataFormat[y]['mTDif']
-            mTRange = dataFormat[y]['mTRang']
-            TDif = dataFormat[y]['TDif']
-            tp = dataFormat[y]['tp']
-            sl = dataFormat[y]['sl']
-            upTp = dataFormat[y]['updaterTp']
-            upSl = dataFormat[y]['updaterSl']
-            upPrice = dataFormat[y]['updaterPrice']
 

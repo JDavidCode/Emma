@@ -1,9 +1,8 @@
 import MetaTrader5 as mt5
 import time
-import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
-from pip import main
+import tti
 register_matplotlib_converters()
 
 stock = ['EURUSD', 'EURNZD', 'EURAUD', 'EURCHF',
@@ -59,18 +58,21 @@ class trading:
 
     def initialize():
         path = r"C:\\Program Files\\MetaTrader 5\\terminal64.exe"
-        account = 5004966737
-        pw = "6pjfgplj"
-        mt5.initialize(
-            path,
-            login=account,
-            password=pw,
-            server="MetaQuotes-Demo",
-            timeout=15000,
-            portable=False
-        )
-        if not mt5.initialize():
-            print("initialize() failed, error code =", mt5.last_error())
+        account = 61208305
+        pw = "mrkff7vr"
+        try:
+            mt5.initialize(
+                path,
+                login=account,
+                password=pw,
+                server="MetaQuotes-Demo",
+                timeout=15000,
+                portable=False
+            )
+            if not mt5.initialize():
+                print("initialize() failed, error code =", mt5.last_error())
+        except:
+            pass
 
     def accountInf():
         account_info = mt5.account_info()
@@ -122,149 +124,96 @@ class trading:
             return False
         if type(ask) != float or type(bid) != float:
             return False
-        if (ask - 0.00015) > bid:
+        if (ask - 0.00008) > bid:
             return False
         else:
             return True
 
     def symbolRates(symbol):
-        count = 90
+        count = 60
         rates = mt5.copy_rates_from_pos(
             symbol,
-            mt5.TIMEFRAME_M1,
+            mt5.TIMEFRAME_M5,
             0,
             count
         )
-        rates_frame = pd.DataFrame(rates)
-        rates_frame['time'] = pd.to_datetime(rates_frame['time'], unit='s')
-        rates_frame = trading.MVL20(rates_frame)
-        rates_frame = trading.MVL8(rates_frame)
-        rates_frame = trading.RSI(rates_frame)
+        rates = pd.DataFrame(rates)
+        # df = pd.DataFrame(rates, columns=[
+        #   'Open Time', 'Open', 'High', 'Low', 'Close', 'Tick Volume', 'Spread', 'Real Volume'])
+        # print(df)
+        rates['time'] = pd.to_datetime(rates['time'], unit='s')
+        rates['DateTime'] = pd.DatetimeIndex(
+            pd.to_datetime(rates['time'], unit='s'))
+        rates = rates.set_index('DateTime')
 
-        return rates_frame
+        mm = tti.indicators.MovingAverage(input_data=rates, period=1)
+        mm5 = tti.indicators.MovingAverage(
+            input_data=rates, period=5, ma_type='simple')
+        mm15 = tti.indicators.MovingAverage(
+            input_data=rates, period=15, ma_type='simple')
+        mm30 = tti.indicators.MovingAverage(
+            input_data=rates, period=30, ma_type='simple')
+        mmt16 = tti.indicators.Momentum(
+            input_data=rates, period=16)
+        cci10 = tti.indicators.CommodityChannelIndex(
+            input_data=rates, period=10)
+        nvps15 = tti.indicators.Envelopes(
+            input_data=rates, period=15, shift=0.001)
+        bbs40 = tti.indicators.BollingerBands(
+            input_data=rates, period=40, std_number=2)
 
-    def MVL20(rates):
-        rates['MVL20'] = rates['close'].rolling(window=20).mean()
-        return rates
+        rates['mm'] = mm.getTiData()
+        rates['mm5'] = mm5.getTiData()
+        rates['mm15'] = mm15.getTiData()
+        rates['mm30'] = mm30.getTiData()
+        rates['mtum16'] = mmt16.getTiData()
+        rates['cci10'] = cci10.getTiData()
+        # rates['nvps15'] = nvps15.getTiData()
+        # rates['bbs40'] = bbs40.getTiData()
+        rates = trading.RSI(rates)
 
-    def MVL8(rates):
-        rates['MVL12'] = rates['close'].rolling(window=12).mean()
         return rates
 
     def RSI(rates):
         rates['delta'] = delta = rates['close'].diff()
         delta = delta[1:]
-        rates['Bull'] = Bull = delta.clip(lower=0)
-        rates['Bear'] = Bear = -1*delta.clip(upper=0)
+        rates['Bull'] = delta.clip(lower=0)
+        rates['Bear'] = -1*delta.clip(upper=0)
         ema_Bull = rates['Bull'].ewm(com=13, adjust=False).mean()
         ema_Bear = rates['Bear'].ewm(com=13, adjust=False).mean()
         Relative_Strengh = ema_Bull/ema_Bear
         rates['RSI'] = 100 - (100/(1+Relative_Strengh))
         return rates
 
-    def signal(rates):
+    def signal(rates, symbol):
         rlen = len(rates)-1
-        mlen = rlen-15
-        tlen = rlen-4
-        type = 'No signal'
 
-        # MAIN TENDENCY
-        MTminPrice = rates['close'][mlen]
-        MTminPos = 0
-        MTmajPrice = 0.00000
-        MTmajPos = 0
-        mainTrend = 2
+        # SIGNAL METHOD 1 MAVERAGE'S 5M
+        if rates['mm30'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['open'][rlen] and rates['mm30'][rlen] < rates['mm15'][rlen] and rates['mm15'][rlen] < rates['mm5'][rlen] and rates['open'][rlen] < rates['mm'][rlen]:
+            xDif = rates['close'][rlen] - rates['mm5'][rlen]
+            if xDif < 0.00030 and rates['RSI'][rlen] > 50 and rates['RSI'][rlen] < 60:
+                type = 'buy'
+                print(symbol, type, 'Method MA')
+                return type
+        elif rates['mm30'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['open'][rlen] and rates['mm30'][rlen] > rates['mm15'][rlen] and rates['mm15'][rlen] > rates['mm5'][rlen] and rates['open'][rlen] > rates['mm'][rlen]:
+            xDif = rates['mm5'][rlen] - rates['close'][rlen]
+            if xDif < 0.00030 and rates['RSI'][rlen] < 50 and rates['RSI'][rlen] > 40:
+                type = 'sell'
+                print(symbol, type, 'Method MA')
+                return type
+        # SIGNAL METHOD 2 MOMENTUM 15M
+        if rates['mm15'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['open'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['cci10'][rlen] > 110.0:
+            if rates['mtum16'][rlen] > 100.10 and rates['mtum16'][rlen] < 100.20:
+                type = 'buy'
+                print(symbol, type, 'Method M0MENTUM')
+                return type
+        elif rates['mm15'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['open'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['cci10'][rlen] < -110.0:
+            if rates['mtum16'][rlen] < 100.05 and rates['mtum16'][rlen] > 99.95:
+                type = 'sell'
+                print(symbol, type, 'Method MOMENTUM')
+                return type
 
-        # SHORT TENDENCY
-        TminPrice = rates['close'][mlen]
-        TminPos = 0
-        TmajPrice = 0.00000
-        TmajPos = 0
-        trend = 2
-
-        # DEFINE A LARGE TIME TENDENCY (VERY-DYNAMIC) BETA
-        for i in range(mlen, tlen):
-            if rates['close'][i] > MTmajPrice:
-                MTmajPrice = round(rates['close'][i], 5)
-                MTmajPos = i
-            if rates['close'][i] < MTminPrice:
-                MTminPrice = round(rates['close'][i], 5)
-                MTminPos = i
-
-        if MTmajPos > MTminPos:
-            xPos = MTmajPos-MTminPos
-            xDif = MTmajPrice-MTminPrice
-            if xPos > 7 and xPos and xDif > 0.00200:
-                mainTrend = 0
-        if MTminPos > MTmajPos:
-            xPos = MTminPos-MTmajPos
-            xDif = MTminPrice-MTmajPrice
-            if xPos > 7 and xPos and xDif > -0.00200:
-                mainTrend = 1
-
-        # DEFINE A SHORT TIME TENDENCY (VERY-DYNAMIC) BETA
-        for i in range(tlen, rlen):
-            if rates['close'][i] > TmajPrice or rates['close'][i] + 0.00010 > TmajPrice:
-                TmajPrice = round(rates['close'][i], 5)
-                TmajPos = i
-            if rates['close'][i] < TminPrice or rates['close'][i] - 0.00010 < MTminPrice:
-                TminPrice = round(rates['close'][i], 5)
-                TminPos = i
-
-        if TmajPos > TminPos:
-            xPos = TmajPos-TminPos
-            xDif = TmajPrice-TminPrice
-            if xPos > 2 and (xDif > 0.00040 and xDif < 0.000100):
-                trend = 0
-        if TminPos > TmajPos:
-            xPos = TminPos-TmajPos
-            xDif = TminPrice-TmajPrice
-            if xPos > 2 and (xDif < -0.00040 and xDif > -0.000100):
-                trend = 1
-
-        print('MainTrend:', MTmajPrice, MTminPrice, mainTrend)
-        print('Trend: ', TmajPrice, TminPrice, trend)
-
-        # DEFINE A SHORT TREND
-        # if rates['close'][rlen] > rates['open'][tlen]:
-        #    c = rates['close'][rlen] - rates['close'][tlen]
-        #    if c > 0.00015 and c < 0.00030:
-        #        trend = 0
-        # elif rates['close'][rlen] < rates['open'][tlen]:
-        #    c = rates['close'][rlen] - rates['close'][tlen]
-        #    if c < -0.00015 and c > -0.00030:
-        #        trend = 1
-
-        #print(mainTrend, trend)
-        if mainTrend == 2 or trend == 2:
-            return
-
-        # DEFINE SIGNAL
-        if mainTrend == 0 and trend == 0 and (rates['RSI'][rlen] < 70.0) and rates['close'][tlen] > rates['MVL12'][rlen]:
-            type = 'buy'
-            return type
-
-        if mainTrend == 1 and trend == 1 and (rates['RSI'][rlen] > 30.0) and rates['close'][tlen] < rates['MVL12'][rlen]:
-            type = 'sell'
-            return type
-        else:
-            return type
-
-    def showGraphichs(rates):
-        fig, axe = plt.subplots(2, 1)
-        axe[0].plot(rates['close'], label='Symbol')
-        axe[0].plot(rates['MVL20'], label='Media Movil 20')
-        axe[0].plot(rates['MVL12'], label='Media Movil 12')
-        axe[1].plot(rates['RSI'], color='b')
-
-        plt.plot(rates['RSI'], label='RSI')
-
-        axe[1].axhline(y=30, color='r', linewidth=3)
-        axe[1].axhline(y=50, color='black', linewidth=2)
-        axe[1].axhline(y=70, color='r', linewidth=3)
-        plt.tight_layout()
-        fig.autofmt_xdate()
-        plt.show()
+        # SIGNAL METHOD 3
 
     def orderChecker(symbol):
         p = mt5.positions_get(symbol=symbol)
@@ -283,14 +232,12 @@ class trading:
 
         if t == 'buy':
             orderType = mt5.ORDER_TYPE_BUY
-            stopLoss = ask - 0.00070
-            takeProfit = ask + 0.00120
-            print(symbol, 'Buying')
+            stopLoss = ask - 0.00030
+            takeProfit = ask + 0.00060
         elif t == 'sell':
             orderType = mt5.ORDER_TYPE_SELL
-            stopLoss = ask + 0.00070
-            takeProfit = ask - 0.00120
-            print(symbol, 'selling')
+            stopLoss = ask + 0.00030
+            takeProfit = ask - 0.00060
         else:
             return
 
@@ -326,14 +273,14 @@ class trading:
             stopLoss = round(stopLoss, 5)
             takeProfit = round(takeProfit, 5)
             if t == 0:
-                if (currentPrice - 0.00090) > stopLoss:
-                    stopLoss += 0.00080
-                    takeProfit += 0.00070
+                if (currentPrice - 0.00060) > stopLoss:
+                    stopLoss += 0.00050
+                    takeProfit += 0.00010
                     key = True
             elif t == 1:
-                if (currentPrice + 0.00090) < stopLoss:
-                    stopLoss -= 0.00080
-                    takeProfit -= 0.00070
+                if (currentPrice + 0.00060) < stopLoss:
+                    stopLoss -= 0.00050
+                    takeProfit -= 0.00010
                     key = True
         if key:
             request = {
@@ -394,22 +341,21 @@ class trading:
             key = trading.orderChecker(i)
             spread = trading.spread(i)
             if key and spread:
-                print(i)
                 r = trading.symbolRates(i)
-                s = trading.signal(r)
+                s = trading.signal(r, i)
                 trading.orderSender(i, 0.05, s)
             else:
                 pass
-            for y in stock:
-                trading.orderUpdater(y)
-            time.sleep(0.5)
+            # for y in stock:
+            #    trading.orderUpdater(y)
+            time.sleep(0.3)
 
 
 if __name__ == '__main__':
     while True:
         trading.run()
     # trading.initialize()
-    #r = trading.symbolRates('GBPCAD')
+    # r = trading.symbolRates('GBPCAD')
     # trading.signal(r)
     # trading.showGraphichs(r)
     # trading.shutdown()

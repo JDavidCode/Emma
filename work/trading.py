@@ -129,8 +129,7 @@ class trading:
         else:
             return True
 
-    def symbolRates(symbol):
-        count = 60
+    def symbolRates(symbol, count, time):
         rates = mt5.copy_rates_from_pos(
             symbol,
             mt5.TIMEFRAME_M5,
@@ -185,35 +184,41 @@ class trading:
         rates['RSI'] = 100 - (100/(1+Relative_Strengh))
         return rates
 
-    def signal(rates, symbol):
+    def signal_1M(symbol):
+        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M1)
         rlen = len(rates)-1
+        type = ''
 
-        # SIGNAL METHOD 1 MAVERAGE'S 5M
-        if rates['mm30'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['open'][rlen] and rates['mm30'][rlen] < rates['mm15'][rlen] and rates['mm15'][rlen] < rates['mm5'][rlen] and rates['open'][rlen] < rates['mm'][rlen]:
-            xDif = rates['close'][rlen] - rates['mm5'][rlen]
-            if xDif < 0.00030 and rates['RSI'][rlen] > 50 and rates['RSI'][rlen] < 60:
+        if rates['mm30'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['mm5'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['open'][rlen-1] < rates['close'][rlen-1]:
+            if rates['RSI'][rlen] < 60.0 and rates['RSI'][rlen] > 30.0 and rates['cci10'][rlen] > 100.0:
                 type = 'buy'
-                print(symbol, type, 'Method MA')
                 return type
-        elif rates['mm30'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['open'][rlen] and rates['mm30'][rlen] > rates['mm15'][rlen] and rates['mm15'][rlen] > rates['mm5'][rlen] and rates['open'][rlen] > rates['mm'][rlen]:
-            xDif = rates['mm5'][rlen] - rates['close'][rlen]
-            if xDif < 0.00030 and rates['RSI'][rlen] < 50 and rates['RSI'][rlen] > 40:
+
+        elif rates['mm30'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['mm5'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['open'][rlen-1] > rates['close'][rlen-1]:
+            if rates['RSI'][rlen] < 60.0 and rates['RSI'][rlen] > 30.0 and rates['cci10'][rlen] < -100.0:
                 type = 'sell'
-                print(symbol, type, 'Method MA')
                 return type
-        # SIGNAL METHOD 2 MOMENTUM 15M
+        return type
+
+    def signal_15M(symbol):
+        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M15)
+        rlen = len(rates)-1
+        type = ''
+
         if rates['mm15'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['open'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['cci10'][rlen] > 110.0:
-            if rates['mtum16'][rlen] > 100.10 and rates['mtum16'][rlen] < 100.20:
+            if rates['mtum16'][rlen-1] > 100.10 and rates['mtum16'][rlen-1] < 100.20:
                 type = 'buy'
-                print(symbol, type, 'Method M0MENTUM')
                 return type
         elif rates['mm15'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['open'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['cci10'][rlen] < -110.0:
-            if rates['mtum16'][rlen] < 100.05 and rates['mtum16'][rlen] > 99.95:
+            if rates['mtum16'][rlen-1] < 100.05 and rates['mtum16'][rlen-1] > 99.95:
                 type = 'sell'
-                print(symbol, type, 'Method MOMENTUM')
                 return type
+        return type
 
-        # SIGNAL METHOD 3
+    def signal_1H(symbol):
+        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M15)
+        rlen = len(rates)-1
+        return
 
     def orderChecker(symbol):
         p = mt5.positions_get(symbol=symbol)
@@ -224,22 +229,23 @@ class trading:
             key = False
         return key
 
-    def orderSender(symbol, lot, t):
+    def orderSender(symbol, t, lot, tp, sl, s):
         ask = mt5.symbol_info_tick(symbol).ask
         stopLoss = 0.0
         takeProfit = 0.0
-        orderType = 'null'
+        orderType = ''
+
+        if t == '':
+            return
 
         if t == 'buy':
             orderType = mt5.ORDER_TYPE_BUY
-            stopLoss = ask - 0.00030
-            takeProfit = ask + 0.00060
+            stopLoss = ask - sl
+            takeProfit = ask + tp
         elif t == 'sell':
             orderType = mt5.ORDER_TYPE_SELL
-            stopLoss = ask + 0.00030
-            takeProfit = ask - 0.00060
-        else:
-            return
+            stopLoss = ask + sl
+            takeProfit = ask - tp
 
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -256,7 +262,12 @@ class trading:
         }
         result = mt5.order_send(request)
         result = result._asdict()
-        return print(result['comment'])
+        if result['comment'] == 'Request executed' and s == 1:
+            print(symbol, t, result['comment'], 'Method MA')
+        elif result['comment'] == 'Request executed' and s == 2:
+            return print(symbol, t, result['comment'], 'Method M0MENTUM')
+        else:
+            return print(symbol, result['comment'])
 
     def orderUpdater(symbol):
         orderData = mt5.positions_get(symbol=symbol)
@@ -341,14 +352,17 @@ class trading:
             key = trading.orderChecker(i)
             spread = trading.spread(i)
             if key and spread:
-                r = trading.symbolRates(i)
-                s = trading.signal(r, i)
-                trading.orderSender(i, 0.05, s)
+                if True:
+                    t = trading.signal_1M(i)
+                    trading.orderSender(i, t, 0.2, 0.00020, 0.00015, 1)
+                if True:
+                    t = trading.signal_15M(i)
+                    trading.orderSender(i, t, 0.1, 0.0015, 0.0006, 2)
             else:
                 pass
             # for y in stock:
             #    trading.orderUpdater(y)
-            time.sleep(0.3)
+            time.sleep(0.1)
 
 
 if __name__ == '__main__':

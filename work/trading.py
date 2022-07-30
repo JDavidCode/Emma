@@ -1,5 +1,9 @@
-import MetaTrader5 as mt5
+import datetime
+from importlib.util import resolve_name
+from tkinter import E
+import pytz
 import time
+import MetaTrader5 as mt5
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 import tti
@@ -129,10 +133,32 @@ class trading:
         else:
             return True
 
+    def entryBreak(symbol):
+        zone = pytz.timezone('Europe/Kiev')
+        date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
+        date_from = date_to - datetime.timedelta(hours=6)
+        p = mt5.positions_get(symbol=symbol)
+        deals = mt5.history_deals_get(
+            date_from,
+            date_to,
+            group="*{}*".format(symbol)
+        )
+        dlen = len(deals)-1
+        if p == ():
+            if len(deals) > 0:
+                if deals[dlen][13] <= -0.1:
+                    time = deals[dlen][2]
+                    time = datetime.datetime.fromtimestamp(time)
+                    if (date_to + datetime.timedelta(seconds=30)) > time:
+                        print('True')
+                        return True
+        else:
+            return False
+
     def symbolRates(symbol, count, time):
         rates = mt5.copy_rates_from_pos(
             symbol,
-            mt5.TIMEFRAME_M5,
+            time,
             0,
             count
         )
@@ -189,15 +215,17 @@ class trading:
         rlen = len(rates)-1
         type = ''
 
-        if rates['mm30'][rlen] < rates['close'][rlen] and rates['mm5'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['mm5'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['open'][rlen-1] < rates['close'][rlen-1]:
-            if rates['RSI'][rlen] < 60.0 and rates['RSI'][rlen] > 30.0 and rates['cci10'][rlen] > 100.0:
-                type = 'buy'
-                return type
+        if rates['mm30'][rlen] < rates['mm15'][rlen] and rates['mm15'][rlen] < rates['mm5'][rlen] and rates['mm5'][rlen] < rates['mm'][rlen]:
+            if rates['RSI'][rlen] < 80.0:
+                if rates['open'][rlen] > rates['mm5'][rlen] and rates['close'][rlen] > rates['mm5'][rlen]:
+                    type = 'buy'
+                    return type
 
-        elif rates['mm30'][rlen] > rates['close'][rlen] and rates['mm5'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['mm5'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['open'][rlen-1] > rates['close'][rlen-1]:
-            if rates['RSI'][rlen] < 60.0 and rates['RSI'][rlen] > 30.0 and rates['cci10'][rlen] < -100.0:
-                type = 'sell'
-                return type
+        elif rates['mm30'][rlen] > rates['mm15'][rlen] and rates['mm15'][rlen] > rates['mm5'][rlen] and rates['mm5'][rlen] > rates['mm'][rlen]:
+            if rates['RSI'][rlen] > 25.0:
+                if rates['open'][rlen] < rates['mm5'][rlen] and rates['close'][rlen] < rates['mm5'][rlen]:
+                    type = 'sell'
+                    return type
         return type
 
     def signal_15M(symbol):
@@ -205,12 +233,12 @@ class trading:
         rlen = len(rates)-1
         type = ''
 
-        if rates['mm15'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['open'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['cci10'][rlen] > 110.0:
-            if rates['mtum16'][rlen-1] > 100.10 and rates['mtum16'][rlen-1] < 100.20:
+        if rates['mm15'][rlen] < rates['close'][rlen] and rates['mm15'][rlen] < rates['open'][rlen] and rates['open'][rlen] < rates['mm'][rlen] and rates['cci10'][rlen] < 105.0:
+            if rates['mtum16'][rlen] > 100.10 and rates['mtum16'][rlen] < 100.40:
                 type = 'buy'
                 return type
-        elif rates['mm15'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['open'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['cci10'][rlen] < -110.0:
-            if rates['mtum16'][rlen-1] < 100.05 and rates['mtum16'][rlen-1] > 99.95:
+        elif rates['mm15'][rlen] > rates['close'][rlen] and rates['mm15'][rlen] > rates['open'][rlen] and rates['open'][rlen] > rates['mm'][rlen] and rates['cci10'][rlen] > -105.0:
+            if rates['mtum16'][rlen] < 99.90 and rates['mtum16'][rlen] > 99.60:
                 type = 'sell'
                 return type
         return type
@@ -219,15 +247,6 @@ class trading:
         rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M15)
         rlen = len(rates)-1
         return
-
-    def orderChecker(symbol):
-        p = mt5.positions_get(symbol=symbol)
-        key = bool
-        if p == ():
-            key = True
-        elif len(p) > 0:
-            key = False
-        return key
 
     def orderSender(symbol, t, lot, tp, sl, s):
         ask = mt5.symbol_info_tick(symbol).ask
@@ -349,7 +368,7 @@ class trading:
     def run():
         trading.initialize()
         for i in stock:
-            key = trading.orderChecker(i)
+            key = trading.entryBreak(i)
             spread = trading.spread(i)
             if key and spread:
                 if True:
@@ -368,8 +387,3 @@ class trading:
 if __name__ == '__main__':
     while True:
         trading.run()
-    # trading.initialize()
-    # r = trading.symbolRates('GBPCAD')
-    # trading.signal(r)
-    # trading.showGraphichs(r)
-    # trading.shutdown()

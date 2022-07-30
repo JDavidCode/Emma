@@ -10,7 +10,5 @@ List of Pips
 ~scipy
 API'S
 ~flask
-~SpeechReconition
-~Metatrader5
 ~mysql-connector-python
 

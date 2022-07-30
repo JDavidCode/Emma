@@ -132,26 +132,33 @@ class trading:
             return False
         else:
             return True
+         
+    def orderChecker(symbol):
+        p = mt5.positions_get(symbol=symbol)
+        key = bool
+        if p == ():
+            key = True
+        elif len(p) > 0:
+            key = False
+        return key
 
     def entryBreak(symbol):
         zone = pytz.timezone('Europe/Kiev')
         date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
         date_from = date_to - datetime.timedelta(hours=6)
-        p = mt5.positions_get(symbol=symbol)
         deals = mt5.history_deals_get(
             date_from,
             date_to,
             group="*{}*".format(symbol)
         )
         dlen = len(deals)-1
-        if p == ():
-            if len(deals) > 0:
-                if deals[dlen][13] <= -0.1:
-                    time = deals[dlen][2]
-                    time = datetime.datetime.fromtimestamp(time)
-                    if (date_to + datetime.timedelta(seconds=30)) > time:
-                        print('True')
-                        return True
+        if len(deals) > 0:
+           if deals[dlen][13] <= -0.1:
+               time = deals[dlen][2]
+               time = datetime.datetime.fromtimestamp(time)
+               if (date_to + datetime.timedelta(seconds=30)) > time:
+                   print('True')
+                   return True
         else:
             return False
 
@@ -303,26 +310,28 @@ class trading:
             stopLoss = round(stopLoss, 5)
             takeProfit = round(takeProfit, 5)
             if t == 0:
-                if (currentPrice - 0.00060) > stopLoss:
-                    stopLoss += 0.00050
+                if (currentPrice - 0.00070) > stopLoss:
+                    stopLoss += 0.00055
                     takeProfit += 0.00010
                     key = True
             elif t == 1:
                 if (currentPrice + 0.00060) < stopLoss:
-                    stopLoss -= 0.00050
+                    stopLoss -= 0.00055
                     takeProfit -= 0.00010
                     key = True
-        if key:
-            request = {
-                "action": mt5.TRADE_ACTION_SLTP,
-                "position": ticker,
-                "sl": stopLoss,
-                "tp": takeProfit
-            }
-            mt5.order_send(request)
-            return print('{} Order #{} has been update'.format(symbol, ticker))
-        else:
-            return
+            if key:
+                request = {
+                   "action": mt5.TRADE_ACTION_SLTP,
+                   "position": ticker,
+                   "sl": stopLoss,
+                   "tp": takeProfit
+                }
+                result=mt5.order_send(request)
+
+                if result.retcode != mt5.TRADE_RETCODE_DONE:
+                   return print("{} Order Updater failed, position #{}".format(symbol, ticker))
+                else:
+                   return print("{} Position #{} has been update".format(symbol, ticker))
 
     def orderCloser():
         p = mt5.positions_get()
@@ -353,16 +362,18 @@ class trading:
     def run():
         trading.initialize()
         for i in stock:
-            key = trading.entryBreak(i)
+            key = trading.orderChecker(i)
             spread = trading.spread(i)
             if key and spread:
-                if True:
-                    t = trading.signal_1M(i)
-                    trading.orderSender(i, t, 0.2, 0.00020, 0.00015, 1)
-                if True:
+                  if True:
                     t = trading.signal_15M(i)
                     trading.orderSender(i, t, 0.1, 0.0015, 0.0006, 2)
+                  if True:
+                    trading.entryBreak()
+                    t = trading.signal_1M(i)
+                    trading.orderSender(i, t, 0.2, 0.00020, 0.00015, 1)
             else:
+                trading.orderUpdater(i)
                 pass
             # for y in stock:
             #    trading.orderUpdater(y)

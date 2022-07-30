@@ -324,15 +324,13 @@ class trading:
         else:
             return
 
-    def orderCloser(symbol):
-        orderData = mt5.positions_get(symbol=symbol)
-        x = 0
-        for i in orderData:
-            ticker = orderData[x][0]
-            t = orderData[x][5]
-            lot = orderData[x][9]
-            currentPrice = orderData[x][13]
-            currentProfit = orderData[x][15]
+    def orderCloser():
+        p = mt5.positions_get()
+        x = 0.0
+        for i in p:
+             ticker = i[0]
+             t = i[5]
+             symbol = orderData[x][16]
 
             if t == 0:
                 orderType = mt5.ORDER_TYPE_SELL
@@ -341,29 +339,16 @@ class trading:
 
             request = {
                 "action": mt5.TRADE_ACTION_DEAL,
-                "symbol": symbol,
-                "volume": lot,
                 "type": orderType,
                 "position": ticker,
-                "price": currentPrice,
-                "deviation": 20,
-                "magic": 234000,
-                "comment": "python script close",
-                "type_time": mt5.ORDER_TIME_GTC,
                 "type_filling": mt5.ORDER_FILLING_RETURN
             }
-
-            if currentProfit <= -1.0:
-                result = mt5.order_send(request)
-            elif currentProfit >= 2.25:
-                result = mt5.order_send(request)
-            else:
-                return
+            result=mt5.order_send(request)
 
             if result.retcode != mt5.TRADE_RETCODE_DONE:
-                return print("Order Send failed, retcode={}".format(result.retcode))
+                return print("{} Order closer failed, position #{}".format(symbol, ticker))
             else:
-                return print("Position #{} has been closed".format(ticker))
+                return print("{} Position #{} has been closed".format(symbol, ticker))
 
     def run():
         trading.initialize()

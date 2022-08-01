@@ -60,8 +60,8 @@ class trading:
 
     def initialize():
         path = r"C:\\Program Files\\MetaTrader 5\\terminal64.exe"
-        account = 61386184
-        pw = "kwgw4fdk"
+        account = 61383723
+        pw = "puow2tua"
         try:
             mt5.initialize(
                 path,

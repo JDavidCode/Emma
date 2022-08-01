@@ -395,3 +395,5 @@ class trading:
 if __name__ == '__main__':
     while True:
         trading.run()
+
+        # Esto es un comentario de Prueba

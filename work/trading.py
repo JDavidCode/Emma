@@ -12,7 +12,7 @@ stock = ['EURUSD', 'EURNZD', 'EURAUD', 'EURCHF',
          'GBPAUD', 'GBPNZD', 'GBPUSD', 'AUDUSD',
          'AUDNZD', 'AUDCHF', 'AUDCAD', 'NZDCAD',
          'NZDCHF', 'NZDUSD', 'USDCAD', 'USDCHF',
-         'USDCNH', 'USDRUB', 'USDSEK', 'CADCHF']
+         'USDCNH', 'USDRUB', 'USDSEK']
 
 stock2 = {
     'world': ['EURUSD', 'EURNZD', 'EURAUD', 'EURCHF',
@@ -123,21 +123,30 @@ class trading:
             ask = mt5.symbol_info_tick(symbol).ask
             bid = mt5.symbol_info_tick(symbol).bid
         except:
+            print('Error in spread f', symbol)
             return False
         if type(ask) != float or type(bid) != float:
             return False
-        if (ask - 0.0001) > bid:
-            return False
-        else:
+        if (ask - 0.0001) < bid:
             return True
-
-    def orderChecker(symbol):
-        p = mt5.positions_get(symbol=symbol)
-        if len(p) > 0:
+        else:
             return False
-        return True
 
-    def entryBreak(symbol, minutes, seconds):
+    def orderChecker(symbol, v):
+        try:
+            p = mt5.positions_get(symbol=symbol)
+        except:
+            return False
+        plen = len(p)-1
+        if p == ():
+            return True
+        else:
+            if p[plen][9] == v:
+                return False
+            if p[plen][9] != v:
+                return True
+
+    def entryBreak(symbol, m, s):
         zone = pytz.timezone('Europe/Kiev')
         date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
         date_from = date_to - datetime.timedelta(hours=6)
@@ -147,11 +156,13 @@ class trading:
             group="*{}*".format(symbol)
         )
         dlen = len(deals)-1
-        if len(deals) > 0:
+        if deals != ():
             if deals[dlen][13] <= -0.1:
                 date = deals[dlen][2]
-                date = datetime.datetime.fromtimestamp(date)
-                if date > (date_to + datetime.timedelta(minutes=minutes, seconds=seconds)):
+                date = datetime.datetime.fromtimestamp(
+                    date).astimezone(zone).replace(tzinfo=None)
+                x = date_to - datetime.timedelta(minutes=m, seconds=s)
+                if x > date:
                     return True
                 else:
                     return False
@@ -181,8 +192,8 @@ class trading:
             input_data=rates, period=15, ma_type='simple')
         mm25 = tti.indicators.MovingAverage(
             input_data=rates, period=25, ma_type='simple')
-        mmt16 = tti.indicators.Momentum(
-            input_data=rates, period=16)
+        mmt12 = tti.indicators.Momentum(
+            input_data=rates, period=12)
         cci10 = tti.indicators.CommodityChannelIndex(
             input_data=rates, period=10)
         rsi10 = tti.indicators.RelativeStrengthIndex(
@@ -196,7 +207,7 @@ class trading:
         rates['mm7'] = mm7.getTiData()
         rates['mm15'] = mm15.getTiData()
         rates['mm25'] = mm25.getTiData()
-        rates['mtum16'] = mmt16.getTiData()
+        rates['mmt12'] = mmt12.getTiData()
         rates['cci10'] = cci10.getTiData()
         rates = trading.RSI(rates)
 
@@ -239,11 +250,11 @@ class trading:
         type = ''
 
         if rates['open'][rlen] > rates['mm15'][rlen] and rates['close'][rlen-1] > rates['mm15'][rlen-1] and rates['open'][rlen] < rates['mm'][rlen] and rates['cci10'][rlen] > 140:
-            if rates['open'][rlen-1] < rates['close'][rlen-1] and rates['mtum16'][rlen-1] > 100.10 and rates['mtum16'][rlen] < 100.40:
+            if rates['open'][rlen-1] < rates['close'][rlen-1] and rates['mmt12'][rlen-1] > 100.10 and rates['mmt12'][rlen] < 100.30:
                 type = 'buy'
                 return type
         elif rates['open'][rlen] < rates['mm15'][rlen] and rates['close'][rlen-1] < rates['mm15'][rlen-1] and rates['open'][rlen] > rates['mm'][rlen] and rates['cci10'][rlen] < -140:
-            if rates['open'][rlen-1] > rates['close'][rlen-1] and rates['mtum16'][rlen-1] < 99.90 and rates['mtum16'][rlen] > 99.60:
+            if rates['open'][rlen-1] > rates['close'][rlen-1] and rates['mmt12'][rlen-1] < 99.90 and rates['mmt12'][rlen] > 99.70:
                 type = 'sell'
                 return type
         return type
@@ -258,6 +269,11 @@ class trading:
         stopLoss = 0.0
         takeProfit = 0.0
         orderType = ''
+        meth = ''
+        if lot == 0.2:
+            meth = 'Method MA'
+        if lot == 0.1:
+            meth = 'Method MOMENTUM'
 
         if t == '':
             return
@@ -282,24 +298,30 @@ class trading:
             "deviation": 20,
             "magic": 234000,
             "type_time": mt5.ORDER_TIME_GTC,
-            "type_filling": mt5.ORDER_FILLING_IOC
+            "type_filling": mt5.ORDER_FILLING_RETURN
         }
         result = mt5.order_send(request)
         result = result._asdict()
         if result['comment'] == 'Request executed' and s == 1:
-            print(symbol, t, result['comment'], 'Method MA')
+            print(symbol, t, result['comment'], meth)
         elif result['comment'] == 'Request executed' and s == 2:
-            return print(symbol, t, result['comment'], 'Method M0MENTUM')
+            return print(symbol, t, result['comment'], meth, t)
         else:
-            return print(symbol, result['comment'])
+            return print(symbol, result['comment'], meth, t)
 
     def orderUpdater(symbol):
-        orderData = mt5.positions_get(symbol=symbol)
+        try:
+            orderData = mt5.positions_get(symbol=symbol)
+            if orderData == ():
+                return
+        except:
+            return
+
         key = False
         stopLoss = 0.0
         takeProfit = 0.0
-        for i in orderData:
-            if i[11] > 0.0:
+        try:
+            for i in orderData:
                 ticker = orderData[0]
                 t = orderData[5]
                 stopLoss = orderData[11]
@@ -307,16 +329,30 @@ class trading:
                 currentPrice = orderData[13]
                 stopLoss = round(stopLoss, 5)
                 takeProfit = round(takeProfit, 5)
-                if t == 0:
-                    if (currentPrice - 0.0012) > stopLoss:
-                        stopLoss += 0.0007
-                        takeProfit += 0.0001
-                        key = True
-                elif t == 1:
-                    if (currentPrice + 0.0012) < stopLoss:
-                        stopLoss -= 0.0007
-                        takeProfit -= 0.0001
-                        key = True
+
+                if i[9] == 0.1:
+                    if t == 0:
+                        if (currentPrice - 0.0060) > stopLoss:
+                            stopLoss += 0.00045
+                            takeProfit += 0.00005
+                            key = True
+                    elif t == 1:
+                        if (currentPrice + 0.00060) < stopLoss:
+                            stopLoss -= 0.00045
+                            takeProfit -= 0.00005
+                            key = True
+
+                if i[9] == 0.2:
+                    if t == 0:
+                        if (currentPrice - 0.0012) > stopLoss:
+                            stopLoss += 0.0007
+                            takeProfit += 0.0001
+                            key = True
+                    elif t == 1:
+                        if (currentPrice + 0.0012) < stopLoss:
+                            stopLoss -= 0.0007
+                            takeProfit -= 0.0001
+                            key = True
                 if key:
                     request = {
                         "action": mt5.TRADE_ACTION_SLTP,
@@ -325,69 +361,81 @@ class trading:
                         "tp": takeProfit
                     }
                     result = mt5.order_send(request)
-
                     if result.retcode != mt5.TRADE_RETCODE_DONE:
-                        return print("{} Order Updater failed, position #{}".format(symbol, ticker))
+                        print("{} Order Updater failed, position #{}".format(
+                            symbol, ticker))
                     else:
-                        return print("{} Position #{} has been update".format(symbol, ticker))
+                        print("{} Position #{} has been update".format(
+                            symbol, ticker))
+                else:
+                    return
+        except:
+            print('An except has ocurred on orderUpdater f')
+            return
 
     def orderCloser():
         orderData = mt5.positions_get()
         x = 0.0
 
+        if orderData == ():
+            return
+
         for i in orderData:
             x += i[15]
 
-        if x > 25.0 or x < -20.0:
-            for i in orderData:
-                ticker = i[0]
-                t = i[5]
-                symbol = i[16]
-                currentPrice = i[13]
-                lot = i[9]
-                if t == 0:
-                    orderType = mt5.ORDER_TYPE_SELL
-                elif t == 1:
-                    orderType = mt5.ORDER_TYPE_BUY
-                request = {
-                    "action": mt5.TRADE_ACTION_DEAL,
-                    "symbol": symbol,
-                    "volume": lot,
-                    "type": orderType,
-                    "position": ticker,
-                    "price": currentPrice,
-                    "deviation": 20,
-                    "magic": 234000,
-                    "comment": "python script close",
-                    "type_time": mt5.ORDER_TIME_GTC,
-                    "type_filling": mt5.ORDER_FILLING_IOC,
-                }
-                result = mt5.order_send(request)
-                if result.retcode != mt5.TRADE_RETCODE_DONE:
-                    print("{} Order closer failed, position #{}".format(
-                        symbol, ticker))
-                else:
-                    print("{} Position #{} has been closed".format(symbol, ticker))
+        try:
+            if x > 25.0 or x < -20.0:
+                for i in orderData:
+                    ticker = i[0]
+                    t = i[5]
+                    symbol = i[16]
+                    lot = i[9]
+                    if t == 0:
+                        orderType = mt5.ORDER_TYPE_SELL
+                    elif t == 1:
+                        orderType = mt5.ORDER_TYPE_BUY
+                    request = {
+                        "action": mt5.TRADE_ACTION_DEAL,
+                        "symbol": symbol,
+                        "volume": lot,
+                        "type": orderType,
+                        "position": ticker,
+                        "price": i[13],
+                        "deviation": 20,
+                        "magic": 234000,
+                        "comment": "python script close",
+                        "type_time": mt5.ORDER_TIME_GTC,
+                        "type_filling": mt5.ORDER_FILLING_RETURN,
+                    }
+                    result = mt5.order_send(request)
+                    if result.retcode != mt5.TRADE_RETCODE_DONE:
+                        print("{} Order closer failed, position #{}".format(
+                            symbol, ticker))
+                    else:
+                        print("{} Position #{} has been closed".format(
+                            symbol, ticker))
+        except:
+            print('An except has ocurred on orderCloser f')
+            pass
 
     def run():
         trading.initialize()
         for i in stock:
-            key = trading.orderChecker(i)
             spread = trading.spread(i)
-            if key and spread:
-                if True:
+            if spread:
+                if trading.orderChecker(i, 0.2):
+                    t = trading.signal_5M(i)
                     b = trading.entryBreak(i, 0, 30)
                     if b == True:
-                        t = trading.signal_5M(i)
-                        trading.orderSender(i, t, 0.2, 0.00025, 0.0002, 1)
+                        trading.orderSender(i, t, 0.2, 0.0004, 0.0003, 1)
                     else:
                         pass
-                if True:
+                if trading.orderChecker(i, 0.1):
+                    t = trading.signal_15M(i)
                     b = trading.entryBreak(i, 5, 0)
                     if b == True:
-                        t = trading.signal_15M(i)
                         trading.orderSender(i, t, 0.1, 0.002, 0.0006, 2)
-                        trading.orderUpdater(i)
+                    trading.orderUpdater(i)
             trading.orderCloser()
             time.sleep(0.2)
 

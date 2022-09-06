@@ -34,18 +34,19 @@ class Cores:
 
         print(input_)
 
-        eAns, task, indexer, loader = db.taskIndexer(data)
-        chatIndexer = db.chatIndexer(data)
+        if data != '':
+            eAns, task, index, key = db.taskIndexer(data)
+            chat = db.chatIndexer(data)
 
-        # Chat
-        if data != chatIndexer:
-            talk.talk(chatIndexer)
-        # Task
-        elif loader == True:
-            talk.talk(eAns)
-            eval(task)
-        else:
-            pass
+            # Chat
+            if data != chat:
+                talk.talk(chat)
+            # Task
+            elif key == True:
+                talk.talk(eAns)
+                eval(task)
+            else:
+                pass
 
     def dataAutoUpdater():
         dM.AmyData.jsonTaskUpdater()
@@ -57,4 +58,3 @@ if __name__ == '__main__':
     while True:
         worker.submit(Cores.MainCore())
         backWorker.submit(Cores.dataAutoUpdater())
-        backWorker.submit(trading.trading.core())

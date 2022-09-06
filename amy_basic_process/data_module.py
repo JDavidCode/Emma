@@ -1,23 +1,24 @@
 # BasePythonLibraries
+import mysql.connector
+from tools.data import toolKit as tools
+import os
 import random
 import json
+from dotenv import load_dotenv
+load_dotenv('.venv/.env')
 # ImportedPythonLibraries
-import mysql.connector as sql
-from tools.data import toolKit as tools
+
 #################################################################################
 
+# root 2k3/XekPx3E6dqaN
 
-# root 1234
-# Emi Password 2k3/XekPx3E6dqaN
-try:
-    conn = sql.connect(
-        host='127.0.0.1',
-        user='Emi',
-        password='2k3/XekPx3E6dqaN',
-        db='emi'
-    )
-except:
-    print('An error has ocurred while trying connect')
+conn = mysql.connector.connect(
+    host=os.getenv("HOST"),
+    database=os.getenv("DATABASE"),
+    user=os.getenv("USER"),
+    password=os.getenv("PASSWORD"),
+)
+
 cursor = conn.cursor()
 if conn.is_connected():
     print('Database has been connected')
@@ -85,7 +86,7 @@ class AmyData:
         eFunc = []
         task = ''
         charts = ''
-        loader = False
+        key = False
 
         for i in taskIndexer:
             if i in index:
@@ -93,7 +94,7 @@ class AmyData:
                 data = data.replace(i, '')
                 charts = len(data)
                 data = data[1: charts]
-                loader = True
+                key = True
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
         cursor.execute(sql)
@@ -101,7 +102,7 @@ class AmyData:
             eAns = fila[2]
             eFunc = fila[3]
 
-        return eAns, eFunc, data, loader
+        return eAns, eFunc, data, key
 
     def dataWriter():
         tableI = input('Insert table\'s name: ')

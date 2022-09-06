@@ -184,6 +184,7 @@ class trading:
         return True
 
     def entryBreak(symbol, m, s):
+
         zone = pytz.timezone('Europe/Kiev')
         date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
         date_from = date_to - datetime.timedelta(hours=6)
@@ -308,6 +309,7 @@ class trading:
         plt.tight_layout()
         fig.autofmt_xdate()
         plt.show()
+
 
     def signal_15M(symbol):
         rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M30)
@@ -534,7 +536,6 @@ class trading:
             trading.core()
 
 
+
 if __name__ == '__main__':
     trading.run()
-
-    # Esto es un comentario de Prueba

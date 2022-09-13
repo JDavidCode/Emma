@@ -26,6 +26,45 @@ if conn.is_connected():
     print(info_server)
 
 
+class login:
+    def userLogin(user, password):
+        indexer = (user, )
+        userData = ()
+        eAns = []
+        sql = "SELECT * FROM users WHERE name=%s"
+        cursor.execute(sql, indexer)
+        for fila in cursor:
+            userID = fila[0]
+            userName = fila[1]
+            pw = fila[2]
+            age = fila[3]
+            genre = fila[4]
+            if user == userName and pw == password:
+                userData = userID, userName, pw, age, genre
+                return True, userData
+            else:
+                return False, userData
+
+    def userRegister(user, pw, age, genre):
+        indexer = (user, )
+        sql = "SELECT * FROM users WHERE name=%s"
+        cursor.execute(sql, indexer)
+        print(cursor)
+        for fila in cursor:
+            username = fila[1]
+            if user in username:
+                print('The user already exist')
+                return False
+
+        sql2 = "INSERT INTO users (name, password, age, genre) VALUES(%s, %s, %s, %s)"
+        values = (user, pw, age, genre)
+        cursor.execute(sql2, values)
+        print('Registring U, please wait...')
+        conn.commit()
+        print('Data has been uploadem, U have been registred')
+        return True
+
+
 class AmyData:
     def __init__():
         pass

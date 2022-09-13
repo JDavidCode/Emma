@@ -16,6 +16,7 @@ from work import trading
 # ETC
 import amy_basic_process.voice_module as vM
 import amy_basic_process.data_module as dM
+from amy_basic_process.login import systemLogin
 
 
 class Cores:
@@ -55,6 +56,12 @@ class Cores:
 if __name__ == '__main__':
     worker = ThreadPoolExecutor(max_workers=4)
     backWorker = ThreadPoolExecutor(max_workers=8)
-    while True:
-        worker.submit(Cores.MainCore())
-        backWorker.submit(Cores.dataAutoUpdater())
+    vM.talkProcess.engVoiceConfig()
+    vM.talkProcess.talk(
+        'Welcome to Coffe Now Systems, This is a Beta version of the Amy Assistant')
+    if systemLogin.verify():
+        while True:
+            worker.submit(Cores.MainCore())
+            backWorker.submit(Cores.dataAutoUpdater())
+    else:
+        quit()

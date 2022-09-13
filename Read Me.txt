@@ -8,6 +8,8 @@ List of Pips
 ~NumPy
 ~matplotlib
 ~scipy
+~opencv-python
+~opencv-contrib-python
 API'S
 ~flask
 ~mysql-connector-python

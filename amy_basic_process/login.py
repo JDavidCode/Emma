@@ -1,4 +1,5 @@
 from amy_basic_process.data_module import login
+from amy_basic_process.cam_module import facialRecognizer
 
 
 class systemLogin():
@@ -20,20 +21,28 @@ class systemLogin():
         pw = input('Password: ')
         x, userData = login.userLogin(user, pw)
         if x == True:
-            print(userData)
-            return True
+            print(userData[1:])
+            if facialRecognizer.run(user, 1) == True:
+                return True
+            else:
+                return False
         else:
             print('incorrect credentials')
-            return
+            return False
 
     def userRegister():
         user = input('Name: ')
         pw = input('Password: ')
-        age = input('Age: ')
+        age = int(input('Age: '))
         genre = input('genre (Male/Female): ')
-        if login.userRegister(user, pw, age, genre) == True:
+        faceRut = facialRecognizer.run(user, 0)
+        if login.userRegister(user, pw, age, genre, faceRut) == True:
             print('You has been Register')
             print('Now Login Please')
             systemLogin.userLogin()
         elif login.userRegister(user, pw, age, genre) == False:
             systemLogin.userRegister()
+
+
+if __name__ == '__main__':
+    systemLogin.verify()

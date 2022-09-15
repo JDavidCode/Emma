@@ -1,7 +1,8 @@
 import importlib
 import sys
+import os
 
-from tools.data import toolKit as tools
+# from tools.data import toolKit as tools
 
 
 class toolKit:
@@ -24,3 +25,11 @@ class toolKit:
                     importlib.invalidate_caches(sys.modules[index])
         except:
             pass
+
+    def tempClearer():  # TERMINAR######################################
+        path = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp'
+        os.remove(path)
+
+
+if __name__ == '__main__':
+    toolKit.tempClearer()

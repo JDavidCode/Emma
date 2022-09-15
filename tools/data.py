@@ -23,7 +23,7 @@ class toolKit:
     def zipper(filename, file):
         with zipfile.ZipFile(filename, 'w', compression=zipfile.ZIP_DEFLATED,
                              compresslevel=9) as fz:
-            fz.write(file)
+            fz.write(file, arcname=os.path.basename(file))
 
     def unzipper(filename, path):
         with zipfile.ZipFile(filename, 'r') as zf:

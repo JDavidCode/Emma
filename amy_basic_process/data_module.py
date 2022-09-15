@@ -1,6 +1,6 @@
 # BasePythonLibraries
 import mysql.connector
-from tools.data import toolKit as tools
+from tools.data import toolKit as dTools
 import os
 import random
 import json
@@ -33,35 +33,42 @@ class login:
         eAns = []
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
+        rut = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(
+            user)
         for fila in cursor:
             userID = fila[0]
-            userName = fila[1]
-            pw = fila[2]
-            age = fila[3]
-            genre = fila[4]
+            userClass = fila[1]
+            userName = fila[2]
+            pw = fila[3]
+            age = fila[4]
+            genre = fila[5]
+            face = dTools.fromBinaryToFile(
+                fila[6], rut)
+            dTools.unzipper(
+                'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(user), 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/')
             if user == userName and pw == password:
-                userData = userID, userName, pw, age, genre
+                userData = userID, userClass, userName, age, genre
                 return True, userData
             else:
                 return False, userData
 
-    def userRegister(user, pw, age, genre):
+    def userRegister(user, pw, age, genre, faceRut):
         indexer = (user, )
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
-        print(cursor)
         for fila in cursor:
             username = fila[1]
-            if user in username:
-                print('The user already exist')
-                return False
+            if username is not None:
+                if user in username:
+                    print('The user already exist')
+                    return False
 
-        sql2 = "INSERT INTO users (name, password, age, genre) VALUES(%s, %s, %s, %s)"
-        values = (user, pw, age, genre)
+        sql2 = "INSERT INTO users (name, password, age, genre, face) VALUES(%s, %s, %s, %s, %s)"
+        face = dTools.toBinary(faceRut)
+        values = (user, pw, age, genre, face)
         cursor.execute(sql2, values)
         print('Registring U, please wait...')
         conn.commit()
-        print('Data has been uploadem, U have been registred')
         return True
 
 
@@ -119,7 +126,7 @@ class AmyData:
     def taskIndexer(index):
         data = index
         json_type = 'list'
-        taskIndexer = tools.jsonLoader(
+        taskIndexer = dTools.jsonLoader(
             'resources\\json\\task_Directory.json', json_type)
         eAns = []
         eFunc = []

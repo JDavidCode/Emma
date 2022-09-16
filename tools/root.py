@@ -1,8 +1,7 @@
 import importlib
 import sys
 import os
-
-# from tools.data import toolKit as tools
+from tools.data import toolKit as tools
 
 
 class toolKit:
@@ -26,10 +25,19 @@ class toolKit:
         except:
             pass
 
-    def tempClearer():  # TERMINAR######################################
-        path = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp'
-        os.remove(path)
+    def tempClearer():
+        path = '.temp'
+        for file in os.listdir(path):
+            x = path+'\\'+file
+            try:
+                os.rmdir(x)
+            except:
+                pass
+            try:
+                os.remove(x)
+            except:
+                pass
 
 
 if __name__ == '__main__':
-    toolKit.tempClearer()
+    pass

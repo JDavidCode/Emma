@@ -5,9 +5,7 @@ import zipfile
 import imutils
 import numpy as np
 
-dataPath2 = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp'
 dataPath = '.temp'
-idPath2 = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face/{}_face.xml'
 idPath = '.temp\\face\\{}_face.xml'
 cascade = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/resources/visual/haarcascade/haarcascade_frontalface_default.xml'
 userList = os.listdir(dataPath)
@@ -136,7 +134,7 @@ class facialRecognizer:
         global faceClassifier
         global userList
         global dataPath
-        path = dataPath+'\\face_{}.xml'.format(user)
+        path = dataPath+'\\{}_face.xml'.format(user)
         cap = camera.camInit()
         face_recognizer = cv2.face.LBPHFaceRecognizer_create()
         face_recognizer.read(path)
@@ -156,8 +154,8 @@ class facialRecognizer:
                 result = face_recognizer.predict(face)
 
                 if result[1] < 60:
-                    cv2.putText(frame, '{}'.format(
-                        userList[result[0]]), (x, y-25), 2, 1.1, (0, 255, 0), 1, cv2.LINE_AA)
+                    cv2.putText(frame, '{}'.format(user), (x, y-25),
+                                2, 1.1, (0, 255, 0), 1, cv2.LINE_AA)
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                     key = 1
                 else:

@@ -9,13 +9,6 @@ import tti
 register_matplotlib_converters()
 
 today_AccountBalance = 0.0
-volume = 0.03
-
-stock = ['EURUSD', 'EURNZD', 'EURAUD', 'EURCHF',
-         'EURCAD', 'EURGBP', 'EURSGD', 'GBPCHF', 'GBPCAD',
-         'GBPAUD', 'GBPNZD', 'GBPUSD', 'AUDUSD',
-         'AUDNZD', 'AUDCHF', 'AUDCAD', 'NZDCAD',
-         'NZDCHF', 'NZDUSD', 'USDCAD', 'USDCHF']
 
 
 class trading:
@@ -82,39 +75,6 @@ class trading:
         for s in symbol:
             print(s.name)
 
-    def timeSchedule():
-        currentDay = datetime.datetime.today()
-        nDate = datetime.date.today()
-        timeSchedule = ['{} 8:30:30'.format(nDate), '{} 12:30:00'.format(
-            nDate), '{} 19:00:00'.format(nDate), '{} 23:30:00'.format(nDate), '{} 02:00:00'.format(nDate), '{} 05:30:00'.format(nDate)]
-
-        t0 = time.strptime(timeSchedule[0], '%Y-%m-%d %H:%M:%S')
-        t0 = datetime.datetime.fromtimestamp(time.mktime(t0))
-
-        t1 = time.strptime(timeSchedule[1], '%Y-%m-%d %H:%M:%S')
-        t1 = datetime.datetime.fromtimestamp(time.mktime(t1))
-
-        t2 = time.strptime(timeSchedule[2], '%Y-%m-%d %H:%M:%S')
-        t2 = datetime.datetime.fromtimestamp(time.mktime(t2))
-
-        t3 = time.strptime(timeSchedule[3], '%Y-%m-%d %H:%M:%S')
-        t3 = datetime.datetime.fromtimestamp(time.mktime(t3))
-
-        t4 = time.strptime(timeSchedule[4], '%Y-%m-%d %H:%M:%S')
-        t4 = datetime.datetime.fromtimestamp(time.mktime(t4))
-
-        t5 = time.strptime(timeSchedule[5], '%Y-%m-%d %H:%M:%S')
-        t5 = datetime.datetime.fromtimestamp(time.mktime(t5))
-
-        if currentDay > t0 and currentDay < t1:
-            return True
-        elif currentDay > t2 and currentDay < t3:
-            return True
-        elif currentDay > t4 and currentDay < t5:
-            return True
-        else:
-            return False
-
     def spread(symbol):
         try:
             ask = mt5.symbol_info_tick(symbol).ask
@@ -148,6 +108,39 @@ class trading:
             return False
         else:
             return False
+
+    def entryBreak(symbol, m, s):
+
+        zone = pytz.timezone('Europe/Kiev')
+        date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
+        date_from = date_to - datetime.timedelta(hours=6)
+        deals = mt5.history_deals_get(
+            date_from,
+            date_to,
+            group="*{}*".format(symbol)
+        )
+        dlen = len(deals)-1
+        if deals != ():
+            if deals[dlen][13] <= -0.1:
+                date = deals[dlen][2]
+                date = datetime.datetime.fromtimestamp(
+                    date)
+                date = date + datetime.timedelta(hours=5, minutes=m)
+                if date < date_to:
+                    return True
+                else:
+                    return False
+            if deals[dlen][13] >= 0.1:
+                date = deals[dlen][2]
+                date = datetime.datetime.fromtimestamp(
+                    date)
+                date = date + datetime.timedelta(hours=5, seconds=s)
+                if date < date_to:
+                    return True
+                else:
+                    return False
+        else:
+            return True
 
     def win_loss_Stopper():
         global today_AccountBalance
@@ -183,38 +176,38 @@ class trading:
 
         return True
 
-    def entryBreak(symbol, m, s):
+    def timeSchedule():
+        currentDay = datetime.datetime.today()
+        nDate = datetime.date.today()
+        timeSchedule = ['{} 8:30:30'.format(nDate), '{} 12:30:00'.format(
+            nDate), '{} 19:00:00'.format(nDate), '{} 23:30:00'.format(nDate), '{} 02:00:00'.format(nDate), '{} 05:30:00'.format(nDate)]
 
-        zone = pytz.timezone('Europe/Kiev')
-        date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
-        date_from = date_to - datetime.timedelta(hours=6)
-        deals = mt5.history_deals_get(
-            date_from,
-            date_to,
-            group="*{}*".format(symbol)
-        )
-        dlen = len(deals)-1
-        if deals != ():
-            if deals[dlen][13] <= -0.1:
-                date = deals[dlen][2]
-                date = datetime.datetime.fromtimestamp(
-                    date)
-                date = date + datetime.timedelta(hours=5, minutes=m)
-                if date < date_to:
-                    return True
-                else:
-                    return False
-            if deals[dlen][13] >= 0.1:
-                date = deals[dlen][2]
-                date = datetime.datetime.fromtimestamp(
-                    date)
-                date = date + datetime.timedelta(hours=5, seconds=s)
-                if date < date_to:
-                    return True
-                else:
-                    return False
-        else:
+        t0 = time.strptime(timeSchedule[0], '%Y-%m-%d %H:%M:%S')
+        t0 = datetime.datetime.fromtimestamp(time.mktime(t0))
+
+        t1 = time.strptime(timeSchedule[1], '%Y-%m-%d %H:%M:%S')
+        t1 = datetime.datetime.fromtimestamp(time.mktime(t1))
+
+        t2 = time.strptime(timeSchedule[2], '%Y-%m-%d %H:%M:%S')
+        t2 = datetime.datetime.fromtimestamp(time.mktime(t2))
+
+        t3 = time.strptime(timeSchedule[3], '%Y-%m-%d %H:%M:%S')
+        t3 = datetime.datetime.fromtimestamp(time.mktime(t3))
+
+        t4 = time.strptime(timeSchedule[4], '%Y-%m-%d %H:%M:%S')
+        t4 = datetime.datetime.fromtimestamp(time.mktime(t4))
+
+        t5 = time.strptime(timeSchedule[5], '%Y-%m-%d %H:%M:%S')
+        t5 = datetime.datetime.fromtimestamp(time.mktime(t5))
+
+        if currentDay > t0 and currentDay < t1:
             return True
+        elif currentDay > t2 and currentDay < t3:
+            return True
+        elif currentDay > t4 and currentDay < t5:
+            return True
+        else:
+            return False
 
     def symbolRates(symbol, count, time):
         rates = mt5.copy_rates_from_pos(
@@ -310,50 +303,6 @@ class trading:
         fig.autofmt_xdate()
         plt.show()
 
-
-    def signal_15M(symbol):
-        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M30)
-        rlen = len(rates)-2
-        type = ''
-
-        if rates['mm5'][rlen] > rates['mm12'][rlen] and rates['mm'][rlen] > rates['mm5'][rlen] and rates['close'][rlen] > rates['mm5'][rlen]:
-            backward = float(
-                round(rates['high'][rlen], 5) - round(rates['close'][rlen], 5))
-            #print(symbol, 'MM PASS')
-            if rates['mmt12'][rlen] < 100.15 and rates['mmt12'][rlen-1] < rates['mmt12'][rlen] and backward < 0.00020:
-                #print(symbol, 'mmt12 and backward PASS')
-                type = 'buy'
-                return type
-
-        if rates['mm12'][rlen] > rates['mm5'][rlen] and rates['mm5'][rlen] > rates['mm'][rlen] and rates['mm5'][rlen] > rates['close'][rlen]:
-            backward = float(
-                round(rates['close'][rlen], 5) - round(rates['low'][rlen], 5))
-            #print(symbol, 'MM PASS')
-            if rates['mmt12'][rlen] > 99.85 and rates['mmt12'][rlen] > rates['mmt12'][rlen-1] and backward < 0.00020:
-                #print(symbol, 'mmt12 and backward PASS')
-                type = 'sell'
-                return type
-        return type
-
-    def signal_1H(symbol):
-        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_H1)
-        rlen = len(rates)-2
-        type = ''
-
-        if rates['open'][rlen] > rates['mm12'][rlen] and rates['close'][rlen] > rates['mm12'][rlen] and rates['mm'][rlen] > rates['mm12'][rlen] and rates['cci10'][rlen] > 0 and rates['cci10'][rlen] < 125:
-            backward = float(
-                round(rates['high'][rlen], 5) - round(rates['close'][rlen], 5))
-            if rates['mmt12'][rlen-1] < rates['mmt12'][rlen] and rates['mmt12'][rlen] > 100.0 and rates['mmt12'][rlen] < 100.20 and backward < 0.0007:
-                type = 'buy'
-                return type
-        elif rates['open'][rlen] < rates['mm12'][rlen] and rates['close'][rlen] < rates['mm12'][rlen] and rates['mm'][rlen] > rates['mm12'][rlen] and rates['cci10'][rlen] < 0 and rates['cci10'][rlen] > -125:
-            backward = float(
-                round(rates['close'][rlen], 5) - round(rates['low'][rlen], 5))
-            if rates['mmt12'][rlen-1] > rates['mmt12'][rlen] and rates['mmt12'][rlen] < 100.0 and rates['mmt12'][rlen] > 99.80 and backward < 0.0007:
-                type = 'sell'
-                return type
-        return type
-
     def orderSender(symbol, t, lot, tp, sl, s):
         ask = mt5.symbol_info_tick(symbol).ask
         bid = mt5.symbol_info_tick(symbol).bid
@@ -445,8 +394,8 @@ class trading:
             print('An except has ocurred on orderUpdater f')
             return
 
-    def orderCloser():
-        global volume
+    def orderCloser(win, loss, vol):
+        volume = vol
         orderData = mt5.positions_get()
         x = 0.0
         if orderData == ():
@@ -454,7 +403,7 @@ class trading:
         for i in orderData:
             x += i[15]
         try:
-            if x > 20.0 or x < -10.0:
+            if x > win or x < loss:
                 for i in orderData:
                     if volume in i:
                         ticker = i[0]
@@ -489,30 +438,6 @@ class trading:
             print('An except has ocurred on orderCloser f')
             pass
 
-    def core():
-        global volume
-        for i in stock:
-            if trading.timeSchedule() and trading.win_loss_Stopper():
-                if trading.spread(i) and trading.orderChecker(i):
-                    t = trading.signal_1H(i)
-                    b = trading.entryBreak(i, 5.0, 0.0)
-                    if b == True:
-                        trading.orderSender(
-                            i, t, volume, 0.0055, 0.002, 2)
-                    else:
-                        pass
-                if trading.spread(i) and trading.orderChecker(i):
-                    t = trading.signal_15M(i)
-                    b = trading.entryBreak(i, 1.0, 15.0)
-                    if b == True:
-                        trading.orderSender(
-                            i, t, volume, 0.0025, 0.001, 1)
-                    else:
-                        pass
-            # trading.orderUpdater(i)
-            # trading.orderCloser()
-        time.sleep(0.3)
-
     def awake():
         global today_AccountBalance
         trading.initialize()
@@ -530,12 +455,6 @@ class trading:
         today_AccountBalance = accountBalance[13]
         trading.accountInf()
 
-    def run():
-        trading.awake()
-        while True:
-            trading.core()
-
-
 
 if __name__ == '__main__':
-    trading.run()
+    pass

@@ -33,7 +33,7 @@ class login:
         eAns = []
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
-        rut = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(
+        rut = '.temp\\face_{}.zip'.format(
             user)
         for fila in cursor:
             userID = fila[0]
@@ -45,7 +45,7 @@ class login:
             face = dTools.fromBinaryToFile(
                 fila[6], rut)
             dTools.unzipper(
-                'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(user), 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/')
+                '.temp\\face_{}.zip'.format(user), '.temp')
             if user == userName and pw == password:
                 userData = userID, userClass, userName, age, genre
                 return True, userData

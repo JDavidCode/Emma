@@ -1,4 +1,5 @@
 import datetime
+from turtle import update
 import pytz
 import time
 import MetaTrader5 as mt5
@@ -9,6 +10,10 @@ import tti
 register_matplotlib_converters()
 
 today_AccountBalance = 0.0
+spread = 0.0
+pipsUpdate = ()
+dailyWinLoss = ()
+volume = 0.0
 
 
 class trading:
@@ -76,6 +81,7 @@ class trading:
             print(s.name)
 
     def spread(symbol):
+        global spread
         try:
             ask = mt5.symbol_info_tick(symbol).ask
             bid = mt5.symbol_info_tick(symbol).bid
@@ -84,7 +90,7 @@ class trading:
         #print(ask, bid)
         if type(ask) != float or type(bid) != float:
             return False
-        if (ask - 0.0003) < bid:
+        if (ask - spread) < bid:
             return True
         else:
             return False
@@ -93,7 +99,7 @@ class trading:
         global volume
         p = mt5.positions_get(symbol=symbol)
         x = 0
-        if p == ():
+        if p == () or p == None:
             return True
         elif p != ():
             for i in p:
@@ -144,10 +150,11 @@ class trading:
 
     def win_loss_Stopper():
         global today_AccountBalance
+        global dailyWinLoss
         currentBalance = mt5.account_info()
         currentBalance = currentBalance[10]
-        maxLoss = today_AccountBalance-9.0
-        maxWin = today_AccountBalance+23.0
+        maxLoss = today_AccountBalance-dailyWinLoss[1]
+        maxWin = today_AccountBalance+dailyWinLoss[0]
 
         if currentBalance > maxWin:
             print('Max Win Reached From {} to {}'.format(
@@ -303,13 +310,12 @@ class trading:
         fig.autofmt_xdate()
         plt.show()
 
-    def orderSender(symbol, t, lot, tp, sl, s):
+    def orderSender(symbol, t, lot, tp, sl):
         ask = mt5.symbol_info_tick(symbol).ask
         bid = mt5.symbol_info_tick(symbol).bid
         stopLoss = 0.0
         takeProfit = 0.0
         orderType = ''
-        meth = ''
 
         if t == '':
             return
@@ -338,12 +344,10 @@ class trading:
         }
         result = mt5.order_send(request)
         result = result._asdict()
-        if result['comment'] == 'Request executed' and s == 1:
-            print(symbol, t, result['comment'], meth)
-        elif result['comment'] == 'Request executed' and s == 2:
-            return print(symbol, t, result['comment'], meth, t)
+        if result['comment'] == 'Request executed':
+            print(symbol, t, result['comment'])
         else:
-            return print(symbol, result['comment'], meth, t)
+            return print(symbol, result['comment'], t)
 
     def orderUpdater(symbol):
         try:
@@ -355,6 +359,7 @@ class trading:
         key = False
         stopLoss = 0.0
         takeProfit = 0.0
+        global pipsUpdate
         try:
             for i in orderData:
                 ticker = i[0]
@@ -363,14 +368,26 @@ class trading:
                 takeProfit = round(i[12], 5)
                 currentPrice = i[13]
                 if t == 0:
-                    if (currentPrice - 0.00150) > stopLoss:
-                        stopLoss = currentPrice - 0.0006
-                        takeProfit = takeProfit + 0.0003
+                    if pipsUpdate[0] == 0 or (currentPrice - pipsUpdate[0]) > stopLoss:
+                        if pipsUpdate[2] == 0:
+                            stopLoss = i[10] - .5
+                        else:
+                            stopLoss = currentPrice - pipsUpdate[2]
+                        if pipsUpdate[1] == 0:
+                            takeProfit = takeProfit - .5
+                        else:
+                            takeProfit = takeProfit + pipsUpdate[1]
                         key = True
                 elif t == 1:
-                    if (currentPrice + 0.00150) < stopLoss:
-                        stopLoss = currentPrice + 0.0006
-                        takeProfit = takeProfit - 0.0003
+                    if pipsUpdate[0] == 0 or (currentPrice + pipsUpdate[0]) < stopLoss:
+                        if pipsUpdate[2] == 0:
+                            stopLoss = i[10] + .5
+                        else:
+                            stopLoss = currentPrice + pipsUpdate[2]
+                        if pipsUpdate[1] == 0:
+                            takeProfit = takeProfit - .5
+                        else:
+                            takeProfit = takeProfit - pipsUpdate[1]
                         key = True
 
                 if key:
@@ -438,8 +455,16 @@ class trading:
             print('An except has ocurred on orderCloser f')
             pass
 
-    def awake():
+    def awake(spr, pips, daily, vol):
         global today_AccountBalance
+        global spread
+        global pipsUpdate
+        global dailyWinLoss
+        global volume
+        spread = spr
+        pipsUpdate = pips
+        dailyWinLoss = daily
+        volume = vol
         trading.initialize()
         symbols = mt5.symbols_get()
         print('Symbols: ', len(symbols))
@@ -452,8 +477,9 @@ class trading:
                 break
         print()
         accountBalance = mt5.account_info()
-        today_AccountBalance = accountBalance[13]
+        today_AccountBalance = accountBalance[10]
         trading.accountInf()
+        return today_AccountBalance
 
 
 if __name__ == '__main__':

@@ -7,14 +7,21 @@ class systemLogin():
         pass
 
     def verify():
-        x = input('login or register?: ')
+        i = 0
+        x = input('login, register or invited?: ')
         if x == 'login' or x == 'Login':
             return systemLogin.userLogin()
         elif x == 'register' or x == 'Register':
             systemLogin.userRegister()
+        elif x == 'invited' or x == "Invited":
+            return systemLogin.invited()
         else:
             print('Incorrect data')
-            systemLogin.verify()
+            if i < 3:
+                systemLogin.verify()
+                i += 1
+            else:
+                quit()
 
     def userLogin():
         user = input('Name: ')
@@ -22,7 +29,7 @@ class systemLogin():
         x, userData = login.userLogin(user, pw)
         if x == True:
             print(userData[1:])
-            if facialRecognizer.run(user, 1) == True:
+            if (facialRecognizer.run(user, 1) == True) or (x == True):
                 return True
             else:
                 return False
@@ -42,6 +49,9 @@ class systemLogin():
             systemLogin.userLogin()
         elif login.userRegister(user, pw, age, genre) == False:
             systemLogin.userRegister()
+
+    def invited():
+        return login.invited()
 
 
 if __name__ == '__main__':

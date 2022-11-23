@@ -1,6 +1,4 @@
 import json
-import zipfile
-import os
 
 
 class toolKit:
@@ -21,22 +19,11 @@ class toolKit:
                     diccionary = direct[0].copy()
                     return diccionary
 
-    def zipper(filename, file):
-        with zipfile.ZipFile(filename, 'w', compression=zipfile.ZIP_DEFLATED,
-                             compresslevel=9) as fz:
-            fz.write(file, arcname=os.path.basename(file))
-
-    def unzipper(filename, path):
-        with zipfile.ZipFile(filename, 'r') as zf:
-            zf.extractall(
-                path=path)
-
-    def toBinary(filename):
-        print(filename)
-        with open(filename, 'rb') as file:
-            binaryDat = file.read()
-        return binaryDat
-
-    def fromBinaryToFile(binary, filename):
-        with open(filename, 'wb')as file:
-            file.write(binary)
+    def filenameTarget(filename):
+        index = ''
+        for i in filename:
+            if i != '.':
+                index += i
+            else:
+                break
+        return index

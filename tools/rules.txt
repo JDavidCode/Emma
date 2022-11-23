@@ -1,0 +1,13 @@
+********THIS IS A RULES FILE, HERE YOU FIND THAT YOU SHOULD FOLLOW FOR DEVELOPMENT HERE********
+
+
+***FOR EVERY MODULE***
+~Every Tool that get a Input should get a Array as Input
+
+***CONVERTERS TOOLS***
+
+***DATA TOOLS***
+
+***GENERATORS TOOLS***
+
+***OS TOOLS***

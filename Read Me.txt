@@ -10,6 +10,7 @@ List of Pips
 ~scipy
 ~opencv-python
 ~opencv-contrib-python
+
 API'S
 ~flask
 ~mysql-connector-python

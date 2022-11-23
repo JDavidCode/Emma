@@ -1,39 +1,39 @@
 # BasePythonLibraries
 from concurrent.futures import ThreadPoolExecutor
+from random import randint
+
 
 # Tools Libraries
 import tools.miscellaneous as miscellaneousTools
 import tools.data as dataTools
-import tools.root as rootTools
+import amy_basic_process.sys as sysA
 import tools.os as sTools
 
 # Task Libraries
 from amy_basic_process.task_module import osModule as osTask
 from amy_basic_process.task_module import webModule as webTask
 
-# Work
-from work import trading
 # ETC
 import amy_basic_process.voice_module as vM
 import amy_basic_process.data_module as dM
 from amy_basic_process.login import systemLogin
 
 
-class Cores:
+class Run:
     def __init__(self) -> None:
         pass
 
-    def MainCore():
+    def main():
+        prefix = dM.login.userPrefix()
         input_ = vM.ListenInBack.Listener()
         ToolKit = miscellaneousTools.ToolKit
         dTools = dataTools.toolKit
-        rTools = rootTools.toolKit
+        sys = sysA.mainProcess
         osTools = sTools.toolKit
         talk = vM.talkProcess
         db = dM.AmyData
         data = ToolKit.strClearer(input_)
-
-        print(input_)
+        print(input_, prefix)
 
         if data != '':
             eAns, task, index, key = db.taskIndexer(data)
@@ -41,7 +41,7 @@ class Cores:
 
             # Chat
             if data != chat:
-                talk.talk(chat)
+                talk.talk(chat + prefix[randint(0, len(prefix)-1)])
             # Task
             elif key == True:
                 talk.talk(eAns)
@@ -58,10 +58,10 @@ if __name__ == '__main__':
     backWorker = ThreadPoolExecutor(max_workers=8)
     vM.talkProcess.engVoiceConfig()
     vM.talkProcess.talk(
-        'Welcome to Coffe Now Systems, This is a Beta version of the Amy Assistant')
+        '')
     if systemLogin.verify():
         while True:
-            worker.submit(Cores.MainCore())
-            backWorker.submit(Cores.dataAutoUpdater())
+            worker.submit(Run.main())
+            backWorker.submit(Run.dataAutoUpdater())
     else:
         quit()

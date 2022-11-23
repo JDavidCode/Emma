@@ -7,8 +7,7 @@
             "data tools": "tools.data",
             "generators tools": "tools.generators",
             "miscellaneous tools": "tools.miscellaneous",
-            "system": "tools.os",
-            "root": "tools.root"
+            "system": "tools.os"
         }
     }
 ]

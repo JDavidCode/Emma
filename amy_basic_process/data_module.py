@@ -1,10 +1,12 @@
 # BasePythonLibraries
 import mysql.connector
 from tools.data import toolKit as dTools
+from tools.converters import ToolKit as cTools
 import os
 import random
 import json
 from dotenv import load_dotenv
+from dotenv import set_key
 load_dotenv('.venv/.env')
 # ImportedPythonLibraries
 
@@ -15,15 +17,13 @@ load_dotenv('.venv/.env')
 conn = mysql.connector.connect(
     host=os.getenv("HOST"),
     database=os.getenv("DATABASE"),
-    user=os.getenv("USER"),
+    user=os.getenv("DBUSER"),
     password=os.getenv("PASSWORD"),
 )
 
 cursor = conn.cursor()
 if conn.is_connected():
-    print('Database has been connected')
     info_server = conn.get_server_info()
-    print(info_server)
 
 
 class login:
@@ -33,21 +33,23 @@ class login:
         eAns = []
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
-        rut = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(
+        rut = '.temp/face_{}.zip'.format(
             user)
-        for fila in cursor:
-            userID = fila[0]
-            userClass = fila[1]
-            userName = fila[2]
-            pw = fila[3]
-            age = fila[4]
-            genre = fila[5]
-            face = dTools.fromBinaryToFile(
-                fila[6], rut)
-            dTools.unzipper(
-                'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/face_{}.zip'.format(user), 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/.temp/')
+        for row in cursor:
+            userID = row[0]
+            userLvl = row[1]
+            userName = row[2]
+            pw = row[3]
+            age = row[4]
+            genre = row[5]
+            face = cTools.fromBinaryToFile(
+                row[6], rut)
+            cTools.unzipper(
+                '.temp/face_{}.zip'.format(user), '.temp/')
             if user == userName and pw == password:
-                userData = userID, userClass, userName, age, genre
+                userData = userID, userLvl, userName, age, genre
+                set_key(".venv/.env", "USERLVL", userData[1])
+                set_key(".venv/.env", "USERNAME", userData[2])
                 return True, userData
             else:
                 return False, userData
@@ -56,20 +58,45 @@ class login:
         indexer = (user, )
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
-        for fila in cursor:
-            username = fila[1]
+        for row in cursor:
+            username = row[1]
             if username is not None:
                 if user in username:
                     print('The user already exist')
                     return False
 
-        sql2 = "INSERT INTO users (name, password, age, genre, face) VALUES(%s, %s, %s, %s, %s)"
-        face = dTools.toBinary(faceRut)
-        values = (user, pw, age, genre, face)
+        sql2 = "INSERT INTO users (name, password, age, genre, face) VALUES(%s, %s, %s, %s, %s, %s)"
+        face = cTools.toBinary(faceRut)
+        values = ("1", user, pw, age, genre, face)
         cursor.execute(sql2, values)
         print('Registring U, please wait...')
         conn.commit()
         return True
+
+    def invited():
+        set_key(".venv/.env", "USERLVL", "1")
+        set_key(".venv/.env", "USERNAME", "")
+        return True
+
+    def userPrefix():
+        pre = ["", "guest", os.getenv("USERNAME"), "sir.", "master",  "boss"]
+        userLVL = os.getenv("USERLVL")
+        invited = (pre[0], pre[1])
+        loged = (pre[0], pre[2])
+        silver = (pre[2], pre[3])
+        pro = (pre[2], pre[3], pre[4])
+        admin = (pre[3], pre[4], pre[5])
+
+        if userLVL == "1":
+            return invited
+        elif userLVL == "2":
+            return loged
+        elif userLVL == "3":
+            return silver
+        elif userLVL == "4":
+            return pro
+        elif userLVL == "5":
+            return admin
 
 
 class AmyData:
@@ -77,7 +104,7 @@ class AmyData:
         pass
 
     def jsonTaskUpdater():
-        directory = 'resources\\json\\task_Directory.json'
+        directory = 'res\\json\\task_Directory.json'
         diccionary = {"indexer": []}
         dbDiccionary = {"taskIndexer": []}
         sql = "SELECT input FROM taskdata"
@@ -107,14 +134,14 @@ class AmyData:
         eAns = []
         sql = "SELECT * FROM chatdata WHERE input=%s"
         cursor.execute(sql, indexer)
-        for fila in cursor:
-            iClass = fila[1]
+        for row in cursor:
+            iClass = row[1]
             if iClass != None:
                 indexer = (iClass, )
                 sql = "SELECT * FROM chatdata WHERE class=%s"
                 cursor.execute(sql, indexer)
-                for fila in cursor:
-                    eAns.append(fila[3])
+                for row in cursor:
+                    eAns.append(row[3])
                 x = len(eAns)-1
                 ran = random.randint(0, x)
                 eAns = eAns[ran]
@@ -127,7 +154,7 @@ class AmyData:
         data = index
         json_type = 'list'
         taskIndexer = dTools.jsonLoader(
-            'resources\\json\\task_Directory.json', json_type)
+            'res\\json\\task_Directory.json', json_type)
         eAns = []
         eFunc = []
         task = ''
@@ -144,9 +171,9 @@ class AmyData:
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
         cursor.execute(sql)
-        for fila in cursor:
-            eAns = fila[2]
-            eFunc = fila[3]
+        for row in cursor:
+            eAns = row[2]
+            eFunc = row[3]
 
         return eAns, eFunc, data, key
 

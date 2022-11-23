@@ -13,8 +13,51 @@ class botCore:
     def __init__(self) -> None:
         pass
 
+    def symbolRates(symbol, count, time):
+        rates = mt5.copy_rates_from_pos(
+            symbol,
+            time,
+            0,
+            count
+        )
+        rates = pd.DataFrame(rates)
+        # df = pd.DataFrame(rates, columns=[
+        #   'Open Time', 'Open', 'High', 'Low', 'Close', 'Tick Volume', 'Spread', 'Real Volume'])
+        # print(df)
+        rates['time'] = pd.to_datetime(rates['time'], unit='s')
+        rates['DateTime'] = pd.DatetimeIndex(
+            pd.to_datetime(rates['time'], unit='s'))
+        rates = rates.set_index('DateTime')
+
+        mm = tti.indicators.MovingAverage(input_data=rates, period=1)
+        mm5 = tti.indicators.MovingAverage(
+            input_data=rates, period=5, ma_type='simple')
+        mm12 = tti.indicators.MovingAverage(
+            input_data=rates, period=12, ma_type='simple')
+        mmt12 = tti.indicators.Momentum(
+            input_data=rates, period=12)
+        cci10 = tti.indicators.CommodityChannelIndex(
+            input_data=rates, period=10)
+        cci30 = tti.indicators.CommodityChannelIndex(
+            input_data=rates, period=30)
+        rsi16 = tti.indicators.RelativeStrengthIndex(
+            input_data=rates, period=3)
+
+        rates['mm'] = mm.getTiData()
+        rates['mm5'] = mm5.getTiData()
+        rates['mm12'] = mm12.getTiData()
+        rates['mmt12'] = mmt12.getTiData()
+        rates['cci30'] = cci30.getTiData()
+        rates['cci10'] = cci10.getTiData()
+        #rates['rsi16'] = rsi16.getTiData()
+        rates = trading.RSI(rates)
+        print(rates)
+        # rates['nvps15'] = nvps15.getTiData()
+        # rates['bbs40'] = bbs40.getTiData()
+        return rates
+
     def signal_15M(symbol):
-        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_M30)
+        rates = botCore.symbolRates(symbol, 60, mt5.TIMEFRAME_M30)
         l = len(rates)-2
         type = ''
         if rates['mm5'][l] > rates['mm12'][l] and rates['mm'][l] > rates['mm5'][l] and rates['close'][l] > rates['mm5'][l]:
@@ -36,7 +79,7 @@ class botCore:
         return type
 
     def signal_1H(symbol):
-        rates = trading.symbolRates(symbol, 60, mt5.TIMEFRAME_H1)
+        rates = botCore.symbolRates(symbol, 60, mt5.TIMEFRAME_H1)
         l = len(rates)-2
         type = ''
 

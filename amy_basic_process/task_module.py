@@ -18,7 +18,7 @@ class osModule:
     def openApp(index):
         json_type = 'dict'
         diccionary = tools.jsonLoader(
-            "resources\\json\\osApp_directory.json", json_type)
+            "res\\json\\osApp_directory.json", json_type)
         diccionary = diccionary['appDirectory']
         keys = diccionary.keys()
         if index in keys:
@@ -28,7 +28,7 @@ class osModule:
     def pathMover():
         json_type = 'dict'
         diccionary = tools.jsonLoader(
-            "resources\\json\\path_directory.json", json_type)
+            "res\\json\\path_directory.json", json_type)
         downFolder = diccionary.get('downloads')
         for filename in os.listdir(downFolder):
             name, extension = os.path.splitext(downFolder + filename)

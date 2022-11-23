@@ -4,14 +4,14 @@ import os
 from tools.data import toolKit as tools
 
 
-class toolKit:
+class mainProcess:
     def __init__(self) -> None:
         pass
 
     def moduleLoader(index):
         json_type = 'dict'
         diccionary = tools.jsonLoader(
-            "resources\\json\\module_directory.json", json_type)
+            "res\\json\\module_directory.json", json_type)
         diccionary = diccionary['moduleDirectory']
         key = diccionary.keys()
         try:
@@ -37,6 +37,14 @@ class toolKit:
                 os.remove(x)
             except:
                 pass
+
+
+class backgroundProcess:
+    def __init__(self) -> None:
+        pass
+
+    def amyGuardian():
+        pass
 
 
 if __name__ == '__main__':

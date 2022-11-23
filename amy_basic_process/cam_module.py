@@ -1,13 +1,12 @@
 import cv2
 import os
 from tools.data import toolKit as dTools
-import zipfile
 import imutils
 import numpy as np
 
 dataPath = '.temp'
 idPath = '.temp\\face\\{}_face.xml'
-cascade = 'c:/Users/Juan/Documents/AmyAssistant/AmyAssistant/resources/visual/haarcascade/haarcascade_frontalface_default.xml'
+cascade = 'res/visual/haarcascade/haarcascade_frontalface_default.xml'
 userList = os.listdir(dataPath)
 user = ''
 
@@ -100,7 +99,7 @@ class facialRecognizer:
         cap = camera.camInit()
         face_recognizer = cv2.face.LBPHFaceRecognizer_create()
         face_recognizer.read(
-            'c:/Users/Juan/Documents/AmyAssistant/visual/faceID/{}_faceLock.xml'.format(user))  # se debe cambiar por documento general extraido de la base de datos
+            '/visual/faceID/{}_faceLock.xml'.format(user))  # se debe cambiar por documento general extraido de la base de datos
 
         while True:
             ret, frame = cap.read()

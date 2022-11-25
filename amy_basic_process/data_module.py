@@ -37,6 +37,7 @@ class login:
                    userName), ('USERLANG', userLang))
         sql = "SELECT * FROM users WHERE name=%s AND password=%s "
         cursor.execute(sql, indexer)
+
         if cursor is not None:
             for row in cursor:
                 userID = row[0]
@@ -57,6 +58,25 @@ class login:
                     return False, userData
         else:
             return False, ()
+
+        rut = '.temp\\face_{}.zip'.format(
+            user)
+        for fila in cursor:
+            userID = fila[0]
+            userClass = fila[1]
+            userName = fila[2]
+            pw = fila[3]
+            age = fila[4]
+            genre = fila[5]
+            face = dTools.fromBinaryToFile(
+                fila[6], rut)
+            dTools.unzipper(
+                '.temp\\face_{}.zip'.format(user), '.temp')
+            if user == userName and pw == password:
+                userData = userID, userClass, userName, age, genre
+                return True, userData
+            else:
+                return False, userData
 
     def userRegister(user, pw, age, genre, faceRut):
         indexer = (user, )

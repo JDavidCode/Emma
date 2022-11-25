@@ -59,25 +59,6 @@ class login:
         else:
             return False, ()
 
-        rut = '.temp\\face_{}.zip'.format(
-            user)
-        for fila in cursor:
-            userID = fila[0]
-            userClass = fila[1]
-            userName = fila[2]
-            pw = fila[3]
-            age = fila[4]
-            genre = fila[5]
-            face = dTools.fromBinaryToFile(
-                fila[6], rut)
-            dTools.unzipper(
-                '.temp\\face_{}.zip'.format(user), '.temp')
-            if user == userName and pw == password:
-                userData = userID, userClass, userName, age, genre
-                return True, userData
-            else:
-                return False, userData
-
     def userRegister(user, pw, age, genre, faceRut):
         indexer = (user, )
         sql = "SELECT * FROM users WHERE name=%s"

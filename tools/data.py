@@ -1,4 +1,5 @@
 import json
+import re
 
 
 class toolKit:
@@ -27,3 +28,19 @@ class toolKit:
             else:
                 break
         return index
+
+    def strClearer(index):
+        data = index
+        if '\'' in index:
+            patron = '[\']'
+            regex = re.compile(patron)
+            data = regex.sub('', index)
+        return data
+
+    def listItemRemover(index, list):
+        for i in list:
+            if i == index:
+                list.remove(i)
+                return list
+            else:
+                return list

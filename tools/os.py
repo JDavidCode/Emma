@@ -21,6 +21,9 @@ class toolKit:
         elif index == 'down':
             v -= 5
             volume.SetMasterVolumeLevel(v, None)
+        elif index == 'mute':
+            v -= 50
+            volume.SetMasterVolumeLevel(v, None)
         else:
             pass
 

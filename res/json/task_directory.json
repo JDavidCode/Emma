@@ -1,12 +1,12 @@
 {
   "taskIndexer": [
-    "stop code",
+    "stop",
     "configure your voice",
     "update in base",
     "remove in base",
     "insert in base",
     "open",
-    "reload module",
+    "charge module",
     "loudness"
   ]
 }

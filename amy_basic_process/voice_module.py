@@ -1,5 +1,5 @@
 # BasePythonLibraries
-import time
+from dotenv import get_key as dotenv
 # ImportedPythonLibraries
 import pyaudio as pya
 from vosk import Model, KaldiRecognizer
@@ -10,12 +10,10 @@ eng = pyttsx3.init()
 engVoice = eng.getProperty('voices')
 pyMic = pya.PyAudio()
 
-# Online Voice Recognizer
-#recognizer = sr.Recognizer()
-#mic = sr.Microphone()
-
 # Offline Voice Recognizer
-model = Model('res/vosk_models/en-model')
+lang = dotenv(".venv/.env", "USERLANG")
+model = Model(
+    'res/vosk_models/{}-model'.format(lang))
 rec = KaldiRecognizer(model, 16000)
 stream = pyMic.open(format=pya.paInt16, channels=1,
                     rate=16000, input=True, frames_per_buffer=8192)
@@ -35,7 +33,15 @@ class talkProcess:
         return
 
     def engVoiceConfig():
-        eng.setProperty('voice', engVoice[1].id)
+        if lang == 'en':
+            eng.setProperty('voice', engVoice[1].id)
+        elif lang == 'es':
+            eng.setProperty('voice', engVoice[2].id)
+        else:
+            print("A voice language is null please enter the index")
+            for i in engVoice:
+                print(i)
+                eng.setProperty('voice', engVoice[input()].id)
         eng.setProperty('rate', 125)
         eng.setProperty('volume', 1)
         return 0

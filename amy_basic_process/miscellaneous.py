@@ -1,4 +1,3 @@
-import re
 import requests
 import time
 
@@ -6,14 +5,6 @@ import time
 class ToolKit:
     def __init__(self):
         pass
-
-    def strClearer(index):
-        data = index
-        if '\'' in index:
-            patron = '[\']'
-            regex = re.compile(patron)
-            data = regex.sub('', index)
-        return data
 
     def weather(city):
         url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=163ea3a6fc8b3ea62e3f640d2b53567b'.format(

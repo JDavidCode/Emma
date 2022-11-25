@@ -24,24 +24,54 @@ class systemLogin():
                 quit()
 
     def userLogin():
+        i = 0
         user = input('Name: ')
         pw = input('Password: ')
-        x, userData = login.userLogin(user, pw)
-        if x == True:
-            print(userData[1:])
-            if (facialRecognizer.run(user, 1) == True) or (x == True):
-                return True
+
+        if user == " " or pw == " " or len(user) == 0 or len(pw) == 0:
+            print("invalid data")
+            i += 1
+            if i <= 3:
+                systemLogin.userLogin()
             else:
-                return False
-        else:
+                return
+
+        try:
+            x, userData = login.userLogin(user, pw)
+            if x == True:
+                if userData[1] == "5":
+                    print('Facial Recognizer is needed for this user level')
+                    if (facialRecognizer.run(user, 1) == True):
+                        return True
+                    else:
+                        return False
+            else:
+                print('incorrect credentials')
+                i += 1
+            if i <= 3:
+                systemLogin.userLogin()
+            else:
+                return
+        except:
             print('incorrect credentials')
-            return False
+            if i <= 3:
+                systemLogin.userLogin()
+            else:
+                return
 
     def userRegister():
+        i = 0
         user = input('Name: ')
         pw = input('Password: ')
         age = int(input('Age: '))
         genre = input('genre (Male/Female): ')
+        if user == " " or pw == " " or age == " " or genre == " " or len(user) == 0 or len(pw) == 0 or len(age) == 0 or len(genre) == 0:
+            i += 1
+            print("invalid data")
+            if i <= 3:
+                systemLogin.userRegister()
+            else:
+                return
         faceRut = facialRecognizer.run(user, 0)
         if login.userRegister(user, pw, age, genre, faceRut) == True:
             print('You has been Register')

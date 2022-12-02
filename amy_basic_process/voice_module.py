@@ -13,7 +13,7 @@ pyMic = pya.PyAudio()
 # Offline Voice Recognizer
 lang = dotenv(".venv/.env", "USERLANG")
 model = Model(
-    'res/vosk_models/{}-model'.format(lang))
+    'assets/vosk_models/{}-model'.format(lang))
 rec = KaldiRecognizer(model, 16000)
 stream = pyMic.open(format=pya.paInt16, channels=1,
                     rate=16000, input=True, frames_per_buffer=8192)

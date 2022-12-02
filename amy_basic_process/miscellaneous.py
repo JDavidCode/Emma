@@ -1,8 +1,9 @@
+import datetime
 import requests
 import time
 
 
-class ToolKit:
+class main:
     def __init__(self):
         pass
 
@@ -11,34 +12,71 @@ class ToolKit:
             city)
         quest = requests.get(url)
         data = quest.json()
-        temperature = data['main']['temp']
-        temp_min = data['main']['temp_min']
-        temp_max = data['main']['temp_max']
-        wind_Speed = data['wind']['speed']
+        temperature = int(data['main']['temp'])
+        temp_min = int(data['main']['temp_min'])
+        temp_max = int(data['main']['temp_max'])
+        wind_Speed = int(data['wind']['speed'])
         description = data['weather'][0]['description']
 
-        print("Clima en ", city, "\n", "Temperatura:", temperature, "\n", "Temperatura minima:", temp_min,
-              "\n", "Temperatura Maxima:", temp_max, "\n", "Velocidad del viento:", wind_Speed, "\n", "Descripcion:", description)
+        wt = "This is the weather in {}, current temperature {} °, minimum temperature {} °, maximum temperature {} °, wind speed {} meters per second".format(
+            city, temperature, temp_min, temp_max, wind_Speed)
 
-        return
+        return wt
 
-    def time():
-        x = time.time()
-        x = time.localtime(x)
-        year = x[0]
-        yday = x[7]
-        month = x[1]
-        day = x[2]
-        hour = x[3]
-        minute = x[4]
-        sec = x[5]
+    def dateClock(type):
+        dateTime = datetime.datetime.now()
+        clock = dateTime.time()
+        date = dateTime.date()
 
-        calendar = time.strftime("%A %d %B of %Y", x)
-        local_t = time.strftime("%I : %M : %S, %p", x)
-        print(calendar, "\n", local_t)
+        if type == 1:
+            return dateTime.strftime('%d-%m of %Y %H:%M:%S')
+        elif type == 2:
+            return date
+        elif type == 3:
+            return clock.strftime('%H:%M:%S')
+        else:
+            return dateTime.strftime('%d-%m of %Y %H:%M:%S'), date, clock.strftime('%H:%M:%S')
 
-        return
+    def dayParts():
+        t = datetime.datetime.today()
+        nDate = datetime.date.today()
+        timeSchedule = ['{} 5:00:00'.format(
+            nDate), '{} 12:00:00'.format(nDate), '{} 17:00:00'.format(nDate), '{} 21:00:00'.format(nDate)]
+
+        morning = time.strptime(timeSchedule[0], '%Y-%m-%d %H:%M:%S')
+        morning = datetime.datetime.fromtimestamp(time.mktime(morning))
+        afternoon = time.strptime(timeSchedule[1], '%Y-%m-%d %H:%M:%S')
+        afternoon = datetime.datetime.fromtimestamp(time.mktime(afternoon))
+        evening = time.strptime(timeSchedule[2], '%Y-%m-%d %H:%M:%S')
+        evening = datetime.datetime.fromtimestamp(time.mktime(evening))
+        night = time.strptime(timeSchedule[3], '%Y-%m-%d %H:%M:%S')
+        night = datetime.datetime.fromtimestamp(time.mktime(night))
+
+        if t > morning and t < afternoon:
+            return 'morning'
+        elif t > afternoon and t < evening:
+            return 'afternoon'
+        elif t > evening and t < night:
+            return 'evening'
+        else:
+            return 'night'
+
+
+class geoLoc:
+    def __init__(self) -> None:
+        pass
+
+
+class directories:
+    def __init__(self) -> None:
+        pass
+
+    def localDirectories():
+        pass
+
+    def userDirectories():
+        pass
 
 
 if __name__ == '__main__':
-    pass
+    print(main.weather('medellin'))

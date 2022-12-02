@@ -4,7 +4,7 @@ import os
 import tools.data as data
 
 
-class ToolKit:
+class toolKit:
     def __init__(self) -> None:
         pass
 
@@ -14,15 +14,16 @@ class ToolKit:
         #rgb_img = img.convert('RGB')
         img.save(filename, 'png')
 
-    def zipper(filename, file):
-        with zipfile.ZipFile(filename, 'w', compression=zipfile.ZIP_DEFLATED,
-                             compresslevel=9) as fz:
-            fz.write(file, arcname=os.path.basename(file))
+    def zipper(path):
+        for i in path:
+            with zipfile.ZipFile(i[1], 'w', compression=zipfile.ZIP_DEFLATED,
+                                 compresslevel=9) as fz:
+                fz.write(i[0], arcname=os.path.basename(i[0]))
 
-    def unzipper(filename, path):
-        with zipfile.ZipFile(filename, 'r') as zf:
-            zf.extractall(
-                path=path)
+    def unzipper(path):
+        for i in path:
+            with zipfile.ZipFile(i[0], 'r') as fz:
+                fz.extractall(path=i[1])
 
     def toBinary(filename):
         print(filename)

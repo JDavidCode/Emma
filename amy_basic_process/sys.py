@@ -1,7 +1,7 @@
 import importlib
 import sys
 import os
-from dotenv import unset_key as env
+from dotenv import set_key
 from tools.data import toolKit as tools
 
 
@@ -19,11 +19,13 @@ class backgroundProcess:
 
     def serverShutdown():
         backgroundProcess.tempClearer()
-
-        clear = ['USERNAME', 'USERLVL', 'USERLANG']
-        for i in clear:
-            env(".venv/.env", "{}".format(i))
+        backgroundProcess.envClearer()
         quit()
+
+    def envClearer():
+        clear = [('USERNAME', ''), ('USERLVL', '1'), ('USERLANG', '')]
+        for i in clear:
+            set_key(".venv/.env", i[0], i[1])
 
     def tempClearer():
         path = '.temp'
@@ -41,7 +43,7 @@ class backgroundProcess:
     def moduleReloader(index):
         json_type = 'dict'
         diccionary = tools.jsonLoader(
-            "res\\json\\module_directory.json", json_type)
+            "assets\\json\\module_directory.json", json_type)
         diccionary = diccionary['moduleDirectory']
         key = diccionary.keys()
         try:
@@ -55,7 +57,7 @@ class backgroundProcess:
         except:
             pass
 
-    def machineCaller(index):
+    def globalVariableSetter():
         pass
 
 

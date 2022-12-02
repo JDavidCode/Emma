@@ -29,13 +29,21 @@ class toolKit:
                 break
         return index
 
-    def strClearer(index):
-        data = index
+    def strClearerSymbol(index):
         if '\'' in index:
             patron = '[\']'
             regex = re.compile(patron)
-            data = regex.sub('', index)
-        return data
+            index = regex.sub('', index)
+        return index
+
+    def strClearerVoid(index):
+        rev = 0
+        for i in index:
+            if i == ' ':
+                rev += 1
+            else:
+                break
+        return index[rev:]
 
     def listItemRemover(index, list):
         for i in list:
@@ -44,3 +52,7 @@ class toolKit:
                 return list
             else:
                 return list
+
+
+if __name__ == "__main__":
+    print(toolKit.strClearerVoid("Hola mundo"))

@@ -38,7 +38,7 @@ class systemLogin():
 
         try:
             x, userData = login.userLogin(user, pw)
-            if x == True:
+            if x:
                 if userData[1] == "5":
                     print('Facial Recognizer is needed for this user level')
                     if (facialRecognizer.run(user, 1) == True):
@@ -48,10 +48,10 @@ class systemLogin():
             else:
                 print('incorrect credentials')
                 i += 1
-            if i <= 3:
-                systemLogin.userLogin()
-            else:
-                return
+                if i <= 3:
+                    systemLogin.userLogin()
+                else:
+                    return
         except:
             print('incorrect credentials')
             if i <= 3:
@@ -64,21 +64,22 @@ class systemLogin():
         user = input('Name: ')
         pw = input('Password: ')
         age = int(input('Age: '))
+        lang = input('Lang (es/en): ')
         genre = input('genre (Male/Female): ')
-        if user == " " or pw == " " or age == " " or genre == " " or len(user) == 0 or len(pw) == 0 or len(age) == 0 or len(genre) == 0:
+        if user == " " or pw == " " or age == " " or genre == " " or len(user) == 0 or len(pw) == 0 or len(str(lang)) == 0 or len(genre) == 0:
             i += 1
             print("invalid data")
             if i <= 3:
                 systemLogin.userRegister()
             else:
                 return
-        faceRut = facialRecognizer.run(user, 0)
-        if login.userRegister(user, pw, age, genre, faceRut) == True:
+        data = [facialRecognizer.run(user, 0), ]
+        if login.userRegister(user, pw, age, genre, lang, data) == True:
             print('You has been Register')
             print('Now Login Please')
             systemLogin.userLogin()
-        elif login.userRegister(user, pw, age, genre) == False:
-            systemLogin.userRegister()
+        else:
+            print("ERROR IN REGISTER")
 
     def invited():
         return login.invited()

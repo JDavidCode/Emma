@@ -4,14 +4,14 @@
             "data": "amy_basic_process.data_module",
             "voice": "amy_basic_process.voice_module",
             "task": "amy_basic_process.task_module",
-            "cam": "amy_basic_process.cam_module",
+            "camera": "amy_basic_process.cam_module",
             "login": "amy_basic_process.login_module",
             "miscellaneous": "amy_basic_process.miscellaneous_module",
-            "sys": "amy_basic_process.sys_module",
+            "system": "amy_basic_process.sys_module",
             "data tools": "tools.data",
             "generators tools": "tools.generators",
             "miscellaneous tools": "tools.miscellaneous",
-            "system": "tools.os"
+            "system tools": "tools.os"
         }
     }
 ]

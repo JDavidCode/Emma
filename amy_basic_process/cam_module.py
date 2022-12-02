@@ -1,12 +1,12 @@
 import cv2
 import os
-from tools.data import toolKit as dTools
+from tools.converters import toolKit as converters
 import imutils
 import numpy as np
 
 dataPath = '.temp'
 idPath = '.temp\\face\\{}_face.xml'
-cascade = 'res/visual/haarcascade/haarcascade_frontalface_default.xml'
+cascade = 'assets/visual/haarcascade/haarcascade_frontalface_default.xml'
 userList = os.listdir(dataPath)
 user = ''
 
@@ -89,8 +89,8 @@ class facialRecognizer:
         cv2.destroyAllWindows()
         rut = '.temp\\{}_face.zip'.format(
             user)
-        dTools.zipper(
-            rut, '.temp\\face\\{}_face.xml'.format(user))
+        converters.zipper(
+            [('.temp\\face\\{}_face.xml'.format(user),rut)])
         return rut
 
     def pipFaces(user):  # NOT FINISHED

@@ -1,6 +1,6 @@
 import cv2
 import os
-from tools.converters import toolKit as converters
+from tools.converters.local.kit import toolKit as localConvertersTools
 import imutils
 import numpy as np
 
@@ -89,8 +89,8 @@ class facialRecognizer:
         cv2.destroyAllWindows()
         rut = '.temp\\{}_face.zip'.format(
             user)
-        converters.zipper(
-            [('.temp\\face\\{}_face.xml'.format(user),rut)])
+        localConvertersTools.zipper(
+            [('.temp\\face\\{}_face.xml'.format(user), rut)])
         return rut
 
     def pipFaces(user):  # NOT FINISHED

@@ -4,7 +4,7 @@ from random import randint
 import importlib
 
 # Tools Libraries
-import tools.data as dataTools
+from tools.data.local.kit import toolKit as localDataTools
 import tools.os as sTools
 
 from amy_basic_process.login import systemLogin
@@ -31,10 +31,9 @@ class Run:
         db = self.dM.AmyData
         osTask = self.task.osModule
         msc = self.ms.main
-        dTools = dataTools.toolKit
         osTools = sTools.toolKit
 
-        data = dTools.strClearerSymbol(input_)
+        data = localDataTools.strClearerSymbol(input_)
 
         if data != '':
             if "amy" in data:

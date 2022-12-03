@@ -1,8 +1,7 @@
 # BasePythonLibraries
 import os
 # ImportedPythonLibraries
-from tools.data import toolKit as tools
-
+from tools.data.local.kit import toolKit as localDataTools
 #################################################################################
 
 
@@ -17,7 +16,7 @@ class osModule:
 
     def openApp(index):
         json_type = 'dict'
-        diccionary = tools.jsonLoader(
+        diccionary = localDataTools.jsonLoader(
             "assets\\json\\osApp_directory.json", json_type)
         diccionary = diccionary['appDirectory']
         keys = diccionary.keys()
@@ -27,7 +26,7 @@ class osModule:
 
     def pathMover():
         json_type = 'dict'
-        diccionary = tools.jsonLoader(
+        diccionary = localDataTools.jsonLoader(
             "assets\\json\\path_directory.json", json_type)
         downFolder = diccionary.get('downloads')
         for filename in os.listdir(downFolder):

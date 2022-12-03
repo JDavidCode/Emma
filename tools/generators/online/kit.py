@@ -1,11 +1,8 @@
-from random import randint
-import secrets
-import string
 import requests
 from bs4 import BeautifulSoup
 
 
-class web:
+class toolKit:
     def __init__(self):
         pass
 
@@ -23,23 +20,3 @@ class web:
 
     def scrapper():
         pass
-
-
-class locale:
-    def __init__(self) -> None:
-        pass
-
-    def passwordGenerator(l):
-        pw = ''
-        i = 0
-        chars = string.ascii_letters
-        numbers = string.digits
-        symbols = string.punctuation
-        setter = chars + numbers + symbols
-        for i in range(l):
-            pw += ''.join(secrets.choice(setter))
-        return pw
-
-
-if __name__ == "__main__":
-    pass

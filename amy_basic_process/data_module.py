@@ -5,11 +5,11 @@ import random
 import json
 from dotenv import load_dotenv
 from dotenv import set_key
-from tools.data import toolKit as dTools
-from tools.converters import toolKit as cTools
+from tools.data.local.kit import toolKit as localDataTools
+from tools.converters.local.kit import toolKit as localConvertersTools
 from amy_basic_process.sys import backgroundProcess as bP
-load_dotenv('.venv/.env')
 # ImportedPythonLibraries
+load_dotenv('.venv/.env')
 
 #################################################################################
 
@@ -44,8 +44,9 @@ class login:
                 age = row[4]
                 genre = row[5]
                 userLang = row[6]
-                face = cTools.fromBinaryToFile(row[7], rut)
-                cTools.unzipper([(face, ".temp\\")])
+                face = localConvertersTools.fromBinaryToFile(row[7], rut)
+                localConvertersTools.unzipper(
+                    [(".temp\\face_{}.zip".format(userName), ".temp\\")])
                 userData = userID, userLvl, userName, age, genre
                 envKeys = (('USERLVL', userLvl), ('USERNAME',
                                                   userName), ('USERLANG', userLang))
@@ -67,7 +68,7 @@ class login:
                     return False
 
         sql2 = "INSERT INTO users (name, password, age, genre, lang, data) VALUES(%s, %s, %s, %s, %s, %s)"
-        data = cTools.toBinary(data)
+        data = localConvertersTools.toBinary(data)
         values = (user, pw, age, genre, lang, data)
         cursor.execute(sql2, values)
         print('Registring U, please wait...')
@@ -87,6 +88,7 @@ class login:
 
     def userPrefix():
         global userLVL
+        load_dotenv('.venv/.env')
         pre = ["", "guest", os.getenv("USERNAME"), "sir.", "master",  "boss"]
         invited = (pre[0], pre[1])
         loged = (pre[0], pre[2])
@@ -151,7 +153,7 @@ class AmyData:
                 cursor.execute(sql, indexer)
                 for row in cursor:
                     eAns.append(row[4])
-                eAns = dTools.listItemRemover(index, eAns)
+                eAns = localDataTools.listItemRemover(index, eAns)
                 x = len(eAns)-1
                 ran = random.randint(0, x)
                 eAns = eAns[ran]
@@ -164,7 +166,7 @@ class AmyData:
         global userLVL
         data = index
         json_type = 'list'
-        taskIndexer = dTools.jsonLoader(
+        taskIndexer = localDataTools.jsonLoader(
             'assets\\json\\task_Directory.json', json_type)
         eAns = []
         eFunc = []
@@ -175,7 +177,7 @@ class AmyData:
             if i in index:
                 task = i
                 data = data.replace(i, '')
-                data = dTools.strClearerVoid(data)
+                data = localDataTools.strClearerVoid(data)
                 key = True
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)

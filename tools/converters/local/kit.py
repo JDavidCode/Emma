@@ -1,7 +1,7 @@
 from PIL import Image
 import zipfile
 import os
-import tools.data as data
+from tools.data.local.kit import toolKit as localDataTools
 
 
 class toolKit:
@@ -9,7 +9,7 @@ class toolKit:
         pass
 
     def imageConverter(openURL):
-        filename = data.toolKit.filenameTarget(openURL)
+        filename = localDataTools.filenameTarget(openURL)
         img = Image.open(openURL)
         #rgb_img = img.convert('RGB')
         img.save(filename, 'png')
@@ -36,5 +36,5 @@ class toolKit:
             file.write(binary)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

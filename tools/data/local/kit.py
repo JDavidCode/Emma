@@ -55,4 +55,4 @@ class toolKit:
 
 
 if __name__ == "__main__":
-    print(toolKit.strClearerVoid("Hola mundo"))
+    pass

@@ -2,7 +2,7 @@ import importlib
 import sys
 import os
 from dotenv import set_key
-from tools.data import toolKit as tools
+from tools.data.local.kit import toolKit as localDataTools
 
 
 class mainProcess:
@@ -42,7 +42,7 @@ class backgroundProcess:
 
     def moduleReloader(index):
         json_type = 'dict'
-        diccionary = tools.jsonLoader(
+        diccionary = localDataTools.jsonLoader(
             "assets\\json\\module_directory.json", json_type)
         diccionary = diccionary['moduleDirectory']
         key = diccionary.keys()

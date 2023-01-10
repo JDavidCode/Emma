@@ -1,5 +1,4 @@
 # BasePythonLibraries
-from concurrent.futures import ThreadPoolExecutor
 from random import randint
 import importlib
 
@@ -7,12 +6,10 @@ import importlib
 from tools.data.local.kit import toolKit as localDataTools
 import tools.os as sTools
 
-from amy_basic_process.login import systemLogin
-
-userPrefix = []
+from amy_basic_process.sys import systemLogin, backgroundProcess
 
 
-class Run:
+class cluster:
     def __init__(self) -> None:
         # BASIC PROCESS IMPORTS
         self.awake = importlib.import_module('amy_basic_process.awake')
@@ -21,6 +18,8 @@ class Run:
         self.sys = importlib.import_module('amy_basic_process.sys')
         self.task = importlib.import_module('amy_basic_process.task_module')
         self.ms = importlib.import_module('amy_basic_process.miscellaneous')
+        global userPrefix
+        userPrefix = self.awake.awake.run()
 
     def main(self):
         global userPrefix
@@ -44,7 +43,10 @@ class Run:
                 if key == True:
                     print(data)
                     talk(eAns)
-                    eval(task)
+                    try:
+                        eval(task)
+                    except:
+                        pass
                 else:
                     pass
             # Chat
@@ -53,26 +55,19 @@ class Run:
                 print(data)
                 talk(chat + userPrefix[randint(0, len(userPrefix)-1)])
 
-    def firstRun(self):
-        self.awake.awake.run()
-
-    def prefix(self):
-        global userPrefix
-        userPrefix = self.dM.login.userPrefix()
-
     def dataAutoUpdater(self):
         self.dM.AmyData.jsonTaskUpdater()
 
+    def run():
+        backgroundProcess.envClearer()
+        if systemLogin.verify():
+            run = cluster()
+            while True:
+                run.main()
+                run.dataAutoUpdater()
+        else:
+            quit()
+
 
 if __name__ == '__main__':
-    worker = ThreadPoolExecutor(max_workers=4)
-    backWorker = ThreadPoolExecutor(max_workers=8)
-    if systemLogin.verify():
-        run = Run()
-        run.firstRun()
-        run.prefix()
-        while True:
-            worker.submit(run.main())
-            backWorker.submit(run.dataAutoUpdater())
-    else:
-        quit()
+    cluster.run()

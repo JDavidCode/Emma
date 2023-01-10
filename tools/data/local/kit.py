@@ -17,7 +17,7 @@ class toolKit:
                     return diccionary
                 elif json_type == 'dict':
                     diccionary = {}
-                    diccionary = direct[0].copy()
+                    diccionary = direct[i].copy()
                     return diccionary
 
     def filenameTarget(filename):

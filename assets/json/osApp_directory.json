@@ -1,5 +1,4 @@
-[
-    {
+ {
         "appDirectory" : {
             "Discord": "C:\\Users\\J David\\AppData\\Local\\Discord\\Update.exe",
             "Spotify": "",
@@ -7,4 +6,3 @@
             "studio": "C:\\Program Files\\Image-Line\\FL Studio 20\\FL.exe"
                  }
     }
-]

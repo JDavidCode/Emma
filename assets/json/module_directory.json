@@ -1,5 +1,4 @@
-[
-        {
+     {
         "moduleDirectory" : {
             "data": "amy_basic_process.data_module",
             "voice": "amy_basic_process.voice_module",
@@ -8,10 +7,9 @@
             "login": "amy_basic_process.login_module",
             "miscellaneous": "amy_basic_process.miscellaneous_module",
             "system": "amy_basic_process.sys_module",
-            "data tools": "tools.data",
-            "generators tools": "tools.generators",
-            "miscellaneous tools": "tools.miscellaneous",
+            "local data": "tools.data.local.kit",
+            "local generators": "tools.generators.local.kit",
+            "local converters": "tools.converters.local.kit",
             "system tools": "tools.os"
         }
     }
-]

@@ -7,14 +7,13 @@ from dotenv import load_dotenv
 from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from tools.converters.local.kit import toolKit as localConvertersTools
-from amy_basic_process.sys import backgroundProcess as bP
 # ImportedPythonLibraries
 load_dotenv('.venv/.env')
 
 #################################################################################
 
 # root 2k3/XekPx3E6dqaN
-userLVL = os.getenv("USERLVL")
+userLVL = ''
 conn = mysql.connector.connect(
     host=os.getenv("HOST"),
     database=os.getenv("DATABASE"),
@@ -76,11 +75,7 @@ class login:
         return True
 
     def invited():
-        try:
-            bP.envClearer()
-        except:
-            pass
-        set_key(".venv/.env", "USERLVL", "1")
+        set_key(".venv/.env", "USERLVL", '1')
         set_key(".venv/.env", "USERNAME", input('insert your name: '))
         set_key(".venv/.env", "USERLANG",
                 input('select your language en/es: '))
@@ -88,13 +83,13 @@ class login:
 
     def userPrefix():
         global userLVL
-        load_dotenv('.venv/.env')
-        pre = ["", "guest", os.getenv("USERNAME"), "sir.", "master",  "boss"]
+        userLVL = os.getenv("USERLVL")
+        pre = ["", os.getenv("USERNAME"), "sir.", "master",  "boss"]
         invited = (pre[0], pre[1])
-        loged = (pre[0], pre[2])
-        silver = (pre[2], pre[3])
-        pro = (pre[2], pre[3], pre[4])
-        admin = (pre[3], pre[4], pre[5])
+        loged = (pre[0], pre[1])
+        silver = (pre[0], pre[1])
+        pro = (pre[1], pre[2])
+        admin = (pre[2], pre[3], pre[4])
 
         if userLVL == "1":
             return invited

@@ -11,6 +11,7 @@ List of Pips
 ~opencv-python
 ~opencv-contrib-python
 ~youtube-dl
+~PyAutoGUI
 
 API'S
 ~flask

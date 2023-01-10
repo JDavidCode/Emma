@@ -18,7 +18,6 @@ class osModule:
         json_type = 'dict'
         diccionary = localDataTools.jsonLoader(
             "assets\\json\\osApp_directory.json", json_type)
-        diccionary = diccionary['appDirectory']
         keys = diccionary.keys()
         if index in keys:
             get = diccionary.get(index)

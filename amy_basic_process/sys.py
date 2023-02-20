@@ -5,6 +5,7 @@ from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from amy_basic_process.data_module import login
 from amy_basic_process.cam_module import facialRecognizer
+import miscellaneous as msc
 
 
 class mainProcess:
@@ -138,6 +139,17 @@ class systemLogin():
             systemLogin.userLogin()
         else:
             print("ERROR IN REGISTER")
+
+
+class awake:
+    def run():
+        userPrefix = login.userPrefix()
+        weather = msc.main.weather('Medellin')
+        dateTime = msc.main.dateClock(0)
+        dayPart = msc.main.dayParts()
+        text = 'good {}, today is {},its {}, {}'.format(
+            dayPart, dateTime[1], dateTime[2], weather)
+        return userPrefix, text
 
 
 if __name__ == '__main__':

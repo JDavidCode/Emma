@@ -49,9 +49,8 @@ class botCore:
         rates['mmt12'] = mmt12.getTiData()
         rates['cci30'] = cci30.getTiData()
         rates['cci10'] = cci10.getTiData()
-        #rates['rsi16'] = rsi16.getTiData()
+        # rates['rsi16'] = rsi16.getTiData()
         rates = trading.RSI(rates)
-        print(rates)
         # rates['nvps15'] = nvps15.getTiData()
         # rates['bbs40'] = bbs40.getTiData()
         return rates

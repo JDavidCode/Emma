@@ -11,29 +11,31 @@ from amy_basic_process.sys import systemLogin, backgroundProcess
 
 class cluster:
     def __init__(self) -> None:
+        global userPrefix
+        global welcome
+
         # BASIC PROCESS IMPORTS
-        self.awake = importlib.import_module('amy_basic_process.awake')
-        self.vM = importlib.import_module('amy_basic_process.voice_module')
+        self._listen = importlib.import_module('amy_basic_process._listening')
+        self._talk = importlib.import_module('amy_basic_process._talking')
+
         self.dM = importlib.import_module('amy_basic_process.data_module')
         self.sys = importlib.import_module('amy_basic_process.sys')
         self.task = importlib.import_module('amy_basic_process.task_module')
         self.ms = importlib.import_module('amy_basic_process.miscellaneous')
-        global userPrefix
-        userPrefix = self.awake.awake.run()
+        userPrefix, welcome = self.sys.awake.run()
+        self.vM.talkProcess.talk(welcome)
 
     def main(self):
         global userPrefix
-        input_ = self.vM.ListenInBack.Listener()
+        input_ = self._listen.ListenInBack.Listener()
         sysA = self.sys.mainProcess
         sysB = self.sys.backgroundProcess
-        talk = self.vM.talkProcess.talk
+        talk = self._talk.talkProcess.talk
         db = self.dM.AmyData
         osTask = self.task.osModule
         msc = self.ms.main
         osTools = sTools.toolKit
-
         data = localDataTools.strClearerSymbol(input_)
-
         if data != '':
             if "amy" in data:
                 data = data.replace('amy', '')

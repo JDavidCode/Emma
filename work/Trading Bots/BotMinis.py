@@ -43,7 +43,7 @@ class botCore:
         backRates = rates
         ln = len(rates)-1
         i = 100
-        while(i < len(rates)):
+        while (i < len(rates)):
             # TO BUY
             if rates['mm100'][i] < rates['mm25'][i] and rates['mm25'][i] < rates['mm10'][i]:
                 # and rates['rsi16'][i] > 50.0:
@@ -51,8 +51,11 @@ class botCore:
                     if rates['mm25'][i] < rates['close'][i] or rates['mm25'][i] < rates['open'][i]:
                         if rates['close'][i-1] < rates['open'][i-1]:
                             # print('buy', rates['time'][i])
-                            botCore.backTest(i, 'buy')
-                            entrys += 1
+                            if trading.orderChecker("US100"):
+                                trading.orderSender(
+                                    "US100", "buy", 0.1, 500, 250)
+                            # botCore.backTest(i, 'buy')
+                            # entrys += 1
             # TO SELL
             if rates['mm100'][i] > rates['mm25'][i] and rates['mm25'][i] > rates['mm10'][i]:
                 # and rates['rsi16'][i] < 50.0:
@@ -60,8 +63,12 @@ class botCore:
                     if rates['mm25'][i] > rates['close'][i] or rates['mm25'][i] > rates['open'][i]:
                         if rates['open'][i-1] > rates['close'][i-1]:
                             # print('Sell', rates['time'][i])
-                            botCore.backTest(i, 'sell')
-                            entrys += 1
+                            if trading.orderChecker("US100"):
+                                trading.orderSender(
+                                    "US100", "sell", 0.1, 500, 250)
+
+                            # botCore.backTest(i, 'sell')
+                            # entrys += 1
 
             i += 1
         # botCore.showGraphichs(rates, 'M1')
@@ -90,7 +97,7 @@ class botCore:
         opening = backRates['close'][point]
         autoClose = backRates['mm25'][point]
         i = point
-        while(i < len(backRates)):
+        while (i < len(backRates)):
 
             if Atype == 'buy':
                 if backRates['close'][i]-4.9 > opening:
@@ -119,7 +126,7 @@ class botCore:
         global profit
         global entrys
         trading.awake(.10, (0, 0, 0), (100, 5.0), volume)
-        botCore.signal("US500Cash")
+        botCore.signal("US100")
         print(profit, entrys)
         # print(losses)
 

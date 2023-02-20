@@ -22,14 +22,14 @@ class trading:
 
     def initialize():
         path = r"C:\\Program Files\\MetaTrader 5\\terminal64.exe"
-        account = 65607696
-        pw = "Aa1040492386"
+        account = 510015161
+        pw = "Lx4Yqo5g"
         try:
             mt5.initialize(
                 path,
                 login=account,
                 password=pw,
-                server="XMGlobal-MT5 2",
+                server="HantecMarkets-MT5",
                 timeout=15000,
                 portable=False
             )
@@ -87,7 +87,7 @@ class trading:
             bid = mt5.symbol_info_tick(symbol).bid
         except:
             return True
-        #print(ask, bid)
+        # print(ask, bid)
         if type(ask) != float or type(bid) != float:
             return False
         if (ask - spread) < bid:
@@ -348,7 +348,7 @@ class trading:
                         key = True
 
                 if key:
-                    #print(stopLoss, takeProfit)
+                    # print(stopLoss, takeProfit)
                     request = {
                         "action": mt5.TRADE_ACTION_SLTP,
                         "position": ticker,

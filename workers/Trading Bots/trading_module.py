@@ -17,10 +17,31 @@ volume = 0.0
 
 
 class trading:
-    def __init__():
-        pass
+    def __init__(self, spr, pips, daily, vol):
+        global today_AccountBalance
+        global spread
+        global pipsUpdate
+        global dailyWinLoss
+        global volume
+        spread = spr
+        pipsUpdate = pips
+        dailyWinLoss = daily
+        volume = vol
+        trading.initializeMT()
+        symbols = mt5.symbols_get()
+        count = 0
+        # display the first five ones
+        for s in symbols:
+            count += 1
+            print("{}. {}".format(count, s.name))
+            if count == 75:
+                break
+        print()
+        accountBalance = mt5.account_info()
+        today_AccountBalance = accountBalance[10]
+        trading.accountInf()
 
-    def initialize():
+    def initializeMT():
         path = r"C:\\Program Files\\MetaTrader 5\\terminal64.exe"
         account = 510015161
         pw = "Lx4Yqo5g"
@@ -411,32 +432,6 @@ class trading:
         except:
             print('An except has ocurred on orderCloser f')
             pass
-
-    def awake(spr, pips, daily, vol):
-        global today_AccountBalance
-        global spread
-        global pipsUpdate
-        global dailyWinLoss
-        global volume
-        spread = spr
-        pipsUpdate = pips
-        dailyWinLoss = daily
-        volume = vol
-        trading.initialize()
-        symbols = mt5.symbols_get()
-        print('Symbols: ', len(symbols))
-        count = 0
-        # display the first five ones
-        for s in symbols:
-            count += 1
-            print("{}. {}".format(count, s.name))
-            if count == 75:
-                break
-        print()
-        accountBalance = mt5.account_info()
-        today_AccountBalance = accountBalance[10]
-        trading.accountInf()
-        return today_AccountBalance
 
 
 if __name__ == '__main__':

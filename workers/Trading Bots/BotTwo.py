@@ -1,4 +1,4 @@
-from trading import *
+from trading_module import *
 
 volume = 0.03
 
@@ -11,7 +11,7 @@ stock = ['EURUSD', 'EURNZD', 'EURAUD', 'EURCHF',
 
 class botCore:
     def __init__(self) -> None:
-        pass
+        botCore.run()
 
     def symbolRates(symbol, count, time):
         rates = mt5.copy_rates_from_pos(
@@ -98,7 +98,7 @@ class botCore:
 
     def run():
         global volume
-        trading.awake(0.0003, (0.00150, 0.0003, 0.0006), (30.0, 15.0), volume)
+        trading(0.0003, (0.00150, 0.0003, 0.0006), (30.0, 15.0), volume)
         while True:
             for i in stock:
                 if trading.timeSchedule() and trading.win_loss_Stopper():
@@ -124,4 +124,4 @@ class botCore:
 
 
 if __name__ == '__main__':
-    botCore.run()
+    botCore()

@@ -1,4 +1,4 @@
-from trading import *
+from trading_module import *
 
 stock = ['US100Cash']  # 'US30Cash',
 balance = 0

@@ -1,34 +1,26 @@
 import datetime
-from turtle import update
 import pytz
 import time
 import MetaTrader5 as mt5
 import pandas as pd
 import matplotlib.pyplot as plt
+import talib as ti
 from pandas.plotting import register_matplotlib_converters
-import tti
 register_matplotlib_converters()
 
 today_AccountBalance = 0.0
-spread = 0.0
-pipsUpdate = ()
 dailyWinLoss = ()
-volume = 0.0
 
 
 class trading:
-    def __init__(self, spr, pips, daily, vol):
+    def __init__(self, daily):
         global today_AccountBalance
-        global spread
-        global pipsUpdate
         global dailyWinLoss
-        global volume
-        spread = spr
-        pipsUpdate = pips
         dailyWinLoss = daily
-        volume = vol
+
         trading.initializeMT()
         symbols = mt5.symbols_get()
+
         count = 0
         # display the first five ones
         for s in symbols:
@@ -37,8 +29,8 @@ class trading:
             if count == 75:
                 break
         print()
-        accountBalance = mt5.account_info()
-        today_AccountBalance = accountBalance[10]
+        today_AccountBalance = mt5.account_info()[10]
+        print(today_AccountBalance)
         trading.accountInf()
 
     def initializeMT():
@@ -102,7 +94,6 @@ class trading:
             print(s.name)
 
     def spread(symbol):
-        global spread
         try:
             ask = mt5.symbol_info_tick(symbol).ask
             bid = mt5.symbol_info_tick(symbol).bid
@@ -111,33 +102,43 @@ class trading:
         # print(ask, bid)
         if type(ask) != float or type(bid) != float:
             return False
-        if (ask - spread) < bid:
+        if (ask - 4.0) < bid:
             return True
         else:
             return False
 
-    def orderChecker(symbol):
-        global volume
+    def orderChecker(symbol, _id):
         p = mt5.positions_get(symbol=symbol)
-        x = 0
         if p == () or p == None:
             return True
         elif p != ():
             for i in p:
-                if i[9] == volume:
-                    x += 1
+                if i[18] == _id:
+                    return False
+                else:
+                    return True
         else:
             return False
 
-        if x == 0:
-            return False
-        elif x > 0:
-            return False
-        else:
-            return False
+    def getSymbolRates(symbol, count, time):
+        rates = mt5.copy_rates_from_pos(
+            symbol,
+            time,
+            0,
+            count)
+        rates = pd.DataFrame(rates)
+        rates['time'] = pd.to_datetime(rates['time'], unit='s')
+        rates['DateTime'] = pd.DatetimeIndex(
+            pd.to_datetime(rates['time'], unit='s'))
+        rates = rates.set_index('DateTime')
+        rates.rename(columns={'open': 'Open', 'high': 'High',
+                     'low': 'Low', 'close': 'Close', 'tick_volume': 'Volume'}, inplace=True)
+
+        print(rates)
+
+        return rates
 
     def entryBreak(symbol, m, s):
-
         zone = pytz.timezone('Europe/Kiev')
         date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
         date_from = date_to - datetime.timedelta(hours=6)
@@ -237,60 +238,20 @@ class trading:
         else:
             return False
 
-    def RSI(rates):
-        rates['delta'] = delta = rates['close'].diff()
-        delta = delta[1:]
-        rates['Bull'] = delta.clip(lower=0)
-        rates['Bear'] = -1*delta.clip(upper=0)
-        ema_Bull = rates['Bull'].ewm(com=16, adjust=False).mean()
-        ema_Bear = rates['Bear'].ewm(com=16, adjust=False).mean()
-        Relative_Strengh = ema_Bull/ema_Bear
-        rates['rsi16'] = 100 - (100/(1+Relative_Strengh))
-        return rates
-
-    def showGraphichs(rates, t):
-        if t == 'M1':
-            fig, axe = plt.subplots(3, 1)
-            axe[0].plot(rates['close'], label='Symbol')
-            axe[0].plot(rates['mm5'], label='Media Movil 7')
-            axe[0].plot(rates['mm12'], label='Media Movil 15')
-            axe[0].plot(rates['mm25'], label='Media Movil 25')
-            axe[1].plot(rates['rsi16'], color='b')
-            axe[2].plot(rates['cci30'], color='green')
-
-            plt.plot(rates['rsi16'], label='RSI')
-            axe[1].axhline(y=30, color='r', linewidth=1)
-            axe[1].axhline(y=50, color='r', linewidth=1)
-            axe[1].axhline(y=70, color='r', linewidth=1)
-
-            plt.plot(rates['cci30'], label='cci')
-            axe[2].axhline(y=100, color='b', linewidth=1)
-            axe[2].axhline(y=0, color='b', linewidth=1)
-            axe[2].axhline(y=-100, color='b', linewidth=1)
-        elif t == 'M15':
-            fig, axe = plt.subplots(3, 1)
-            axe[0].plot(rates['close'], label='Symbol')
-            axe[0].plot(rates['mm12'], label='Media Movil 15')
-            axe[1].plot(rates['mmt12'], color='b')
-            axe[2].plot(rates['cci10'], color='green')
-
-            plt.plot(rates['mmt12'], label='MOMENTUM')
-            axe[1].axhline(y=100.20, color='r', linewidth=1)
-            axe[1].axhline(y=100, color='r', linewidth=1)
-            axe[1].axhline(y=99.80, color='r', linewidth=1)
-
-            plt.plot(rates['cci10'], label='cci')
-            axe[2].axhline(y=100, color='b', linewidth=1)
-            axe[2].axhline(y=0, color='b', linewidth=1)
-            axe[2].axhline(y=-100, color='b', linewidth=1)
-
+    def showGraphichs(rates, n, plots_order):
+        fig, axe = plt.subplots(n, 1)
+        x = 0
+        for i in plots_order:
+            axe[x].plot(rates[i])
+            axe[x].set_title(i)
+            # axe[x].axhline(y=0, color='b', linewidth=1)
+            x += 1
         plt.tight_layout()
         fig.autofmt_xdate()
         plt.show()
 
-    def orderSender(symbol, t, lot, tp, sl):
+    def orderSender(symbol, t, lot, tp, sl, _id):
         ask = mt5.symbol_info_tick(symbol).ask
-        bid = mt5.symbol_info_tick(symbol).bid
         stopLoss = 0.0
         takeProfit = 0.0
         orderType = ''
@@ -300,12 +261,12 @@ class trading:
 
         if t == 'buy':
             orderType = mt5.ORDER_TYPE_BUY
-            stopLoss = ask - sl
-            takeProfit = bid + tp
+            stopLoss = ask * sl
+            takeProfit = ask * tp
         elif t == 'sell':
             orderType = mt5.ORDER_TYPE_SELL
-            stopLoss = ask + sl
-            takeProfit = ask - tp
+            stopLoss = ask * sl
+            takeProfit = ask * tp
 
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -316,7 +277,7 @@ class trading:
             "sl": stopLoss,
             "tp": takeProfit,
             "deviation": 20,
-            "magic": 234000,
+            "magic": _id,
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC
         }
@@ -389,7 +350,7 @@ class trading:
             print('An except has ocurred on orderUpdater f')
             return
 
-    def orderCloser(win, loss, vol):
+    def orderCloser(win, loss, vol, _id):
         volume = vol
         orderData = mt5.positions_get()
         x = 0.0
@@ -417,7 +378,7 @@ class trading:
                             "position": ticker,
                             "price": i[13],
                             "deviation": 20,
-                            "magic": 234000,
+                            "magic": _id,
                             "comment": "python script close",
                             "type_time": mt5.ORDER_TIME_GTC,
                             "type_filling": mt5.ORDER_FILLING_IOC

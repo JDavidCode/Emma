@@ -1,7 +1,6 @@
 Trading Indicators
-~TTI
-
-MetaTrader API
+~finta
+~Backtesting
 ~Metatrader5
 
 

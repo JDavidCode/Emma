@@ -11,7 +11,7 @@ class toolKit:
     def imageConverter(openURL):
         filename = localDataTools.filenameTarget(openURL)
         img = Image.open(openURL)
-        #rgb_img = img.convert('RGB')
+        # rgb_img = img.convert('RGB')
         img.save(filename, 'png')
 
     def zipper(path):

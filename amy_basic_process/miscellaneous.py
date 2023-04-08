@@ -23,7 +23,7 @@ class main:
 
         return wt
 
-    def dateClock(type):
+    def date_clock(type):
         dateTime = datetime.datetime.now()
         clock = dateTime.time()
         date = dateTime.date()
@@ -37,7 +37,7 @@ class main:
         else:
             return dateTime.strftime('%d-%m of %Y %H:%M:%S'), date, clock.strftime('%H:%M:%S')
 
-    def dayParts():
+    def day_parts():
         t = datetime.datetime.today()
         nDate = datetime.date.today()
         timeSchedule = ['{} 5:00:00'.format(

@@ -27,8 +27,8 @@ if conn.is_connected():
     print("Server version ", info_server)
 
 
-class login:
-    def userLogin(user, password):
+class Login:
+    def user_login(user, password):
         rut = '.temp/face_{}.zip'.format(user)
         indexer = (user, password)
         userData = ()
@@ -43,7 +43,7 @@ class login:
                 age = row[4]
                 genre = row[5]
                 userLang = row[6]
-                face = localConvertersTools.fromBinaryToFile(row[7], rut)
+                face = localConvertersTools.unbinary(row[7], rut)
                 localConvertersTools.unzipper(
                     [(".temp\\face_{}.zip".format(userName), ".temp\\")])
                 userData = userID, userLvl, userName, age, genre
@@ -55,7 +55,7 @@ class login:
         else:
             return False, ()
 
-    def userRegister(user, pw, age, genre, lang, data):
+    def user_register(user, pw, age, genre, lang, data):
         indexer = (user, )
         sql = "SELECT * FROM users WHERE name=%s"
         cursor.execute(sql, indexer)
@@ -66,9 +66,9 @@ class login:
                     print('The user already exist')
                     return False
 
-        sql2 = "INSERT INTO users (name, password, age, genre, lang, data) VALUES(%s, %s, %s, %s, %s, %s)"
-        data = localConvertersTools.toBinary(data)
-        values = (user, pw, age, genre, lang, data)
+        sql2 = "INSERT INTO users (lvl, name, password, age, genre, lang, data) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+        data = localConvertersTools.to_binary(data)
+        values = ("0", user, pw, age, genre, lang, data)
         cursor.execute(sql2, values)
         print('Registring U, please wait...')
         conn.commit()
@@ -81,7 +81,7 @@ class login:
                 input('select your language en/es: '))
         return True
 
-    def userPrefix():
+    def user_prefix():
         global userLVL
         userLVL = os.getenv("USERLVL")
         pre = ["", os.getenv("USERNAME"), "sir.", "master",  "boss"]
@@ -91,15 +91,15 @@ class login:
         pro = (pre[1], pre[2])
         admin = (pre[2], pre[3], pre[4])
 
-        if userLVL == "1":
+        if userLVL == "0":
             return invited
-        elif userLVL == "2":
+        elif userLVL == "1":
             return loged
-        elif userLVL == "3":
+        elif userLVL == "2":
             return silver
-        elif userLVL == "4":
+        elif userLVL == "3":
             return pro
-        elif userLVL == "5":
+        elif userLVL == "4":
             return admin
         else:
             return invited
@@ -109,7 +109,7 @@ class AmyData:
     def __init__():
         pass
 
-    def jsonTaskUpdater():
+    def json_task_updater():
         directory = 'assets\\json\\task_Directory.json'
         diccionary = {"indexer": []}
         dbDiccionary = {"taskIndexer": []}
@@ -135,20 +135,20 @@ class AmyData:
                     json.dump(dbDiccionary, f, indent=2)
                     break
 
-    def chatIndexer(index):
+    def chat_indexer(index):
         indexer = (index, )
         eAns = []
         sql = "SELECT * FROM chatdata WHERE input=%s"
         cursor.execute(sql, indexer)
         for row in cursor:
-            iClass = row[2]
+            iClass = row[1]
             if iClass != None:
                 indexer = (iClass, )
                 sql = "SELECT * FROM chatdata WHERE class=%s"
                 cursor.execute(sql, indexer)
                 for row in cursor:
-                    eAns.append(row[4])
-                eAns = localDataTools.listItemRemover(index, eAns)
+                    eAns.append(row[3])
+                eAns = localDataTools.item_list_remover(index, eAns)
                 x = len(eAns)-1
                 ran = random.randint(0, x)
                 eAns = eAns[ran]
@@ -157,22 +157,23 @@ class AmyData:
                 return index
         return index
 
-    def taskIndexer(index):
+    def task_indexer(index):
         global userLVL
         data = index
         json_type = 'list'
-        taskIndexer = localDataTools.jsonLoader(
-            'assets\\json\\task_Directory.json', json_type)
+        taskIndexer = localDataTools.json_loader(
+            'assets\\json\\task_Directory.json', json_type, "taskIndexer")
         eAns = []
         eFunc = []
         task = ''
         key = False
+        print(data)
 
         for i in taskIndexer:
             if i in index:
                 task = i
                 data = data.replace(i, '')
-                data = localDataTools.strClearerVoid(data)
+                data = localDataTools.string_voids_clearer(data)
                 key = True
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
@@ -190,7 +191,7 @@ class AmyData:
 
         return eAns, eFunc, data, key
 
-    def dataWriter():
+    def data_writer():
         tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:
@@ -212,7 +213,7 @@ class AmyData:
         conn.commit()
         print('Data has been uploaded')
 
-    def dataUpdater():
+    def data_updater():
         tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:
@@ -236,7 +237,7 @@ class AmyData:
         conn.commit()
         print('Data has been updated')
 
-    def dataRemover():
+    def data_remover():
         tableI = input('Insert table\'s name: ')
         tableList = ('chatdata', 'funfacts', 'taskdata')
         if tableI not in tableList:

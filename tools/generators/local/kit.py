@@ -6,13 +6,13 @@ class toolkit:
     def __init__(self) -> None:
         pass
 
-    def passwordGenerator(l):
+    def password_generator(lenght):
         pw = ''
         i = 0
         chars = string.ascii_letters
         numbers = string.digits
         symbols = string.punctuation
         setter = chars + numbers + symbols
-        for i in range(l):
+        for i in range(lenght):
             pw += ''.join(secrets.choice(setter))
         return pw

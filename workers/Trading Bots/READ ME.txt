@@ -1,9 +1,5 @@
 Trading Indicators
-~finta
+~ta-lib
 ~Backtesting
 ~Metatrader5
 
-
-BOT ACTIVE HOURS
-
-9 P.M

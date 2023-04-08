@@ -8,16 +8,16 @@ engVoice = eng.getProperty('voices')
 pyMic = pya.PyAudio()
 
 
-class talkProcess:
+class TalkProcess:
     def __init__():
-        talkProcess.engVoiceConfig()
+        TalkProcess.engine_voice_config()
 
     def talk(text):
         eng.say(text)
         eng.runAndWait()
         return
 
-    def engVoiceConfig():
+    def engine_voice_config():
         if lang == 'en':
             eng.setProperty('voice', engVoice[1].id)
         elif lang == 'es':

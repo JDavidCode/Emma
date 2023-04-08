@@ -2,23 +2,28 @@ import datetime
 import pytz
 import time
 import MetaTrader5 as mt5
+from backtesting import Backtest, Strategy
+from backtesting.lib import crossover
+from iqoptionapi.stable_api import IQ_Option
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import talib as ti
 from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 
 today_AccountBalance = 0.0
 dailyWinLoss = ()
 
 
-class trading:
+class tradingMT5:
     def __init__(self, daily):
         global today_AccountBalance
         global dailyWinLoss
         dailyWinLoss = daily
 
-        trading.initializeMT()
+        tradingMT5.initializeMT()
         symbols = mt5.symbols_get()
 
         count = 0
@@ -31,7 +36,7 @@ class trading:
         print()
         today_AccountBalance = mt5.account_info()[10]
         print(today_AccountBalance)
-        trading.accountInf()
+        tradingMT5.accountInf()
 
     def initializeMT():
         path = r"C:\\Program Files\\MetaTrader 5\\terminal64.exe"
@@ -51,7 +56,7 @@ class trading:
         except:
             pass
 
-    def accountInf():
+    def account_info():
         account_info = mt5.account_info()
         if account_info != None:
             # convert the dictionary into DataFrame and print
@@ -69,12 +74,12 @@ class trading:
         else:
             print("symbols not found")
 
-    def totalOrders():
+    def total_orders():
         orders = mt5.orders_total()
         print('Total Orders:', orders)
         return
 
-    def terminalInf():
+    def terminal_info():
         terminal_info = mt5.terminal_info()
         if terminal_info != None:
             # convert the dictionary into DataFrame and print
@@ -87,7 +92,7 @@ class trading:
     def shutdown():
         return mt5.shutdown()
 
-    def getSymbol(index):
+    def get_symbol(index):
         symbol = mt5.symbols_get("*{}*".format(index))
         print('Found symbols: ', len(symbol))
         for s in symbol:
@@ -107,7 +112,7 @@ class trading:
         else:
             return False
 
-    def orderChecker(symbol, _id):
+    def order_checker(symbol, _id):
         p = mt5.positions_get(symbol=symbol)
         if p == () or p == None:
             return True
@@ -120,7 +125,7 @@ class trading:
         else:
             return False
 
-    def getSymbolRates(symbol, count, time):
+    def get_symbol_rates(symbol, count, time):
         rates = mt5.copy_rates_from_pos(
             symbol,
             time,
@@ -133,12 +138,9 @@ class trading:
         rates = rates.set_index('DateTime')
         rates.rename(columns={'open': 'Open', 'high': 'High',
                      'low': 'Low', 'close': 'Close', 'tick_volume': 'Volume'}, inplace=True)
-
-        print(rates)
-
         return rates
 
-    def entryBreak(symbol, m, s):
+    def entry_break(symbol, m, s):
         zone = pytz.timezone('Europe/Kiev')
         date_to = datetime.datetime.now().astimezone(zone).replace(tzinfo=None)
         date_from = date_to - datetime.timedelta(hours=6)
@@ -205,7 +207,7 @@ class trading:
 
         return True
 
-    def timeSchedule():
+    def time_schedule():
         currentDay = datetime.datetime.today()
         nDate = datetime.date.today()
         timeSchedule = ['{} 8:30:30'.format(nDate), '{} 12:30:00'.format(
@@ -238,7 +240,7 @@ class trading:
         else:
             return False
 
-    def showGraphichs(rates, n, plots_order):
+    def show_graphichs(rates, n, plots_order):
         fig, axe = plt.subplots(n, 1)
         x = 0
         for i in plots_order:
@@ -250,7 +252,7 @@ class trading:
         fig.autofmt_xdate()
         plt.show()
 
-    def orderSender(symbol, t, lot, tp, sl, _id):
+    def order_sender(symbol, t, lot, tp, sl, _id):
         ask = mt5.symbol_info_tick(symbol).ask
         stopLoss = 0.0
         takeProfit = 0.0
@@ -277,6 +279,7 @@ class trading:
             "sl": stopLoss,
             "tp": takeProfit,
             "deviation": 20,
+            "slippage": 2,
             "magic": _id,
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC
@@ -288,7 +291,7 @@ class trading:
         else:
             return print(symbol, result['comment'], t)
 
-    def orderUpdater(symbol):
+    def order_updater(symbol):
         try:
             orderData = mt5.positions_get(symbol=symbol)
             if orderData == ():
@@ -350,7 +353,7 @@ class trading:
             print('An except has ocurred on orderUpdater f')
             return
 
-    def orderCloser(win, loss, vol, _id):
+    def order_closer(win, loss, vol, _id):
         volume = vol
         orderData = mt5.positions_get()
         x = 0.0
@@ -395,5 +398,96 @@ class trading:
             pass
 
 
+class tradingIqOption():
+    tradingOTC = False
+    stockOpen = True
+    iqoption = None
+
+    def __init__(self, MODE, account, pw):
+        self.iqoption = IQ_Option(account, pw)
+        self.check, self.reason = self.iqoption.connect()
+        tradingIqOption.iqoption = self.iqoption
+        self.iqoption.change_balance(MODE)  # MODE: "PRACTICE"/"REAL"
+
+    def initializeIQ(self):
+        error_password = """{"code":"invalid_credentials","message":"You entered the wrong credentials. Please check that the login/password is correct."}"""
+        if self.check:
+            print("Conection successfully")
+            # if see this you can close network for test
+            if self.iqoption.check_connect() == False:  # detect the websocket is close
+                print("try reconnect")
+                check, reason = self.iqoption.connect()
+                if check:
+                    print("Reconnect successfully")
+                else:
+                    if reason == error_password:
+                        print("Error Password")
+                    else:
+                        print("No Network")
+
+        else:
+            if reason == "[Errno -2] Name or service not known":
+                print("No Network")
+            elif reason == error_password:
+                print("Error Password")
+
+    def account_info(self):
+        print(
+            f"Account Balance ${self.iqoption.get_balance()} {self.iqoption.get_currency()}")
+
+    def check_open_asset(self):
+        ALL_Asset = self.iqoption.get_all_open_time()
+        if (ALL_Asset["digital"]["EURUSD-OTC"]["open"]):
+            tradingIqOption.tradingOTC = True
+            print("OTC trading asset is open")
+        elif (ALL_Asset["digital"]["EURUSD"]["open"]):
+            tradingIqOption.tradingOTC = False
+            print("Normal trading asset is open")
+        else:
+            tradingIqOption.stockOpen = False
+
+    def get_symbol_rates(self, symbol):
+        rates = self.iqoption.get_candles(symbol, 60, 180, time.time())
+
+        rates = pd.DataFrame(rates)
+        rates['time'] = pd.to_datetime(rates['from'], unit='s')
+        rates['DateTime'] = pd.DatetimeIndex(
+            pd.to_datetime(rates['time'], unit='s'))
+        rates = rates.set_index('DateTime')
+        rates.drop(rates.columns[[0, 1, 2, 3]], axis=1, inplace=True)
+        rates.rename(columns={'open': 'Open', 'max': 'High',
+                     'min': 'Low', 'close': 'Close', 'volume': 'Volume'}, inplace=True)
+        rates = rates[["time", "Open", "High", "Low", "Close", "Volume"]]
+        return rates
+
+    def loss_stopper(self):
+        data = self.iqoption.get_optioninfo(3)
+        data = data["msg"]["result"]["closed_options"]
+        strike = 0
+        for i in data:
+            last_result = i['win']
+            if last_result == 'loose':
+                strike += 1
+        if strike >= 2:
+            return False
+        else:
+            return True
+
+    def order_sender(self, symbol, action, expiration, amount):
+        check, _id = self.iqoption.buy(amount, symbol, action, expiration)
+        if check:
+            print(f"!{symbol} {action}!")
+        else:
+            print(f"{action} fail")
+
+
+class InvestingNews:
+    def __init__(self):
+        InvestingNews.invest_lock()
+
+    def invest_lock():
+        pass  # NEED TO SEARCH AN APPROPIATE FREE API
+
+
 if __name__ == '__main__':
-    pass
+    InvestingNews()

@@ -6,21 +6,20 @@ class toolKit:
     def __init__(self):
         pass
 
-    def jsonLoader(index, json_type):
+    def json_loader(index, json_type, i):
         directory = index
         with open(directory) as f:
             direct = json.load(f)
-            for i in direct:
-                if json_type == 'list':
-                    diccionary = []
-                    diccionary = direct[i].copy()
-                    return diccionary
-                elif json_type == 'dict':
-                    diccionary = {}
-                    diccionary = direct[i].copy()
-                    return diccionary
+            if json_type == 'list':
+                diccionary = []
+                diccionary = direct[i].copy()
+                return diccionary
+            elif json_type == 'dict':
+                diccionary = {}
+                diccionary = direct[i].copy()
+                return diccionary
 
-    def filenameTarget(filename):
+    def filename_target(filename):
         index = ''
         for i in filename:
             if i != '.':
@@ -29,14 +28,28 @@ class toolKit:
                 break
         return index
 
-    def strClearerSymbol(index):
+    def format_target(filename, pandoc):
+        json = 0
+        if (pandoc):
+            json = toolKit.jsonLoader(
+                "assets\\json\\extensions.json", "list", "PANDOC_FORMATS")
+        else:
+            json = toolKit.jsonLoader(
+                "assets\\json\\extensions.json", "dict", "FORMATS")
+        for i in json:
+            if filename.endswith(f".{i}"):
+                return i
+        print("The target has not format, is not supported or is unrecognized")
+        return 0
+
+    def string_symbol_clearer(index):
         if '\'' in index:
             patron = '[\']'
             regex = re.compile(patron)
             index = regex.sub('', index)
         return index
 
-    def strClearerVoid(index):
+    def string_voids_clearer(index):
         rev = 0
         for i in index:
             if i == ' ':
@@ -45,7 +58,7 @@ class toolKit:
                 break
         return index[rev:]
 
-    def listItemRemover(index, list):
+    def item_list_remover(index, list):
         for i in list:
             if i == index:
                 list.remove(i)

@@ -22,7 +22,7 @@ class ListenInBack:
     def __init__():
         pass
 
-    def Listener():
+    def listener():
         stream.start_stream()
         while True:
             data = stream.read(4000, exception_on_overflow=False)

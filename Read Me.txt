@@ -14,7 +14,8 @@ List of Pips
 ~PyAutoGUI
 ~python-dotenv
 ~imutils
-~aspose-words
+~img2pdf
+~unoconv
 
 API'S
 ~flask

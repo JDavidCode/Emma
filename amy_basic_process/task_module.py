@@ -14,18 +14,18 @@ class osModule:
     def __init__(self):
         pass
 
-    def openApp(index):
+    def open_app(index):
         json_type = 'dict'
-        diccionary = localDataTools.jsonLoader(
+        diccionary = localDataTools.json_loader(
             "assets\\json\\osApp_directory.json", json_type)
         keys = diccionary.keys()
         if index in keys:
             get = diccionary.get(index)
             os.startfile(get)
 
-    def pathMover():
+    def path_mover():
         json_type = 'dict'
-        diccionary = localDataTools.jsonLoader(
+        diccionary = localDataTools.json_loader(
             "assets\\json\\path_directory.json", json_type)
         downFolder = diccionary.get('downloads')
         for filename in os.listdir(downFolder):

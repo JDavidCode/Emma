@@ -1,6 +1,6 @@
 {
   "taskIndexer": [
-    "stop",
+    "rest",
     "configure your voice",
     "update in base",
     "remove in base",
@@ -12,6 +12,6 @@
     "time",
     "lets play",
     "day is",
-    " "
+    "part of the day"
   ]
 }

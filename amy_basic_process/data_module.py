@@ -28,49 +28,48 @@ if conn.is_connected():
 
 
 class Login:
-    def user_login(user, password):
-        rut = '.temp/face_{}.zip'.format(user)
-        indexer = (user, password)
+    def user_login(email, password):
+        indexer = (email, password)
         userData = ()
         eAns = []
-        sql = "SELECT * FROM users WHERE name=%s AND password=%s"
+        sql = "SELECT * FROM users WHERE email=%s AND password=%s"
         cursor.execute(sql, indexer)
-        if cursor is not None:
-            for row in cursor:
-                userID = row[0]
-                userLvl = row[1]
-                userName = row[2]
-                age = row[4]
-                genre = row[5]
-                userLang = row[6]
-                face = localConvertersTools.unbinary(row[7], rut)
-                localConvertersTools.unzipper(
-                    [(".temp\\face_{}.zip".format(userName), ".temp\\")])
-                userData = userID, userLvl, userName, age, genre
-                envKeys = (('USERLVL', userLvl), ('USERNAME',
-                                                  userName), ('USERLANG', userLang))
-                for i in envKeys:
-                    set_key(".venv/.env", i[0], i[1])
-                return True, userData
+        result = cursor.fetchone()
+        if result is not None:
+            userID = result[0]
+            userLvl = result[1]
+            userName = result[2]
+            age = result[5]
+            genre = result[6]
+            userLang = result[7]
+            rut = '.temp/face_{}.zip'.format(userName)
+            localConvertersTools.unbinary(result[8], rut)
+            localConvertersTools.unzipper(
+                [(".temp\\face_{}.zip".format(userName), ".temp\\")])
+            userData = userID, userLvl, userName, age, genre
+            envKeys = (('USERLVL', userLvl), ('USERNAME',
+                                              userName), ('USERLANG', userLang))
+            for i in envKeys:
+                set_key(".venv/.env", i[0], i[1])
+            return True, userData
         else:
             return False, ()
 
-    def user_register(user, pw, age, genre, lang, data):
-        indexer = (user, )
-        sql = "SELECT * FROM users WHERE name=%s"
-        cursor.execute(sql, indexer)
-        for row in cursor:
-            username = row[1]
-            if username is not None:
-                if user in username:
-                    print('The user already exist')
-                    return False
+    def user_register(name, email, pw, age, genre, lang, data):
+        # check if email already exists
+        sql = "SELECT * FROM users WHERE email=%s"
+        cursor.execute(sql, (email,))
+        row = cursor.fetchone()
+        if row is not None:
+            print('The email already exists')
+            return False
 
-        sql2 = "INSERT INTO users (lvl, name, password, age, genre, lang, data) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+        # insert new user
+        sql = "INSERT INTO users (lvl, name, email, password, age, genre, lang, data) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         data = localConvertersTools.to_binary(data)
-        values = ("0", user, pw, age, genre, lang, data)
-        cursor.execute(sql2, values)
-        print('Registring U, please wait...')
+        values = ("0", name, email, pw, age, genre, lang, data)
+        cursor.execute(sql, values)
+        print('Registering user, please wait...')
         conn.commit()
         return True
 
@@ -157,39 +156,39 @@ class AmyData:
                 return index
         return index
 
-    def task_indexer(index):
-        global userLVL
-        data = index
+    def task_indexer(data, user_lvl):
         json_type = 'list'
-        taskIndexer = localDataTools.json_loader(
-            'assets\\json\\task_Directory.json', json_type, "taskIndexer")
-        eAns = []
-        eFunc = []
-        task = ''
+        task_indexer = localDataTools.json_loader(
+            'assets\\json\\task_Directory.json', json_type, "taskIndexer"
+        )
+        e_ans = None
+        e_func = None
         key = False
-        print(data)
+        task = ''
 
-        for i in taskIndexer:
-            if i in index:
+        for i in task_indexer:
+            if i in data:
                 task = i
-                data = data.replace(i, '')
+                if data.replace(i, '') == "" or data.replace(i, '') == " ":
+                    data = i
+                else:
+                    data = data.replace(i, '')
                 data = localDataTools.string_voids_clearer(data)
-                key = True
 
         sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
         cursor.execute(sql)
-        if cursor is not None:
+        if cursor:
             for row in cursor:
-                if (userLVL != None) and (row[1] <= int(userLVL)):
+                print(row)
+                if (user_lvl is not None) and (row[1] <= int(user_lvl)):
                     key = True
-                    eAns = row[3]
-                    eFunc = row[4]
+                    _, task_lvl, _, e_ans, e_func = row
                 else:
                     key = False
         else:
             key = False
 
-        return eAns, eFunc, data, key
+        return e_ans, e_func, data, key
 
     def data_writer():
         tableI = input('Insert table\'s name: ')

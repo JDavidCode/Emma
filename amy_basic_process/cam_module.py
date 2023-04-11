@@ -3,6 +3,7 @@ import numpy as np
 import imutils
 import cv2
 import os
+from tools.converters.local.kit import toolKit as localConvertersTools
 
 dataPath = '.temp'
 idPath = '.temp\\face\\{}_face.xml'
@@ -115,7 +116,7 @@ class FacialRecognizer:
                     break
             cap.release()
             cv2.destroyAllWindows()
-        return FacialRecognizer.faceCoder()
+        return FacialRecognizer.facial_encoder()
 
     def facial_encoder():
         global user
@@ -138,7 +139,8 @@ class FacialRecognizer:
         cv2.destroyAllWindows()
         rut = '.temp\\{}_face.zip'.format(
             user)
-        # localConvertersTools.zipper([('.temp\\face\\{}_face.xml'.format(user), rut)])
+        localConvertersTools.zipper(
+            [('.temp\\face\\{}_face.xml'.format(user), rut)])
         return rut
 
     def pip_faces(user):  # NOT FINISHED
@@ -229,9 +231,9 @@ class FacialRecognizer:
         if typ == 0:
             os.makedirs(userPath)
             print('Directorio temporal de usuario Creado.')
-            return FacialRecognizer.facialRecorder(userPath)
+            return FacialRecognizer.facial_recorder(userPath)
         elif typ == 1:
-            key = FacialRecognizer.faceLock(userName)
+            key = FacialRecognizer.face_locker(userName)
             if key == True:
                 return True
             elif key == False:

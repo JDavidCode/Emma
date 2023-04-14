@@ -400,19 +400,17 @@ class TradingMT5:
 
 
 class tradingIqOption():
-    tradingOTC = False
-    stockOpen = True
     iqoption = None
 
-    def __init__(self, MODE, account, pw):
+    def __init__(self, console_output, MODE, account, pw):
         self.iqoption = IQ_Option(account, pw)
-        sys = importlib.import_module('amy_basic_process.sys_v')
-        self.console_output = sys.ThreadManager.ConsoleOutput()
+        self.console_output = console_output
+        self.tag = "Trading Thread | IQ Trading"
         self.check, self.reason = self.iqoption.connect()
         if self.check:
-            self.console_output.write("Connect Successfully")
+            self.console_output.write(self.tag, "Connect Successfully")
         else:
-            self.console_output.write("connect Failure")
+            self.console_output.write(self.tag, "connect Failure")
         tradingIqOption.iqoption = self.iqoption
         self.iqoption.change_balance(MODE)  # MODE: "PRACTICE"/"REAL"
 
@@ -422,36 +420,33 @@ class tradingIqOption():
             self.console_output.write("Conection successfully")
             # if see this you can close network for test
             if self.iqoption.check_connect() == False:  # detect the websocket is close
-                self.console_output.write("try reconnect")
+                self.console_output.write(self.tag, "try reconnect")
                 check, reason = self.iqoption.connect()
                 if check:
-                    self.console_output.write("Reconnect successfully")
+                    self.console_output.write(
+                        self.tag, "Reconnect successfully")
                 else:
                     if reason == error_password:
-                        self.console_output.write("Error Password")
+                        self.console_output.write(self.tag, "Error Password")
                     else:
-                        self.console_output.write("No Network")
+                        self.console_output.write(self.tag, "No Network")
 
         else:
             if reason == "[Errno -2] Name or service not known":
-                self.console_output.write("No Network")
+                self.console_output.write(self.tag, "No Network")
             elif reason == error_password:
-                self.console_output.write("Error Password")
+                self.console_output.write(self.tag, "Error Password")
 
     def account_info(self):
-        self.console_output.write(
-            f"Account Balance ${self.iqoption.get_balance()} {self.iqoption.get_currency()}")
+        self.console_output.write(self.tag,
+                                  f"Account Balance ${self.iqoption.get_balance()} {self.iqoption.get_currency()}")
 
-    def check_open_asset(self):
+    def check_market(self, asset, market="binary"):
         ALL_Asset = self.iqoption.get_all_open_time()
-        if (ALL_Asset["digital"]["EURUSD-OTC"]["open"]):
-            self.tradingOTC = True
-            self.console_output.write("OTC trading asset is open")
-        elif (ALL_Asset["digital"]["EURUSD"]["open"]):
-            self.tradingOTC = False
-            self.console_output.write("Normal trading asset is open")
+        if (ALL_Asset[market][asset]["open"]):
+            return True
         else:
-            self.stockOpen = False
+            return False
 
     def get_symbol_rates(self, symbol):
         rates = self.iqoption.get_candles(symbol, 60, 180, time.time())
@@ -483,9 +478,11 @@ class tradingIqOption():
     def order_sender(self, symbol, action, expiration):
         check, _id = self.iqoption.buy(10, symbol, action, expiration)
         if check:
-            self.console_output.write(f"¡{symbol} {action} {expiration}!")
+            self.console_output.write(
+                self.tag, f"¡{symbol} {action} {expiration}!")
         else:
-            self.console_output.write(f"¡{symbol} {action} {expiration} fail!")
+            self.console_output.write(
+                self.tag, f"¡{symbol} {action} {expiration} fail!")
 
 
 class InvestingNews:

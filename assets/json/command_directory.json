@@ -1,0 +1,60 @@
+{
+    "rest": {
+        "function_name": "server_shutdown",
+        "module": "bp",
+        "required_lvl": 1
+    },
+    "configure your voice": {
+        "function_name": "engine_voice_config",
+        "module": "talk",
+        "required_lvl": 1
+    },
+    "open": {
+        "function_name": "OsModule.open_app",
+        "module": "task",
+        "arguments": "1",
+        "required_lvl": 1
+    },
+    "charge module": {
+        "function_name": "module_reloader",
+        "module": "bp",
+        "arguments": "1",
+        "required_lvl": 4
+    },
+    "loudness": {
+        "function_name": "OsModule.volume_management",
+        "module": "task",
+        "arguments": "1",
+        "required_lvl": 1
+    },
+    "weather": {
+        "function_name": "MiscellaneousModule.weather",
+        "module": "task",
+        "arguments": "1",
+        "required_lvl": 0
+    },
+    "time": {
+        "function_name": "MiscellaneousModule.date_clock",
+        "module": "task",
+        "arguments": "3",
+        "required_lvl": 0
+    },
+    "lets play": {
+        "function_name": " ",
+        "module": " ",
+        "arguments": "",
+        "required_lvl": 1
+    },
+    "day is": {
+        "function_name": "MiscellaneousModule.date_clock",
+        "module": "task",
+        "arguments": "2",
+        "required_lvl": 0
+    },
+    "part of the day": {
+        "function_name": "MiscellaneousModule.day_parts",
+        "module": "task",
+        "arguments": "1",
+        "required_lvl": 0
+    }
+}

@@ -6,18 +6,16 @@ class toolKit:
     def __init__(self):
         pass
 
-    def json_loader(index, json_type, i):
-        directory = index
-        with open(directory) as f:
+    def json_loader(path, i, json_type="dict"):
+        with open(path) as f:
             direct = json.load(f)
             if json_type == 'list':
-                diccionary = []
-                diccionary = direct[i].copy()
-                return diccionary
+                dictionary = direct.get(i, [])
             elif json_type == 'dict':
-                diccionary = {}
-                diccionary = direct[i].copy()
-                return diccionary
+                dictionary = direct.get(i, {})
+            elif json_type == 'command':
+                dictionary = direct.get(i, None)
+            return dictionary
 
     def filename_target(filename):
         index = ''
@@ -32,10 +30,10 @@ class toolKit:
         json = 0
         if (pandoc):
             json = toolKit.jsonLoader(
-                "assets\\json\\extensions.json", "list", "PANDOC_FORMATS")
+                "assets\\json\\extensions.json", "PANDOC_FORMATS", "list")
         else:
             json = toolKit.jsonLoader(
-                "assets\\json\\extensions.json", "dict", "FORMATS")
+                "assets\\json\\extensions.json", "FORMATS", "dict")
         for i in json:
             if filename.endswith(f".{i}"):
                 return i

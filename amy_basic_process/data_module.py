@@ -31,7 +31,6 @@ class Login:
     def user_login(email, password):
         indexer = (email, password)
         userData = ()
-        eAns = []
         sql = "SELECT * FROM users WHERE email=%s AND password=%s"
         cursor.execute(sql, indexer)
         result = cursor.fetchone()
@@ -47,10 +46,12 @@ class Login:
             localConvertersTools.unzipper(
                 [(".temp\\face_{}.zip".format(userName), ".temp\\")])
             userData = userID, userLvl, userName, age, genre
-            envKeys = (('USERLVL', userLvl), ('USERNAME',
-                                              userName), ('USERLANG', userLang))
-            for i in envKeys:
-                set_key(".venv/.env", i[0], i[1])
+            logged = os.getenv('LOGGED')
+            if logged == 'False':
+                envKeys = (('USERLVL', userLvl), ('USERNAME',
+                                                  userName), ('USERLANG', userLang), ('LOGGED', str(True)))
+                for i in envKeys:
+                    set_key(".venv/.env", i[0], i[1])
             return True, userData
         else:
             return False, ()
@@ -109,30 +110,27 @@ class AmyData:
         pass
 
     def json_task_updater():
-        directory = 'assets\\json\\task_Directory.json'
-        diccionary = {"indexer": []}
-        dbDiccionary = {"taskIndexer": []}
-        sql = "SELECT input FROM taskdata"
+        directory = 'assets\\json\\command_directory.json'
+        sql = "SELECT caller,function_name, module, arguments, required_lvl FROM functions"
         cursor.execute(sql)
-        # Getting data from JSON
-        with open(directory) as f:
-            direct = json.load(f)
-            for i in direct["taskIndexer"]:
-                for y in i:
-                    x = 0
-                    diccionary['indexer'].append(i[x])
-                    x += 1
-            f.close()
-        # Getting data from db
-        for i in cursor:
-            for y in i:
-                dbDiccionary['taskIndexer'].append(y)
-        # if there is new data in db, json has to be update
+        # parsing sql
+        functions = {}
+        for function_id, function_name, module, function_arguments, required_lvl in cursor:
+            if function_arguments != "None":
+                functions[function_id] = {"function_name": function_name,
+                                          "module": module,
+                                          "arguments": function_arguments,
+                                          "required_lvl": required_lvl}
+            else:
+                functions[function_id] = {"function_name": function_name,
+                                          "module": module,
+                                          "required_lvl": required_lvl}
+
+        # Convert the dictionary to a JSON object
+        json_data = json.dumps(functions, indent=4)
+        # write to file
         with open(directory, 'w') as f:
-            for i in dbDiccionary:
-                if i not in diccionary['indexer']:
-                    json.dump(dbDiccionary, f, indent=2)
-                    break
+            f.write(json_data)
 
     def chat_indexer(index):
         indexer = (index, )
@@ -155,40 +153,6 @@ class AmyData:
             else:
                 return index
         return index
-
-    def task_indexer(data, user_lvl):
-        json_type = 'list'
-        task_indexer = localDataTools.json_loader(
-            'assets\\json\\task_Directory.json', json_type, "taskIndexer"
-        )
-        e_ans = None
-        e_func = None
-        key = False
-        task = ''
-
-        for i in task_indexer:
-            if i in data:
-                task = i
-                if data.replace(i, '') == "" or data.replace(i, '') == " ":
-                    data = i
-                else:
-                    data = data.replace(i, '')
-                data = localDataTools.string_voids_clearer(data)
-
-        sql = "SELECT * FROM taskdata WHERE input LIKE('{}')".format(task)
-        cursor.execute(sql)
-        if cursor:
-            for row in cursor:
-                print(row)
-                if (user_lvl is not None) and (row[1] <= int(user_lvl)):
-                    key = True
-                    _, task_lvl, _, e_ans, e_func = row
-                else:
-                    key = False
-        else:
-            key = False
-
-        return e_ans, e_func, data, key
 
     def data_writer():
         tableI = input('Insert table\'s name: ')

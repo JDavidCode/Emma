@@ -102,16 +102,16 @@ class MiscellaneousModule:
 
         return wt
 
-    def date_clock(clock):
+    def date_clock(i):
         dateTime = datetime.datetime.now()
         clock = dateTime.time()
         date = dateTime.date()
 
-        if clock == 1:
+        if i == 1:
             return dateTime.strftime('%d-%m of %Y %H:%M:%S')
-        elif clock == 2:
+        elif i == 2:
             return date
-        elif clock == 3:
+        elif i == 3:
             return clock.strftime('%H:%M:%S')
         else:
             return dateTime.strftime('%d-%m of %Y %H:%M:%S'), date, clock.strftime('%H:%M:%S')

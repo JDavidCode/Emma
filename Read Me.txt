@@ -16,6 +16,8 @@ List of Pips
 ~imutils
 ~img2pdf
 ~unoconv
+~torch
+~transformers
 
 API'S
 ~flask

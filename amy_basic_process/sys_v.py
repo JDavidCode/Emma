@@ -1,8 +1,8 @@
 import importlib
 import sys
 import os
-import multiprocessing
 import queue
+import shutil
 import threading
 from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
@@ -17,15 +17,19 @@ class awake:
 
     def run(self):
         bp = BackgroundProcess()
-        bp.enviroment_clearer()
         bp.data_auto_updater()
+        logged = os.getenv('LOGGED')
+        weather = self.msc.weather('Medellin')
+        dateTime = self.msc.date_clock(0)
+        dayPart = self.msc.day_parts()
+        text = 'good {}, today is {},its {}, {}'.format(
+            dayPart, dateTime[1], dateTime[2], weather)
+        if logged == 'True':
+            userPrefix = Login.user_prefix()
+            return userPrefix, text
         if SystemLogin().ruler():
             userPrefix = Login.user_prefix()
-            weather = self.msc.weather('Medellin')
-            dateTime = self.msc.date_clock(0)
-            dayPart = self.msc.day_parts()
-            text = 'good {}, today is {},its {}, {}'.format(
-                dayPart, dateTime[1], dateTime[2], weather)
+
             return userPrefix, text
 
 
@@ -37,11 +41,11 @@ class SystemLogin():
         i = 0
         while i <= 3:
             rule = input('Login, register or invited?: ')
-            if rule == 'Login' or rule == 'login':
+            if rule.lower() == 'login':
                 return self.user_login()
-            elif rule == 'Register' or rule == 'register':
+            elif rule.lower() == 'register':
                 self.user_register()
-            elif rule == 'Invited' or rule == "invited":
+            elif rule.lower() == "invited":
                 return self.invited()
             else:
                 i += 1
@@ -88,11 +92,11 @@ class SystemLogin():
             genre = input('genre (Male/Female): ')
             if user == " " or email == " " or pw == " " or age == " " or genre == " " or len(user) == 0 or len(pw) == 0 or len(str(lang)) == 0 or len(genre) == 0:
                 i += 1
-                print("invalid data")
+                print("invalid args")
             else:
 
-                data = [FacialRecognizer.run(user, 0), ]
-                if Login.user_register(user, email, pw, age, genre, lang, data) == True:
+                args = [FacialRecognizer.run(user, 0), ]
+                if Login.user_register(user, email, pw, age, genre, lang, args) == True:
                     print('You has been Register')
                     print('Now Login Please')
                     self.user_login()
@@ -129,8 +133,10 @@ class ThreadManager:
         for thread in self.threads:
             thread.stop()
 
-    class ConsoleOutput:
+    class ConsoleManager:
         def __init__(self):
+            msc = importlib.import_module("amy_basic_process.task_module")
+            self.msc = msc.MiscellaneousModule
             self.output_queue = queue.Queue()
             self.console_thread = threading.Thread(
                 target=self._output_console, daemon=True)
@@ -139,13 +145,37 @@ class ThreadManager:
         def _output_console(self):
             while True:
                 output = self.output_queue.get()
-                print(output)
+                print(f"[{self.msc.date_clock(3)}] : {output}")
 
-        def write(self, output):
-            self.output_queue.put(output)
+        def write(self, remitent, output):
+            self.output_queue.put(f"{remitent}: {output}")
+
+    class QueueManager:
+        def __init__(self):
+            self.queues = {}
+
+        def create_queue(self, name):
+            if name in self.queues:
+                raise ValueError(f"Queue with name {name} already exists")
+            self.queues[name] = queue.Queue()
+
+        def add_to_queue(self, name, command):
+            if name not in self.queues:
+                raise ValueError(f"No queue found with name {name}")
+            self.queues[name].put(command)
+
+        def get_queue(self, name):
+            queue = self.queues[name].get()
+            return queue
+
+        def remove_queue(self, name):
+            if name not in self.queues:
+                raise ValueError(f"No queue found with name {name}")
+            del self.queues[name]
 
 
 class MainProcess:
+
     def __init__(self) -> None:
         pass
 
@@ -155,10 +185,14 @@ class BackgroundProcess:
         self.dM = importlib.import_module("amy_basic_process.data_module")
 
     def server_shutdown(self):
-        ThreadManager().kill_threads()
         self.temp_clearer()
         self.remove_pycache('.')
-        self.enviroment_clearer()
+        log = input('Logout?: ')
+        if log.lower() == 'yes':
+            self.enviroment_clearer()
+        else:
+            pass
+        ThreadManager().kill_threads()
         os._exit(0)
 
     def amy_guardian():
@@ -168,7 +202,7 @@ class BackgroundProcess:
         for dir_name, subdirs, files in os.walk(dir_path):
             if '__pycache__' in dir_name:
                 print(f"Removing {dir_name}")
-                os.rmdir(dir_name)
+                shutil.rmtree(dir_name)
             else:
                 for subdir in subdirs:
                     self.remove_pycache(os.path.join(dir_name, subdir))
@@ -177,7 +211,8 @@ class BackgroundProcess:
         pass
 
     def enviroment_clearer(self):
-        clear = [('USERNAME', ''), ('USERLVL', '1'), ('USERLANG', '')]
+        clear = [('USERNAME', ''), ('USERLVL', '1'),
+                 ('USERLANG', ''), ('LOGGED', str(False))]
         for i in clear:
             set_key(".venv/.env", i[0], i[1])
 
@@ -201,9 +236,8 @@ class BackgroundProcess:
                 pass
 
     def module_reloader(self, index):
-        json_type = 'dict'
         diccionary = localDataTools.json_loader(
-            "assets\\json\\module_directory.json", json_type, "moduleDirectory")
+            "assets\\json\\module_directory.json", "moduleDirectory", "dict")
         key = diccionary.keys()
         try:
             for i in key:
@@ -221,23 +255,57 @@ class BackgroundProcess:
 
 
 class CommandsManager:
-    def __init__(self, _task, data):
+    def __init__(self, command_queue, console_output):
         talk = importlib.import_module('amy_basic_process.speech._talking')
         self.task = importlib.import_module('amy_basic_process.task_module')
-        self.dm = importlib.import_module('amy_basic_process.data_module')
+        self.database = importlib.import_module(
+            'amy_basic_process.data_module')
         self.talk = talk.TalkProcess
         self.bp = BackgroundProcess()
-        self._task = _task
-        self.data = data
+        self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task}
+        self.command_queue = command_queue
+        self.console_output = console_output
+        self.tag = "Commands Thread"
         self.run()
 
     def run(self):
-        index = self.data
+        while True:
+            # Wait for a command to be put in the queue
+            command_keyword = self.command_queue.get_queue("COMMANDS")
+
+            _, command = self.command_indexer(command_keyword)
+            if _:
+                for i in self.modules.keys():
+                    if command["module"] == i:
+                        module = self.modules[i]
+                # Execute the command
+                self.execute_command(module, command["function_name"])
+            else:
+                self.console_output.write(self.tag, "UNKNOWED FUNCTION")
+
+    def execute_command(self, module, function_name, args=None):
         try:
-            eval(self._task)
-        except Exception as e:
-            print(e)
+            # get the function reference
+            function = getattr(module, function_name)
+        except AttributeError:
+            print(AttributeError)
             return
+        # call the function
+        if args != None:
+            function(*args)
+        else:
+            function()
+            self.console_output.write(
+                self.tag, f"{function_name} has been execute")
+
+    def command_indexer(self, command_keyword):
+
+        diccionary = localDataTools.json_loader(
+            "assets\\json\\command_directory.json", command_keyword, "command")
+        if diccionary != None:
+            return True, diccionary
+        else:
+            return False, {}
 
 
 if __name__ == '__main__':

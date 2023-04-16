@@ -11,8 +11,6 @@ class ListenInBack:
     def __init__(self, queue_manager, console_output):
         self.sys = importlib.import_module('amy_basic_process.sys_v')
         dM = importlib.import_module('amy_basic_process.data_module')
-        _talk = importlib.import_module('amy_basic_process.speech._talking')
-        self.talk = _talk.TalkProcess.talk
 
         pyMic = pya.PyAudio()
         lang = dotenv(".venv/.env", "USERLANG")
@@ -44,16 +42,12 @@ class ListenInBack:
                             result = result[1:]
                         if result[len(result)-1] == " ":
                             result = result[:-1]
-
                         self.queue("COMMANDS", result)
 
                         # Chat
                         e_ans = self.db.chat_indexer(result)
                         if result != e_ans and e_ans != None and e_ans != "":
-                            self.console_output.write(
-                                self.tag, f"Amy Say: {e_ans}")
-                            self.talk(e_ans)
-                            continue
+                            self.queue("TALKING", e_ans)
 
             else:
                 continue

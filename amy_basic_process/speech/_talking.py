@@ -1,32 +1,51 @@
 from dotenv import get_key as dotenv
 import pyttsx3
-import pyaudio as pya
 
-lang = dotenv(".venv/.env", "USERLANG")
-eng = pyttsx3.init()
-engVoice = eng.getProperty('voices')
-pyMic = pya.PyAudio()
+# ATTENTION POSSIBLE CHANGE FROMM PYRRSX3 TO ESPEAK-NG
 
 
-class TalkProcess:
-    def __init__():
-        TalkProcess.engine_voice_config()
+class Talk:
+    def __init__(self, queue_manager, console_output):
+        self.console_output = console_output
+        self.tag = "Talk Thread"
+        self.queue = queue_manager.get_queue
+        self.run()
 
-    def talk(text):
-        eng.say(text)
-        eng.runAndWait()
-        return
+    def run(self):
+        while True:
+            # Wait for a command to be put in the queue
+            talking = self.queue("TALKING")
 
-    def engine_voice_config():
-        if lang == 'en':
-            eng.setProperty('voice', engVoice[1].id)
-        elif lang == 'es':
-            eng.setProperty('voice', engVoice[2].id)
-        else:
-            print("A voice language is null please enter the index")
-            for i in engVoice:
-                print(i)
-                eng.setProperty('voice', engVoice[input()].id)
-        eng.setProperty('rate', 125)
-        eng.setProperty('volume', 1)
-        return 0
+            self.console_output.write(
+                self.tag, talking)
+            tts = self._TTS()
+            tts.start(talking)
+            del (tts)
+            continue
+
+    class _TTS:
+        engine = None
+        rate = None
+
+        def __init__(self):
+            self.lang = dotenv(".venv/.env", "USERLANG")
+            self.engine = pyttsx3.init()
+            self.engVoice = self.engine.getProperty('voices')
+            self.engine_voice_config()
+
+        def start(self, text_):
+            self.engine.say(text_)
+            self.engine.runAndWait()
+
+        def engine_voice_config(self):
+            if self.lang == 'en':
+                self.engine.setProperty('voice', self.engVoice[1].id)
+            elif self.lang == 'es':
+                self.engine.setProperty('voice', self.engVoice[2].id)
+            else:
+                print("A voice language is null please enter the index")
+                for i in self.engVoice:
+                    print(i)
+                    self.engine.setProperty('voice', self.engVoice[input()].id)
+            self.engine.setProperty('rate', 125)
+            self.engine.setProperty('volume', 1)

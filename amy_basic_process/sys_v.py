@@ -121,6 +121,16 @@ class ThreadManager:
             del self.threads[thread_id]
             thread.join()
 
+    def get_threads(self):
+        threads = {}
+        for thread_name, thread in self.threads.items():
+            if thread.is_alive():
+                threads[thread_name] = thread
+            else:
+                pass
+        self.threads = threads
+        return self.threads
+
     def pause_thread(self, thread):
         # implement pause functionality as needed
         pass
@@ -145,7 +155,7 @@ class ThreadManager:
         def _output_console(self):
             while True:
                 output = self.output_queue.get()
-                print(f"[{self.msc.date_clock(3)}] : {output}")
+                print(f"[{self.msc.date_clock(3)}] | {output}")
 
         def write(self, remitent, output):
             self.output_queue.put(f"{remitent}: {output}")
@@ -255,15 +265,16 @@ class BackgroundProcess:
 
 
 class CommandsManager:
-    def __init__(self, command_queue, console_output):
+    def __init__(self, queue_manager, console_output):
         talk = importlib.import_module('amy_basic_process.speech._talking')
         self.task = importlib.import_module('amy_basic_process.task_module')
         self.database = importlib.import_module(
             'amy_basic_process.data_module')
-        self.talk = talk.TalkProcess
+        self.talk = talk.Talk
         self.bp = BackgroundProcess()
-        self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task}
-        self.command_queue = command_queue
+        self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task,
+                        "task.MiscellaneousModule": self.task.MiscellaneousModule, "task.OsModule": self.task.OsModule}
+        self.queue_manager = queue_manager
         self.console_output = console_output
         self.tag = "Commands Thread"
         self.run()
@@ -271,41 +282,58 @@ class CommandsManager:
     def run(self):
         while True:
             # Wait for a command to be put in the queue
-            command_keyword = self.command_queue.get_queue("COMMANDS")
+            command_keyword = self.queue_manager.get_queue("COMMANDS")
 
-            _, command = self.command_indexer(command_keyword)
+            _, args, command = self.command_indexer(command_keyword)
             if _:
                 for i in self.modules.keys():
                     if command["module"] == i:
                         module = self.modules[i]
                 # Execute the command
-                self.execute_command(module, command["function_name"])
+                if args != None:
+                    self.execute_command(
+                        module, command["function_name"], args)
+                else:
+                    self.execute_command(module, command["function_name"])
             else:
-                self.console_output.write(self.tag, "UNKNOWED FUNCTION")
+                continue
 
     def execute_command(self, module, function_name, args=None):
         try:
             # get the function reference
             function = getattr(module, function_name)
-        except AttributeError:
-            print(AttributeError)
+        except Exception as e:
+            self.console_output.write(
+                self.tag, e)
             return
         # call the function
-        if args != None:
-            function(*args)
-        else:
-            function()
+        try:
+            if args != None:
+                r = function(args)
+                if r != None:
+                    self.console_output.write(self.tag, r)
+            else:
+                function()
+                self.console_output.write(
+                    self.tag, f"{function_name} has been execute")
+        except Exception as e:
             self.console_output.write(
-                self.tag, f"{function_name} has been execute")
+                self.tag, f"{function_name} failed or is unknown: {e}")
 
     def command_indexer(self, command_keyword):
+        args, diccionary = localDataTools.json_loader(
+            "assets\\json\\command_directory.json", command_keyword, "command", self.console_output)
 
-        diccionary = localDataTools.json_loader(
-            "assets\\json\\command_directory.json", command_keyword, "command")
-        if diccionary != None:
-            return True, diccionary
+        if diccionary != None and (type(args) == int or args == None):
+            return True, args, diccionary
+        elif diccionary != None and type(args) == str:
+            # args = self.args_identifier(args)
+            return True, args, diccionary
         else:
-            return False, {}
+            return False, args, {}
+
+    def args_identifier(self, args):
+        return args
 
 
 if __name__ == '__main__':

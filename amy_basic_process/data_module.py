@@ -111,19 +111,21 @@ class AmyData:
 
     def json_task_updater():
         directory = 'assets\\json\\command_directory.json'
-        sql = "SELECT caller,function_name, module, arguments, required_lvl FROM functions"
+        sql = "SELECT caller,function_name, module, args_key, arguments, required_lvl FROM functions"
         cursor.execute(sql)
         # parsing sql
         functions = {}
-        for function_id, function_name, module, function_arguments, required_lvl in cursor:
-            if function_arguments != "None":
+        for function_id, function_name, module, args_key, function_arguments, required_lvl in cursor:
+            if args_key == "args":
                 functions[function_id] = {"function_name": function_name,
                                           "module": module,
+                                          "args_key": args_key,
                                           "arguments": function_arguments,
                                           "required_lvl": required_lvl}
             else:
                 functions[function_id] = {"function_name": function_name,
                                           "module": module,
+                                          "args_key": args_key,
                                           "required_lvl": required_lvl}
 
         # Convert the dictionary to a JSON object

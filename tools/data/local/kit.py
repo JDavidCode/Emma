@@ -6,7 +6,7 @@ class toolKit:
     def __init__(self):
         pass
 
-    def json_loader(path, i, json_type="dict"):
+    def json_loader(path, i, json_type="dict", console_output=None):
         with open(path) as f:
             direct = json.load(f)
             if json_type == 'list':
@@ -14,7 +14,23 @@ class toolKit:
             elif json_type == 'dict':
                 dictionary = direct.get(i, {})
             elif json_type == 'command':
-                dictionary = direct.get(i, None)
+                keys_obj = direct.keys()
+                keys = list(keys_obj)
+                for key in keys:
+                    if key in i or key == i:
+                        dictionary = direct.get(key, None)
+                        args_dict = dictionary["args_key"]
+                        if args_dict == "args":
+                            args = dictionary["arguments"]
+                            args = int(args)
+                            return args, dictionary
+                        elif args_dict == "*args":
+                            args = re.sub(
+                                f"{key}", "", i)
+                            return args, dictionary
+                        else:
+                            return None, dictionary
+                return None, None
             return dictionary
 
     def filename_target(filename):

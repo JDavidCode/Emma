@@ -3,6 +3,7 @@ import os
 import datetime
 import requests
 import time
+import pywhatkit
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
@@ -11,9 +12,15 @@ from tools.data.local.kit import toolKit as localDataTools
 #################################################################################
 
 
-class webModule:
+class WebModule:
     def __init__(self):
         pass
+
+    def youtube_player(index):
+        pywhatkit.playonyt(index)
+
+    def google_search(index):
+        pywhatkit.search(index)
 
 
 class OsModule:
@@ -23,7 +30,7 @@ class OsModule:
     def open_app(index):
         json_type = 'dict'
         diccionary = localDataTools.json_loader(
-            "assets\\json\\osApp_directory.json", json_type)
+            "assets\\json\\osApp_directory.json", "appDirectory", json_type)
         keys = diccionary.keys()
         if index in keys:
             get = diccionary.get(index)

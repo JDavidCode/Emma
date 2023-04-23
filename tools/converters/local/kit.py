@@ -112,6 +112,4 @@ class toolKit:
 
 
 if __name__ == "__main__":
-    kit = toolKit()
-    kit.convert_documents_to_images(
-        ".temp/", ".temp")
+    pass

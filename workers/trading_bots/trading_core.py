@@ -449,7 +449,7 @@ class tradingIqOption():
             return False
 
     def get_symbol_rates(self, symbol):
-        rates = self.iqoption.get_candles(symbol, 60, 180, time.time())
+        rates = self.iqoption.get_candles(symbol, 30, 180, time.time())
 
         rates = pd.DataFrame(rates)
         rates['time'] = pd.to_datetime(rates['from'], unit='s')

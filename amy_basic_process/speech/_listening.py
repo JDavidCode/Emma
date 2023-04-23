@@ -4,19 +4,20 @@ from dotenv import get_key as dotenv
 
 # ImportedPythonLibraries
 import pyaudio as pya
-from vosk import Model, KaldiRecognizer
+import vosk
+import logging
 
 
 class ListenInBack:
     def __init__(self, queue_manager, console_output):
         self.sys = importlib.import_module('amy_basic_process.sys_v')
         dM = importlib.import_module('amy_basic_process.data_module')
-
+        vosk.SetLogLevel(-1)
         pyMic = pya.PyAudio()
         lang = dotenv(".venv/.env", "USERLANG")
-        model = Model('assets/models/vosk_models/{}-model'.format(lang))
+        model = vosk.Model('assets/models/vosk_models/{}-model'.format(lang))
         self.user_lvl = dotenv(".venv/.env", "USERLVL")
-        self.rec = KaldiRecognizer(model, 16000)
+        self.rec = vosk.KaldiRecognizer(model, 16000)
         self.stream = pyMic.open(format=pya.paInt16, channels=1,
                                  rate=16000, input=True, frames_per_buffer=8192)
         self.console_output = console_output
@@ -36,7 +37,7 @@ class ListenInBack:
                     self.console_output.write(self.tag, result)
                     if "amy" in result:
                         result = result.replace('amy', '')
-                        if result == "":
+                        if result == "" or result == " ":
                             continue
                         if result[0] == " ":
                             result = result[1:]

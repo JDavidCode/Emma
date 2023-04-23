@@ -19,7 +19,7 @@ class TradingSupervisor:
         def __init__(self, console_output, core):
             self.iq = core
             self.console_output = console_output
-            self.tag = "Trading Supervisor | IQ Option"
+            self.tag = "Trading Thread | Supervisor IQ Option"
             # Bots importations
             binary_bots = importlib.import_module(
                 "binariesIQ.binary_bots")
@@ -29,7 +29,7 @@ class TradingSupervisor:
             self.run()
 
         def run(self):
-            task_timer = [60, 300, 540]
+            task_timer = [60, 120, 300]
             advisor_clock = 0
             while True:
                 otc_market = False
@@ -43,7 +43,7 @@ class TradingSupervisor:
                         pair = i
 
                     if not self.iq.check_market(pair):
-                        advisor_clock += 1
+                        advisor_clock += 3
                         continue
 
                     dataset = self.iq.get_symbol_rates(pair)
@@ -56,6 +56,7 @@ class TradingSupervisor:
                         elif y == self.binary_bots[1]:
                             if task_timer[1] <= 300:
                                 task_timer[1] += 1
+
                                 time.sleep(.30)
                                 continue
                         elif y == self.binary_bots[2]:
@@ -73,9 +74,9 @@ class TradingSupervisor:
 
                 if (task_timer[0]-1) == 60:
                     task_timer[0] = 0
-                if (task_timer[1]-1) == 300:
+                if (task_timer[1]-1) == 120:
                     task_timer[1] = 0
-                if (task_timer[2]-1) == 540:
+                if (task_timer[2]-1) == 300:
                     task_timer[2] = 0
 
                 if advisor_clock >= 800:

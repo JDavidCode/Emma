@@ -12,10 +12,10 @@ class Macrsi:
         # Determine whether to place a call or put option based on the indicators
         if dataset["Close"][-1] < ma[-1] and rsi[-1] < 50 and macd[-1] < macdsignal[-1]:
             # Place a put option
-            return ['put', 1]
+            return ['put', 2]
         elif dataset["Close"][-1] > ma[-1] and rsi[-1] > 50 and macd[-1] > macdsignal[-1]:
             # Place a call option
-            return ['call', 1]
+            return ['call', 2]
 
         else:
             return 0
@@ -34,10 +34,10 @@ class Masr:
         # Determine if we should place a trade
         if current_price < dataset['MA'][-1] and current_price < dataset['Resistance'][-1]:
             # Place a put option
-            return ['put', 5]
+            return ['put', 2]
         elif current_price > dataset['MA'][-1] and current_price > dataset['Support'][-1]:
             # Place a call option
-            return ['call', 5]
+            return ['call', 2]
         elif current_price >= dataset['Support'][-1] and current_price <= dataset['Resistance'][-1]:
             # Do not enter a trade
             return 0
@@ -60,9 +60,9 @@ class Mrsic:
 
         # Check Trading Conditions
         if rsi[-1] < 30 and close_prices[-1] < lower[-1] and mom[-1] < 0 and close_prices[-2] > sar[-2]:
-            return ['call', 9]
+            return ['call', 5]
         elif rsi[-1] > 70 and close_prices[-1] > upper[-1] and mom[-1] > 0 and close_prices[-2] < sar[-2]:
-            return ['put', 9]
+            return ['put', 5]
         else:
             return 0
 

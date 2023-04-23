@@ -131,6 +131,19 @@ class ThreadManager:
         self.threads = threads
         return self.threads
 
+    def restart_thread(self, thread_id):
+        thread = self.threads.get(thread_id)
+        if thread:
+            if thread.is_alive():
+                thread.join()
+            new_thread = threading.Thread(
+                target=thread.run, args=thread._args, kwargs=thread._kwargs, daemon=thread.daemon)
+            new_thread.name = thread.name
+            self.threads[thread_id] = new_thread
+            new_thread.start()
+        else:
+            print(f"Thread '{thread_id}' not found")
+
     def pause_thread(self, thread):
         # implement pause functionality as needed
         pass
@@ -268,18 +281,29 @@ class CommandsManager:
     def __init__(self, queue_manager, console_output):
         talk = importlib.import_module('amy_basic_process.speech._talking')
         self.task = importlib.import_module('amy_basic_process.task_module')
+        self.local_converters = importlib.import_module(
+            'tools.converters.local.kit')
+        self.local_generators = importlib.import_module(
+            'tools.generators.local.kit')
+        self.local_data = importlib.import_module('tools.data.local.kit')
+
         self.database = importlib.import_module(
             'amy_basic_process.data_module')
         self.talk = talk.Talk
         self.bp = BackgroundProcess()
         self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task,
-                        "task.MiscellaneousModule": self.task.MiscellaneousModule, "task.OsModule": self.task.OsModule}
+                        "task.MiscellaneousModule": self.task.MiscellaneousModule,
+                        "task.WebModule": self.task.WebModule,
+                        "task.OsModule": self.task.OsModule, "generators": self.local_generators,
+                        "converters": self.local_converters, "data": self.local_data}
         self.queue_manager = queue_manager
         self.console_output = console_output
         self.tag = "Commands Thread"
         self.run()
 
     def run(self):
+        module = ""
+
         while True:
             # Wait for a command to be put in the queue
             command_keyword = self.queue_manager.get_queue("COMMANDS")
@@ -304,18 +328,19 @@ class CommandsManager:
             function = getattr(module, function_name)
         except Exception as e:
             self.console_output.write(
-                self.tag, e)
+                self.tag, f"{e}, first point")
             return
         # call the function
         try:
-            if args != None:
+            if args == None:
+                function()
+            elif type(args) == int or type(args) == str:
                 r = function(args)
                 if r != None:
                     self.console_output.write(self.tag, r)
-            else:
-                function()
-                self.console_output.write(
-                    self.tag, f"{function_name} has been execute")
+
+            self.console_output.write(
+                self.tag, f"{function_name} has been execute")
         except Exception as e:
             self.console_output.write(
                 self.tag, f"{function_name} failed or is unknown: {e}")

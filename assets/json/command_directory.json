@@ -11,19 +11,11 @@
         "args_key": "None",
         "required_lvl": 1
     },
-    "open": {
-        "function_name": "open_app",
-        "module": "task.OsModule",
-        "args_key": "args",
-        "arguments": "1",
-        "required_lvl": 1
-    },
     "charge module": {
         "function_name": "module_reloader",
         "module": "bp",
-        "args_key": "args",
-        "arguments": "1",
-        "required_lvl": 4
+        "args_key": "*args",
+        "required_lvl": 2
     },
     "loudness": {
         "function_name": "volume_management",
@@ -46,9 +38,9 @@
         "required_lvl": 0
     },
     "lets play": {
-        "function_name": " ",
-        "module": " ",
-        "args_key": "",
+        "function_name": "youtube_player",
+        "module": "task.WebModule",
+        "args_key": "*args",
         "required_lvl": 1
     },
     "day is": {
@@ -61,8 +53,14 @@
     "part of the day": {
         "function_name": "day_parts",
         "module": "task.MiscellaneousModule",
+        "args_key": "None",
+        "required_lvl": 0
+    },
+    "open": {
+        "function_name": "open_app",
+        "module": "task.OsModule",
         "args_key": "args",
         "arguments": "1",
-        "required_lvl": 0
+        "required_lvl": 1
     }
 }

@@ -27,6 +27,8 @@ class toolKit:
                         elif args_dict == "*args":
                             args = re.sub(
                                 f"{key}", "", i)
+                            while args[0] == " ":
+                                args = args[1:]
                             return args, dictionary
                         else:
                             return None, dictionary

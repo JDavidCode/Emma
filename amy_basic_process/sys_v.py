@@ -4,6 +4,7 @@ import os
 import queue
 import shutil
 import threading
+import time
 from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from amy_basic_process.data_module import Login
@@ -112,24 +113,28 @@ class ThreadManager:
         thread_id = id(thread)
         self.threads[thread_id] = thread
 
-    def start_thread(self, thread):
-        thread.start()
+    def start_thread(self, thread_name):
+        for _, thread in self.threads.items():
+            current_thread = str(thread.name).split('(')[1].split(')')[0]
+            if current_thread == thread_name:
+                if not thread.is_alive():
+                    thread.start()
+                    return f"\n{thread_name} has been stopped."
 
-    def stop_thread(self, thread):
-        thread_id = id(thread)
-        if thread_id in self.threads:
-            del self.threads[thread_id]
-            thread.join()
+    def stop_thread(self, thread_name):
+        for _, thread in self.threads.items():
+            current_thread = str(thread.name).split('(')[1].split(')')[0]
+            if current_thread == thread_name:
+                if thread.is_alive():
+                    thread.stop()
+                    return f"\n{thread_name} has been stopped."
 
-    def get_threads(self):
-        threads = {}
-        for thread_name, thread in self.threads.items():
-            if thread.is_alive():
-                threads[thread_name] = thread
-            else:
-                pass
-        self.threads = threads
-        return self.threads
+    def get_thread_status(self):
+        status_list = []
+        for _, thread in self.threads.items():
+            status = thread.is_alive()
+            status_list.append((thread, status))
+        return status_list
 
     def restart_thread(self, thread_id):
         thread = self.threads.get(thread_id)
@@ -177,15 +182,23 @@ class ThreadManager:
         def __init__(self):
             self.queues = {}
 
-        def create_queue(self, name):
+        def create_queue(self, name, size=None):
             if name in self.queues:
                 raise ValueError(f"Queue with name {name} already exists")
-            self.queues[name] = queue.Queue()
+            if size != None:
+                self.queues[name] = queue.Queue(maxsize=size)
+            else:
+                self.queues[name] = queue.Queue()
 
         def add_to_queue(self, name, command):
             if name not in self.queues:
                 raise ValueError(f"No queue found with name {name}")
-            self.queues[name].put(command)
+            if self.queues[name].maxsize == 1:
+                if not self.queues[name].empty():
+                    self.queues[name].get()
+                self.queues[name].put(command)
+            else:
+                self.queues[name].put(command)
 
         def get_queue(self, name):
             queue = self.queues[name].get()
@@ -204,17 +217,22 @@ class MainProcess:
 
 
 class BackgroundProcess:
-    def __init__(self) -> None:
+    def __init__(self, queue_manager=None, console_output=None):
         self.dM = importlib.import_module("amy_basic_process.data_module")
+        self.queue = queue_manager
+        self.console_output = console_output
 
     def server_shutdown(self):
-        self.temp_clearer()
-        self.remove_pycache('.')
-        log = input('Logout?: ')
+        self.queue.get_queue("CURRENT_INPUT")
+        self.console_output.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
+        time.sleep(3)
+        log = self.queue.get_queue("CURRENT_INPUT")
         if log.lower() == 'yes':
             self.enviroment_clearer()
-        else:
-            pass
+        elif log.lower() == 'cancel':
+            return
+        self.temp_clearer()
+        self.remove_pycache('.')
         ThreadManager().kill_threads()
         os._exit(0)
 
@@ -278,7 +296,8 @@ class BackgroundProcess:
 
 
 class CommandsManager:
-    def __init__(self, queue_manager, console_output):
+    def __init__(self, queue_manager, console_output, thread_manager):
+        self.tag = "Commands Thread"
         talk = importlib.import_module('amy_basic_process.speech._talking')
         self.task = importlib.import_module('amy_basic_process.task_module')
         self.local_converters = importlib.import_module(
@@ -290,15 +309,15 @@ class CommandsManager:
         self.database = importlib.import_module(
             'amy_basic_process.data_module')
         self.talk = talk.Talk
-        self.bp = BackgroundProcess()
+        self.bp = BackgroundProcess(queue_manager, console_output)
+        self.queue = queue_manager
+        self.console_output = console_output
+        self.thread_manager = thread_manager
         self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task,
                         "task.MiscellaneousModule": self.task.MiscellaneousModule,
                         "task.WebModule": self.task.WebModule,
                         "task.OsModule": self.task.OsModule, "generators": self.local_generators,
-                        "converters": self.local_converters, "data": self.local_data}
-        self.queue_manager = queue_manager
-        self.console_output = console_output
-        self.tag = "Commands Thread"
+                        "converters": self.local_converters, "data": self.local_data, "thread": self.thread_manager}
         self.run()
 
     def run(self):
@@ -306,10 +325,11 @@ class CommandsManager:
 
         while True:
             # Wait for a command to be put in the queue
-            command_keyword = self.queue_manager.get_queue("COMMANDS")
+            command_keyword = self.queue.get_queue("COMMANDS")
 
             _, args, command = self.command_indexer(command_keyword)
             if _:
+
                 for i in self.modules.keys():
                     if command["module"] == i:
                         module = self.modules[i]

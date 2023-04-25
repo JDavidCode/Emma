@@ -7,21 +7,96 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
 
-  <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
-
+  	<script src="{{ url_for('static', filename='js/particles.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 	<title>Home</title>
 </head>
 <body>
 
+	<div id="command-bar">
+	<h2 id="banner_h2">WEB CONTROL</h2>
+		<form id="command-form" method="POST" action="{{ url_for('process_form') }}">
+			<input id="command-input" type="text" name="text_input"placeholder="Insert a Comand">
+			<input id="command-btn" type="submit" value="Submit">
+		</form>
+	<h3 id="local-time"></h3>
+	</div>
+	<section class="data-container" >
+		<article class="container">
+		<table id="internal-data-table" id="table-box">
+				<tr>
+					<th colspan="2" class="box-header">Internal server</th>
+				</tr>
+				<tr>
+					<td>Server Status:</td>
+					<td id="server-load">RUNNING</td>
+				</tr>
+				<tr>
+					<td>Server Load:</td>
+					<td id="server-load">7%</td>
+				</tr>
+				<tr>
+					<td>Threads:</td>
+					<td id="server-threads">7</td>
+				</tr>
+				<tr>
+					<td>Ram Usage:</td>
+					<td id="server-ram-usage">170Mb</td>
+				</tr>
+				<tr>
+					<td>Internal Language:</td>
+					<td id="server-language">EN</td>
+				</tr>
+				<tr>
+					<td>Time Alive:</td>
+					<td id="server-time">00:00</td>
+				</tr>
+			</table>
 
+		</article>	
+		<article class="container" id="console-box">
+			<div class="console-box">
+			<div class="console-header">Console Output</div>
+			<div class="console-content">
+				<p>This is some console output.</p>
+				<p>Here is some more output.</p>
+				<p>And another line of output.</p>
+			</div>
+			</div>
+		</article>
+		<article class="container" id="table-box">
+			<table id="user-data-table">
+				<tr>
+					<th colspan="2"class="box-header">User</th>
+				</tr>
+				<tr>
+					<td>Role:</td>
+					<td >ADMIN</td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td id="user-name">Juan</td>
+				</tr>
+				<tr>
+					<td>Age:</td>
+					<td id="user-age">18</td>
+				</tr>
+				<tr>
+					<td>Language:</td>
+					<td id="user-language">EN</td>
+				</tr>
+				<tr>
+					<td>Date of birth:</td>
+					<td >18-07-04</td>
+				</tr>
+			</table>
+		</article>
+	</section>
+	
 
-<div id="particles">
-  <div id="webcoderskull">
-	<h2 id="banner_h2">AMY WEB CONTROL</h2>
-	<form method="POST" action="{{ url_for('process_form') }}">
-	<input type="text" name="text_input"placeholder="Insert a Comand">
-	<input type="submit" value="Submit">
-	</form>
+	<div id="particles"></div>	
+	
     
   </div>
 </body>

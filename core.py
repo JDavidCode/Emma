@@ -36,38 +36,42 @@ class Cluster:
         queue_manager.create_queue("COMMANDS")
         # create a Queue for TALKING
         queue_manager.create_queue("TALKING")
+        # Create a Queue for WBDATA
+        queue_manager.create_queue("WEBDATA")
+        # Create a Queue for WBDATA
+        queue_manager.create_queue("CURRENT_INPUT", 1)
 
         # create CommandManager thread
         CommandManager = Thread(target=self.sys.CommandsManager, args=[
-                                queue_manager, console_manager], daemon=True)
+                                queue_manager, console_manager, thread_manager], daemon=True)
         thread_manager.add_thread(CommandManager)
         # start the CommandManager thread
-        thread_manager.start_thread(CommandManager)
+        thread_manager.start_thread("CommandsManager")
 
         # create listening thread
         voice_thread = Thread(target=self.listening.ListenInBack,
                               args=[queue_manager, console_manager], daemon=True)
         thread_manager.add_thread(voice_thread)
-        # thread_manager.start_thread(voice_thread)  # start  listening thread
+        # thread_manager.start_thread("ListenInBack")  # start  listening thread
 
         # create talking thread
         talk_thread = Thread(target=self.talking.Talk,
                              args=[queue_manager, console_manager], daemon=True)
         thread_manager.add_thread(talk_thread)
-        thread_manager.start_thread(talk_thread)  # start  talking thread
+        thread_manager.start_thread("Talk")  # start  talking thread
 
         # create CommandManager thread
         web_app_thread = Thread(target=self.web_app.WebApp, args=[
                                 queue_manager, console_manager], daemon=True)
         thread_manager.add_thread(web_app_thread)
         # start the CommandManager thread
-        thread_manager.start_thread(web_app_thread)
+        thread_manager.start_thread("WebApp")
 
         # create Trading Bot thread
         trading_thread = Thread(
             target=self.trading.TradingSupervisor, args=[console_manager], daemon=True)
         thread_manager.add_thread(trading_thread)
-        thread_manager.start_thread(trading_thread)  # start  Trading thread
+        # thread_manager.start_thread("TradingSupervisor")  # start  Trading thread
         time.sleep(3)
 
     def keep_runing(self):
@@ -81,9 +85,10 @@ class Cluster:
                 tasks = []
             else:
                 # Sleep for a certain period of time before checking again
-                self.console_manager.write(
-                    "Main Thread", self.thread_manager.get_threads())
-                time.sleep(900)
+                thread_status = self.thread_manager.get_thread_status()
+                for status in thread_status:
+                    self.console_manager.write("Main Thread",
+                                               "Thread: {} is active: {}".format(str(status[0]), status[1]))
 
 
 if __name__ == '__main__':

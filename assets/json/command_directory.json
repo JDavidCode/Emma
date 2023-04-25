@@ -23,12 +23,17 @@
         "args_key": "*args",
         "required_lvl": 1
     },
-    "weather": {
-        "function_name": "weather",
-        "module": "task.MiscellaneousModule",
-        "args_key": "args",
-        "arguments": "1",
-        "required_lvl": 0
+    "activate thread": {
+        "function_name": "start_thread",
+        "module": "thread",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "stop thread": {
+        "function_name": "stop_thread",
+        "module": "thread",
+        "args_key": "*args",
+        "required_lvl": 1
     },
     "time": {
         "function_name": "date_clock",
@@ -37,11 +42,12 @@
         "arguments": "3",
         "required_lvl": 0
     },
-    "lets play": {
-        "function_name": "youtube_player",
-        "module": "task.WebModule",
-        "args_key": "*args",
-        "required_lvl": 1
+    "weather": {
+        "function_name": "weather",
+        "module": "task.MiscellaneousModule",
+        "args_key": "args",
+        "arguments": "1",
+        "required_lvl": 0
     },
     "day is": {
         "function_name": "date_clock",
@@ -61,6 +67,12 @@
         "module": "task.OsModule",
         "args_key": "args",
         "arguments": "1",
+        "required_lvl": 1
+    },
+    "lets play": {
+        "function_name": "youtube_player",
+        "module": "task.WebModule",
+        "args_key": "*args",
         "required_lvl": 1
     }
 }

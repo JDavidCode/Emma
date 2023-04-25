@@ -1,14 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 
 class WebApp:
     def __init__(self, queue_manager, console_output):
         self.app = Flask(__name__)
-        self.queue = queue_manager.add_to_queue
+        self.queue = queue_manager
         self.console_output = console_output
         self.tag = "WEB_APP Thread"
         self.register_routes()
-        self.run()
+        self.host()
 
     def register_routes(self):
         @self.app.route("/")
@@ -17,13 +17,25 @@ class WebApp:
 
         @self.app.route("/", methods=["POST"])
         def process_form():
-            text_input = request.form.get("text_input")
-            self.queue("COMMANDS", text_input)
-            return render_template("index.html")
+            # Process the form data here
+            data = request.form['text_input']
+            self.queue.add_to_queue("WEBDATA", data)
+            self.queue.add_to_queue("CURRENT_INPUT", data)
+            self.queue.add_to_queue("COMMANDS", data)
+            # Return a JSON response with the data
+            return jsonify({'result': 'success', 'data': data})
 
-    def run(self):
+        @self.app.route('/data')
+        def get_data():
+            # get the data from the queue_manager
+            data = self.queue.get_queue("WEBDATA")
+
+            # return the data as a JSON response
+            return jsonify(data)
+
+    def host(self):
         try:
-            self.app.run(host='127.0.0.10', port=8000)
+            self.app.run(host='192.168.1.6', port=3018)
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))

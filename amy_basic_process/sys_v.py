@@ -22,11 +22,12 @@ class awake:
         bp = BackgroundProcess()
         bp.data_auto_updater()
         logged = os.getenv('LOGGED')
+        paths = bp.verify_paths()
         weather = self.msc.weather('Medellin')
         dateTime = self.msc.date_clock(0)
         dayPart = self.msc.day_parts()
-        text = 'good {}, today is {},its {}, {}'.format(
-            dayPart, dateTime[1], dateTime[2], weather)
+        text = 'good {}, today is {},its {}, {}... {}'.format(
+            dayPart, dateTime[1], dateTime[2], weather, paths)
         if logged == 'True':
             userPrefix = Login.user_prefix()
             return userPrefix, text
@@ -275,7 +276,18 @@ class BackgroundProcess:
             set_key(".venv/.env", i[0], i[1])
 
     def verify_paths(self):
-        pass
+        DirsStructure = [".AmyRootUser\\", ".AmyRootUser\\.preferences", ".AmyRootUser\\.temp",
+                         ".AmyRootUser\\disk",  ".AmyRootUser\\disk\\user", ".AmyRootUser\\disk\\apps",
+                         ".AmyRootUser\\disk\\home\\recycler", ".AmyRootUser\\disk\\home\\documents",
+                         ".AmyRootUser\\disk\\home\\music", ".AmyRootUser\\disk\\home\\pictures",
+                         ".AmyRootUser\\disk\\home\\videos"]
+        # Loop through the paths and verify their existence
+        for path in DirsStructure:
+            if not os.path.exists(path):
+                # Create the directory if it doesn't exist
+                os.makedirs(path)
+
+        return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
         self.dM.AmyData.json_task_updater()

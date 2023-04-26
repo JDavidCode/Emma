@@ -74,5 +74,11 @@
         "module": "task.WebModule",
         "args_key": "*args",
         "required_lvl": 1
+    },
+    "search about": {
+        "function_name": "google_search",
+        "module": "task.WebModule",
+        "args_key": "*args",
+        "required_lvl": 1
     }
 }

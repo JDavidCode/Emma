@@ -1,4 +1,87 @@
-$(document).ready(function() {
+var consoleData = [];
+var disconnectText = $('.disconnect-text');
+var userTable = $('#user-data-table');
+var serverTable = $('#internal-data-table');
+var consoleContent = $('.console-text');
+var socket = io.connect();
+
+// initialize socket.io
+
+userTable.css('display', 'none');
+serverTable.css('display', 'none');
+consoleContent.css('display', 'none');
+disconnectText.css('display', 'block');
+
+socket.on('connect', function () {
+  console.log("Connected!")
+  userTable.css('display', 'table');
+  serverTable.css('display', 'table');
+  consoleContent.css('display', 'inline');
+  disconnectText.css('display', 'none');
+})
+
+socket.on('error', function() {
+  userTable.css('display', 'none');
+  serverTable.css('display', 'none');
+  consoleContent.css('display', 'none');
+  disconnectText.css('display', 'block');
+});
+
+
+// update the console output when new data arrives
+  socket.on('get_console', function(data) {
+
+      if (Object.keys(data).length === 0) {
+        return
+    }
+        consoleData.push(data);
+      if (consoleData.length > 250) {
+        consoleData = consoleData.slice(-250);
+        $('#console-content p:first-child').remove();
+      }
+      var time = getTime();
+      var text = "[" + time + "] " + data;
+      var consoleText = $('<p>').addClass('console-text').text(text);
+      $('#console-content').append(consoleText);
+    var consoleBox = document.getElementById('console-box');
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+  });
+
+  // update the server data when new data arrives
+  socket.on('get_data', function(data) {
+      let server_status = $("#server-status")
+      let server_load = $("#server-load")
+      let server_threads = $("#server-threads")
+      let server_ram = $("#server-ram-usage")
+      let server_time = $("#server-time")
+
+      server_status.text(data.status)
+      server_load.text(data.cpu_usage)
+      server_threads.text(data.threads)
+      server_ram.text(data.memory_usage)
+      server_time.text(data.time)
+
+  });
+
+    // request initial server data
+  socket.emit('get_data');
+
+var consoleFlag = true;
+
+setInterval(function() {
+  if (consoleFlag) {
+          // request initial server data
+    socket.emit('get_console');
+  } else {
+             // request initial server data
+    socket.emit('get_data');
+  }
+  consoleFlag = !consoleFlag;
+}, 500);
+
+
+
+$(document).ready(function () {
   var form = $('#command-form');
   form.submit(function(event) {
     event.preventDefault(); // prevent form submission
@@ -11,59 +94,20 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(response) {
         console.log(response);
-        // handle the server response here, for example:
-        // $('#response-div').html(response.message);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus, errorThrown);
-      }
+      },
+      complete: function (jqXHR, textStatus) {
+        console.log(textStatus)
+      },
+      timeout: 1000
     });
-    // clear the form input
-    form[0].reset();
+      // clear the form input
+    document.getElementById("command-form").reset()
   });
+
 });
-
-var consoleData = [];
-var container = $("#console-box");
-container.scrollTop(container.prop('scrollHeight'));
-setInterval(function() {
-$.get("/console", function(data) {
-      consoleData.push(data);
-  if (Object.keys(data).length === 0) {
-        return
-      }
-  if (consoleData.length > 250) {
-        consoleData = consoleData.slice(-250);
-        $('#console-content p:first-child').remove();
-      }
-      var time = getTime();
-      var text = "[" + time + "] " + data;
-      var consoleText = $('<p>').addClass('console-text').text(text);
-      $('#console-content').append(consoleText);
-      container.scrollTop(container.prop('scrollHeight'));
-    });
-  }, 100);
-
-
-$(document).ready(function() {
-    setInterval(function() {
-      $.get("/data", function(data) {
-        json_data = data
-        let server_status = $("#server-status")
-        let server_load = $("#server-load")
-        let server_threads = $("#server-threads")
-        let server_ram = $("#server-ram-usage")
-        let server_time = $("#server-time")
-        
-        server_status.text(json_data.status)
-        server_load.text(json_data.cpu_usage)
-        server_threads.text(json_data.threads)
-        server_ram.text(json_data.memory_usage)
-        server_time.text(json_data.time)
-
-      });
-    }, 100); 
-}); 
 
 function getTime() {
   var now = new Date();

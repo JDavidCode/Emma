@@ -5,12 +5,14 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-
+	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+	<script src="{{ url_for('static', filename='js/jquery-3.6.4.min.js') }}"></script>
   	<script src="{{ url_for('static', filename='js/particles.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-	<title>Web Console</title>
+
+
+	<title>Console</title>
 </head>
 <body>
 
@@ -23,35 +25,37 @@
 	<h3 id="local-time"></h3>
 	</div>
 	<section class="data-container" >
-		<article class="container">
-		<table id="internal-data-table" id="table-box">
-				<tr>
-					<th colspan="2" class="box-header">Internal server</th>
-				</tr>
-				<tr>
-					<td>Server Status:</td>
-					<td id="server-status">-</td>
-				</tr>
-				<tr>
-					<td>Server Load:</td>
-					<td id="server-load">-</td>
-				</tr>
-				<tr>
-					<td>Threads:</td>
-					<td id="server-threads">-</td>
-				</tr>
-				<tr>
-					<td>Ram Usage:</td>
-					<td id="server-ram-usage">-</td>
-				</tr>
-				<tr>
-					<td>Time Alive:</td>
-					<td id="server-time">-</td>
-				</tr>
-			</table>
+		<article class="container server-info-container">
+			<p class="disconnect-text">DISCONNECTED</p>
+			<table id="internal-data-table" class="table-box">
+					<tr>
+						<th colspan="2" class="box-header">Internal server</th>
+					</tr>
+					<tr>
+						<td>Server Status:</td>
+						<td id="server-status">-</td>
+					</tr>
+					<tr>
+						<td>Server Load:</td>
+						<td id="server-load">-</td>
+					</tr>
+					<tr>
+						<td>Threads:</td>
+						<td id="server-threads">-</td>
+					</tr>
+					<tr>
+						<td>Ram Usage:</td>
+						<td id="server-ram-usage">-</td>
+					</tr>
+					<tr>
+						<td>Time Alive:</td>
+						<td id="server-time">-</td>
+					</tr>
+				</table>
 
 		</article>	
 		<article class="container console-container">
+			<p class="disconnect-text">DISCONNECTED</p>
 			<div class="console-header">Console Output</div>
 			<div id="console-box">
 				<div id="console-content">
@@ -59,8 +63,8 @@
 				</div>
 			</div>
 		</article>
-		<article class="container" id="table-box">
-			<table id="user-data-table">
+		<article class="container user-info-container" >
+			<table id="user-data-table"class="table-box">
 				<tr>
 					<th colspan="2"class="box-header">User</th>
 				</tr>

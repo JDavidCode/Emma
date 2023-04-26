@@ -21,4 +21,5 @@ List of Pips
 
 API'S
 ~flask
+~flask-socketio
 ~mysql-connector-python

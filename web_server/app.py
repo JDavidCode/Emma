@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request
+from flask_socketio import SocketIO
 
 
 class WebApp:
@@ -7,6 +8,7 @@ class WebApp:
         self.queue = queue_manager
         self.console_output = console_output
         self.tag = "WEB_APP Thread"
+        self.socketio = SocketIO(self.app)
         self.register_routes()
         self.host()
 
@@ -24,28 +26,26 @@ class WebApp:
             # Return a JSON response with the data
             return jsonify({'result': 'success', 'data': data})
 
-        @self.app.route('/data')
+        @self.socketio.on('get_data')
         def get_data():
-            # get the data from the queue_manager
             data = self.queue.get_queue("SERVERDATA")
 
-            # return the data as a JSON response
-            return jsonify(data)
+            # emit the data to the client
+            self.socketio.emit('get_data', data)
 
-        @self.app.route('/console')
+        @self.socketio.on('get_console')
         def get_console():
             data = {}
-            # get the data from the queue_manager
             try:
-                data = self.queue.get_queue("CONSOLE", 2)
+                data = self.queue.get_queue("CONSOLE", 1)
             except:
                 pass
-            # return the data as a JSON response
-            return jsonify(data)
+            # emit the data to the client
+            self.socketio.emit('get_console', data)
 
     def host(self):
         try:
-            self.app.run(host='192.168.1.6', port=3018)
+            self.socketio.run(self.app, host='192.168.1.6', port=3018)
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))

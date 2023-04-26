@@ -22,24 +22,27 @@ class Cluster:
         self.web_app = web_app
         userPrefix, welcome = self.sys.awake().run()
         self.thread_manager = self.sys.ThreadManager()
-        self.console_manager = self.thread_manager.ConsoleManager()
         self.queue_manager = self.thread_manager.QueueManager()
+        self.console_manager = self.thread_manager.ConsoleManager(
+            self.queue_manager)
         self.ThreadMangement()
-        self.keep_runing()
+        self.ServerIntegrity()
 
     def ThreadMangement(self):
         thread_manager = self.thread_manager
         queue_manager = self.queue_manager
         console_manager = self.console_manager
 
+        # Create a Queue for CURRENTS
+        queue_manager.create_queue("CURRENT_INPUT", 1)
+        # Create a Queue for CONSOLE
+        queue_manager.create_queue("CONSOLE")
         # create a Queue for COMMANDS
         queue_manager.create_queue("COMMANDS")
         # create a Queue for TALKING
         queue_manager.create_queue("TALKING")
         # Create a Queue for WBDATA
-        queue_manager.create_queue("WEBDATA")
-        # Create a Queue for WBDATA
-        queue_manager.create_queue("CURRENT_INPUT", 1)
+        queue_manager.create_queue("SERVERDATA", 1)
 
         # create CommandManager thread
         CommandManager = Thread(target=self.sys.CommandsManager, args=[
@@ -74,21 +77,22 @@ class Cluster:
         # thread_manager.start_thread("TradingSupervisor")  # start  Trading thread
         time.sleep(3)
 
-    def keep_runing(self):
-        # Define a list to hold tasks
-        tasks = []
-
+    def ServerIntegrity(self):
+        timer = 9000
+        mp = self.sys.MainProcess()
         while True:
-            if len(tasks) > 0:
-                # Do something with the tasks
-                print("Processing tasks:", tasks)
-                tasks = []
-            else:
+            json = mp.server_performance(
+                self.thread_manager.get_thread_status())
+            self.queue_manager.add_to_queue("SERVERDATA", json)
+            if timer >= 8990:
                 # Sleep for a certain period of time before checking again
                 thread_status = self.thread_manager.get_thread_status()
                 for status in thread_status:
                     self.console_manager.write("Main Thread",
-                                               "Thread: {} is active: {}".format(str(status[0]), status[1]))
+                                               "{} is active: {}".format(str(status[0]), status[1]))
+                timer = 0
+            timer += 1
+            time.sleep(1)
 
 
 if __name__ == '__main__':

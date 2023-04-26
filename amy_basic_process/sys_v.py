@@ -1,3 +1,4 @@
+import datetime
 import importlib
 import sys
 import os
@@ -5,6 +6,7 @@ import queue
 import shutil
 import threading
 import time
+import psutil
 from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from amy_basic_process.data_module import Login
@@ -119,15 +121,7 @@ class ThreadManager:
             if current_thread == thread_name:
                 if not thread.is_alive():
                     thread.start()
-                    return f"\n{thread_name} has been stopped."
-
-    def stop_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            current_thread = str(thread.name).split('(')[1].split(')')[0]
-            if current_thread == thread_name:
-                if thread.is_alive():
-                    thread.stop()
-                    return f"\n{thread_name} has been stopped."
+                    return f"\n{thread_name} has been started."
 
     def get_thread_status(self):
         status_list = []
@@ -157,12 +151,13 @@ class ThreadManager:
         # implement resume functionality as needed
         pass
 
-    def kill_threads(self):
-        for thread in self.threads:
-            thread.stop()
+    def stop_thread(self, thread_name):
+        # implement resume functionality as needed
+        pass
 
     class ConsoleManager:
-        def __init__(self):
+        def __init__(self, queue_manager):
+            self.queue = queue_manager
             msc = importlib.import_module("amy_basic_process.task_module")
             self.msc = msc.MiscellaneousModule
             self.output_queue = queue.Queue()
@@ -173,6 +168,7 @@ class ThreadManager:
         def _output_console(self):
             while True:
                 output = self.output_queue.get()
+                self.queue.add_to_queue("CONSOLE", str(output))
                 print(f"[{self.msc.date_clock(3)}] | {output}")
 
         def write(self, remitent, output):
@@ -195,14 +191,16 @@ class ThreadManager:
                 raise ValueError(f"No queue found with name {name}")
             if self.queues[name].maxsize == 1:
                 if not self.queues[name].empty():
-                    self.queues[name].get()
+                    self.get_queue(name)
                 self.queues[name].put(command)
             else:
                 self.queues[name].put(command)
 
-        def get_queue(self, name):
-            queue = self.queues[name].get()
-            return queue
+        def get_queue(self, name, out=None):
+            if out != None:
+                return self.queues[name].get(timeout=out)
+            else:
+                return self.queues[name].get()
 
         def remove_queue(self, name):
             if name not in self.queues:
@@ -211,9 +209,29 @@ class ThreadManager:
 
 
 class MainProcess:
-
     def __init__(self) -> None:
         pass
+
+    def server_performance(self, threads):
+        dateTime = datetime.datetime.now()
+        # Get the process details of the Python app
+        pid = os.getpid()
+        process = psutil.Process(pid)
+        # Get the memory usage of the Python app
+        status = process.status()
+        cpu_usage = process.cpu_percent()
+        memory_info = process.memory_info()
+        # Convert from bytes to MB
+        memory_usage = int(memory_info.rss / 1024.0 / 1024.0)
+        server_time = process.create_time()
+        server_time = datetime.datetime.fromtimestamp(server_time)
+        server_time = dateTime - server_time
+        server_time = int(server_time.total_seconds())
+        server_time = datetime.timedelta(seconds=server_time)
+        data = {"status": str(status), "cpu_usage": f"{str(cpu_usage)}%", "threads": str(len(threads)),
+                "memory_usage": f"{str(memory_usage)} MB", "time": str(server_time)}
+
+        return data
 
 
 class BackgroundProcess:
@@ -233,7 +251,6 @@ class BackgroundProcess:
             return
         self.temp_clearer()
         self.remove_pycache('.')
-        ThreadManager().kill_threads()
         os._exit(0)
 
     def amy_guardian():
@@ -291,9 +308,6 @@ class BackgroundProcess:
         except:
             pass
 
-    def global_variables_setter():
-        pass
-
 
 class CommandsManager:
     def __init__(self, queue_manager, console_output, thread_manager):
@@ -313,7 +327,7 @@ class CommandsManager:
         self.queue = queue_manager
         self.console_output = console_output
         self.thread_manager = thread_manager
-        self.modules = {"bp": self.bp, "talk": self.talk, "task": self.task,
+        self.modules = {"bp": self.bp, "talk": self.talk, "talk._TTS": self.talk._TTS, "task": self.task,
                         "task.MiscellaneousModule": self.task.MiscellaneousModule,
                         "task.WebModule": self.task.WebModule,
                         "task.OsModule": self.task.OsModule, "generators": self.local_generators,

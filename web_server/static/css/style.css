@@ -91,6 +91,10 @@ position: relative;
 	align-items: center;
 }
 
+#server-status{
+	text-transform: uppercase;
+}
+
 .box-header{
 	text-align: center;
 	background-color: #21242b74;
@@ -105,9 +109,10 @@ position: relative;
 	text-transform: uppercase;
 }
 
-.console-box {
+.console-container{
 	background-color: rgba(5, 35, 38, 0.807);
 	border: 1px solid #a2a2a2;
+	height: 70vh;
 	border-radius: 4px;
 	padding: 10px;
 	color: rgb(191, 252, 207);
@@ -126,10 +131,33 @@ position: relative;
 	text-transform: uppercase;
 }
 
-.console-content {
-	margin-top: 10px;
-	overflow: auto;
-	height: 70vh;
+#console-box {
+	position: relative;
+	height: 65vh;
+	overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(2, 39, 42, 0.807);
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(1, 57, 62);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(7, 100, 108, 0.807);
+}
+
+.console-content{
+	margin-top: .5em;
+}
+
+.console-text {
+	margin-top: .2em;
+	background-color: rgba(5, 35, 38, 0.837);
+	color: #a5a8a9c2;
 }
 
 #internal-data-table, #user-data-table {

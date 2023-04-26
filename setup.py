@@ -6,7 +6,7 @@ import core
 
 class CommandAwake:
     PipList = ["pyttsx3", "vosk", "pyaudio", "pycaw", "TextBlob", "Pandas", "NumPy", "matplotlib", "scipy", "opencv-python",
-               "opencv-contrib-python", "youtube-dl", "PyAutoGUI", "flask", "mysql-connector-python", "python-dotenv", "imutils", "img2pdf"]
+               "opencv-contrib-python", "youtube-dl", "PyAutoGUI", "flask", "flask_socketio", "mysql-connector-python", "python-dotenv", "imutils", "img2pdf", "psutil"]
 
     DirsStructure = [".AmyRootUser\\", ".AmyRootUser\\.preferences", ".AmyRootUser\\.temp",
                      ".AmyRootUser\\disk",  ".AmyRootUser\\disk\\user", ".AmyRootUser\\disk\\apps",

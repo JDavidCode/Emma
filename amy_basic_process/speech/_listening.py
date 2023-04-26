@@ -44,6 +44,7 @@ class ListenInBack:
                         if result[len(result)-1] == " ":
                             result = result[:-1]
                         self.queue("COMMANDS", result)
+                        self.queue("CURRENT_INPUT", result)
 
                         # Chat
                         e_ans = self.db.chat_indexer(result)

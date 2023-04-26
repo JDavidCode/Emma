@@ -1,3 +1,4 @@
+import json
 import subprocess
 from PIL import Image
 import zipfile
@@ -109,6 +110,10 @@ class toolKit:
                     output_path, filename[:-4] + '.png')
                 toolKit.convert_to_image(input_path, output_path)
                 toolKit.resize_image(output_path, output_path)
+
+    def to_json(data):
+        json_data = json.dumps(data)
+        return json_data
 
 
 if __name__ == "__main__":

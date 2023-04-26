@@ -19,7 +19,6 @@ class WebApp:
         def process_form():
             # Process the form data here
             data = request.form['text_input']
-            self.queue.add_to_queue("WEBDATA", data)
             self.queue.add_to_queue("CURRENT_INPUT", data)
             self.queue.add_to_queue("COMMANDS", data)
             # Return a JSON response with the data
@@ -28,8 +27,19 @@ class WebApp:
         @self.app.route('/data')
         def get_data():
             # get the data from the queue_manager
-            data = self.queue.get_queue("WEBDATA")
+            data = self.queue.get_queue("SERVERDATA")
 
+            # return the data as a JSON response
+            return jsonify(data)
+
+        @self.app.route('/console')
+        def get_console():
+            data = {}
+            # get the data from the queue_manager
+            try:
+                data = self.queue.get_queue("CONSOLE", 2)
+            except:
+                pass
             # return the data as a JSON response
             return jsonify(data)
 

@@ -307,7 +307,7 @@ class BackgroundProcess:
 
     def module_reloader(self, index):
         diccionary = localDataTools.json_loader(
-            "assets\\json\\module_directory.json", "moduleDirectory", "dict")
+            "assets\\json\\module_directory.json", "module_dir", "dict")
         key = diccionary.keys()
         try:
             for i in key:

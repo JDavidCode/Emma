@@ -62,7 +62,7 @@
         "args_key": "None",
         "required_lvl": 0
     },
-    "open": {
+    "open app": {
         "function_name": "open_app",
         "module": "task.OsModule",
         "args_key": "args",
@@ -79,6 +79,18 @@
         "function_name": "google_search",
         "module": "task.WebModule",
         "args_key": "*args",
+        "required_lvl": 1
+    },
+    "open website": {
+        "function_name": "open_website",
+        "module": "task.WebModule",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "open web console": {
+        "function_name": "open_local_site",
+        "module": "task.WebModule",
+        "args_key": "None",
         "required_lvl": 1
     }
 }

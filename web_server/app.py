@@ -45,7 +45,7 @@ class WebApp:
 
     def host(self):
         try:
-            self.socketio.run(self.app, host='192.168.1.6', port=3018)
+            self.socketio.run(self.app, host='192.168.1.3', port=3018)
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))

@@ -7,6 +7,7 @@ import pywhatkit
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import webbrowser
 # ImportedPythonLibraries
 from tools.data.local.kit import toolKit as localDataTools
 #################################################################################
@@ -22,24 +23,33 @@ class WebModule:
     def google_search(index):
         pywhatkit.search(index)
 
+    def open_website(index):
+        json = localDataTools.json_loader(
+            "assets\\json\\web_sites.json", "web_dir", 'dict')
+        for i in json.keys():
+            if i == index:
+                get = json.get(i)
+                webbrowser.open(get)
+
+    def open_local_site():
+        webbrowser.open("http://192.168.1.6:3018/")
+
 
 class OsModule:
     def __init__(self):
         pass
 
     def open_app(index):
-        json_type = 'dict'
-        diccionary = localDataTools.json_loader(
-            "assets\\json\\osApp_directory.json", "appDirectory", json_type)
-        keys = diccionary.keys()
-        if index in keys:
-            get = diccionary.get(index)
-            os.startfile(get)
+        json = localDataTools.json_loader(
+            "assets\\json\\app_directory.json", "app_dir", 'dict')
+        for i in json.keys():
+            if i == index:
+                get = json.get(i)
+                os.startfile(get)
 
     def path_mover():
-        json_type = 'dict'
         diccionary = localDataTools.json_loader(
-            "assets\\json\\path_directory.json", json_type)
+            "assets\\json\\path_directory.json", 'amy_paths', 'dict')
         downFolder = diccionary.get('downloads')
         for filename in os.listdir(downFolder):
             name, extension = os.path.splitext(downFolder + filename)

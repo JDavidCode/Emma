@@ -18,34 +18,34 @@ class Talk:
 
             self.console_output.write(
                 self.tag, talking)
-            tts = self._TTS()
+            tts = _TTS()
             tts.start(talking)
             del (tts)
             continue
 
-    class _TTS:
-        engine = None
-        rate = None
 
-        def __init__(self):
-            self.lang = dotenv(".venv/.env", "USERLANG")
-            self.engine = pyttsx3.init()
-            self.engVoice = self.engine.getProperty('voices')
-            self.engine_voice_config()
+class _TTS:
+    engine = None
+    rate = None
 
-        def start(self, text_):
-            self.engine.say(text_)
-            self.engine.runAndWait()
+    def __init__(self):
+        self.lang = dotenv(".venv/.env", "USERLANG")
+        self.engine = pyttsx3.init()
+        self.engVoice = self.engine.getProperty('voices')
 
-        def engine_voice_config(self):
-            if self.lang == 'en':
-                self.engine.setProperty('voice', self.engVoice[1].id)
-            elif self.lang == 'es':
-                self.engine.setProperty('voice', self.engVoice[2].id)
-            else:
-                print("A voice language is null please enter the index")
-                for i in self.engVoice:
-                    print(i)
-                    self.engine.setProperty('voice', self.engVoice[input()].id)
-            self.engine.setProperty('rate', 125)
-            self.engine.setProperty('volume', 1)
+    def start(self, text_):
+        self.engine.say(text_)
+        self.engine.runAndWait()
+
+    def engine_voice_config(self):
+        if self.lang == 'en':
+            self.engine.setProperty('voice', self.engVoice[1].id)
+        elif self.lang == 'es':
+            self.engine.setProperty('voice', self.engVoice[2].id)
+        else:
+            print("A voice language is null please enter the index")
+            for i in self.engVoice:
+                print(i)
+                self.engine.setProperty('voice', self.engVoice[input()].id)
+        self.engine.setProperty('rate', 125)
+        self.engine.setProperty('volume', 1)

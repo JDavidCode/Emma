@@ -12,29 +12,38 @@ serverTable.css('display', 'none');
 consoleContent.css('display', 'none');
 disconnectText.css('display', 'block');
 
-socket.on('connect', function () {
-  console.log("Connected!")
-  userTable.css('display', 'table');
-  serverTable.css('display', 'table');
-  consoleContent.css('display', 'inline');
-  disconnectText.css('display', 'none');
+socket.on('connect', function (data) {
+    console.log("Connected!")
+    userTable.css('display', 'table');
+    serverTable.css('display', 'table');
+    consoleContent.css('display', 'inline');
+    disconnectText.css('display', 'none');
+    consoleData = data;
+    for (var i = 0; i < consoleData.length; i++) {
+        var time = getTime();
+        var text = "[" + time + "] " + consoleData[i];
+        var consoleText = $('<p>').addClass('console-text').text(text);
+        $('#console-content').append(consoleText);
+    }
+    var consoleBox = document.getElementById('console-box');
+    consoleBox.scrollTop = consoleBox.scrollHeight;
 })
 
 socket.on('error', function() {
-  userTable.css('display', 'none');
-  serverTable.css('display', 'none');
-  consoleContent.css('display', 'none');
-  disconnectText.css('display', 'block');
+    userTable.css('display', 'none');
+    serverTable.css('display', 'none');
+    consoleContent.css('display', 'none');
+    disconnectText.css('display', 'block');
 });
 
 
 // update the console output when new data arrives
-  socket.on('get_console', function(data) {
+socket.on('get_console', function(data) {
 
       if (Object.keys(data).length === 0) {
         return
-    }
-        consoleData.push(data);
+      }
+         consoleData = data;
       if (consoleData.length > 250) {
         consoleData = consoleData.slice(-250);
         $('#console-content p:first-child').remove();
@@ -43,7 +52,7 @@ socket.on('error', function() {
       var text = "[" + time + "] " + data;
       var consoleText = $('<p>').addClass('console-text').text(text);
       $('#console-content').append(consoleText);
-    var consoleBox = document.getElementById('console-box');
+      var consoleBox = document.getElementById('console-box');
     consoleBox.scrollTop = consoleBox.scrollHeight;
   });
 

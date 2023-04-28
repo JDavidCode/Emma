@@ -1,11 +1,10 @@
 import sys
 import os
 import subprocess
-import core
 
 
-class CommandAwake:
-    PipList = ["pyttsx3", "vosk", "pyaudio", "pycaw", "TextBlob", "Pandas", "NumPy", "matplotlib", "scipy", "opencv-python",
+class PackageInstaller:
+    PipList = ["pyttsx3", "vosk", "pyaudio", "pycaw", "TextBlob", "Pandas", "NumPy", "matplotlib", "scipy", "opencv-python",  "pywhatkit",
                "opencv-contrib-python", "youtube-dl", "PyAutoGUI", "flask", "flask_socketio", "mysql-connector-python", "python-dotenv", "imutils", "img2pdf", "psutil"]
 
     DirsStructure = [".AmyRootUser\\", ".AmyRootUser\\.preferences", ".AmyRootUser\\.temp",
@@ -15,19 +14,21 @@ class CommandAwake:
                      ".AmyRootUser\\disk\\home\\videos"]
 
     def __init__(self):
-        CommandAwake.install_packages()
-        CommandAwake.create_dirs()
-        core.cluster()
+        self.install_packages()
+        self.create_dirs()
 
-    def create_dirs():
-        print("verifying directories")
-        paths = CommandAwake.DirsStructure
+    def create_dirs(self):
+        print("VERIFYING DIRECTORIES")
+        paths = PackageInstaller.DirsStructure
         for i in paths:
-            os.makedirs(i)
+            if not os.path.exists(i):
+                # Create the directory if it doesn't exist
+                os.makedirs(i)
+        print("DIRECTORIES HAS BEEN VERIFIED")
 
-    def install_packages():
-        print("verifying packages")
-        PipList = CommandAwake.PipList
+    def install_packages(self):
+        print("VERIFYING PACKAGES")
+        PipList = PackageInstaller.PipList
         # implement pip as a subprocess:
         for i in PipList:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', i])
@@ -35,8 +36,8 @@ class CommandAwake:
         # process output with an API in the subprocess module:
         reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
         installed_packages = [r.decode().split('==')[0] for r in reqs.split()]
-        print(installed_packages)
+        print(f'PACKAGES VERYFIED AND INSTALLED \n {installed_packages}')
 
 
 if __name__ == "__main__":
-    CommandAwake()
+    pass

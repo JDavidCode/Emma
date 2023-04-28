@@ -334,12 +334,13 @@ class CommandsManager:
 
         self.database = importlib.import_module(
             'amy_basic_process.data_module')
-        self.talk = talk.Talk
+        self.talk = talk
+        self._TTS = talk._TTS()
         self.bp = BackgroundProcess(queue_manager, console_output)
         self.queue = queue_manager
         self.console_output = console_output
         self.thread_manager = thread_manager
-        self.modules = {"bp": self.bp, "talk": self.talk, "talk._TTS": self.talk._TTS, "task": self.task,
+        self.modules = {"bp": self.bp, "talk": self.talk, "talk._TTS": self._TTS, "task": self.task,
                         "task.MiscellaneousModule": self.task.MiscellaneousModule,
                         "task.WebModule": self.task.WebModule,
                         "task.OsModule": self.task.OsModule, "generators": self.local_generators,

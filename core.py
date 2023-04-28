@@ -3,13 +3,13 @@ import importlib
 from threading import Thread
 import time
 from web_server import app as web_app
-# Tools Libraries
 
 
 class Cluster:
 
     def __init__(self) -> None:
-        global userPrefix
+        self.packages_integrity = importlib.import_module('setup')
+        self.packages_integrity.PackageInstaller()
         # BASIC PROCESS IMPORTS
         self.sys = importlib.import_module('amy_basic_process.sys_v')
         self.listening = importlib.import_module(
@@ -18,7 +18,6 @@ class Cluster:
             'amy_basic_process.speech._talking')
         self.trading = importlib.import_module(
             'workers.trading_bots.supervisor')
-        # web_app = importlib.import_module("web_server/app")
         self.web_app = web_app
         userPrefix, welcome = self.sys.awake().run()
         self.thread_manager = self.sys.ThreadManager()

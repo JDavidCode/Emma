@@ -18,6 +18,7 @@ List of Pips
 ~unoconv
 ~torch
 ~transformers
+pywhatkit
 
 API'S
 ~flask

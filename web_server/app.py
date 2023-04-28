@@ -1,17 +1,31 @@
+import os
 import json
+import time
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO
+from amy_basic_process.task_module import MiscellaneousModule as msc
 
 
 class WebApp:
     def __init__(self, queue_manager, console_output):
         self.app = Flask(__name__)
+        self.history = self.json_history()
         self.queue = queue_manager
         self.console_output = console_output
         self.tag = "WEB_APP Thread"
         self.socketio = SocketIO(self.app)
         self.register_routes()
         self.host()
+
+    def json_history(self):
+        date = msc.date_clock(2)
+        history = f'web_server\\json\\{date}.json'
+        if not os.path.exists(history):
+            # Create the directory if it doesn't exist
+            with open(history, 'w') as f:
+                json.dump({}, f, indent=4)
+                f.close()
+        return history
 
     def register_routes(self):
         @self.app.route("/")
@@ -29,9 +43,9 @@ class WebApp:
 
         @self.socketio.on('connect')
         def connect():
-            with open('web_server\\json\\console_data.json', 'r') as f:
-                jsoni = json.load(f)
-                f.close()
+            f = open(self.history)
+            jsoni = json.load(f)
+            f.close()
 
             # emit the data to the client
             self.socketio.emit('connect', jsoni)
@@ -45,27 +59,22 @@ class WebApp:
 
         @self.socketio.on('get_console')
         def get_console():
-            data = ""
+            j_data = {}
+            f = open(self.history)
+            json_data = json.load(f)
             try:
                 data = self.queue.get_queue("CONSOLE", 1)
-                # Load the JSON file into a Python object
-                with open('web_server\\json\\console_data.json', 'r') as f:
-                    jsoni = json.load(f)
-                    f.close()
-                # Identify the list to which you want to add the string
-                j = jsoni
-
-                # Add the string to the list
-                j.insert(len(j), data)
-                # Save the updated Python object back to the JSON file
-                with open('web_server\\json\\console_data.json', 'w') as f:
-                    json.dump(j, f, indent=4)
-                    f.close()
-
+                json_data[f'{msc.date_clock(3)}'] = data
+                with open(self.history, 'w') as f:
+                    j = json.dumps(json_data, indent=4)
+                    f.write(j)
+                j_data[f"{msc.date_clock(3)}"] = data
             except:
                 pass
+
+            f.close()
             # emit the data to the client
-            self.socketio.emit('get_console', data)
+            self.socketio.emit('get_console', j_data)
 
     def host(self):
         try:
@@ -73,26 +82,6 @@ class WebApp:
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))
-
-
-class jsond:
-    def __init__(self) -> None:
-        self.run()
-
-    def run(self):
-        # Load the JSON file into a Python object
-        with open('web_server\\json\\console_data.json', 'r') as f:
-            data = json.load(f)
-
-        # Identify the list to which you want to add the string
-        my_list = data
-
-        # Add the string to the list
-        my_list.append('new string')
-
-        # Save the updated Python object back to the JSON file
-        with open('web_server\\json\\console_data.json', 'w') as f:
-            json.dump(data, f)
 
 
 if __name__ == "__main__":

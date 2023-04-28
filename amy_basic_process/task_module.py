@@ -131,7 +131,7 @@ class MiscellaneousModule:
         elif i == 3:
             return clock.strftime('%H:%M:%S')
         else:
-            return dateTime.strftime('%d-%m  %Y %H:%M:%S'), date, clock.strftime('%H:%M:%S')
+            return dateTime.strftime('%Y-%m-%d %H:%M:%S'), date, clock.strftime('%H:%M:%S')
 
     def day_parts():
         t = datetime.datetime.today()

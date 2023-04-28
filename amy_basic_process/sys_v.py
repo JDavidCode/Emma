@@ -22,12 +22,12 @@ class awake:
         bp = BackgroundProcess()
         bp.data_auto_updater()
         logged = os.getenv('LOGGED')
-        paths = bp.verify_paths()
+        set_key(".venv/.env", "DATE", f'{self.msc.date_clock(2)}')
         weather = self.msc.weather('Medellin')
         dateTime = self.msc.date_clock(0)
         dayPart = self.msc.day_parts()
-        text = 'good {}, today is {},its {}, {}... {}'.format(
-            dayPart, dateTime[1], dateTime[2], weather, paths)
+        text = 'good {}, today is {},its {}, {}...'.format(
+            dayPart, dateTime[1], dateTime[2], weather)
         if logged == 'True':
             userPrefix = Login.user_prefix()
             return userPrefix, text

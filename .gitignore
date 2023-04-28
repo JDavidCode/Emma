@@ -3,3 +3,4 @@
 .temp
 assets/models/conversation_models
 assets/models/language_models
+web_server/json

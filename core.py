@@ -8,8 +8,8 @@ from web_server import app as web_app
 class Cluster:
 
     def __init__(self) -> None:
-        self.packages_integrity = importlib.import_module('setup')
-        self.packages_integrity.PackageInstaller()
+        # self.packages_integrity = importlib.import_module('setup')
+        # self.packages_integrity.PackageInstaller()
         # BASIC PROCESS IMPORTS
         self.sys = importlib.import_module('amy_basic_process.sys_v')
         self.listening = importlib.import_module(

@@ -1,6 +1,7 @@
 import importlib
 import time
 import sys
+from workers.trading_bots.setup import run as run_setup
 
 
 class TradingSupervisor:
@@ -9,6 +10,7 @@ class TradingSupervisor:
 
     def __init__(self, console_output):
         sys.path.append("workers/trading_bots")
+        run_setup()
         self.trading_core = importlib.import_module(
             "trading_core")
         self.IqOption(console_output, self.trading_core.tradingIqOption(console_output,

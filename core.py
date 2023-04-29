@@ -34,14 +34,14 @@ class Cluster:
 
         # Create a Queue for CURRENTS
         queue_manager.create_queue("CURRENT_INPUT", 1)
+        # Create a Queue for WBDATA
+        queue_manager.create_queue("SERVERDATA", 1)
         # Create a Queue for CONSOLE
         queue_manager.create_queue("CONSOLE")
         # create a Queue for COMMANDS
         queue_manager.create_queue("COMMANDS")
         # create a Queue for TALKING
         queue_manager.create_queue("TALKING")
-        # Create a Queue for WBDATA
-        queue_manager.create_queue("SERVERDATA", 1)
 
         # create CommandManager thread
         CommandManager = Thread(target=self.sys.CommandsManager, args=[

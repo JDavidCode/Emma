@@ -35,12 +35,11 @@
         "args_key": "*args",
         "required_lvl": 1
     },
-    "time": {
-        "function_name": "date_clock",
-        "module": "task.MiscellaneousModule",
-        "args_key": "args",
-        "arguments": "3",
-        "required_lvl": 0
+    "reload thread": {
+        "function_name": "restart_thread",
+        "module": "thread",
+        "args_key": "*args",
+        "required_lvl": 1
     },
     "weather": {
         "function_name": "weather",
@@ -62,12 +61,12 @@
         "args_key": "None",
         "required_lvl": 0
     },
-    "open app": {
-        "function_name": "open_app",
-        "module": "task.OsModule",
+    "time": {
+        "function_name": "date_clock",
+        "module": "task.MiscellaneousModule",
         "args_key": "args",
-        "arguments": "1",
-        "required_lvl": 1
+        "arguments": "3",
+        "required_lvl": 0
     },
     "lets play": {
         "function_name": "youtube_player",
@@ -91,6 +90,13 @@
         "function_name": "open_local_site",
         "module": "task.WebModule",
         "args_key": "None",
+        "required_lvl": 1
+    },
+    "open app": {
+        "function_name": "open_app",
+        "module": "task.OsModule",
+        "args_key": "args",
+        "arguments": "1",
         "required_lvl": 1
     }
 }

@@ -2,7 +2,7 @@ import sys
 import subprocess
 
 PipList = ["Backtesting", "MetaTrader5",
-           "assets\\TA_Lib-0.4.24-cp310-cp310-win_amd64.whl"]
+           "assets\\trading\\TA_Lib-0.4.24-cp310-cp310-win_amd64.whl"]
 
 
 def run():

@@ -100,6 +100,8 @@ $(document).ready(function () {
   form.submit(function (event) {
     event.preventDefault(); // prevent form submission
     var textInput = $('#command-input').val(); // get the text input value
+    var newStr = textInput.replace(/[,.'/$"!?*]/g, '');
+    textInput = newStr
     // send the text input value to the server using AJAX
     $.ajax({
       url: '/',

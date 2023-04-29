@@ -7,21 +7,23 @@ import pyttsx3
 class Talk:
     def __init__(self, queue_manager, console_output):
         self.console_output = console_output
-        self.tag = "Talk Thread"
-        self.queue = queue_manager.get_queue
+        self.tag = 'Talk Thread'
+        self.queue = queue_manager
+        self.stop_flag = False
         self.run()
 
     def run(self):
-        while True:
+        while not self.stop_flag:
             # Wait for a command to be put in the queue
-            talking = self.queue("TALKING")
+            talking = self.queue.get_queue('TALKING')
 
-            self.console_output.write(
-                self.tag, talking)
+            self.console_output.write(self.tag, talking)
             tts = _TTS()
             tts.start(talking)
             del (tts)
-            continue
+
+    def stop(self):
+        self.stop_flag = True
 
 
 class _TTS:
@@ -29,7 +31,7 @@ class _TTS:
     rate = None
 
     def __init__(self):
-        self.lang = dotenv(".venv/.env", "USERLANG")
+        self.lang = dotenv('.venv/.env', 'USERLANG')
         self.engine = pyttsx3.init()
         self.engVoice = self.engine.getProperty('voices')
 
@@ -43,7 +45,7 @@ class _TTS:
         elif self.lang == 'es':
             self.engine.setProperty('voice', self.engVoice[2].id)
         else:
-            print("A voice language is null please enter the index")
+            print('A voice language is null please enter the index')
             for i in self.engVoice:
                 print(i)
                 self.engine.setProperty('voice', self.engVoice[input()].id)

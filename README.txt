@@ -24,3 +24,6 @@ API'S
 ~flask
 ~flask-socketio
 ~mysql-connector-python
+
+
+docker exec -it amyassistant_mysql_1 mysql -p

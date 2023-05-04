@@ -5,6 +5,7 @@ import cv2
 import os
 from tools.converters.local.kit import toolKit as localConvertersTools
 
+
 dataPath = ".temp"
 idPath = ".temp/face/{}_face.xml"
 cascade = "assets/visual/haarcascade/haarcascade_frontalface_default.xml"

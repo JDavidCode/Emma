@@ -16,10 +16,10 @@ class Cluster:
         self.thread_manager = self.sys.ThreadManager()
         self.queue_manager = self.thread_manager.QueueManager()
         self.console_manager = self.thread_manager.ConsoleManager(self.queue_manager)
-        self.ThreadMangement()
-        self.ServerIntegrity()
+        self.thread_management()
+        self.server_integrity()
 
-    def ThreadMangement(self):
+    def thread_management(self):
         thread_manager = self.thread_manager
         queue_manager = self.queue_manager
         console_manager = self.console_manager
@@ -36,12 +36,12 @@ class Cluster:
         queue_manager.create_queue("TALKING")
 
         # create CommandManager thread
-        CommandManager = Thread(
+        command_manager = Thread(
             target=self.sys.CommandsManager,
             args=[queue_manager, console_manager, thread_manager],
             daemon=True,
         )
-        thread_manager.add_thread(CommandManager)
+        thread_manager.add_thread(command_manager)
         # start the CommandManager thread
         thread_manager.start_thread("CommandsManager")
 
@@ -79,11 +79,11 @@ class Cluster:
         # thread_manager.start_thread("TradingSupervisor")  # start  Trading thread
         time.sleep(3)
 
-    def ServerIntegrity(self):
+    def server_integrity(self):
         timer = 9000
-        mp = self.sys.MainProcess()
+        mainp = self.sys.MainProcess()
         while True:
-            json = mp.server_performance(self.thread_manager.get_thread_status())
+            json = mainp.server_performance(self.thread_manager.get_thread_status())
             self.queue_manager.add_to_queue("SERVERDATA", json)
             if timer >= 8990:
                 # Sleep for a certain period of time before checking again
@@ -91,7 +91,7 @@ class Cluster:
                 for status in thread_status:
                     self.console_manager.write(
                         "Main Thread",
-                        "{} is active: {}".format(str(status[0]), status[1]),
+                        f"{str(status[0])} is active: {status[1]}",
                     )
                 timer = 0
             timer += 1

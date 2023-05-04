@@ -19,10 +19,10 @@ class WebApp:
 
     def json_history(self):
         date = msc.date_clock(2)
-        history = f'web_server\\json\\{date}.json'
+        history = f"web_server\\json\\{date}.json"
         if not os.path.exists(history):
             # Create the directory if it doesn't exist
-            with open(history, 'w') as f:
+            with open(history, "w") as f:
                 json.dump({}, f, indent=4)
                 f.close()
         return history
@@ -35,37 +35,37 @@ class WebApp:
         @self.app.route("/", methods=["POST"])
         def process_form():
             # Process the form data here
-            data = request.form['text_input']
+            data = request.form["text_input"]
             self.queue.add_to_queue("CURRENT_INPUT", data)
             self.queue.add_to_queue("COMMANDS", data)
             # Return a JSON response with the data
-            return jsonify({'result': 'success', 'data': data})
+            return jsonify({"result": "success", "data": data})
 
-        @self.socketio.on('connect')
+        @self.socketio.on("connect")
         def connect():
             f = open(self.history)
             jsoni = json.load(f)
             f.close()
 
             # emit the data to the client
-            self.socketio.emit('connect', jsoni)
+            self.socketio.emit("connect", jsoni)
 
-        @self.socketio.on('get_data')
+        @self.socketio.on("get_data")
         def get_data():
             data = self.queue.get_queue("SERVERDATA")
 
             # emit the data to the client
-            self.socketio.emit('get_data', data)
+            self.socketio.emit("get_data", data)
 
-        @self.socketio.on('get_console')
+        @self.socketio.on("get_console")
         def get_console():
             j_data = {}
             f = open(self.history)
             json_data = json.load(f)
             try:
                 data = self.queue.get_queue("CONSOLE", 1)
-                json_data[f'{msc.date_clock(3)}'] = data
-                with open(self.history, 'w') as f:
+                json_data[f"{msc.date_clock(3)}"] = data
+                with open(self.history, "w") as f:
                     j = json.dumps(json_data, indent=4)
                     f.write(j)
                 j_data[f"{msc.date_clock(3)}"] = data
@@ -74,11 +74,11 @@ class WebApp:
 
             f.close()
             # emit the data to the client
-            self.socketio.emit('get_console', j_data)
+            self.socketio.emit("get_console", j_data)
 
     def host(self):
         try:
-            self.socketio.run(self.app, host='192.168.1.3', port=3018)
+            self.socketio.run(self.app, port=3018)
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))

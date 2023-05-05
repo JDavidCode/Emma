@@ -20,4 +20,3 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     ports:
       - '33060:3306'
-

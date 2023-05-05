@@ -26,4 +26,9 @@ API'S
 ~mysql-connector-python
 
 
+docker system prune -a
+docker system df
+
+docker network ls
+docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'\ fe8bd1bdc002
 docker exec -it amyassistant_mysql_1 mysql -p

@@ -5,7 +5,6 @@ pycaw
 Pandas
 NumPy
 matplotlib
-scipy
 opencv-python
 pywhatkit
 opencv-contrib-python

@@ -2,10 +2,12 @@
 import importlib
 from threading import Thread
 import time
+import os
 
 
 class Cluster:
     def __init__(self) -> None:
+        print(os.environ["DISPLAY"])
         # BASIC PROCESS IMPORTS
         self.sys = importlib.import_module("amy_basic_process.sys_v")
         self.listening = importlib.import_module("amy_basic_process.speech._listening")
@@ -36,9 +38,11 @@ class Cluster:
         queue_manager.create_queue("TALKING")
 
         # create CommandManager thread
+        command_instance = self.sys.CommandsManager(
+            queue_manager, console_manager, thread_manager
+        )
         command_manager = Thread(
-            target=self.sys.CommandsManager,
-            args=[queue_manager, console_manager, thread_manager],
+            target=command_instance,
             daemon=True,
         )
         thread_manager.add_thread(command_manager)
@@ -46,37 +50,30 @@ class Cluster:
         thread_manager.start_thread("CommandsManager")
 
         # create listening thread
+        voice_instance = self.listening.ListenInBack(queue_manager, console_manager)
         voice_thread = Thread(
-            target=self.listening.ListenInBack,
-            args=[queue_manager, console_manager],
+            target=voice_instance,
             daemon=True,
         )
         thread_manager.add_thread(voice_thread)
         # thread_manager.start_thread("ListenInBack")  # start  listening thread
 
         # create talking thread
-        talk_thread = Thread(
-            target=self.talking.Talk, args=[queue_manager, console_manager], daemon=True
-        )
+        talk_instance = self.talking.TalkInBack(queue_manager, console_manager)
+        talk_thread = Thread(target=talk_instance, daemon=True)
         thread_manager.add_thread(talk_thread)
         thread_manager.start_thread("Talk")  # start  talking thread
 
         # create CommandManager thread
+        app_instance = self.web_app.WebApp(queue_manager, console_manager)
         web_app_thread = Thread(
-            target=self.web_app.WebApp,
-            args=[queue_manager, console_manager],
+            target=app_instance,
             daemon=True,
         )
         thread_manager.add_thread(web_app_thread)
         # start the CommandManager thread
         thread_manager.start_thread("WebApp")
 
-        # create Trading Bot thread
-        trading_thread = Thread(
-            target=self.trading.TradingSupervisor, args=[console_manager], daemon=True
-        )
-        thread_manager.add_thread(trading_thread)
-        # thread_manager.start_thread("TradingSupervisor")  # start  Trading thread
         time.sleep(3)
 
     def server_integrity(self):

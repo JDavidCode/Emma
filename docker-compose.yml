@@ -3,20 +3,25 @@ version: '3.4'
 services:
   amyassistant:
     image: amyassistant
+    container_name: amy_base
     build:
       context: .
       dockerfile: ./Dockerfile
     command: sh -c 'sleep 60s; python3 ./core.py'
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
       - mysql
 
   mysql:
     build: ./assets/db/
+    container_name: mysql_amy
     restart: always
-
     environment:
       - MYSQL_DATABASE=amy
       - MYSQL_ROOT_USER= root
       - MYSQL_ROOT_PASSWORD=root
     ports:
-      - '33060:3306'
+      - '3307:3306'

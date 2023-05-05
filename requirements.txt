@@ -1,7 +1,6 @@
 # To ensure app dependencies are ported from your virtual environment/host machine into your container run 'pip freeze > requirements.txt' in the terminal to overwrite this file
 pyttsx3
 vosk
-pycaw
 Pandas
 NumPy
 matplotlib
@@ -13,7 +12,6 @@ PyAutoGUI
 flask
 flask_socketio
 mysql-connector-python
-python-dotenv
 imutils
 img2pdf
 psutil

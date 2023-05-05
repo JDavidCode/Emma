@@ -3,10 +3,8 @@ import os
 import datetime
 import requests
 import time
-import pywhatkit
-from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+# import pywhatkit
 import webbrowser
 
 # ImportedPythonLibraries
@@ -18,12 +16,15 @@ from tools.data.local.kit import toolKit as localDataTools
 class WebModule:
     def __init__(self):
         pass
-
+        """
     def youtube_player(index):
         pywhatkit.playonyt(index)
-
+        
+        NEED FIX DISPLAY ERROR
+        
     def google_search(index):
         pywhatkit.search(index)
+        """
 
     def open_website(index):
         json = localDataTools.json_loader(
@@ -80,23 +81,8 @@ class OsModule:
                 print("changes have been applied")
 
     def volume_management(index):
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        volume_Range = volume.GetVolumeRange()
-        v = volume.GetChannelVolumeLevel(1)
-
-        if index == "up":
-            v += 5
-            volume.SetMasterVolumeLevel(v, None)
-        elif index == "down":
-            v -= 5
-            volume.SetMasterVolumeLevel(v, None)
-        elif index == "mute":
-            v -= 50
-            volume.SetMasterVolumeLevel(v, None)
-        else:
-            pass
+        # rework to linux
+        return
 
 
 class MiscellaneousModule:

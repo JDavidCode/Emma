@@ -7,7 +7,6 @@ import shutil
 import threading
 import time
 import psutil
-from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from amy_basic_process.data_module import Login
 from amy_basic_process.cam_module import FacialRecognizer
@@ -19,10 +18,14 @@ class awake:
         self.msc = msc.MiscellaneousModule
 
     def run(self):
+        os.environ["USERLVL"] = "3"
+        os.environ["USERNAME"] = "Juan"
+        os.environ["USERLANG"] = "en"
+        os.environ["LOGGED"] = "True"
         bp = BackgroundProcess()
         bp.data_auto_updater()
-        logged = os.getenv("LOGGED")
-        set_key(".venv/.env", "DATE", f"{self.msc.date_clock(2)}")
+        logged = os.environ["LOGGED"]
+        os.environ["DATE"] = f"{self.msc.date_clock(2)}"
         weather = self.msc.weather("Medellin")
         dateTime = self.msc.date_clock(0)
         dayPart = self.msc.day_parts()
@@ -304,21 +307,21 @@ class BackgroundProcess:
             ("LOGGED", str(False)),
         ]
         for i in clear:
-            set_key(".venv/.env", i[0], i[1])
+            os.environ[i[0]] = i[1]
 
     def verify_paths(self):
         DirsStructure = [
-            ".AmyRootUser/",
-            ".AmyRootUser/.preferences",
-            ".AmyRootUser/.temp",
-            ".AmyRootUser/disk",
-            ".AmyRootUser/disk/user",
-            ".AmyRootUser/disk/apps",
-            ".AmyRootUser/disk/home/recycler",
-            ".AmyRootUser/disk/home/documents",
-            ".AmyRootUser/disk/home/music",
-            ".AmyRootUser/disk/home/pictures",
-            ".AmyRootUser/disk/home/videos",
+            "./.AmyRootUser/",
+            "./.AmyRootUser/.preferences",
+            "./.AmyRootUser/.temp",
+            "./.AmyRootUser/disk",
+            "./.AmyRootUser/disk/user",
+            "./.AmyRootUser/disk/apps",
+            "./.AmyRootUser/disk/home/recycler",
+            "./.AmyRootUser/disk/home/documents",
+            "./.AmyRootUser/disk/home/music",
+            "./.AmyRootUser/disk/home/pictures",
+            "./.AmyRootUser/disk/home/videos",
         ]
         # Loop through the paths and verify their existence
         for path in DirsStructure:

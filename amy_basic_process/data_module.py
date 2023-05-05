@@ -3,8 +3,6 @@ import mysql.connector
 import os
 import random
 import json
-from dotenv import load_dotenv
-from dotenv import set_key
 from tools.data.local.kit import toolKit as localDataTools
 from tools.converters.local.kit import toolKit as localConvertersTools
 
@@ -14,7 +12,7 @@ from tools.converters.local.kit import toolKit as localConvertersTools
 
 
 conn = mysql.connector.connect(
-    host="amyassistant_mysql_1",
+    host="mysql_amy",
     port="3306",
     database="amy",
     user="root",
@@ -54,7 +52,7 @@ class Login:
                     ("LOGGED", str(True)),
                 )
                 for i in env_keys:
-                    set_key(".venv/.env", i[0], i[1])
+                    os.environ[i[0]] = i[1]
             return True, user_data
         else:
             return False, ()
@@ -78,9 +76,9 @@ class Login:
         return True
 
     def invited():
-        set_key(".venv/.env", "user_lvl", "1")
-        set_key(".venv/.env", "user_name", input("insert your name: "))
-        set_key(".venv/.env", "user_lang", input("select your language en/es: "))
+        os.environ["user_lvl"] = "1"
+        os.environ["user_name"] = input("insert your name: ")
+        os.environ["user_lang"] = input("select your language en/es: ")
         return True
 
     def user_prefix():

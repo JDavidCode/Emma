@@ -7,7 +7,6 @@ import os
 
 class Cluster:
     def __init__(self) -> None:
-        print(os.environ["DISPLAY"])
         # BASIC PROCESS IMPORTS
         self.sys = importlib.import_module("amy_basic_process.sys_v")
         self.listening = importlib.import_module("amy_basic_process.speech._listening")
@@ -73,7 +72,11 @@ class Cluster:
         thread_manager.add_thread(web_app_thread)
         # start the CommandManager thread
         thread_manager.start_thread("WebApp")
-
+        # create Trading Bot thread
+        bot_instance = self.trading.TradingSupervisor(console_manager)
+        trading_thread = Thread(target=bot_instance, daemon=True)
+        thread_manager.add_thread(trading_thread)
+        thread_manager.start_thread("TradingSupervisor")  # start  Trading thread
         time.sleep(3)
 
     def server_integrity(self):
@@ -92,8 +95,35 @@ class Cluster:
                     )
                 timer = 0
             timer += 1
+            self.console_manager.write("THREAD", "IS RUNNING")
             time.sleep(1)
 
 
 if __name__ == "__main__":
     Cluster()
+
+
+"""
+    conversation = ""
+
+    talk("Hola! Soy Amy tu asistente personal, ¿en que puedo ayudarte?")
+
+    while True:
+        question = transformar_audio_a_texto().lower()
+
+        conversation += "\nYou: " + question + "\nAmy:"
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=conversation,
+            temperature=0.5,
+            max_tokens=100,
+            top_p=0.3,
+            frequency_penalty=0.5,
+            presence_penalty=0.0,
+            stop=["\n", " You:", " Amy:"]
+        )
+        answer = response.choices[0].text.strip()
+        conversation += answer
+        print("Amy: " + answer + "\n")
+        talk(answer)
+"""

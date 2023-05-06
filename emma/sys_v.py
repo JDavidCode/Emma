@@ -9,12 +9,13 @@ import threading
 import time
 import psutil
 from tools.data.local.kit import toolKit as localDataTools
-from amy_basic_process.data_module import Login
-from amy_basic_process.cam_module import FacialRecognizer
+from interfaces.db import Login
+from cam_module import FacialRecognizer
+
 
 class SystemAwake:
     def __init__(self):
-        msc = importlib.import_module("amy_basic_process.task_module")
+        msc = importlib.import_module("emma.task_module")
         self.msc = msc.MiscellaneousModule
 
     def ruler(self):
@@ -115,12 +116,13 @@ class SystemAwake:
             userPrefix = Login.user_prefix()
             return userPrefix, text
 
+
 class MainProcess:
     def __init__(self) -> None:
         os.environ["KNOWED_THREADS"] = [str(threading.get_ident())]
-        self.listening = importlib.import_module("amy_basic_process.speech._listening")
+        self.listening = importlib.import_module("emma.speech._listening")
         self.web_app = importlib.import_module("web_server.app")
-        self.talking = importlib.import_module("amy_basic_process.speech._talking")
+        self.talking = importlib.import_module("emma.speech._talking")
         self.trading = importlib.import_module("workers.trading_bots.supervisor")
 
     def server_performance(self, threads):
@@ -148,7 +150,7 @@ class MainProcess:
         }
 
         return data
-    
+
     def server_shutdown(self):
         self.queue.get_queue("CURRENT_INPUT")
         self.console_output.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
@@ -161,31 +163,37 @@ class MainProcess:
         self.temp_clearer()
         self.remove_pycache(".")
         os._exit(0)
-        
-    def initialize_threads(self, config_file, queue_manager, console_manager, thread_manager):
+
+    def initialize_threads(
+        self, config_file, queue_manager, console_manager, thread_manager
+    ):
         queue = queue_manager
         console = console_manager
         thread_manager = thread_manager
-        
-        #Need some like yaml file 
+
+        # Need some like yaml file
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
         for dic in data:
             queue.create_queue(dic["queue"], dic["queue_maxsize"])
             func_instance = getattr(dic["module"], dic["func"])
-            thread = Thread(func_instance(queue_manager, console_manager), name=dic["thread_name"], daemon=dic["thread_is_daemon"])
-            thread_manager.add_thread(command_manager)
+            thread = threading.Thread(
+                func_instance(queue_manager, console),
+                name=dic["thread_name"],
+                daemon=dic["thread_is_daemon"],
+            )
+            thread_manager.add_thread(thread)
             if dic["autostart"]:
                 thread_manager.start_thread(dic["thread_name"])
-    
-    class amy_guardian():
-        def init(self)->None:
+
+    class amy_guardian:
+        def init(self) -> None:
             pass
-    
-    
+
+
 class BackgroundProcess:
     def __init__(self, queue_manager=None, console_output=None):
-        self.dM = importlib.import_module("amy_basic_process.data_module")
+        self.dM = importlib.import_module("emma.db")
         self.queue = queue_manager
         self.console_output = console_output
 
@@ -265,13 +273,13 @@ class BackgroundProcess:
         except:
             pass
 
+
 class ThreadManager:
     def __init__(self):
         self.threads = {}
 
     def add_thread(self, thread):
         thread_id = id(thread)
-
         self.threads[thread_id] = thread
 
     def start_thread(self, thread_name):
@@ -316,7 +324,7 @@ class ThreadManager:
     class ConsoleManager:
         def __init__(self, queue_manager):
             self.queue = queue_manager
-            msc = importlib.import_module("amy_basic_process.task_module")
+            msc = importlib.import_module("emma.task_module")
             self.msc = msc.MiscellaneousModule
             self.output_queue = queue.Queue()
             self.console_thread = threading.Thread(
@@ -345,7 +353,7 @@ class ThreadManager:
             else:
                 self.queues[name] = queue.Queue()
 
-        def add_to_queue(self, name):
+        def add_to_queue(self, name, command):
             if name not in self.queues:
                 raise ValueError(f"No queue found with name {name}")
             if self.queues[name].maxsize == 1:
@@ -365,17 +373,18 @@ class ThreadManager:
             if name not in self.queues:
                 raise ValueError(f"No queue found with name {name}")
             del self.queues[name]
-            
+
+
 class CommandsManager:
     def __init__(self, queue_manager, console_output, thread_manager):
         self.tag = "Commands Thread"
-        talk = importlib.import_module("amy_basic_process.speech._talking")
-        self.task = importlib.import_module("amy_basic_process.task_module")
+        talk = importlib.import_module("emma.speech._talking")
+        self.task = importlib.import_module("emma.task_module")
         self.local_converters = importlib.import_module("tools.converters.local.kit")
         self.local_generators = importlib.import_module("tools.generators.local.kit")
         self.local_data = importlib.import_module("tools.data.local.kit")
 
-        self.database = importlib.import_module("amy_basic_process.data_module")
+        self.database = importlib.import_module("emma.db")
         self.talk = talk
         self._TTS = talk._TTS()
         self.bp = BackgroundProcess(queue_manager, console_output)

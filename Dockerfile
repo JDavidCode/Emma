@@ -27,4 +27,4 @@ RUN Xvfb :0 -screen 0 1024x768x16 &
 RUN adduser -u 5678 --disabled-password --gecos "" amy && chown -R amy .
 USER amy
 
-CMD ["sh", "-c", "export DISPLAY=:0" && "python", "-c", "import", "pyaudio" && "gunicorn", "--bind", "0.0.0.0:1750", "core.py"]
+CMD ["sh", "-c", "export DISPLAY=:0" && "python", "-c", "import", "pyaudio" && "gunicorn", "--bind", "0.0.0.0:1750", "run.py"]

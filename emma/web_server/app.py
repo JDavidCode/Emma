@@ -3,7 +3,7 @@ import json
 import time
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO
-from amy_basic_process.task_module import MiscellaneousModule as msc
+from ..task_module import MiscellaneousModule as msc
 
 
 class WebApp:

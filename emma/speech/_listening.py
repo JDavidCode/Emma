@@ -9,8 +9,8 @@ import vosk
 
 class ListenInBack:
     def __init__(self, queue_manager, console_output):
-        self.sys = importlib.import_module("amy_basic_process.sys_v")
-        dM = importlib.import_module("amy_basic_process.data_module")
+        self.sys = importlib.import_module("emma.sys_v")
+        dM = importlib.import_module("emma.data_module")
         vosk.SetLogLevel(-1)
         pyMic = pya.PyAudio()
         lang = os.environ["USERLANG"]

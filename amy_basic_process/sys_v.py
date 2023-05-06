@@ -4,6 +4,7 @@ import sys
 import os
 import queue
 import shutil
+import yaml
 import threading
 import time
 import psutil
@@ -11,39 +12,10 @@ from tools.data.local.kit import toolKit as localDataTools
 from amy_basic_process.data_module import Login
 from amy_basic_process.cam_module import FacialRecognizer
 
-
-class awake:
+class SystemAwake:
     def __init__(self):
         msc = importlib.import_module("amy_basic_process.task_module")
         self.msc = msc.MiscellaneousModule
-
-    def run(self):
-        os.environ["USERLVL"] = "3"
-        os.environ["USERNAME"] = "Juan"
-        os.environ["USERLANG"] = "en"
-        os.environ["LOGGED"] = "True"
-        bp = BackgroundProcess()
-        bp.data_auto_updater()
-        logged = os.environ["LOGGED"]
-        os.environ["DATE"] = f"{self.msc.date_clock(2)}"
-        weather = self.msc.weather("Medellin")
-        dateTime = self.msc.date_clock(0)
-        dayPart = self.msc.day_parts()
-        text = "good {}, today is {},its {}, {}...".format(
-            dayPart, dateTime[1], dateTime[2], weather
-        )
-        if logged == "True":
-            userPrefix = Login.user_prefix()
-            return userPrefix, text
-        if SystemLogin().ruler():
-            userPrefix = Login.user_prefix()
-
-            return userPrefix, text
-
-
-class SystemLogin:
-    def __init__(self) -> None:
-        pass
 
     def ruler(self):
         i = 0
@@ -121,122 +93,35 @@ class SystemLogin:
                 else:
                     print("Error while you tryining registration")
 
-
-class ThreadManager:
-    def __init__(self):
-        self.threads = {}
-
-    def add_thread(self, thread):
-        thread_id = id(thread)
-        self.threads[thread_id] = thread
-
-    def start_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            current_thread = str(thread.name).split("(")[1].split(")")[0]
-            if current_thread == thread_name:
-                if not thread.is_alive():
-                    thread.start()
-                    return f"\n{thread_name} has been started."
-
-    def get_thread_status(self):
-        status_list = []
-        for _, thread in self.threads.items():
-            status = thread.is_alive()
-            status_list.append((thread, status))
-        return status_list
-
-    def restart_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            current_thread = str(thread.name).split("(")[1].split(")")[0]
-            if current_thread == thread_name:
-                if thread.is_alive():
-                    thread.stop()
-                    thread.join()
-                new_thread = threading.Thread(
-                    target=thread.run,
-                    args=thread._args,
-                    kwargs=thread._kwargs,
-                    daemon=thread.daemon,
-                )
-                self.threads[id(new_thread)] = new_thread
-                new_thread.start()
-                return f"\n{thread_name} has been restarted."
-        return f"\nThread '{thread_name}' not found"
-
-    # is broken thread should be an istance and have some issues
-    def stop_thread(self, thread_name):
-        self.queue.add_to_queue(f"{thread_name}_KEY", "False")
-        return
-        for _, thread in self.threads.items():
-            current_thread = str(thread.name).split("(")[1].split(")")[0]
-            if current_thread == thread_name:
-                if thread.is_alive():
-                    self.queue.add_to_queue(f"{current_thread.upper()}_KEY", "False")
-                    return f"\n{thread_name} has been stopped."
-                else:
-                    return f"\n{thread_name} is not running."
-        return f"\nThread '{thread_name}' not found."
-
-    class ConsoleManager:
-        def __init__(self, queue_manager):
-            self.queue = queue_manager
-            msc = importlib.import_module("amy_basic_process.task_module")
-            self.msc = msc.MiscellaneousModule
-            self.output_queue = queue.Queue()
-            self.console_thread = threading.Thread(
-                target=self._output_console, daemon=True
-            )
-            self.console_thread.start()
-
-        def _output_console(self):
-            while True:
-                output = self.output_queue.get()
-                self.queue.add_to_queue("CONSOLE", str(output))
-                print(f"[{self.msc.date_clock(3)}] | {output}")
-
-        def write(self, remitent, output):
-            self.output_queue.put(f"{remitent}: {output}")
-
-    class QueueManager:
-        def __init__(self):
-            self.queues = {}
-
-        def create_queue(self, name, size=None):
-            if name in self.queues:
-                raise ValueError(f"Queue with name {name} already exists")
-            if "KEY" in name:
-                self.queues[name] = queue.Queue(maxsize=1)
-                self.add_to_queue(name, "True")
-            elif size != None:
-                self.queues[name] = queue.Queue(maxsize=size)
-            else:
-                self.queues[name] = queue.Queue()
-
-        def add_to_queue(self, name, command):
-            if name not in self.queues:
-                raise ValueError(f"No queue found with name {name}")
-            if self.queues[name].maxsize == 1:
-                if not self.queues[name].empty():
-                    self.get_queue(name)
-                self.queues[name].put(command)
-            else:
-                self.queues[name].put(command)
-
-        def get_queue(self, name, out=None):
-            if out != None:
-                return self.queues[name].get(timeout=out)
-            else:
-                return self.queues[name].get()
-
-        def remove_queue(self, name):
-            if name not in self.queues:
-                raise ValueError(f"No queue found with name {name}")
-            del self.queues[name]
-
+    def run(self):
+        os.environ["USERLVL"] = "3"
+        os.environ["USERNAME"] = "Juan"
+        os.environ["USERLANG"] = "en"
+        os.environ["LOGGED"] = "True"
+        bp = BackgroundProcess()
+        bp.data_auto_updater()
+        logged = os.environ["LOGGED"]
+        os.environ["DATE"] = f"{self.msc.date_clock(2)}"
+        weather = self.msc.weather("Medellin")
+        dateTime = self.msc.date_clock(0)
+        dayPart = self.msc.day_parts()
+        text = "good {}, today is {},its {}, {}...".format(
+            dayPart, dateTime[1], dateTime[2], weather
+        )
+        if logged == "True":
+            userPrefix = Login.user_prefix()
+            return userPrefix, text
+        if self.ruler():
+            userPrefix = Login.user_prefix()
+            return userPrefix, text
 
 class MainProcess:
     def __init__(self) -> None:
-        pass
+        os.environ["KNOWED_THREADS"] = [str(threading.get_ident())]
+        self.listening = importlib.import_module("amy_basic_process.speech._listening")
+        self.web_app = importlib.import_module("web_server.app")
+        self.talking = importlib.import_module("amy_basic_process.speech._talking")
+        self.trading = importlib.import_module("workers.trading_bots.supervisor")
 
     def server_performance(self, threads):
         dateTime = datetime.datetime.now()
@@ -263,14 +148,7 @@ class MainProcess:
         }
 
         return data
-
-
-class BackgroundProcess:
-    def __init__(self, queue_manager=None, console_output=None):
-        self.dM = importlib.import_module("amy_basic_process.data_module")
-        self.queue = queue_manager
-        self.console_output = console_output
-
+    
     def server_shutdown(self):
         self.queue.get_queue("CURRENT_INPUT")
         self.console_output.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
@@ -283,9 +161,33 @@ class BackgroundProcess:
         self.temp_clearer()
         self.remove_pycache(".")
         os._exit(0)
-
-    def amy_guardian():
-        pass
+        
+    def initialize_threads(self, config_file, queue_manager, console_manager, thread_manager):
+        queue = queue_manager
+        console = console_manager
+        thread_manager = thread_manager
+        
+        #Need some like yaml file 
+        with open(config_file) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+        for dic in data:
+            queue.create_queue(dic["queue"], dic["queue_maxsize"])
+            func_instance = getattr(dic["module"], dic["func"])
+            thread = Thread(func_instance(queue_manager, console_manager), name=dic["thread_name"], daemon=dic["thread_is_daemon"])
+            thread_manager.add_thread(command_manager)
+            if dic["autostart"]:
+                thread_manager.start_thread(dic["thread_name"])
+    
+    class amy_guardian():
+        def init(self)->None:
+            pass
+    
+    
+class BackgroundProcess:
+    def __init__(self, queue_manager=None, console_output=None):
+        self.dM = importlib.import_module("amy_basic_process.data_module")
+        self.queue = queue_manager
+        self.console_output = console_output
 
     def remove_pycache(self, dir_path):
         for dir_name, subdirs, files in os.walk(dir_path):
@@ -363,7 +265,107 @@ class BackgroundProcess:
         except:
             pass
 
+class ThreadManager:
+    def __init__(self):
+        self.threads = {}
 
+    def add_thread(self, thread):
+        thread_id = id(thread)
+
+        self.threads[thread_id] = thread
+
+    def start_thread(self, thread_name):
+        for _, thread in self.threads.items():
+            if str(thread.name) == thread_name:
+                if not thread.is_alive():
+                    thread.start()
+                    return f"\n{thread_name} has been started."
+
+    def get_thread_status(self):
+        status_list = []
+        for _, thread in self.threads.items():
+            status = thread.is_alive()
+            status_list.append((thread, status))
+        return status_list
+
+    def restart_thread(self, thread_name):
+        for _, thread in self.threads.items():
+            if str(thread.name) == thread_name:
+                if thread.is_alive():
+                    self.stop_thread(thread_name)
+                    self.start_thread(thread_name)
+                    return f"\n{thread_name} has been restarted."
+                else:
+                    return f"\nThread '{thread_name}' not running"
+        return f"\nThread '{thread_name}' not found"
+
+    # is broken thread should be an istance and have some issues
+    def stop_thread(self, thread_name):
+        self.queue.add_to_queue(f"{thread_name}_KEY", "False")
+        return
+        for _, thread in self.threads.items():
+            current_thread = str(thread.name).split("(")[1].split(")")[0]
+            if current_thread == thread_name:
+                if thread.is_alive():
+                    self.queue.add_to_queue(f"{current_thread.upper()}_KEY", "False")
+                    return f"\n{thread_name} has been stopped."
+                else:
+                    return f"\n{thread_name} is not running."
+        return f"\nThread '{thread_name}' not found."
+
+    class ConsoleManager:
+        def __init__(self, queue_manager):
+            self.queue = queue_manager
+            msc = importlib.import_module("amy_basic_process.task_module")
+            self.msc = msc.MiscellaneousModule
+            self.output_queue = queue.Queue()
+            self.console_thread = threading.Thread(
+                target=self._output_console, daemon=True
+            )
+            self.console_thread.start()
+
+        def _output_console(self):
+            while True:
+                output = self.output_queue.get()
+                self.queue.add_to_queue("CONSOLE", str(output))
+                print(f"[{self.msc.date_clock(3)}] | {output}")
+
+        def write(self, remitent, output):
+            self.output_queue.put(f"{remitent}: {output}")
+
+    class QueueManager:
+        def __init__(self):
+            self.queues = {}
+
+        def create_queue(self, name, size=None):
+            if name in self.queues:
+                raise ValueError(f"Queue with name {name} already exists")
+            elif size != None:
+                self.queues[name] = queue.Queue(maxsize=size)
+            else:
+                self.queues[name] = queue.Queue()
+
+        def add_to_queue(self, name):
+            if name not in self.queues:
+                raise ValueError(f"No queue found with name {name}")
+            if self.queues[name].maxsize == 1:
+                if not self.queues[name].empty():
+                    self.get_queue(name)
+                self.queues[name].put(command)
+            else:
+                self.queues[name].put(command)
+
+        def get_queue(self, name, out=None):
+            if out != None:
+                return self.queues[name].get(timeout=out)
+            else:
+                return self.queues[name].get()
+
+        def remove_queue(self, name):
+            if name not in self.queues:
+                raise ValueError(f"No queue found with name {name}")
+            del self.queues[name]
+            
 class CommandsManager:
     def __init__(self, queue_manager, console_output, thread_manager):
         self.tag = "Commands Thread"
@@ -421,7 +423,7 @@ class CommandsManager:
             # get the function reference
             function = getattr(module, function_name)
         except Exception as e:
-            self.console_output.write(self.tag, f"{e}, first point")
+            self.console_output.write(self.tag, f"{e}, Cannot get Function Ref.")
             return
         # call the function
         try:

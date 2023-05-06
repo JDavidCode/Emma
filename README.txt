@@ -1,30 +1,10 @@
-List of Pips
-~pyttsx3
-~vosk
-~pyaudio
-~pycaw (Audio)
-~TextBlob
-~Pandas
-~NumPy
-~matplotlib
-~scipy
-~opencv-python
-~opencv-contrib-python
-~youtube-dl
-~PyAutoGUI
-~python-dotenv
-~imutils
-~img2pdf
-~unoconv
-~torch
-~transformers
-pywhatkit
+EMMA
 
-API'S
-~flask
-~flask-socketio
-~mysql-connector-python
+EMMA It is an automated module manager, aimed at everyone and for everyone for the automation of any task.
 
+EMMA has its own base modules, for its self-sustenance and work, its ability to autonomously manage any package with the AMRK Model, makes it a very powerful tool, for the industrial and domestic environment.
+
+EMMA from CoffeNow is a python based application.
 
 docker system prune -a
 docker system df

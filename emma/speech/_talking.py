@@ -6,6 +6,7 @@ import pyttsx3
 
 class Talk:
     def __init__(self, queue_manager, console_output):
+        openai.apikey = "Key"
         self.console_output = console_output
         self.tag = "Talk Thread"
         self.queue = queue_manager
@@ -15,12 +16,26 @@ class Talk:
     def run(self):
         while not self.stop_flag:
             # Wait for a command to be put in the queue
-            talking = self.queue.get_queue("TALKING")
-
-            self.console_output.write(self.tag, talking)
-            tts = _TTS()
-            tts.start(talking)
-            del tts
+            question = self.queue.get_queue("TALKING")
+                conversation = "" 
+  
+            conversation += "\nYou: " + question + "\Emma:" 
+             response = openai.Completion.create( 
+                 model="text-davinci-003", 
+                 prompt=conversation, 
+                 temperature=0.5, 
+                 max_tokens=100, 
+                 top_p=0.3, 
+                 frequency_penalty=0.5, 
+                 presence_penalty=0.0, 
+                 stop=["\n", " You:", " Emma:"] ) 
+             answer = response.choices[0].text.strip() 
+             conversation += answer 
+             self.console_output.write(self.tag, f"Emma: {answer}") 
+  
+             tts = _TTS()
+             tts.start(conversation)
+             del tts
 
     def stop(self):
         self.stop_flag = True

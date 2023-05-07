@@ -1,0 +1,26 @@
+defaults:
+  con:
+    host: EMMA_MYSQL
+    database: 'MyDB'
+    user: root
+    password: root
+ 
+  modules: 
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+  
+  speech_recognition:
+    listening:
+      language: 'en'
+      model: 'my/Model'
+    talking:
+      language: 'en'
+      model: 'my/model'
+      rate: 125
+      volume: 1
+    
+      

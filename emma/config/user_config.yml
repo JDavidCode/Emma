@@ -1,0 +1,13 @@
+user:
+  name: 'USERNAME'
+  age: 100
+  language: 'en'
+  level: 10
+
+preferences:
+  stay_signed_in: True
+  manage_os: True
+  performance: 'HIGH'
+  max_ram: 2048
+  clear_temp: True
+  max_cache: 'AUTO'

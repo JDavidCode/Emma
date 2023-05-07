@@ -13,5 +13,6 @@ flask
 flask_socketio
 mysql-connector-python
 imutils
+pyyaml
 img2pdf
 psutil

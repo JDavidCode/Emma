@@ -24,7 +24,7 @@ class Cluster:
         thread_manager = self.thread_manager
         queue_manager = self.queue_manager
         console_manager = self.console_manager
-        config_file = None
+        config_file = "emma/config/config.yml"
         self.sys.MainProcess().initialize_threads(
             config_file, queue_manager, console_manager, thread_manager
         )

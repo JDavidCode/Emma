@@ -3,7 +3,7 @@ import string
 import secrets
 
 
-class toolkit:
+class ToolKit:
     def __init__(self) -> None:
         pass
 

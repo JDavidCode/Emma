@@ -9,13 +9,13 @@ import importlib
 import sys
 
 
-class toolKit:
+class ToolKit:
     def __init__(self):
         sys.path.append('../amyassistant')
         _localDataTools = importlib.import_module(
             'tools.data.local.kit')
 
-        self.localDataTools = _localDataTools.toolKit
+        self.localDataTools = _localDataTools.ToolKit
 
     def convert_image(input_file, output_file):
         # Open the input image
@@ -100,7 +100,7 @@ class toolKit:
                 filename = self.localDataTools.filenameTarget(filename)
                 input_path = os.path.join(input_path, filename)
                 output_path = os.path.join(output_path, filename + '.pdf')
-                toolKit.convert_to_pdf(input_path, output_path)
+                ToolKit.convert_to_pdf(input_path, output_path)
 
         # Convert the PDFs to images
         for filename in os.listdir(output_path):
@@ -108,8 +108,8 @@ class toolKit:
                 input_path = os.path.join(output_path, filename)
                 output_path = os.path.join(
                     output_path, filename[:-4] + '.png')
-                toolKit.convert_to_image(input_path, output_path)
-                toolKit.resize_image(output_path, output_path)
+                ToolKit.convert_to_image(input_path, output_path)
+                ToolKit.resize_image(output_path, output_path)
 
     def to_json(data):
         json_data = json.dumps(data)

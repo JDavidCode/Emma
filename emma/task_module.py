@@ -8,7 +8,7 @@ import time
 import webbrowser
 
 # ImportedPythonLibraries
-from tools.data.local.kit import toolKit as localDataTools
+import emma.config.globals as EMMA_GLOBALS
 
 #################################################################################
 
@@ -27,7 +27,7 @@ class WebModule:
         """
 
     def open_website(index):
-        json = localDataTools.json_loader(
+        json = EMMA_GLOBALS.tools_da.json_loader(
             "assets/json/web_sites.json", "web_dir", "dict"
         )
         for i in json.keys():
@@ -44,7 +44,7 @@ class OsModule:
         pass
 
     def open_app(index):
-        json = localDataTools.json_loader(
+        json = EMMA_GLOBALS.tools_da.json_loader(
             "assets/json/app_directory.json", "app_dir", "dict"
         )
         for i in json.keys():
@@ -53,7 +53,7 @@ class OsModule:
                 os.startfile(get)
 
     def path_mover():
-        diccionary = localDataTools.json_loader(
+        diccionary = EMMA_GLOBALS.tools_da.json_loader(
             "assets/json/path_directory.json", "amy_paths", "dict"
         )
         downFolder = diccionary.get("downloads")
@@ -156,11 +156,6 @@ class MiscellaneousModule:
     class GeoLocation:
         def __init__(self) -> None:
             pass
-
-
-class MathModule:
-    def __init__(self):
-        pass
 
 
 if __name__ == "__main__":

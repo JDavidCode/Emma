@@ -1,25 +1,27 @@
+import logging
 import os
 import json
-import time
+import threading
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO
-from ..task_module import MiscellaneousModule as msc
+import emma.config.globals as EMMA_GLOBALS
 
 
 class WebApp:
-    def __init__(self, queue_manager, console_output):
+    def __init__(self, queue_manager, console_manager):
         self.app = Flask(__name__)
         self.history = self.json_history()
         self.queue = queue_manager
-        self.console_output = console_output
+        self.event = threading.Event()
+        self.console_output = console_manager
         self.tag = "WEB_APP Thread"
         self.socketio = SocketIO(self.app)
-        self.register_routes()
-        self.host()
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
 
     def json_history(self):
-        date = msc.date_clock(2)
-        history = f"web_server\\json\\{date}.json"
+        date = EMMA_GLOBALS.task_msc.date_clock(2)
+        history = f"emma/web_server/history/{date}.json"
         if not os.path.exists(history):
             # Create the directory if it doesn't exist
             with open(history, "w") as f:
@@ -28,6 +30,8 @@ class WebApp:
         return history
 
     def register_routes(self):
+        self.event.wait()
+
         @self.app.route("/")
         def home():
             return render_template("index.html")
@@ -64,11 +68,11 @@ class WebApp:
             json_data = json.load(f)
             try:
                 data = self.queue.get_queue("CONSOLE", 1)
-                json_data[f"{msc.date_clock(3)}"] = data
+                json_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
                 with open(self.history, "w") as f:
                     j = json.dumps(json_data, indent=4)
                     f.write(j)
-                j_data[f"{msc.date_clock(3)}"] = data
+                j_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
             except:
                 pass
 
@@ -76,12 +80,21 @@ class WebApp:
             # emit the data to the client
             self.socketio.emit("get_console", j_data)
 
-    def host(self):
+    def main(self):
+        self.event.wait()
+        self.register_routes()
+
         try:
             self.socketio.run(self.app, port=3018)
             self.console_output.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
             self.console_output.write(self.tag, str(e))
+
+    def run(self):
+        self.event.set()
+
+    def stop(self):
+        self.stop_flag = True
 
 
 if __name__ == "__main__":

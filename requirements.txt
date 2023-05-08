@@ -16,3 +16,4 @@ imutils
 pyyaml
 img2pdf
 psutil
+openai

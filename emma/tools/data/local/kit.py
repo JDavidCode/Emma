@@ -2,7 +2,7 @@ import json
 import re
 
 
-class toolKit:
+class ToolKit:
     def __init__(self):
         pass
 
@@ -47,10 +47,10 @@ class toolKit:
     def format_target(filename, pandoc):
         json = 0
         if (pandoc):
-            json = toolKit.jsonLoader(
+            json = ToolKit.jsonLoader(
                 "assets\\json\\extensions.json", "PANDOC_FORMATS", "list")
         else:
-            json = toolKit.jsonLoader(
+            json = ToolKit.jsonLoader(
                 "assets\\json\\extensions.json", "FORMATS", "dict")
         for i in json:
             if filename.endswith(f".{i}"):

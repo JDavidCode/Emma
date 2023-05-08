@@ -1,25 +1,8 @@
-CREATE DATABASE IF NOT EXISTS amy;
+CREATE DATABASE IF NOT EXISTS emma;
 
-USE amy;
+USE emma;
 
 DROP TABLE IF EXISTS `chatdata`;
-
-CREATE TABLE `chatdata` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `class` text NOT NULL,
-  `input` text,
-  `ans` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `chatdata`
---
-
-LOCK TABLES `chatdata` WRITE;
-INSERT INTO `chatdata` VALUES (1,'greetings','hello','hello'),(2,'greetings','hey','hi'),(3,'greetings','whats up','hey'),(4,'greetings','are you here','hows it going'),(5,'afirmations','','yes'),(6,'afirmations','','sure'),(7,'afirmations','','okey'),(8,'afirmations','','done'),(9,'negations','','not'),(10,'negations','','dont'),(11,'negations','','never');
-UNLOCK TABLES;
-
 
 --
 -- Table structure for table `functions`

@@ -1,17 +1,60 @@
 defaults:
   con:
-    host: EMMA_MYSQL
-    database: 'MyDB'
+    host: mysql_emma
+    database: emma
     user: root
     password: root
  
   modules: 
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
-    {queue: queuename, queue_maxsize: 0, module: myModule, func: myFunc, thread_name: myThreaName, thread_is_daemon: True, autostart: True}
+    - queue: COMMANDS
+      queue_maxsize: 0
+      ref: sys_v_cm
+      args: 
+        - queue
+        - console
+        - thread
+      thread_name: T0_COMMANDS
+      thread_is_daemon: True
+      autostart: True
+
+    - queue: TALKING
+      queue_maxsize: 0
+      ref: interfaces_comunication_tg
+      args: 
+        - queue
+        - console
+      thread_name: T1_TALKING
+      thread_is_daemon: True
+      autostart: True
+    
+    - queue: null
+      queue_maxsize: 0
+      ref: interfaces_comunication_lg
+      args: 
+        - queue
+        - console
+      thread_name: T1_LISTENING
+      thread_is_daemon: True
+      autostart: False
+
+    - queue: SERVERDATA
+      queue_maxsize: 1
+      ref: web_server
+      args: 
+        - queue
+        - console
+      thread_name: T0_WEB_SERVER
+      thread_is_daemon: False
+      autostart: True
+
+
+  queues:
+    - queue: CURRENT_INPUT
+      queue_maxsize: 1
+    - queue: ISTK
+      queue_maxsize: 1
+    - queue: CONSOLE
+      queue_maxsize: 0
   
   speech_recognition:
     listening:
@@ -22,5 +65,3 @@ defaults:
       model: 'my/model'
       rate: 125
       volume: 1
-    
-      

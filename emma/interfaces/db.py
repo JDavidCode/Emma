@@ -3,18 +3,17 @@ import mysql.connector
 import os
 import random
 import json
-from tools.data.local.kit import toolKit as localDataTools
-from tools.converters.local.kit import toolKit as localConvertersTools
 
 # ImportedPythonLibraries
+import emma.config.globals as EMMA_GLOBALS
 
 #################################################################################
 
 
 conn = mysql.connector.connect(
-    host="mysql_amy",
-    port="3306",
-    database="amy",
+    host="localhost",
+    port="3307",
+    database="emma",
     user="root",
     password="root",
 )
@@ -40,8 +39,9 @@ class Login:
             genre = result[6]
             user_lang = result[7]
             rut = f".temp/face_{user_name}.zip"
-            localConvertersTools.unbinary(result[8], rut)
-            localConvertersTools.unzipper([(f".temp/face_{user_name}.zip", ".temp/")])
+            EMMA_GLOBALS.tools_da.unbinary(result[8], rut)
+            EMMA_GLOBALS.tools_cs.unzipper(
+                [(f".temp/face_{user_name}.zip", ".temp/")])
             user_data = user_id, user_lvl, user_name, age, genre
             logged = os.getenv("LOGGED")
             if logged == "False":
@@ -68,7 +68,7 @@ class Login:
 
         # insert new user
         sql = "INSERT INTO users (lvl, name, email, password, age, genre, lang, data) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        data = localConvertersTools.to_binary(data)
+        data = EMMA_GLOBALS.tools_cs.to_binary(data)
         values = ("0", name, email, password, age, genre, lang, data)
         cursor.execute(sql, values)
         print("Registering user, please wait...")
@@ -105,12 +105,12 @@ class Login:
             return invited
 
 
-class AmyData:
+class EmmaData:
     def __init__(self):
         pass
 
     def json_task_updater():
-        directory = "assets/json/command_directory.json"
+        directory = "emma/assets/json/command_directory.json"
         sql = "SELECT caller,function_name, module, args_key, arguments, required_lvl FROM functions"
         cursor.execute(sql)
         # parsing sql
@@ -158,7 +158,7 @@ class AmyData:
                 cursor.execute(sql, indexer)
                 for row in cursor:
                     e_ans.append(row[3])
-                e_ans = localDataTools.item_list_remover(index, e_ans)
+                e_ans = EMMA_GLOBALS.tools_da.item_list_remover(index, e_ans)
                 x = len(e_ans) - 1
                 ran = random.randint(0, x)
                 e_ans = e_ans[ran]

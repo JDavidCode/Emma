@@ -16,10 +16,14 @@ RUN python -m pip install pyaudio==0.2.11
 RUN python -m pip install --upgrade pip
 RUN python -m  pip install --upgrade setuptools
 RUN python -m pip install -r requirements.txt
-WORKDIR /Amy
-COPY . /Amy
+WORKDIR /emma
+COPY . /emma
 
-ENV DISPLAY=:0
+ENV host mysql_emma
+ENV database emma
+ENV user root
+ENV password root
+ENV DISPLAY :0
 RUN Xvfb :0 -screen 0 1024x768x16 &
 
 # Creates a non-root user with an explicit UID and adds permission to access the \\app folder

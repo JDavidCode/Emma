@@ -100,7 +100,7 @@ class SystemAwake:
         os.environ["LOGGED"] = "True"
         bp = BackgroundProcess()
         bp.data_auto_updater()
-        logged = os.environ["LOGGED"]
+        logged = os.environ.get("LOGGED")
         os.environ["DATE"] = f"{msc.date_clock(2)}"
         weather = msc.weather("Medellin")
         dateTime = msc.date_clock(0)
@@ -166,28 +166,27 @@ class MainProcess:
             if "queue" in args and "console" in args and "thread" in args:
                 func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
                     queue_manager=queue, console_manager=console, thread_manager=thread)
-                func_instances[dic["ref"]] = func_instance
+                func_instances[dic["thread_name"]] = func_instance
 
             elif "queue" in args and "console" in args:
-                console.write("DN", "Second_Instance")
                 func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
                     queue_manager=queue, console_manager=console)
-                func_instances[dic["ref"]] = func_instance
+                func_instances[dic["thread_name"]] = func_instance
 
             elif "queue" in args:
-                func_instances = getattr(EMMA_GLOBALS, dic["ref"])(
+                func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
                     queue_manager=queue)
-                func_instances[dic['ref']] = func_instances
+                func_instances[dic['thread_name']] = func_instance
 
             elif "console" in args:
                 func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
                     console_manager=console)
-                func_instances[dic["ref"]] = func_instance
+                func_instances[dic["thread_name"]] = func_instance
 
             else:
                 func_instance = getattr(
                     EMMA_GLOBALS, dic["ref"])()
-                func_instances[dic["ref"]] = func_instance
+                func_instances[dic["thread_name"]] = func_instance
 
             thread_name = dic.get("thread_name")
             thread_is_daemon = dic.get("thread_is_daemon", False)
@@ -347,14 +346,12 @@ class ThreadManager:
 
     # is broken thread should be an istance and have some issues
     def stop_thread(self, thread_name):
-        self.queue.add_to_queue(f"{thread_name}_KEY", "False")
-        return
         for _, thread in self.threads.items():
-            current_thread = str(thread.name).split("(")[1].split(")")[0]
-            if current_thread == thread_name:
+            if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    self.queue.add_to_queue(
-                        f"{current_thread.upper()}_KEY", "False")
+                    thread_instance = EMMA_GLOBALS.thread_instances.get(
+                        thread_name)
+                    thread_instance.stop()
                     return f"\n{thread_name} has been stopped."
                 else:
                     return f"\n{thread_name} is not running."
@@ -385,7 +382,10 @@ class ThreadManager:
 
         def get_queue(self, name, out=None):
             if out != None:
-                return self.queues[name].get(timeout=out)
+                try:
+                    return self.queues[name].get(timeout=out)
+                except:
+                    return None
             else:
                 return self.queues[name].get()
 
@@ -424,16 +424,6 @@ class CommandsManager:
         self.event = threading.Event()
         self.console_manager = console_manager
         self.thread_manager = thread_manager
-        self.modules = {
-            "bp": EMMA_GLOBALS.sys_v_bp,
-            "talk": EMMA_GLOBALS.interfaces_comunication_tg,
-            "task.MiscellaneousModule": EMMA_GLOBALS.task_msc,
-            "task.WebModule": EMMA_GLOBALS.task_web,
-            "task.OsModule": EMMA_GLOBALS.task_os,
-            "converters": EMMA_GLOBALS.tools_cs,
-            "data": EMMA_GLOBALS.tools_da,
-            "thread": EMMA_GLOBALS.sys_v_tm
-        }
 
     def main(self):
         module = ""
@@ -444,16 +434,13 @@ class CommandsManager:
 
             _, args, command = self.command_indexer(command_keyword)
             if _:
-
-                for i in self.modules.keys():
-                    if command["module"] == i:
-                        module = self.modules[i]
+                module = getattr(EMMA_GLOBALS, command.get('module'))
                 # Execute the command
                 if args != None:
                     self.execute_command(
-                        module, command["function_name"], args)
+                        module, command.get('function_name'), args)
                 else:
-                    self.execute_command(module, command["function_name"])
+                    self.execute_command(module, command.get('function_name'))
             else:
                 # self.queue.add_to_queue("ISTK", False)
                 continue

@@ -10,20 +10,24 @@ import vosk
 class VoiceListener:
     def __init__(self, queue_manager, console_manager):
         vosk.SetLogLevel(-1)
-        pyMic = pya.PyAudio()
+
         lang = os.environ.get("USERLANG")
-        print(lang)
-        model = vosk.Model(
-            "emma/assets/models/vosk_models/{}-model".format(lang))
         self.user_lvl = os.environ.get("USERLVL")
-        self.rec = vosk.KaldiRecognizer(model, 16000)
-        self.stream = pyMic.open(
-            format=pya.paInt16,
-            channels=1,
-            rate=16000,
-            input=True,
-            frames_per_buffer=8192,
-        )
+        try:
+            pyMic = pya.PyAudio()
+            model = vosk.Model(
+                "emma/assets/models/vosk_models/{}-model".format(lang))
+            self.rec = vosk.KaldiRecognizer(model, 16000)
+            self.stream = pyMic.open(
+                format=pya.paInt16,
+                channels=1,
+                rate=16000,
+                input=True,
+                frames_per_buffer=8192,
+            )
+        except Exception as e:
+            print(f"Unnable to initialize VoiceInstace ERROR: {e}")
+            self.exit()
         self.console_manager = console_manager
         self.tag = "Voice Thread"
         self.queue = queue_manager
@@ -58,6 +62,9 @@ class VoiceListener:
 
     def stop(self):
         self.stop_flag = True
+
+    def exit(self):
+        return
 
 
 if __name__ == "__main__":

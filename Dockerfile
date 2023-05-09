@@ -24,7 +24,7 @@ ENV database emma
 ENV user root
 ENV password root
 ENV DISPLAY :0
-RUN Xvfb :0 -screen 0 1024x768x16 &
+RUN Xvfb :0 -screen 0 1024x768x16 &	
 
 # Creates a non-root user with an explicit UID and adds permission to access the \\app folder
 # For more info, please refer to https:\\\\aka.ms\\vscode-docker-python-configure-containers

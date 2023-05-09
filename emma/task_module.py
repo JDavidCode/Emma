@@ -36,7 +36,7 @@ class WebModule:
                 webbrowser.open(get)
 
     def open_local_site():
-        webbrowser.open("http://192.168.1.3:3018/")
+        webbrowser.open("http://localhost:3018/")
 
 
 class OsModule:

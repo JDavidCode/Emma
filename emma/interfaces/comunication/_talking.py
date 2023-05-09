@@ -18,8 +18,9 @@ class Talking:
         self.event.wait()
         while not self.stop_flag:
             # Wait for a command to be put in the queue
-            question = self.queue.get_queue("TALKING")
-
+            question = self.queue.get_queue("TALKING", 1)
+            if question == None:
+                continue
             if self.queue.get_queue("ISTK", 1):
                 conversation = ""
 

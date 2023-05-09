@@ -10,20 +10,6 @@ import emma.config.globals as EMMA_GLOBALS
 #################################################################################
 
 
-conn = mysql.connector.connect(
-    host="localhost",
-    port="3307",
-    database="emma",
-    user="root",
-    password="root",
-)
-
-cursor = conn.cursor()
-if conn.is_connected():
-    info_server = conn.get_server_info()
-    print("Server version ", info_server)
-
-
 class Login:
     def user_login(email, password):
         indexer = (email, password)
@@ -107,9 +93,34 @@ class Login:
 
 class EmmaData:
     def __init__(self):
-        pass
+        self.connect()
+
+    def connect(self):
+        global cursor
+        global conn
+        try:
+            conn = mysql.connector.connect(
+                host="localhost",
+                port="3307",
+                database="emma",
+                user="root",
+                password="root",
+            )
+
+            cursor = conn.cursor()
+            if conn.is_connected():
+                info_server = conn.get_server_info()
+                print("Server version ", info_server)
+            else:
+                print("Cannot Connect To the server ")
+        except Exception as e:
+            print(
+                f"An error ocurred while triying to connect to the database {e} \n the server continue running but some functions can be stops")
+            os.environ['SQL_CONNECTION'] = False
 
     def json_task_updater():
+        if not os.environ.get('SQL_CONNECTION'):
+            return
         directory = "emma/assets/json/command_directory.json"
         sql = "SELECT caller,function_name, module, args_key, arguments, required_lvl FROM functions"
         cursor.execute(sql)
@@ -145,29 +156,9 @@ class EmmaData:
         with open(directory, "w") as f:
             f.write(json_data)
 
-    def chat_indexer(index):
-        indexer = (index,)
-        e_ans = []
-        sql = "SELECT * FROM chatdata WHERE input=%s"
-        cursor.execute(sql, indexer)
-        for row in cursor:
-            i_class = row[1]
-            if i_class != None:
-                indexer = (i_class,)
-                sql = "SELECT * FROM chatdata WHERE class=%s"
-                cursor.execute(sql, indexer)
-                for row in cursor:
-                    e_ans.append(row[3])
-                e_ans = EMMA_GLOBALS.tools_da.item_list_remover(index, e_ans)
-                x = len(e_ans) - 1
-                ran = random.randint(0, x)
-                e_ans = e_ans[ran]
-                return e_ans
-            else:
-                return index
-        return index
-
     def data_writer():
+        if not os.environ.get('SQL_CONNECTION'):
+            return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")
         if table_i not in table_list:
@@ -190,6 +181,8 @@ class EmmaData:
         print("Data has been uploaded")
 
     def data_updater():
+        if not os.environ.get('SQL_CONNECTION'):
+            return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")
         if table_i not in table_list:
@@ -214,6 +207,8 @@ class EmmaData:
         print("Data has been updated")
 
     def data_remover():
+        if not os.environ.get('SQL_CONNECTION'):
+            return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")
         if table_i not in table_list:

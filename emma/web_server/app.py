@@ -11,9 +11,9 @@ class WebApp:
     def __init__(self, queue_manager, console_manager):
         self.app = Flask(__name__)
         self.history = self.json_history()
+        self.console_manager = console_manager
         self.queue = queue_manager
         self.event = threading.Event()
-        self.console_output = console_manager
         self.tag = "WEB_APP Thread"
         self.socketio = SocketIO(self.app)
         log = logging.getLogger('werkzeug')
@@ -68,11 +68,12 @@ class WebApp:
             json_data = json.load(f)
             try:
                 data = self.queue.get_queue("CONSOLE", 1)
-                json_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
-                with open(self.history, "w") as f:
-                    j = json.dumps(json_data, indent=4)
-                    f.write(j)
-                j_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
+                if data != None:
+                    json_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
+                    with open(self.history, "w") as f:
+                        j = json.dumps(json_data, indent=4)
+                        f.write(j)
+                    j_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
             except:
                 pass
 
@@ -86,9 +87,9 @@ class WebApp:
 
         try:
             self.socketio.run(self.app, port=3018)
-            self.console_output.write(self.tag, "WEB SERVER LOADED")
+            self.console_manager.write(self.tag, "WEB SERVER LOADED")
         except Exception as e:
-            self.console_output.write(self.tag, str(e))
+            self.console_manager.write(self.tag, str(e))
 
     def run(self):
         self.event.set()

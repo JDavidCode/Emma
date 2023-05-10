@@ -3,16 +3,23 @@ import threading
 import pyttsx3
 import openai
 # ATTENTION POSSIBLE CHANGE FROMM PYRRSX3 TO ESPEAK-NG
+global conversation
 
 
 class Talking:
     def __init__(self, queue_manager, console_manager):
-        self.gpt = openai.api_key = "<YOUR APY KEY FROM OPENAI ACCOUNT>"
+        openai.api_key = "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"
         self.console_manager = console_manager
         self.tag = "Talk Thread"
         self.queue = queue_manager
         self.stop_flag = False
         self.event = threading.Event()
+        openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Emma is a great help and can Assist with anything, She was created by Juan Anaya The Owner of CoffeNow Systems"}],
+            max_tokens=10,
+            temperature=0)
 
     def main(self):
         self.event.wait()
@@ -21,26 +28,21 @@ class Talking:
             question = self.queue.get_queue("TALKING", 1)
             if question == None:
                 continue
-            if self.queue.get_queue("ISTK", 1):
-                conversation = ""
+            else:
+                key = self.queue.get_queue("ISTK", 1)
+                if key:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "user", "content": f"{question}"}],
+                        max_tokens=150,
+                        temperature=0)
+                    answer = response["choices"][0]["message"]["content"]
+                    self.console_manager.write(self.tag, f"Emma: {answer}")
 
-                conversation += "\nYou: " + question + "\Emma:"
-                response = openai.Completion.create(
-                    model="text-davinci-003",
-                    prompt=conversation,
-                    temperature=0.5,
-                    max_tokens=50,
-                    top_p=1,
-                    frequency_penalty=0,
-                    presence_penalty=0.6,
-                    stop=["\n", " You:", " Emma:"])
-                answer = response.choices[0].text.strip()
-                conversation += answer
-                self.console_manager.write(self.tag, f"Emma: {answer}")
-
-                tts = _TTS()
-                tts.start(conversation)
-                del tts
+                    tts = _TTS()
+                    tts.start(answer)
+                    del tts
 
     def run(self):
         self.event.set()
@@ -57,6 +59,7 @@ class _TTS:
         self.lang = os.environ["USERLANG"]
         self.engine = pyttsx3.init()
         self.engVoice = self.engine.getProperty("voices")
+        self.engine_voice_config()
 
     def start(self, text_):
         self.engine.say(text_)
@@ -66,7 +69,7 @@ class _TTS:
         if self.lang == "en":
             self.engine.setProperty("voice", self.engVoice[1].id)
         elif self.lang == "es":
-            self.engine.setProperty("voice", self.engVoice[2].id)
+            self.engine.setProperty("voice", self.engVoice[0].id)
         else:
             print("A voice language is null please enter the index")
             for i in self.engVoice:

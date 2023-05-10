@@ -91,7 +91,7 @@ setInterval(function () {
     socket.emit('get_data');
   }
   consoleFlag = !consoleFlag;
-}, 500);
+}, 100);
 
 
 

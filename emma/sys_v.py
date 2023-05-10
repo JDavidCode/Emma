@@ -442,7 +442,6 @@ class CommandsManager:
                 else:
                     self.execute_command(module, command.get('function_name'))
             else:
-                # self.queue.add_to_queue("ISTK", False)
                 continue
 
     def execute_command(self, module, function_name, args=None):
@@ -464,6 +463,7 @@ class CommandsManager:
 
             self.console_manager.write(
                 self.tag, f"{function_name} has been execute")
+            self.queue.add_to_queue("ISTK", False)
         except Exception as e:
             self.console_manager.write(
                 self.tag, f"{function_name} failed or is unknown: {e}"
@@ -483,6 +483,7 @@ class CommandsManager:
             # args = self.args_identifier(args)
             return True, args, diccionary
         else:
+            self.queue.add_to_queue("ISTK", True)
             return False, args, {}
 
     def args_identifier(self, args):

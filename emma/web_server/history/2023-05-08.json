@@ -332,4 +332,3 @@
     "15:42:18": "Main Thread: <Thread(T0_COMMANDS, started daemon 11912)> is active: True",
     "15:43:08": "Main Thread: <Thread(T1_LISTENING, initial daemon)> is active: False"
 }
-}

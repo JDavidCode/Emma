@@ -35,7 +35,7 @@ defaults:
         - console
       thread_name: T1_LISTENING
       thread_is_daemon: True
-      autostart: False
+      autostart: True
 
     - queue: SERVERDATA
       queue_maxsize: 1

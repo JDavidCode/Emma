@@ -36,22 +36,18 @@ class VoiceListener:
 
     def main(self):
         self.event.wait()
-        self.stream.start_stream()
         while not self.stop_flag:
+            self.stream.start_stream()
             rec = self.stream.read(4000, exception_on_overflow=False)
             if self.rec.AcceptWaveform(rec):
                 result = self.rec.Result()
                 result = result[14:-3].lower()
                 if result != "":
                     self.console_manager.write(self.tag, result)
-                    if "amy" in result:
-                        result = result.replace("emma", "")
-                        if result == "" or result == " ":
-                            continue
-                        if result[0] == " ":
-                            result = result[1:]
-                        if result[len(result) - 1] == " ":
-                            result = result[:-1]
+                    if "emma" in result:
+                        result = result.replace("emma", "").strip().lower()
+                        result = result
+                        self.console_manager.write(self.tag, result)
                         self.queue.add_to_queue("COMMANDS", result)
                         self.queue.add_to_queue("CURRENT_INPUT", result)
 

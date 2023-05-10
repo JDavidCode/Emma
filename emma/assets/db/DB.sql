@@ -20,142 +20,21 @@ CREATE TABLE `functions` (
 --
 LOCK TABLES `functions` WRITE;
 INSERT INTO `functions`
-VALUES (1, 'bp', 'server_shutdown', 'None', ' ', 'rest', 1),
-(
-    2,
-    'talk._TTS',
-    'engine_voice_config',
-    'None',
-    ' ',
-    'configure your voice',
-    1
-  ),
-(
-    3,
-    'bp',
-    'module_reloader',
-    '*args',
-    '',
-    'charge module',
-    2
-  ),
-(
-    4,
-    'task.OsModule',
-    'volume_management',
-    '*args',
-    '',
-    'loudness',
-    1
-  ),
-(
-    5,
-    'thread',
-    'start_thread',
-    '*args',
-    ' ',
-    'activate thread',
-    1
-  ),
-(
-    6,
-    'thread',
-    'stop_thread',
-    '*args',
-    ' ',
-    'stop thread',
-    1
-  ),
-(
-    7,
-    'thread',
-    'restart_thread',
-    '*args',
-    ' ',
-    'reload thread',
-    1
-  ),
-(
-    8,
-    'task.MiscellaneousModule',
-    'weather',
-    'args',
-    '1',
-    'weather',
-    0
-  ),
-(
-    9,
-    'task.MiscellaneousModule',
-    'date_clock',
-    'args',
-    '2',
-    'day is',
-    0
-  ),
-(
-    10,
-    'task.MiscellaneousModule',
-    'day_parts',
-    'None',
-    '',
-    'part of the day',
-    0
-  ),
-(
-    11,
-    'task.MiscellaneousModule',
-    'date_clock',
-    'args',
-    '3',
-    'time',
-    0
-  ),
-(
-    12,
-    'task.WebModule',
-    'youtube_player',
-    '*args',
-    ' ',
-    'lets play',
-    1
-  ),
-(
-    13,
-    'task.WebModule',
-    'google_search',
-    '*args',
-    ' ',
-    'search about',
-    1
-  ),
-(
-    14,
-    'task.WebModule',
-    'open_website',
-    '*args',
-    ' ',
-    'open website',
-    1
-  ),
-(
-    15,
-    'task.WebModule',
-    'open_local_site',
-    'None',
-    ' ',
-    'open web console',
-    1
-  ),
-(
-    16,
-    'task.OsModule',
-    'open_app',
-    'args',
-    '1',
-    'open app',
-    1
-  );
+VALUES (1, 'sys_v_bp','server_shutdown','None',' ','rest',1),
+	 (2, 'sys_v_tm','start_thread','*args',' ','activate thread',1),
+	 (3, 'sys_v_tm','stop_thread','*args',' ','stop thread',1),
+	 (4, 'sys_v_tm','restart_thread','*args',' ','reload thread',1),
+	 (5, 'sys_v_bp','module_reloader','*args','','charge module',2),
+	 (20, 'task_os','open_app','args','1','open app',1),
+	 (21, 'task_os','volume_management','*args',' ','loudness',1),
+	 (40, 'task_msc','weather','args','1','weather',0),
+	 (41, 'task_msc','date_clock','args','2','day is',0),	
+	 (42, 'task_msc','day_parts','None','','part of the day',0),
+	 (43, 'task_msc','date_clock','args','3','time',0),
+	 (60, 'task_web','youtube_player','*args',' ','lets play',1),
+	 (61, 'task_web','google_search','*args',' ','search about',1),
+	 (62, 'task_web','open_website','*args',' ','open website',1),
+	 (63, 'task_web','open_local_site','None',' ','open web console',1);
 UNLOCK TABLES;
 --
 -- Table structure for table `users`

@@ -6,7 +6,7 @@
 			"label": "docker-build",
 			"platform": "python",
 			"dockerBuild": {
-				"tag": "amyassistant:latest",
+				"tag": "emma:latest",
 				"dockerfile": "${workspaceFolder}/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
@@ -21,10 +21,10 @@
 			"python": {
 				"args": [
 					"runserver",
-					"0.0.0.0:1750", //<- Change the number after the colon
+					"0.0.0.0:1750",
 					"--nothreading",
 					"--noreload"
-					],
+				],
 				"file": "core.py"
 			}
 		}

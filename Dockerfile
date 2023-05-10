@@ -16,19 +16,12 @@ RUN python -m pip install pyaudio==0.2.11
 RUN python -m pip install --upgrade pip
 RUN python -m  pip install --upgrade setuptools
 RUN python -m pip install -r requirements.txt
+
 WORKDIR /emma
 COPY . /emma
 
-ENV host mysql_emma
-ENV database emma
-ENV user root
-ENV password root
-ENV DISPLAY :0
-RUN Xvfb :0 -screen 0 1024x768x16 &	
+ENV FLASK_APP emma/web_server/app.py
+ENV FLASK_ENV development
+EXPOSE 3018
 
-# Creates a non-root user with an explicit UID and adds permission to access the \\app folder
-# For more info, please refer to https:\\\\aka.ms\\vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" amy && chown -R amy .
-USER amy
-
-CMD ["sh", "-c", "export DISPLAY=:0" && "python", "-c", "import", "pyaudio" && "gunicorn", "--bind", "0.0.0.0:1750", "run.py"]
+CMD ["sh", "-c", "python -c 'import pyaudio' && python run.py"]

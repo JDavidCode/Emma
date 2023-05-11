@@ -121,7 +121,7 @@ class EmmaData:
     def json_task_updater():
         if not os.environ.get('SQL_CONNECTION'):
             return
-        directory = "emma/assets/json/command_directory.json"
+        directory = EMMA_GLOBALS.stcpath_command_dir
         sql = "SELECT caller,function_name, module, args_key, arguments, required_lvl FROM functions"
         cursor.execute(sql)
         # parsing sql

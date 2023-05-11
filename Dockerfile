@@ -10,8 +10,7 @@ ENV PYTHONUNBUFFERED=1
 # Install pip requirements
 COPY requirements.txt .
 
-# CV2 Dependencies
-RUN apt-get update && apt-get install ffmpeg libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 xvfb python3-pip xauth libespeak-dev -y 
+RUN apt-get update && apt-get install ffmpeg libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 xvfb python3-pip xauth python3-tk python3-dev -y 
 RUN python -m pip install pyaudio==0.2.11
 RUN python -m pip install --upgrade pip
 RUN python -m  pip install --upgrade setuptools

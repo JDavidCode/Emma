@@ -8,10 +8,10 @@ import emma.config.globals as EMMA_GLOBALS
 
 dataPath = ".temp"
 idPath = ".temp/face/{}_face.xml"
-cascade = "emma/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
 userList = os.listdir(dataPath)
 user = ""
-faceClassifier = cv2.CascadeClassifier(cascade)
+faceClassifier = cv2.CascadeClassifier(
+    EMMA_GLOBALS.stcmodel_visual_frontalface)
 
 
 class EmmaCamera:

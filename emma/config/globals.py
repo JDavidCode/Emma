@@ -4,6 +4,8 @@ import sys
 
 class EMMA_GLOBALS:
     def __init__(self):
+        self.variables()
+
         self.task_module = importlib.import_module("emma.task_module")
         self.sys_v = importlib.import_module("emma.sys_v")
         self.interfaces_db = importlib.import_module("emma.interfaces.db")
@@ -20,10 +22,22 @@ class EMMA_GLOBALS:
         self.tools_generators = importlib.import_module(
             "emma.tools.generators.local.kit")
         self.tools_data = importlib.import_module("emma.tools.data.local.kit")
+        self.instances()
 
-        self.run()
+    def variables(self):
+        global stcpath_app_dir, stcpath_command_dir, stcpath_module_dir, stcpath_web_dir, stcpath_extensions
+        stcpath_app_dir = "emma/assets/json/app_directory.json"
+        stcpath_command_dir = "emma/assets/json/command_directory.json"
+        stcpath_module_dir = "emma/assets/json/module_directory.json"
+        stcpath_web_dir = "emma/assets/json/web_sites.json"
+        stcpath_extensions = "emma/assets/json/extension.json"
 
-    def run(self):
+        global stcmodel_visual_frontalface, stcmode_vosk_en, stcmode_vosk_es
+        stcmodel_visual_frontalface = "emma/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
+        stcmode_vosk_en = "emma/assets/models/vosk_models/en-model"
+        stcmode_vosk_es = "emma/assets/models/vosk_models/es-model"
+
+    def instances(self):
         global task_msc, task_os, task_web
         task_msc = self.task_module.MiscellaneousModule
         task_os = self.task_module.OsModule

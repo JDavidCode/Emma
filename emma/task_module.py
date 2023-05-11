@@ -4,7 +4,7 @@ import datetime
 import requests
 import time
 
-# import pywhatkit
+import pywhatkit
 import webbrowser
 
 # ImportedPythonLibraries
@@ -16,19 +16,16 @@ import emma.config.globals as EMMA_GLOBALS
 class WebModule:
     def __init__(self):
         pass
-        """
+
     def youtube_player(index):
         pywhatkit.playonyt(index)
-        
-        NEED FIX DISPLAY ERROR
-        
+
     def google_search(index):
         pywhatkit.search(index)
-        """
 
     def open_website(index):
         json = EMMA_GLOBALS.tools_da.json_loader(
-            "assets/json/web_sites.json", "web_dir", "dict"
+            EMMA_GLOBALS.stcpath_web_dir, "web_dir", "dict"
         )
         for i in json.keys():
             if i == index:
@@ -45,14 +42,15 @@ class OsModule:
 
     def open_app(index):
         json = EMMA_GLOBALS.tools_da.json_loader(
-            "assets/json/app_directory.json", "app_dir", "dict"
+            EMMA_GLOBALS.stcpath_app_dir, "app_dir", "dict"
         )
         for i in json.keys():
             if i == index:
                 get = json.get(i)
                 os.startfile(get)
 
-    def path_mover():
+    def path_mover():  # Need perfoance
+        return
         diccionary = EMMA_GLOBALS.tools_da.json_loader(
             "assets/json/path_directory.json", "amy_paths", "dict"
         )

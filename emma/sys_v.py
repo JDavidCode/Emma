@@ -296,7 +296,7 @@ class BackgroundProcess:
 
     def module_reloader(self, index):
         diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            "assets/json/module_directory.json", "module_dir", "dict"
+            EMMA_GLOBALS.stcpath_module_dir, "module_dir", "dict"
         )
         key = diccionary.keys()
         try:
@@ -429,11 +429,11 @@ class CommandsManager:
         module = ""
         self.event.wait()
         while not self.stop_flag:
-            self.queue.add_to_queue("ISTK", True)
             command_keyword = self.queue.get_queue("COMMANDS")
 
             _, args, command = self.command_indexer(command_keyword)
             if _:
+                self.queue.add_to_queue("ISTK", False)
                 module = getattr(EMMA_GLOBALS, command.get('module'))
                 # Execute the command
                 if args != None:
@@ -442,6 +442,7 @@ class CommandsManager:
                 else:
                     self.execute_command(module, command.get('function_name'))
             else:
+                self.queue.add_to_queue("ISTK", True)
                 continue
 
     def execute_command(self, module, function_name, args=None):
@@ -471,7 +472,7 @@ class CommandsManager:
 
     def command_indexer(self, command_keyword):
         args, diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            "emma/assets/json/command_directory.json",
+            EMMA_GLOBALS.stcpath_command_dir,
             command_keyword,
             "command",
             self.console_manager,

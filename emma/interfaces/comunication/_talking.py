@@ -2,7 +2,7 @@ import os
 import threading
 import pyttsx3
 import openai
-# ATTENTION POSSIBLE CHANGE FROMM PYRRSX3 TO ESPEAK-NG
+
 global conversation
 
 
@@ -29,13 +29,13 @@ class Talking:
             if question == None:
                 continue
             else:
-                key = self.queue.get_queue("ISTK", 1)
+                key = self.queue.get_queue("ISTK")
                 if key:
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo",
                         messages=[
                             {"role": "user", "content": f"{question}"}],
-                        max_tokens=150,
+                        max_tokens=80,
                         temperature=0)
                     answer = response["choices"][0]["message"]["content"]
                     self.console_manager.write(self.tag, f"Emma: {answer}")
@@ -67,13 +67,18 @@ class _TTS:
 
     def engine_voice_config(self):
         if self.lang == "en":
-            self.engine.setProperty("voice", self.engVoice[1].id)
+            for voice in self.engVoice:
+                if voice.languages == [b'\x02en-us']:
+                    self.engine.setProperty('voice', voice.id)
+
         elif self.lang == "es":
-            self.engine.setProperty("voice", self.engVoice[0].id)
+            for voice in self.engVoice:
+                if voice.languages == [b'\x05es-la']:
+                    self.engine.setProperty('voice', voice.id)
         else:
             print("A voice language is null please enter the index")
             for i in self.engVoice:
                 print(i)
                 self.engine.setProperty("voice", self.engVoice[input()].id)
-        self.engine.setProperty("rate", 125)
+        self.engine.setProperty("rate", 135)
         self.engine.setProperty("volume", 1)

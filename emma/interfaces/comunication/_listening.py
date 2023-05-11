@@ -16,7 +16,7 @@ class VoiceListener:
         try:
             pyMic = pya.PyAudio()
             model = vosk.Model(
-                "emma/assets/models/vosk_models/{}-model".format(lang))
+                f"emma/assets/models/vosk_models/{lang}-model")
             self.rec = vosk.KaldiRecognizer(model, 16000)
             self.stream = pyMic.open(
                 format=pya.paInt16,

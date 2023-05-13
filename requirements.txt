@@ -19,3 +19,4 @@ pyyaml
 img2pdf
 psutil
 openai
+pyaudio

@@ -17,6 +17,7 @@ class EMCLKX:
     def run(self):
         self.EGLOBALS.sys_v_mp.initialize_queues()
         self.EGLOBALS.sys_v_mp.initialize_threads()
+        self.EGLOBALS.sys_v_bp.verify_paths()
         time.sleep(3)
 
     def server_integrity(self):

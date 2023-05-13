@@ -6,10 +6,6 @@ import os
 import emma.config.globals as EMMA_GLOBALS
 
 
-dataPath = ".temp"
-idPath = ".temp/face/{}_face.xml"
-userList = os.listdir(dataPath)
-user = ""
 faceClassifier = cv2.CascadeClassifier(
     EMMA_GLOBALS.stcmodel_visual_frontalface)
 
@@ -121,11 +117,11 @@ class FacialRecognizer:
 
     def facial_encoder():
         global user
-        global dataPath
+        global temp_path
         global idPath
         facesData = []
         labels = []
-        personPath = dataPath + "/face/" + user
+        personPath = temp_path + "/face/" + user
 
         for filename in os.listdir(personPath):
             facesData.append(cv2.imread(personPath + "/" + filename, 0))
@@ -135,7 +131,7 @@ class FacialRecognizer:
         face_recognizer = cv2.face.LBPHFaceRecognizer_create()
         face_recognizer.train(facesData, np.array(labels))
         print("Saving File...")
-        face_recognizer.write(idPath.format(user))
+        face_recognizer.write(idPath.format(temp_path, user))
         cv2.destroyAllWindows()
         rut = ".temp/{}_face.zip".format(user)
         EMMA_GLOBALS.tools_da.zipper(
@@ -200,8 +196,8 @@ class FacialRecognizer:
     def face_locker(user):
         global faceClassifier
         global userList
-        global dataPath
-        path = dataPath + "/{}_face.xml".format(user)
+        global temp_path
+        path = temp_path + "/{}_face.xml".format(user)
         cap = cv2.VideoCapture(0)
         face_recognizer = cv2.face.LBPHFaceRecognizer_create()
         face_recognizer.read(path)
@@ -259,11 +255,16 @@ class FacialRecognizer:
                 return False
 
     def run(userName, typ):
-        global dataPath
+        global temp_path
         global user
+        global userList
         global idPath
+        temp_path = "./.AmyRootUser/.temp"
+        idPath = "{}/face/{}_face.xml"
+        userList = os.listdir(temp_path)
         user = userName
-        userPath = dataPath + "/face/" + user
+        userPath = temp_path + "/face/" + user
+
         if typ == 0:
             os.makedirs(userPath)
             print("Directorio temporal de usuario Creado.")

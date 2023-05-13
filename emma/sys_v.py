@@ -211,7 +211,7 @@ class MainProcess:
             if dic["queue"] != None:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
 
-    class amy_guardian:
+    class Emma_guardian:
         def init(self) -> None:
             pass
 
@@ -230,6 +230,7 @@ class BackgroundProcess:
             self.enviroment_clearer()
         elif log.lower() == "cancel":
             return
+        EMMA_GLOBALS.sys_v_tm.kill()
         self.temp_clearer()
         self.remove_pycache(".")
         os._exit(0)
@@ -258,17 +259,17 @@ class BackgroundProcess:
 
     def verify_paths(self):
         DirsStructure = [
-            "./.AmyRootUser/",
-            "./.AmyRootUser/.preferences",
-            "./.AmyRootUser/.temp",
-            "./.AmyRootUser/disk",
-            "./.AmyRootUser/disk/user",
-            "./.AmyRootUser/disk/apps",
-            "./.AmyRootUser/disk/home/recycler",
-            "./.AmyRootUser/disk/home/documents",
-            "./.AmyRootUser/disk/home/music",
-            "./.AmyRootUser/disk/home/pictures",
-            "./.AmyRootUser/disk/home/videos",
+            "./emma/.EmmaRootUser/",
+            "./emma/.EmmaRootUser/.preferences",
+            "./emma/.EmmaRootUser/.temp",
+            "./emma/.EmmaRootUser/disk",
+            "./emma/.EmmaRootUser/disk/user",
+            "./emma/.EmmaRootUser/disk/apps",
+            "./emma/.EmmaRootUser/disk/home/recycler",
+            "./emma/.EmmaRootUser/disk/home/documents",
+            "./emma/.EmmaRootUser/disk/home/music",
+            "./emma/.EmmaRootUser/disk/home/pictures",
+            "./emma/.EmmaRootUser/disk/home/videos",
         ]
         # Loop through the paths and verify their existence
         for path in DirsStructure:
@@ -282,7 +283,7 @@ class BackgroundProcess:
         EMMA_GLOBALS.interfaces_db_dt.json_task_updater()
 
     def temp_clearer(self):
-        path = ".temp"
+        path = "./emma/.EmmaRootUser/.temp"
         for file in os.listdir(path):
             x = path + "/" + file
             try:
@@ -356,6 +357,16 @@ class ThreadManager:
                 else:
                     return f"\n{thread_name} is not running."
         return f"\nThread '{thread_name}' not found."
+
+    def kill(self):
+        threads = EMMA_GLOBALS.thread_instances
+        for thread_name in threads:
+            for _, thread in self.threads.items():
+                if str(thread.name) == thread_name:
+                    if thread.is_alive():
+                        thread_instance = EMMA_GLOBALS.thread_instances.get(
+                            thread_name)
+                        thread_instance.stop()
 
     class QueueManager:
         def __init__(self):

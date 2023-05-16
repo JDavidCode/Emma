@@ -1,31 +1,31 @@
 {
     "rest": {
         "function_name": "server_shutdown",
-        "module": "sys_v_bp",
+        "module": "sys_v",
         "args_key": "None",
         "required_lvl": 1
     },
     "activate thread": {
         "function_name": "start_thread",
-        "module": "sys_v_tm",
+        "module": "sys_v",
         "args_key": "*args",
         "required_lvl": 1
     },
     "stop thread": {
         "function_name": "stop_thread",
-        "module": "sys_v_tm",
+        "module": "sys_v",
         "args_key": "*args",
         "required_lvl": 1
     },
     "reload thread": {
         "function_name": "restart_thread",
-        "module": "sys_v_tm",
+        "module": "sys_v",
         "args_key": "*args",
         "required_lvl": 1
     },
     "charge module": {
         "function_name": "module_reloader",
-        "module": "sys_v_bp",
+        "module": "sys_v",
         "args_key": "*args",
         "required_lvl": 2
     },

@@ -1,3 +1,5 @@
+version: 1.0
+
 defaults:
   con:
     host: mysql_emma
@@ -5,10 +7,10 @@ defaults:
     user: root
     password: root
  
-  modules: 
+  services: 
     - queue: COMMANDS
       queue_maxsize: 0
-      ref: sys_v_cm
+      endpoint: sys_v_cm
       args: 
         - queue
         - console
@@ -19,7 +21,7 @@ defaults:
 
     - queue: TALKING
       queue_maxsize: 0
-      ref: interfaces_comunication_tg
+      endpoint: services_comunication_tg
       args: 
         - queue
         - console
@@ -29,7 +31,7 @@ defaults:
     
     - queue: null
       queue_maxsize: 0
-      ref: interfaces_comunication_lg
+      endpoint: services_comunication_lg
       args: 
         - queue
         - console
@@ -39,7 +41,7 @@ defaults:
 
     - queue: SERVERDATA
       queue_maxsize: 1
-      ref: web_server
+      endpoint: web_server
       args: 
         - queue
         - console
@@ -65,3 +67,4 @@ defaults:
       model: 'my/model'
       rate: 125
       volume: 1
+

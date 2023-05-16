@@ -1,3 +1,5 @@
+import datetime
+import math
 import random
 import string
 import secrets
@@ -72,11 +74,99 @@ class ToolKit:
     def is_multiple_number(numero, multiplo):
         return numero % multiplo == 0
 
-    def imprimir_submultiplos(numero):
+    def print_submultiplos(numero):
         for i in range(1, numero+1):
-            if toolkit.es_multiplo(numero, i):
+            if ToolKit.is_multiple_number(numero, i):
                 print(f"{i},", end="")
+
+    def is_prime_number(number):
+        if number < 2:
+            return False
+        for i in range(2, int(math.sqrt(number)) + 1):
+            if number % i == 0:
+                return False
+        return True
+
+    def factorial(number):
+        if number < 0:
+            return None
+        if number == 0:
+            return 1
+        result = 1
+        for i in range(1, number + 1):
+            result *= i
+        return result
+
+    def calculate_hypotenuse(a, b):
+        return math.sqrt(a ** 2 + b ** 2)
+
+    def convert_to_binary(number):
+        return bin(number)[2:]
+
+    def convert_to_hexadecimal(number):
+        return hex(number)[2:]
+
+    def calculate_average(numbers):
+        if not numbers:
+            return None
+        return sum(numbers) / len(numbers)
+
+    def is_leap_year(year):
+        return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+    def get_current_date():
+        return datetime.date.today()
+
+    def get_current_time():
+        return datetime.datetime.now().time()
+
+    def calculate_age(birthdate):
+        current_date = datetime.date.today()
+        age = current_date.year - birthdate.year
+        if current_date.month < birthdate.month or (current_date.month == birthdate.month and current_date.day < birthdate.day):
+            age -= 1
+        return age
+
+    def is_palindrome(string):
+        cleaned_string = ''.join(c.lower() for c in string if c.isalnum())
+        return cleaned_string == cleaned_string[::-1]
+
+    def count_vowels(string):
+        vowels = 'aeiou'
+        count = 0
+        for char in string.lower():
+            if char in vowels:
+                count += 1
+        return count
+
+    def calculate_square_root(number):
+        if number < 0:
+            return None
+        return math.sqrt(number)
+
+    def calculate_power(base, exponent):
+        return base ** exponent
+
+    def calculate_factorial_recursive(number):
+        if number < 0:
+            return None
+        if number == 0 or number == 1:
+            return 1
+        return number * ToolKit.calculate_factorial_recursive(number - 1)
+
+    def reverse_string(string):
+        return string[::-1]
+
+    def count_words(string):
+        words = string.split()
+        return len(words)
+
+    def is_perfect_square(number):
+        if number < 0:
+            return False
+        sqrt = math.isqrt(number)
+        return sqrt * sqrt == number
 
 
 if __name__ == "__main__":
-    toolkit.imprimir_submultiplos(25920)
+    ToolKit.print_submultiplos(600)

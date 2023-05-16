@@ -42,12 +42,12 @@ class SystemAwake:
                     print("Too many intents please try again later")
                     quit()
             else:
-                x, userData = EMMA_GLOBALS.interfaces_db_lg.user_login(
+                x, userData = EMMA_GLOBALS.services_db_lg.user_login(
                     email, pw)
                 if x:
                     if userData[0] == "5":
                         print("Facial Recognizer is needed for this user level")
-                        if EMMA_GLOBALS.interfaces_cam_fr.run(userData[2], 1) == True:
+                        if EMMA_GLOBALS.services_cam_fr.run(userData[2], 1) == True:
                             return True
                         else:
                             return False
@@ -83,9 +83,9 @@ class SystemAwake:
                 print("invalid args")
             else:
                 args = [
-                    EMMA_GLOBALS.interfaces_cam_fr.run(user, 0),
+                    EMMA_GLOBALS.services_cam_fr.run(user, 0),
                 ]
-                if EMMA_GLOBALS.interfaces_db_lg.user_register(user, email, pw, age, genre, lang, args) == True:
+                if EMMA_GLOBALS.services_db_lg.user_register(user, email, pw, age, genre, lang, args) == True:
                     print("You has been Register")
                     print("Now Login Please")
                     self.user_login()
@@ -98,7 +98,7 @@ class SystemAwake:
         os.environ["USERNAME"] = "Juan"
         os.environ["USERLANG"] = "en"
         os.environ["LOGGED"] = "True"
-        bp = BackgroundProcess()
+        bp = SysV()
         bp.data_auto_updater()
         logged = os.environ.get("LOGGED")
         os.environ["DATE"] = f"{msc.date_clock(2)}"
@@ -109,16 +109,17 @@ class SystemAwake:
             dayPart, dateTime[1], dateTime[2], weather
         )
         if logged == "True":
-            userPrefix = EMMA_GLOBALS.interfaces_db_lg.user_prefix()
+            userPrefix = EMMA_GLOBALS.services_db_lg.user_prefix()
             return userPrefix, text
         if self.ruler():
-            userPrefix = EMMA_GLOBALS.interfaces_db_lg.user_prefix()
+            userPrefix = EMMA_GLOBALS.services_db_lg.user_prefix()
             return userPrefix, text
 
 
-class MainProcess:
-    def __init__(self) -> None:
-        pass
+class SysV:
+    def __init__(self, queue_manager=None, console_manager=None):
+        self.queue = queue_manager
+        self.console_manager = console_manager
 
     def server_performance(self, threads):
         dateTime = datetime.datetime.now()
@@ -146,46 +147,51 @@ class MainProcess:
 
         return data
 
-    def initialize_threads(self):
-        config_file = "emma/config/server_config.yml"
+    def initialize_threads(self, forge=False):
+        if forge:
+            config_file = "emma/config/forge_config.yml"
+        else:
+            config_file = "emma/config/server_config.yml"
 
         queue = EMMA_GLOBALS.sys_v_tm_qm
         console = EMMA_GLOBALS.sys_v_tm_cm
         thread = EMMA_GLOBALS.sys_v_tm
 
-        # Need some like yaml file
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
         func_instances = {}
 
-        for dic in data['defaults']['modules']:
+        for dic in data['defaults']['services']:
             if dic["queue"] != None:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
             args = dic.get("args", [])
-
+            if forge:
+                endpoint = f"forge_package_{dic['endpoint']}"
+            else:
+                endpoint = dic['endpoint']
             if "queue" in args and "console" in args and "thread" in args:
-                func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
+                func_instance = getattr(EMMA_GLOBALS, endpoint)(
                     queue_manager=queue, console_manager=console, thread_manager=thread)
                 func_instances[dic["thread_name"]] = func_instance
 
             elif "queue" in args and "console" in args:
-                func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
+                func_instance = getattr(EMMA_GLOBALS, endpoint)(
                     queue_manager=queue, console_manager=console)
                 func_instances[dic["thread_name"]] = func_instance
 
             elif "queue" in args:
-                func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
+                func_instance = getattr(EMMA_GLOBALS, endpoint)(
                     queue_manager=queue)
                 func_instances[dic['thread_name']] = func_instance
 
             elif "console" in args:
-                func_instance = getattr(EMMA_GLOBALS, dic["ref"])(
+                func_instance = getattr(EMMA_GLOBALS, endpoint)(
                     console_manager=console)
                 func_instances[dic["thread_name"]] = func_instance
 
             else:
                 func_instance = getattr(
-                    EMMA_GLOBALS, dic["ref"])()
+                    EMMA_GLOBALS, endpoint)()
                 func_instances[dic["thread_name"]] = func_instance
 
             thread_name = dic.get("thread_name")
@@ -210,16 +216,6 @@ class MainProcess:
         for dic in data['defaults']['queues']:
             if dic["queue"] != None:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
-
-    class Emma_guardian:
-        def init(self) -> None:
-            pass
-
-
-class BackgroundProcess:
-    def __init__(self, queue_manager=None, console_manager=None):
-        self.queue = queue_manager
-        self.console_manager = console_manager
 
     def server_shutdown(self):
         self.queue.get_queue("CURRENT_INPUT")
@@ -280,7 +276,7 @@ class BackgroundProcess:
         return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
-        EMMA_GLOBALS.interfaces_db_dt.json_task_updater()
+        EMMA_GLOBALS.services_db_dt.json_task_updater()
 
     def temp_clearer(self):
         path = "./emma/.EmmaRootUser/.temp"
@@ -345,7 +341,6 @@ class ThreadManager:
                     return f"\nThread '{thread_name}' not running"
         return f"\nThread '{thread_name}' not found"
 
-    # is broken thread should be an istance and have some issues
     def stop_thread(self, thread_name):
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
@@ -428,8 +423,8 @@ class ThreadManager:
 class CommandsManager:
     def __init__(self, queue_manager, console_manager, thread_manager):
         self.tag = "Commands Thread"
-        self.talk = EMMA_GLOBALS.interfaces_comunication_tg
-        self.bp = BackgroundProcess(queue_manager, console_manager)
+        self.talk = EMMA_GLOBALS.services_comunication_tg
+        self.bp = SysV(queue_manager, console_manager)
         self.queue = queue_manager
         self.stop_flag = False
         self.event = threading.Event()

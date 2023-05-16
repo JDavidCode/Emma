@@ -26,23 +26,22 @@ class ToolKit:
             # Save the output image
             img.save(output_file)
 
-    def zipper(path):
-        for i in path:
-            with zipfile.ZipFile(i[1], 'w', compression=zipfile.ZIP_DEFLATED,
-                                 compresslevel=9) as fz:
-                fz.write(i[0], arcname=os.path.basename(i[0]))
+    def zipper(file_paths):
+        for file_path, zip_path in file_paths:
+            with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_file:
+                zip_file.write(file_path, arcname=os.path.basename(file_path))
 
-    def unzipper(path):
-        for i in path:
-            with zipfile.ZipFile(i[0], 'r') as fz:
-                fz.extractall(path=i[1])
+    def unzipper(file_paths, key=None):
+        for file_path, extract_path in file_paths:
+            with zipfile.ZipFile(file_path, 'r') as zip_file:
+                if key is not None:
+                    zip_file.setpassword(key.encode('utf-8'))
+                zip_file.extractall(path=extract_path)
 
     def to_binary(filename):
-        print(filename)
-        for i in filename:
-            with open(i, 'rb') as file:
-                binaryDat = file.read()
-                return binaryDat  # NEED FIXED
+        with open(filename, 'rb') as file:
+            binary_data = file.read()
+        return binary_data
 
     def unbinary(binary, filename):
         with open(filename, 'wb')as file:

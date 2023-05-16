@@ -1,0 +1,9 @@
+version: 1.0
+
+repositories:
+  coffenow:
+    - "git.com"
+    - "micloud.co"
+  unkowed:
+    -"miunkwnoed1.com"
+    -"miunknoed.co"

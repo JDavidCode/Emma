@@ -15,15 +15,18 @@ class EMCLKX:
         self.server_integrity()
 
     def run(self):
-        self.EGLOBALS.sys_v_mp.initialize_queues()
-        self.EGLOBALS.sys_v_mp.initialize_threads()
-        self.EGLOBALS.sys_v_bp.verify_paths()
+        self.EGLOBALS.sys_v.verify_paths()
+
+        self.EGLOBALS.sys_v.initialize_queues()
+        self.EGLOBALS.sys_v.initialize_threads()
+        self.EGLOBALS.sys_v.initialize_threads(forge=True)
+
         time.sleep(3)
 
     def server_integrity(self):
         timer = 9000
         while True:
-            json = self.EGLOBALS.sys_v_mp.server_performance(
+            json = self.EGLOBALS.sys_v.server_performance(
                 self.thread_manager.get_thread_status())
             self.queue_manager.add_to_queue("SERVERDATA", json)
             if timer >= 8990:

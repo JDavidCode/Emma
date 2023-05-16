@@ -70,8 +70,7 @@ class WebApp:
             try:
                 data = self.queue.get_queue("CONSOLE", 1)
                 if data != None:
-                    json_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = re.sub(
-                        r"[^a-zA-Z0-9]", "", data)
+                    json_data[f"{EMMA_GLOBALS.task_msc.date_clock(3)}"] = data
                     with open(self.history, "w") as f:
                         j = json.dumps(json_data, indent=4)
                         f.write(j)

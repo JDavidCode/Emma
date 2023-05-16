@@ -1,34 +1,33 @@
 import importlib
 import subprocess
 from emma.config.globals import FORGE_GLOBALS
-from emma.config.globals import tools_da, tools_cs
 
 
 class Builder:
-    def __init__(self, package_name):
+    def __init__(self, package_name, tools=[]):
+        self.tools_cs, self.tools_da = tools
         print(f"Forge Builder is installing {package_name}...")
-        self._service = importlib.import_module(
-            "emma.forge.handlers.package_handler.PackageHandler")()
+        _service = importlib.import_module(
+            "emma.forge.handlers.service_handler")
+        self._service = _service.ServiceHandler(tools)
         self.package_name = package_name
+        self.endpoint = ""
+        self.args = []
         self.has_custom = False
-        self.unpackage(package_name)
-        self.run(package_name)
 
     def unpackage(self):
-        tools_cs.ToolKit.unzipper(
-            (f"./emma/.EmmaRootUser/.temp/{self.package_name}.zip", "./emma/integration_services/"))
+        self.tools_cs.unzipper(
+            [(f"./emma/.EmmaRootUser/.temp/forge_{self.package_name}.zip", "./emma/services/external/")])
 
     def service_register(self, config_path):
-        service_data = tools_da.yaml_loader(config_path)
-        if service_data["custom_packages"] == True:
-            self.has_custom = True
+        service_data = self.tools_da.yaml_loader(config_path, "forge_service")
+        service_data = service_data[0]
+        self.has_custom = service_data.get('custom_packages', False)
+        self.endpoint = service_data.get('endpoint')
         self._service.add_service(service_data)
 
-    def create_instance(self):
-        FORGE_GLOBALS.create_instance()
-
     def install_dependencies(self):
-        requirements_file = f"./emma/integration_services/{self.package_name}/requirements.txt"
+        requirements_file = f"./emma/services/external/{self.package_name}/requirements.txt"
         try:
             with open(requirements_file, "r") as file:
                 for line in file:
@@ -42,10 +41,11 @@ class Builder:
         pass
 
     def run(self):
-        self.package_source = f"./emma/integration_services/{self.package_name}"
+        self.unpackage()
+        self.package_source = f"./emma/services/external/{self.package_name}"
         self.service_register(
-            f"{self.package_source}/config/forge_config.yml")
+            f"{self.package_source}/config/config.yml")
         self.install_dependencies()
         if self.has_custom:
             self.install_custom_packages()
-        self.create_instances()
+        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)

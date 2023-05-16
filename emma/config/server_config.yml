@@ -29,7 +29,7 @@ defaults:
       thread_is_daemon: True
       autostart: True
     
-    - queue: null
+    - queue: []
       queue_maxsize: 0
       endpoint: services_comunication_lg
       args: 
@@ -38,17 +38,6 @@ defaults:
       thread_name: T1_LISTENING
       thread_is_daemon: True
       autostart: True
-
-    - queue: SERVERDATA
-      queue_maxsize: 1
-      endpoint: web_server
-      args: 
-        - queue
-        - console
-      thread_name: T0_WEB_SERVER
-      thread_is_daemon: False
-      autostart: True
-
 
   queues:
     - queue: CURRENT_INPUT

@@ -19,6 +19,9 @@ class EMCLKX:
 
         self.EGLOBALS.sys_v.initialize_queues()
         self.EGLOBALS.sys_v.initialize_threads()
+        package_list = [{"source": "google_drive",
+                         "repository": "https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download", "package_name": "web_server"},]
+        self.EGLOBALS.forge_server.run(package_list)
         self.EGLOBALS.sys_v.initialize_threads(forge=True)
 
         time.sleep(3)

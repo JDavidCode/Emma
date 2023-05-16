@@ -11,8 +11,6 @@ pywhatkit
 opencv-contrib-python
 youtube-dl
 PyAutoGUI
-flask
-flask_socketio
 mysql-connector-python
 imutils
 pyyaml

@@ -8,14 +8,15 @@ class EMMA_GLOBALS:
 
         self.task_module = importlib.import_module("emma.task_module")
         self.sys_v = importlib.import_module("emma.sys_v")
-        self.services_db = importlib.import_module("emma.services.base.db")
+        self.services_db = importlib.import_module(
+            "emma.services.integrated.db")
         self.services_cam_module = importlib.import_module(
-            "emma.services.base.cam_module")
+            "emma.services.integrated.cam_module")
         self.services_listening = importlib.import_module(
-            "emma.services.base.comunication._listening")
+            "emma.services.integrated.comunication._listening")
         self.services_talking = importlib.import_module(
-            "emma.services.base.comunication._talking")
-        self.web_server = importlib.import_module("emma.web_server.app")
+            "emma.services.integrated.comunication._talking")
+        self.forge_server = importlib.import_module("emma.forge.app")
 
         self.tools_converters = importlib.import_module(
             "emma.tools.converters.local.kit")
@@ -38,6 +39,11 @@ class EMMA_GLOBALS:
         stcmode_vosk_es = "emma/assets/models/vosk_models/es-model"
 
     def instances(self):
+        global tools_cs, tools_gs, tools_da
+        tools_cs = self.tools_converters.ToolKit
+        tools_gs = self.tools_generators.ToolKit
+        tools_da = self.tools_data.ToolKit
+
         global task_msc, task_os, task_web
         task_msc = self.task_module.MiscellaneousModule
         task_os = self.task_module.OsModule
@@ -63,13 +69,8 @@ class EMMA_GLOBALS:
         services_comunication_lg = self.services_listening.VoiceListener
         services_comunication_tg = self.services_talking.Talking
 
-        global web_server
-        web_server = self.web_server.WebApp
-
-        global tools_cs, tools_gs, tools_da
-        tools_cs = self.tools_converters.ToolKit
-        tools_gs = self.tools_generators.ToolKit
-        tools_da = self.tools_data.ToolKit
+        global forge_server
+        forge_server = self.forge_server.Forge([tools_cs, tools_da])
 
         global thread_instances
         thread_instances = None
@@ -83,13 +84,13 @@ class FORGE_GLOBALS():
         # here some needed varibales ignore them
         pass
 
-    def create_instance(self, package_name, args):
+    def create_instance(self, package_name, endpoint):
         package = importlib.import_module(
-            f"./emma/services/external/{package_name}")
+            f"emma.services.external.{package_name}.{endpoint}")
         global_namespace = globals()
         global_variable_name = f"forge_package_{package_name}"
         try:
-            global_namespace[global_variable_name] = package.run
+            global_namespace[global_variable_name] = getattr(package, endpoint)
         except Exception as e:
             print(f"Error creating instance of {package_name}: {e}")
 

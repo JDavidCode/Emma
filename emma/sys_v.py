@@ -152,21 +152,29 @@ class SysV:
             config_file = "emma/config/forge_config.yml"
         else:
             config_file = "emma/config/server_config.yml"
+        with open(config_file) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+        func_instances = {}
 
         queue = EMMA_GLOBALS.sys_v_tm_qm
         console = EMMA_GLOBALS.sys_v_tm_cm
         thread = EMMA_GLOBALS.sys_v_tm
 
-        with open(config_file) as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-        func_instances = {}
+        if forge:
+            data = data['Forge']['services']
+            if data == []:
+                return
+        else:
+            data = data['defaults']['services']
 
-        for dic in data['defaults']['services']:
-            if dic["queue"] != None:
+        for dic in data:
+            if dic == []:
+                continue
+            if dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
             args = dic.get("args", [])
             if forge:
-                endpoint = f"forge_package_{dic['endpoint']}"
+                endpoint = f"forge_package_{dic['package_name']}"
             else:
                 endpoint = dic['endpoint']
             if "queue" in args and "console" in args and "thread" in args:

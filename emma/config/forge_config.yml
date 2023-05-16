@@ -1,22 +1,16 @@
-version: 1.0
-
 Forge:
-  service:
-    - queue: MyModuleQueue
-      queue_maxsize: 0
-      endpoint: services
-      args: 
-        - queue
-        - console
-        - thread
-      thread_name: T0_MyThread
-      thread_is_daemon: True
-      autostart: True
-
   queues:
-    - queue: MyQueueName
-      queue_maxsize: 1
-    - queue: MyQueueName
-      queue_maxsize: 0
-    - queue: MyQueueName
-      queue_maxsize: 1
+  - []
+  services:
+  - []
+  - args:
+    - queue
+    - console
+    autostart: true
+    custom_packages: false
+    endpoint: app
+    package_name: web_server
+    queue: SERVERDATA
+    queue_maxsize: 1
+    thread_is_daemon: false
+    thread_name: T0_WEB_SERVER

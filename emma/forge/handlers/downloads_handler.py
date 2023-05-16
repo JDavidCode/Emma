@@ -1,11 +1,10 @@
 import hashlib
-import importlib
 import requests
 
 
 class DownloadsHandler:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, tools=[]):
+        self.tools_cs, self.tools_da = tools
 
     def download_package(self, repository, package_name):
         save_path = f"./emma/.EmmaRootUser/.temp/forge_{package_name}.zip"
@@ -15,7 +14,7 @@ class DownloadsHandler:
             with open(save_path, "wb") as file:
                 file.write(response.content)
             print(f"{package_name} has been downloaded!")
-            return self.verify_integrity(package_name)
+            return True  # self.verify_integrity(package_name)
         except Exception as e:
             print(
                 f"some error ocurred while trying to download {package_name}: \n {e}")

@@ -1,18 +1,16 @@
-from emma.config.globals import tools_da
-
-
 class RepositoryHandler:
-    def __init__(self):
+    def __init__(self, tools=[]):
+        self.tools_cs, self.tools_da = tools
         self.file_path = "./emma/forge/config/config.yml"
         self.sources = {}
 
     def load_data(self):
-        self.sources = tools_da.yaml_loader(
+        self.sources = self.tools_da.yaml_loader(
             self.file_path, "repositories")
 
     def save_data(self):
         data = {"version": "1.0", "repositories": self.sources}
-        tools_da.yaml_saver(self.file_path, data)
+        self.tools_da.yaml_saver(self.file_path, data)
 
     def add_repository(self, source, repository):
         if source in self.sources:

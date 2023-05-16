@@ -31,10 +31,10 @@ class ToolKit:
             with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_file:
                 zip_file.write(file_path, arcname=os.path.basename(file_path))
 
-    def unzipper(file_paths, key=None):
+    def unzipper(file_paths, key=False):
         for file_path, extract_path in file_paths:
             with zipfile.ZipFile(file_path, 'r') as zip_file:
-                if key is not None:
+                if key:
                     zip_file.setpassword(key.encode('utf-8'))
                 zip_file.extractall(path=extract_path)
 

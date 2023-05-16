@@ -1,9 +1,3 @@
-version: 1.0
-
 repositories:
-  coffenow:
-    - "git.com"
-    - "micloud.co"
-  unkowed:
-    -"miunkwnoed1.com"
-    -"miunknoed.co"
+  google_drive: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
+version: '1.0'

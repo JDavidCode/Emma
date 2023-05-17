@@ -1,44 +1,48 @@
+import os
+
+
 class RepositoryHandler:
     def __init__(self, tools=[]):
         self.tools_cs, self.tools_da = tools
         self.file_path = "./emma/forge/config/config.yml"
-        self.sources = {}
+        self.packages = {}
+        self.load_data()
 
     def load_data(self):
-        self.sources = self.tools_da.yaml_loader(
+        self.packages = self.tools_da.yaml_loader(
             self.file_path, "repositories")
 
     def save_data(self):
-        data = {"version": "1.0", "repositories": self.sources}
+        data = {"repositories": self.packages, "version": "1.0", }
         self.tools_da.yaml_saver(self.file_path, data)
 
-    def add_repository(self, source, repository):
-        if source in self.sources:
-            self.sources[source].extend(repository)
+    def add_repository(self, package, repository):
+        if package in self.packages:
+            print("the package is unknowed, indexing...")
         else:
-            print("the source is unknowed, indexing...")
-            self.sources[source] = repository
+
+            self.packages[package] = repository
         self.save_data()
 
-    def get_source_repositories(self, source):
-        if source in self.sources:
-            return self.sources[source]
+    def get_package_repositories(self, package):
+        if package in self.packages:
+            return self.packages[package]
         return []
 
-    def verify_repository(self, repository_name):
-        for key in self.sources:
-            if repository_name in self.sources[key]:
+    def verify_repository(self, package_name):
+        if package_name in self.packages:
+            if os.path.exists(f"./emma/services/external/{package_name}"):
+                print("Package is downloaded")
                 return True
-            return False
-
-    def verify_source(self, source):
-        if source in self.sources:
-            return True
+            else:
+                print(
+                    "The repository exist, but the package was not found, this will be installed automatically.")
+                return False
         return False
 
-    def remove_source(self, source):
-        if source in self.sources:
-            del self.sources[source]
+    def remove_package(self, package):
+        if package in self.packages:
+            del self.packages[package]
             self.save_data()
             return True
         return False

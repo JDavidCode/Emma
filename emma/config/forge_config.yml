@@ -2,7 +2,7 @@ Forge:
   queues:
   - []
   services:
-  - []
+  - {}
   - args:
     - queue
     - console

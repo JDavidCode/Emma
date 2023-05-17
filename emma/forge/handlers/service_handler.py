@@ -12,7 +12,8 @@ class ServiceHandler:
         self.tools_da.yaml_saver(self.file_path, self.data)
 
     def add_service(self, service_data):
-        service_list = self.data["Forge"]["services"]
+        service_list = self.data.setdefault(
+            "Forge", {}).setdefault("services", [])
         service_list.append(service_data)
         self.save_data()
         print("Service added successfully.")
@@ -36,13 +37,22 @@ class ServiceHandler:
             print("Invalid service index.")
 
     def add_queue(self, queue_data):
-        queue_list = self.data["Forge"].setdefault("queues", [])
+        queue_list = self.data.setdefault("Forge", {}).setdefault("queues", [])
         queue_list.append(queue_data)
         self.save_data()
         print("Queue added successfully.")
 
-    def get_service(self, service_index):
+    def verify_service(self, package_name):
         service_list = self.data["Forge"]["services"]
-        if 0 <= service_index < len(service_list):
-            return service_list[service_index]
-        return None
+        for service in service_list:
+            if "package_name" in service and service["package_name"] == package_name:
+                return True
+
+        return False
+
+    def get_service(self, package_name):
+        service_list = self.data["Forge"]["services"]
+        for service in service_list:
+            if "package_name" in service and service["package_name"] == package_name:
+                return service
+        print(f"Service with package name '{package_name}' does not exist.")

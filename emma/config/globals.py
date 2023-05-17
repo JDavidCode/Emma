@@ -16,7 +16,7 @@ class EMMA_GLOBALS:
             "emma.services.integrated.comunication._listening")
         self.services_talking = importlib.import_module(
             "emma.services.integrated.comunication._talking")
-        self.forge_server = importlib.import_module("emma.forge.app")
+        self.forge_server = importlib.import_module("emma.forge.builder")
 
         self.tools_converters = importlib.import_module(
             "emma.tools.converters.local.kit")
@@ -70,7 +70,7 @@ class EMMA_GLOBALS:
         services_comunication_tg = self.services_talking.Talking
 
         global forge_server
-        forge_server = self.forge_server.Forge([tools_cs, tools_da])
+        forge_server = self.forge_server.Builder([tools_cs, tools_da])
 
         global thread_instances
         thread_instances = None

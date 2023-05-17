@@ -1,3 +1,4 @@
 repositories:
-  google_drive: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
+  dasd: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
+  web_server: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
 version: '1.0'

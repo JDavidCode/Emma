@@ -168,7 +168,7 @@ class SysV:
             data = data['defaults']['services']
 
         for dic in data:
-            if dic == []:
+            if dic == {}:
                 continue
             if dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])

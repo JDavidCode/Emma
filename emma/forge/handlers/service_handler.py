@@ -47,7 +47,6 @@ class ServiceHandler:
         for service in service_list:
             if "package_name" in service and service["package_name"] == package_name:
                 return True
-
         return False
 
     def get_service(self, package_name):

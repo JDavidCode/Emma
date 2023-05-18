@@ -18,9 +18,8 @@ class RepositoryHandler:
 
     def add_repository(self, package, repository):
         if package in self.packages:
-            print("the package is unknowed, indexing...")
+            print("the repository already exist.")
         else:
-
             self.packages[package] = repository
         self.save_data()
 

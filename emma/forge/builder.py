@@ -1,4 +1,7 @@
+import glob
 import importlib
+import os
+import tarfile
 import subprocess
 from emma.config.globals import FORGE_GLOBALS
 
@@ -45,13 +48,6 @@ class Builder:
     def service_updater(self):
         pass
 
-    def build(self):
-        self.load_service_data()
-        self.install_dependencies()
-        if self.has_custom:
-            self.install_custom_packages()
-        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
-
     def install_dependencies(self):
         requirements_file = f"./emma/services/external/{self.package_name}/requirements.txt"
         try:
@@ -64,7 +60,74 @@ class Builder:
             print(f"Error installing dependencies: {e}")
 
     def install_custom_packages(self):
-        pass
+        packages_directory = f"./emma/services/external/{self.package_name}/assets/packages"
+        whl_files = glob.glob(os.path.join(packages_directory, "*.whl"))
+        zip_files = glob.glob(os.path.join(packages_directory, "*.zip"))
+        tar_gz_files = glob.glob(os.path.join(packages_directory, "*.tar.gz"))
+
+        try:
+            # Install .whl files
+            if whl_files:
+                for whl_file in whl_files:
+                    try:
+                        subprocess.check_call(["pip", "install", whl_file])
+                    except Exception as e:
+                        print(
+                            f"An error occurred while trying to install whl file {e}")
+                        continue
+
+            # Install packages from .zip files using setup.py
+            if zip_files:
+                for zip_file in zip_files:
+                    try:
+                        package_directory = os.path.splitext(zip_file)[0]
+                        if os.path.exists(os.path.join(package_directory, "setup.py")):
+                            os.chdir(package_directory)
+                            subprocess.check_call(
+                                ["python", "setup.py", "install"])
+                            os.chdir(packages_directory)
+                    except Exception as e:
+                        print(f"Error installing custom packages: {e}")
+
+            # Install .tar.gz files
+            if tar_gz_files:
+                for tar_gz_file in tar_gz_files:
+                    try:
+                        with tarfile.open(tar_gz_file, "r:gz") as tar:
+                            tar.extractall(path=packages_directory)
+                        print(f"Package {tar_gz_file} extracted successfully.")
+
+                        # Read instructions.txt file
+                        instructions_file_path = os.path.join(packages_directory, "instructions.txt")
+                        if os.path.exists(instructions_file_path):
+                            with open(instructions_file_path, "r") as instructions_file:
+                                instructions = instructions_file.read()
+
+                            # Perform installation steps
+                            commands = instructions.split("\n")
+                            for command in commands:
+                                command = command.strip()
+                                if command:
+                                    try:
+                                        subprocess.check_call(command, shell=True)
+                                    except Exception as e:
+                                        print(f"Error executing command: {command}\n{e}")
+
+            # Continue with the rest of the code
+
+        except tarfile.TarError as e:
+            print(f"Error extracting package {tar_gz_file}: {e}")
+
+            print("Custom packages installed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing custom packages: {e}")
+
+    def build(self):
+        self.load_service_data()
+        self.install_dependencies()
+        if self.has_custom:
+            self.install_custom_packages()
+        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
     def run(self, package_list):
         for package in package_list:

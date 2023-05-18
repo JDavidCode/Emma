@@ -222,7 +222,7 @@ class SysV:
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
         for dic in data['defaults']['queues']:
-            if dic["queue"] != None:
+            if dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
 
     def server_shutdown(self):

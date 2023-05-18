@@ -1,4 +1,3 @@
 repositories:
-  dasd: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
-  web_server: https://drive.google.com/u/0/uc?id=1n5HpYF71IgwcbLN1rtTFGONemfsTHRi0&export=download
+  web_server: https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip
 version: '1.0'

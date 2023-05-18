@@ -11,30 +11,38 @@ class ServiceHandler:
     def save_data(self):
         self.tools_da.yaml_saver(self.file_path, self.data)
 
-    def add_service(self, service_data):
+    def add_service(self, service_data, is_forge_package=True):
+        if not is_forge_package:
+            self.file_path = "./emma/config/server_config.yml"
+            self.load_data()
+
         service_list = self.data.setdefault(
             "Forge", {}).setdefault("services", [])
         service_list.append(service_data)
         self.save_data()
         print("Service added successfully.")
 
-    def update_service(self, service_index, updated_service_data):
+    def update_service(self, package_name, updated_service_data):
         service_list = self.data["Forge"]["services"]
-        if 0 <= service_index < len(service_list):
-            service_list[service_index] = updated_service_data
-            self.save_data()
-            print("Service updated successfully.")
-        else:
-            print("Invalid service index.")
+        for service in service_list:
+            if "package_name" in service and service["package_name"] == package_name:
+                service_list[package_name] = updated_service_data
+                self.save_data()
+                print("Service updated successfully.")
+                return
+            else:
+                print(f"Service not found. {package_name}")
 
-    def remove_service(self, service_index):
+    def remove_service(self, package_name):
         service_list = self.data["Forge"]["services"]
-        if 0 <= service_index < len(service_list):
-            del service_list[service_index]
-            self.save_data()
-            print("Service removed successfully.")
-        else:
-            print("Invalid service index.")
+        for service in service_list:
+            if "package_name" in service and service["package_name"] == package_name:
+                del service_list[package_name]
+                self.save_data()
+                print(f"Service {package_name} removed successfully.")
+                return
+            else:
+                print(f"Service not found. {package_name}")
 
     def add_queue(self, queue_data):
         queue_list = self.data.setdefault("Forge", {}).setdefault("queues", [])

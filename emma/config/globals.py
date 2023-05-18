@@ -49,13 +49,14 @@ class EMMA_GLOBALS:
         task_os = self.task_module.OsModule
         task_web = self.task_module.WebModule
 
-        global sys_v_tm, sys_v_tm_cm, sys_v_tm_qm, sys_v_cm, sys_v_sa, sys_v
-        sys_v_tm = self.sys_v.ThreadManager()
-        sys_v_tm_qm = self.sys_v.ThreadManager.QueueManager()
-        sys_v_tm_cm = self.sys_v.ThreadManager.ConsoleManager(sys_v_tm_qm)
+        global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_v_cm, sys_v_sa, sys_v
+        sys_v_th = self.sys_v.ThreadHandler()
+        sys_v_th_qh = self.sys_v.ThreadHandler.QueueHandler()
+        sys_v_th_ch = self.sys_v.ThreadHandler.ConsoleHandler(sys_v_th_qh)
+        sys_v_th_eh = self.sys_v.ThreadHandler.EventHandler()
         sys_v_cm = self.sys_v.CommandsManager
         sys_v_sa = self.sys_v.SystemAwake()
-        sys_v = self.sys_v.SysV(sys_v_tm_qm, sys_v_tm_cm)
+        sys_v = self.sys_v.SysV(sys_v_th_qh, sys_v_th_ch)
 
         global services_db_lg, services_db_dt
         services_db_lg = self.services_db.Login

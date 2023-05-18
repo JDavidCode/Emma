@@ -23,7 +23,7 @@ class RepositoryHandler:
             self.packages[package] = repository
         self.save_data()
 
-    def get_package_repositories(self, package):
+    def get_repository(self, package):
         if package in self.packages:
             return self.packages[package]
         return []

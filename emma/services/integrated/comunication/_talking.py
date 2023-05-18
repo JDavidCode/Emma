@@ -7,11 +7,11 @@ global conversation
 
 
 class Talking:
-    def __init__(self, queue_manager, console_manager):
+    def __init__(self, queue_handler, console_handler):
         openai.api_key = "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"
-        self.console_manager = console_manager
+        self.console_handler = console_handler
         self.tag = "Talk Thread"
-        self.queue = queue_manager
+        self.queue = queue_handler
         self.stop_flag = False
         self.event = threading.Event()
         openai.ChatCompletion.create(
@@ -38,7 +38,7 @@ class Talking:
                         max_tokens=80,
                         temperature=0)
                     answer = response["choices"][0]["message"]["content"]
-                    self.console_manager.write(self.tag, f"Emma: {answer}")
+                    self.console_handler.write(self.tag, f"Emma: {answer}")
 
                     tts = _TTS()
                     tts.start(answer)

@@ -38,12 +38,17 @@ class Builder:
         self.endpoint = service_data.get('endpoint')
 
     def service_register(self):
+        is_forge_package = True
+        repo = self._repository.get_repository(self.package_name)
+        if "my_url.com" in repo.values():
+            is_forge_package = False
+
         service_data = self.tools_da.yaml_loader(
             f"./emma/services/external/{self.package_name}/config/config.yml", "forge_service")
         service_data = service_data[0]
         self.has_custom = service_data.get('custom_packages', False)
         self.endpoint = service_data.get('endpoint')
-        self._service.add_service(service_data)
+        self._service.add_service(service_data, is_forge_package)
 
     def service_updater(self):
         pass
@@ -98,7 +103,8 @@ class Builder:
                         print(f"Package {tar_gz_file} extracted successfully.")
 
                         # Read instructions.txt file
-                        instructions_file_path = os.path.join(packages_directory, "instructions.txt")
+                        instructions_file_path = os.path.join(
+                            packages_directory, "instructions.txt")
                         if os.path.exists(instructions_file_path):
                             with open(instructions_file_path, "r") as instructions_file:
                                 instructions = instructions_file.read()
@@ -109,10 +115,14 @@ class Builder:
                                 command = command.strip()
                                 if command:
                                     try:
-                                        subprocess.check_call(command, shell=True)
+                                        subprocess.check_call(
+                                            command, shell=True)
                                     except Exception as e:
-                                        print(f"Error executing command: {command}\n{e}")
-
+                                        print(
+                                            f"Error executing command: {command}\n{e}")
+                    except Exception as e:
+                        print(
+                            f"Error intalling tar.gz dependencie command:\n{e}")
             # Continue with the rest of the code
 
         except tarfile.TarError as e:

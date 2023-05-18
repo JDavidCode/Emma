@@ -6,10 +6,6 @@ import os
 import emma.config.globals as EMMA_GLOBALS
 
 
-faceClassifier = cv2.CascadeClassifier(
-    EMMA_GLOBALS.stcmodel_visual_frontalface)
-
-
 class EmmaCamera:
     def __init__():
         pass
@@ -255,6 +251,7 @@ class FacialRecognizer:
                 return False
 
     def run(userName, typ):
+        global faceClassifier
         global temp_path
         global user
         global userList
@@ -264,7 +261,8 @@ class FacialRecognizer:
         userList = os.listdir(temp_path)
         user = userName
         userPath = temp_path + "/face/" + user
-
+        faceClassifier = cv2.CascadeClassifier(
+            EMMA_GLOBALS.stcmodel_visual_frontalface)
         if typ == 0:
             os.makedirs(userPath)
             print("Directorio temporal de usuario Creado.")

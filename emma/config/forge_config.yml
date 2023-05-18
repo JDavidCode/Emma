@@ -4,8 +4,8 @@ Forge:
   services:
   - {}
   - args:
-    - queue
     - console
+    - queue
     autostart: true
     custom_packages: false
     endpoint: app

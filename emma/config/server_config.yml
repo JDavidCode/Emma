@@ -12,8 +12,8 @@ defaults:
       queue_maxsize: 0
       endpoint: sys_v_cm
       args: 
-        - queue
         - console
+        - queue
         - thread
       thread_name: T0_COMMANDS
       thread_is_daemon: True
@@ -23,8 +23,8 @@ defaults:
       queue_maxsize: 0
       endpoint: services_comunication_tg
       args: 
-        - queue
         - console
+        - queue
       thread_name: T1_TALKING
       thread_is_daemon: True
       autostart: True
@@ -33,8 +33,9 @@ defaults:
       queue_maxsize: 0
       endpoint: services_comunication_lg
       args: 
-        - queue
         - console
+        - queue
+        - system_events
       thread_name: T1_LISTENING
       thread_is_daemon: True
       autostart: True

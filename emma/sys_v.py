@@ -117,9 +117,9 @@ class SystemAwake:
 
 
 class SysV:
-    def __init__(self, queue_manager=None, console_manager=None):
-        self.queue = queue_manager
-        self.console_manager = console_manager
+    def __init__(self, queue_handler=None, console_handler=None):
+        self.queue = queue_handler
+        self.console_handler = console_handler
 
     def server_performance(self, threads):
         dateTime = datetime.datetime.now()
@@ -156,9 +156,10 @@ class SysV:
             data = yaml.load(f, Loader=yaml.FullLoader)
         func_instances = {}
 
-        queue = EMMA_GLOBALS.sys_v_tm_qm
-        console = EMMA_GLOBALS.sys_v_tm_cm
-        thread = EMMA_GLOBALS.sys_v_tm
+        queue = EMMA_GLOBALS.sys_v_th_qh
+        console = EMMA_GLOBALS.sys_v_th_ch
+        thread = EMMA_GLOBALS.sys_v_th
+        system_events = EMMA_GLOBALS.sys_v_th_eh
 
         if forge:
             data = data['Forge']['services']
@@ -166,6 +167,40 @@ class SysV:
                 return
         else:
             data = data['defaults']['services']
+
+        # Define the mappings of argument combinations to function calls
+        argument_mappings = {
+            ("console", "queue", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, queue_handler=queue, system_events=system_events, thread_handler=thread),
+            ("console", "queue", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, queue_handler=queue, system_events=system_events),
+            ("console", "queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, queue_handler=queue, thread_handler=thread),
+            ("console", "queue"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, queue_handler=queue),
+            ("console", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, system_events=system_events, thread_handler=thread),
+            ("console", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, system_events=system_events),
+            ("console", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, thread_handler=thread),
+            ("console",): lambda: getattr(EMMA_GLOBALS, endpoint)(console_handler=console),
+            ("queue", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                queue_handler=queue, system_events=system_events, thread_handler=thread),
+            ("queue", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                queue_handler=queue, system_events=system_events),
+            ("queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                queue_handler=queue, thread_handler=thread),
+            ("queue",): lambda: getattr(EMMA_GLOBALS, endpoint)(queue_handler=queue),
+
+            ("system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                system_events=system_events, thread_handler=thread),
+            ("system_events",): lambda: getattr(EMMA_GLOBALS, endpoint)(system_events=system_events),
+
+            ("thread",): lambda: getattr(EMMA_GLOBALS, endpoint)(thread_handler=thread),
+
+            (): lambda: getattr(EMMA_GLOBALS, endpoint)()
+        }
 
         for dic in data:
             if dic == {}:
@@ -177,30 +212,13 @@ class SysV:
                 endpoint = f"forge_package_{dic['package_name']}"
             else:
                 endpoint = dic['endpoint']
-            if "queue" in args and "console" in args and "thread" in args:
-                func_instance = getattr(EMMA_GLOBALS, endpoint)(
-                    queue_manager=queue, console_manager=console, thread_manager=thread)
-                func_instances[dic["thread_name"]] = func_instance
 
-            elif "queue" in args and "console" in args:
-                func_instance = getattr(EMMA_GLOBALS, endpoint)(
-                    queue_manager=queue, console_manager=console)
-                func_instances[dic["thread_name"]] = func_instance
+            # Find the appropriate function call based on the argument combination
+            func_call = argument_mappings.get(
+                tuple(args), argument_mappings.get(()))
+            func_instance = func_call()  # Call the function to get the instance
 
-            elif "queue" in args:
-                func_instance = getattr(EMMA_GLOBALS, endpoint)(
-                    queue_manager=queue)
-                func_instances[dic['thread_name']] = func_instance
-
-            elif "console" in args:
-                func_instance = getattr(EMMA_GLOBALS, endpoint)(
-                    console_manager=console)
-                func_instances[dic["thread_name"]] = func_instance
-
-            else:
-                func_instance = getattr(
-                    EMMA_GLOBALS, endpoint)()
-                func_instances[dic["thread_name"]] = func_instance
+            func_instances[dic["thread_name"]] = func_instance
 
             thread_name = dic.get("thread_name")
             thread_is_daemon = dic.get("thread_is_daemon", False)
@@ -212,12 +230,11 @@ class SysV:
             if autostart:
                 thread.start_thread(thread_name)
                 func_instance.run()
-
-        EMMA_GLOBALS.thread_instances = func_instances
+                EMMA_GLOBALS.thread_instances = func_instances
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
-        queue = EMMA_GLOBALS.sys_v_tm_qm
+        queue = EMMA_GLOBALS.sys_v_th_qh
 
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
@@ -227,16 +244,19 @@ class SysV:
 
     def server_shutdown(self):
         self.queue.get_queue("CURRENT_INPUT")
-        self.console_manager.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
+        self.console_handler.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
         time.sleep(3)
         log = self.queue.get_queue("CURRENT_INPUT")
         if log.lower() == "yes":
             self.enviroment_clearer()
         elif log.lower() == "cancel":
             return
-        EMMA_GLOBALS.sys_v_tm.kill()
+
+        EMMA_GLOBALS.sys_v_th_eh.notify_shutdown()
+
+        EMMA_GLOBALS.sys_v_th.kill()
         self.temp_clearer()
-        self.remove_pycache(".")
+        self.remove_pycache("./emma")
         os._exit(0)
 
     def remove_pycache(self, dir_path):
@@ -316,7 +336,7 @@ class SysV:
             pass
 
 
-class ThreadManager:
+class ThreadHandler:
     def __init__(self):
         self.threads = {}
 
@@ -371,7 +391,34 @@ class ThreadManager:
                             thread_name)
                         thread_instance.stop()
 
-    class QueueManager:
+    class EventHandler:
+        def __init__(self):
+            self.subscribers = []
+
+        def subscribe(self, subscriber):
+            self.subscribers.append(subscriber)
+
+        def notify_shutdown(self):
+            for subscriber in self.subscribers:
+                try:
+                    subscriber.handle_shutdown()
+                except Exception as e:
+                    print(f"ERROR WHEN NOTIFY {subscriber} SHUTDOWN {e}")
+                    continue
+
+        def notify_overload(self):
+            pass
+
+        def notify_connection(self):
+            pass
+
+        def notify_disconnection(self):
+            pass
+
+        def notify_progress(self, progress_percentage):
+            pass
+
+    class QueueHandler:
         def __init__(self):
             self.queues = {}
 
@@ -408,9 +455,9 @@ class ThreadManager:
                 raise ValueError(f"No queue found with name {name}")
             del self.queues[name]
 
-    class ConsoleManager:
-        def __init__(self, queue_manager):
-            self.queue = queue_manager
+    class ConsoleHandler:
+        def __init__(self, queue_handler):
+            self.queue = queue_handler
             self.msc = EMMA_GLOBALS.task_msc
             self.output_queue = queue.Queue()
             self.console_thread = threading.Thread(
@@ -429,15 +476,15 @@ class ThreadManager:
 
 
 class CommandsManager:
-    def __init__(self, queue_manager, console_manager, thread_manager):
+    def __init__(self, console_handler, queue_handler, thread_handler):
         self.tag = "Commands Thread"
         self.talk = EMMA_GLOBALS.services_comunication_tg
-        self.bp = SysV(queue_manager, console_manager)
-        self.queue = queue_manager
+        self.bp = SysV(queue_handler, console_handler)
+        self.queue = queue_handler
         self.stop_flag = False
         self.event = threading.Event()
-        self.console_manager = console_manager
-        self.thread_manager = thread_manager
+        self.console_handler = console_handler
+        self.thread_handler = thread_handler
 
     def main(self):
         module = ""
@@ -464,7 +511,7 @@ class CommandsManager:
             # get the function reference
             function = getattr(module, function_name)
         except Exception as e:
-            self.console_manager.write(
+            self.console_handler.write(
                 self.tag, f"{e}, Cannot get Function Ref.")
             return
         # call the function
@@ -474,13 +521,13 @@ class CommandsManager:
             elif type(args) == int or type(args) == str:
                 r = function(args)
                 if r != None:
-                    self.console_manager.write(self.tag, r)
+                    self.console_handler.write(self.tag, r)
 
-            self.console_manager.write(
+            self.console_handler.write(
                 self.tag, f"{function_name} has been execute")
             self.queue.add_to_queue("ISTK", False)
         except Exception as e:
-            self.console_manager.write(
+            self.console_handler.write(
                 self.tag, f"{function_name} failed or is unknown: {e}"
             )
 
@@ -489,7 +536,7 @@ class CommandsManager:
             EMMA_GLOBALS.stcpath_command_dir,
             command_keyword,
             "command",
-            self.console_manager,
+            self.console_handler,
         )
 
         if diccionary != None and (type(args) == int or args == None):

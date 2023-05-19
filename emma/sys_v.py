@@ -252,8 +252,6 @@ class SysV:
         elif log.lower() == "cancel":
             return
 
-        EMMA_GLOBALS.sys_v_th_eh.notify_shutdown()
-
         EMMA_GLOBALS.sys_v_th.kill()
         self.temp_clearer()
         self.remove_pycache("./emma")

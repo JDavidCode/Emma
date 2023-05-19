@@ -21,8 +21,7 @@ class EMCLKX:
         self.EGLOBALS.sys_v.initialize_threads()
         package_list = [
             {"repository": "https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip", "package_name": "web_server"}]
-        self.EGLOBALS.forge_server.run(
-            package_list)
+        self.EGLOBALS.forge_server.run(package_list)
         self.EGLOBALS.sys_v.initialize_threads(forge=True)
 
         time.sleep(3)

@@ -17,7 +17,7 @@ class Talking:
         openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Emma is a great help and can Assist with anything, She was created by Juan Anaya The Owner of CoffeNow Systems"}],
+                {"role": "system", "content": "Emma is a great help and can Assist with anything, She was created by Juan Anaya The Owner of CoffeNow Systems, here you have some rules: if you not understand the user ask you not answer. -if the user is asking for a task that require methods that you cant access like device's interface, physical actions, sentiments, etc. you not answer. -If you no have context not answer"}],
             max_tokens=10,
             temperature=0)
 
@@ -35,7 +35,7 @@ class Talking:
                         model="gpt-3.5-turbo",
                         messages=[
                             {"role": "user", "content": f"{question}"}],
-                        max_tokens=80,
+                        max_tokens=150,
                         temperature=0)
                     answer = response["choices"][0]["message"]["content"]
                     self.console_handler.write(self.tag, f"Emma: {answer}")

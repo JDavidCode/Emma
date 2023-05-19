@@ -139,6 +139,10 @@ class Builder:
             self.install_custom_packages()
         FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
+    def instanciate_build(self):
+        self.load_service_data()
+        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
+
     def run(self, package_list):
         for package in package_list:
             self.package_name = package.get('package_name')
@@ -149,7 +153,7 @@ class Builder:
                 continue
 
             print(f"Known {self.package_name} package repositories:",
-                  self._repository.get_package_repositories(self.package_name))
+                  self._repository.get_repository(self.package_name))
             if not self._repository.verify_repository(self.package_name):
                 self._repository.add_repository(self.package_name, repository)
                 key = self._download.download_package(
@@ -162,9 +166,9 @@ class Builder:
             else:
                 if self._service.verify_service(self.package_name):
                     print(f"Building {self.package_name}")
-                    self.build()
+                    self.instanciate_build()
                 else:
                     print(f"Installing local {self.package_name}")
                     self.service_register()
-                    self.build()
+                    self.instanciate_build()
                 continue

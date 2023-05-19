@@ -5,7 +5,6 @@ import emma.config.globals as EMMA_GLOBALS
 
 class EMCLKX:
     def __init__(self) -> None:
-        # BASIC PROCESS IMPORTS
         self.EGLOBALS = EMMA_GLOBALS
         userPrefix, welcome = self.EGLOBALS.sys_v_sa.run()
         self.thread_handler = self.EGLOBALS.sys_v_th

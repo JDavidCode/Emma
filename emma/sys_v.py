@@ -12,108 +12,125 @@ import emma.config.globals as EMMA_GLOBALS
 
 
 class SystemAwake:
-    def __init__(self):
-        pass
+    def __init__(self, console_handler, queue_handler, thread_manager, system_events):
+        self.console_handler = console_handler
+        self.queue_handler = queue_handler
+        self.thread_manager = thread_manager
+        self.system_events = system_events
 
-    def ruler(self):
-        i = 0
-        while i <= 3:
-            rule = input("Login, register or invited?: ")
-            if rule.lower() == "login":
-                return self.user_login()
-            elif rule.lower() == "register":
-                self.user_register()
-            elif rule.lower() == "invited":
-                return self.invited()
-            else:
-                i += 1
-        print("Too many intents, please try again later")
-        quit()
-
-    def user_login(self):
-        i = 0
-        while i <= 3:
-            email = input("email: ")
-            pw = input("Password: ")
-            if email == " " or pw == " " or len(email) == 0 or len(pw) == 0:
-                print("Some fields are empty")
-                i += 1
-                if i >= 3:
-                    print("Too many intents please try again later")
-                    quit()
-            else:
-                x, userData = EMMA_GLOBALS.services_db_lg.user_login(
-                    email, pw)
-                if x:
-                    if userData[0] == "5":
-                        print("Facial Recognizer is needed for this user level")
-                        if EMMA_GLOBALS.services_cam_fr.run(userData[2], 1) == True:
-                            return True
-                        else:
-                            return False
-                    else:
-                        return True
-                else:
-                    print("incorrect credentials")
-                    i += 1
-        print("Too many intents please try again later")
-        quit()
-
-    def user_register(self):
-        i = 0
-        while i < 3:
-            user = input("Name: ")
-            email = input("email: ")
-            pw = input("Password: ")
-            age = int(input("Age: "))
-            lang = input("Lang (es/en): ")
-            genre = input("genre (Male/Female): ")
-            if (
-                user == " "
-                or email == " "
-                or pw == " "
-                or age == " "
-                or genre == " "
-                or len(user) == 0
-                or len(pw) == 0
-                or len(str(lang)) == 0
-                or len(genre) == 0
-            ):
-                i += 1
-                print("invalid args")
-            else:
-                args = [
-                    EMMA_GLOBALS.services_cam_fr.run(user, 0),
-                ]
-                if EMMA_GLOBALS.services_db_lg.user_register(user, email, pw, age, genre, lang, args) == True:
-                    print("You has been Register")
-                    print("Now Login Please")
-                    self.user_login()
-                else:
-                    print("Error while you tryining registration")
-
-    def run(self):
+    def initialize_configuration(self):
         msc = EMMA_GLOBALS.task_msc
-        os.environ["USERLVL"] = "3"
-        os.environ["USERNAME"] = "Juan"
         os.environ["USERLANG"] = "en"
         os.environ["LOGGED"] = "True"
-        bp = SysV()
-        bp.data_auto_updater()
-        logged = os.environ.get("LOGGED")
         os.environ["DATE"] = f"{msc.date_clock(2)}"
-        weather = msc.weather("Medellin")
-        dateTime = msc.date_clock(0)
-        dayPart = msc.day_parts()
-        text = "good {}, today is {},its {}, {}...".format(
-            dayPart, dateTime[1], dateTime[2], weather
-        )
-        if logged == "True":
-            userPrefix = EMMA_GLOBALS.services_db_lg.user_prefix()
-            return userPrefix, text
-        if self.ruler():
-            userPrefix = EMMA_GLOBALS.services_db_lg.user_prefix()
-            return userPrefix, text
+        EMMA_GLOBALS.sys_v.data_auto_updater()
+        EMMA_GLOBALS.sys_v.verify_paths()
+        EMMA_GLOBALS.sys_v.initialize_queues()
+        EMMA_GLOBALS.sys_v.initialize_threads()
+
+    def establish_connections(self):
+        pass
+
+    def check_dependencies(self):
+        pass
+
+    def start_services(self, package_list):
+        EMMA_GLOBALS.forge_server.run(package_list)
+        EMMA_GLOBALS.sys_v.initialize_threads(forge=True)
+
+    def perform_health_checks(self):
+        pass
+
+    def setup_logging(self):
+        pass
+
+    def handle_errors(self):
+        pass
+
+    def trigger_startup_events(self):
+        pass
+
+    def run(self):
+        package_list = [
+            {
+                "repository": "https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip",
+                "package_name": "web_server",
+            }
+        ]
+        self.initialize_configuration()
+        self.establish_connections()
+        self.check_dependencies()
+        self.start_services(package_list)
+        self.perform_health_checks()
+        self.setup_logging()
+        self.handle_errors()
+        self.trigger_startup_events()
+
+    class Auth:
+        def __init__(self):
+            self.max_login_attempts = 3
+
+        def authenticate(self):
+            for _ in range(self.max_login_attempts):
+                option = input("Login, Register, or Invited? ").lower()
+
+                if option == "login":
+                    if self.login():
+                        return
+                elif option == "register":
+                    self.register()
+                    return
+                elif option == "invited":
+                    self.invited()
+                    return
+                else:
+                    print("Invalid option. Please try again.")
+
+            print("Too many login attempts. Please try again later.")
+            quit()
+
+        def login(self):
+            for _ in range(self.max_login_attempts):
+                email = input("Email: ")
+                password = input("Password: ")
+
+                if email.strip() == "" or password.strip() == "":
+                    print("Some fields are empty.")
+                else:
+                    if self.perform_login(email, password):
+                        return True
+                    else:
+                        print("Incorrect credentials. Please try again.")
+
+            print("Too many login attempts. Please try again later.")
+            quit()
+
+        def perform_login(self, email, password):
+            x, userData = EMMA_GLOBALS.services_db_lg.user_login(email, password)
+            if x:
+                if userData[0] == "5":
+                    print("Facial Recognizer is needed for this user level")
+                    if EMMA_GLOBALS.services_cam_fr.run(userData[2], 1):
+                        return True
+                    else:
+                        return False
+                else:
+                    return True
+            else:
+                return False
+
+        def register(self):
+            # Implement registration logic here
+            pass
+
+        def invited(self):
+            os.environ["user_lvl"] = "1"
+            os.environ["user_name"] = input("insert your name: ")
+            os.environ["user_lang"] = input("select your language en/es: ")
+
+        def logout(self):
+            # Implement logout logic here
+            pass
 
 
 class SysV:
@@ -162,44 +179,69 @@ class SysV:
         system_events = EMMA_GLOBALS.sys_v_th_eh
 
         if forge:
-            data = data['Forge']['services']
+            data = data["Forge"]["services"]
             if data == []:
                 return
         else:
-            data = data['defaults']['services']
+            data = data["defaults"]["services"]
 
         # Define the mappings of argument combinations to function calls
         argument_mappings = {
-            ("console", "queue", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue, system_events=system_events, thread_handler=thread),
-            ("console", "queue", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue, system_events=system_events),
+            ("console", "queue", "system_events", "thread"): lambda: getattr(
+                EMMA_GLOBALS, endpoint
+            )(
+                console_handler=console,
+                queue_handler=queue,
+                system_events=system_events,
+                thread_handler=thread,
+            ),
+            ("console", "queue", "system_events"): lambda: getattr(
+                EMMA_GLOBALS, endpoint
+            )(
+                console_handler=console,
+                queue_handler=queue,
+                system_events=system_events,
+            ),
             ("console", "queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue, thread_handler=thread),
+                console_handler=console, queue_handler=queue, thread_handler=thread
+            ),
             ("console", "queue"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue),
-            ("console", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, system_events=system_events, thread_handler=thread),
+                console_handler=console, queue_handler=queue
+            ),
+            ("console", "system_events", "thread"): lambda: getattr(
+                EMMA_GLOBALS, endpoint
+            )(
+                console_handler=console,
+                system_events=system_events,
+                thread_handler=thread,
+            ),
             ("console", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, system_events=system_events),
+                console_handler=console, system_events=system_events
+            ),
             ("console", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, thread_handler=thread),
-            ("console",): lambda: getattr(EMMA_GLOBALS, endpoint)(console_handler=console),
-            ("queue", "system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, system_events=system_events, thread_handler=thread),
+                console_handler=console, thread_handler=thread
+            ),
+            ("console",): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console
+            ),
+            ("queue", "system_events", "thread"): lambda: getattr(
+                EMMA_GLOBALS, endpoint
+            )(queue_handler=queue, system_events=system_events, thread_handler=thread),
             ("queue", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, system_events=system_events),
+                queue_handler=queue, system_events=system_events
+            ),
             ("queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, thread_handler=thread),
+                queue_handler=queue, thread_handler=thread
+            ),
             ("queue",): lambda: getattr(EMMA_GLOBALS, endpoint)(queue_handler=queue),
-
             ("system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                system_events=system_events, thread_handler=thread),
-            ("system_events",): lambda: getattr(EMMA_GLOBALS, endpoint)(system_events=system_events),
-
+                system_events=system_events, thread_handler=thread
+            ),
+            ("system_events",): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                system_events=system_events
+            ),
             ("thread",): lambda: getattr(EMMA_GLOBALS, endpoint)(thread_handler=thread),
-
-            (): lambda: getattr(EMMA_GLOBALS, endpoint)()
+            (): lambda: getattr(EMMA_GLOBALS, endpoint)(),
         }
 
         for dic in data:
@@ -211,11 +253,10 @@ class SysV:
             if forge:
                 endpoint = f"forge_package_{dic['package_name']}"
             else:
-                endpoint = dic['endpoint']
+                endpoint = dic["endpoint"]
 
             # Find the appropriate function call based on the argument combination
-            func_call = argument_mappings.get(
-                tuple(args), argument_mappings.get(()))
+            func_call = argument_mappings.get(tuple(args), argument_mappings.get(()))
             func_instance = func_call()  # Call the function to get the instance
 
             func_instances[dic["thread_name"]] = func_instance
@@ -224,8 +265,13 @@ class SysV:
             thread_is_daemon = dic.get("thread_is_daemon", False)
             autostart = dic.get("autostart", False)
 
-            thread.add_thread(threading.Thread(
-                target=lambda: func_instance.main(), name=thread_name, daemon=thread_is_daemon))
+            thread.add_thread(
+                threading.Thread(
+                    target=lambda: func_instance.main(),
+                    name=thread_name,
+                    daemon=thread_is_daemon,
+                )
+            )
 
             if autostart:
                 thread.start_thread(thread_name)
@@ -238,7 +284,7 @@ class SysV:
 
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
-        for dic in data['defaults']['queues']:
+        for dic in data["defaults"]["queues"]:
             if dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
 
@@ -271,7 +317,7 @@ class SysV:
 
     def enviroment_clearer(self):
         clear = [
-            ("USERNAME", ""),
+            ("email", ""),
             ("USERLVL", "1"),
             ("USERLANG", ""),
             ("LOGGED", str(False)),
@@ -371,8 +417,7 @@ class ThreadHandler:
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    thread_instance = EMMA_GLOBALS.thread_instances.get(
-                        thread_name)
+                    thread_instance = EMMA_GLOBALS.thread_instances.get(thread_name)
                     thread_instance.stop()
                     return f"\n{thread_name} has been stopped."
                 else:
@@ -385,8 +430,7 @@ class ThreadHandler:
             for _, thread in self.threads.items():
                 if str(thread.name) == thread_name:
                     if thread.is_alive():
-                        thread_instance = EMMA_GLOBALS.thread_instances.get(
-                            thread_name)
+                        thread_instance = EMMA_GLOBALS.thread_instances.get(thread_name)
                         thread_instance.stop()
 
     class EventHandler:
@@ -493,13 +537,12 @@ class CommandsManager:
             _, args, command = self.command_indexer(command_keyword)
             if _:
                 self.queue.add_to_queue("ISTK", False)
-                module = getattr(EMMA_GLOBALS, command.get('module'))
+                module = getattr(EMMA_GLOBALS, command.get("module"))
                 # Execute the command
                 if args != None:
-                    self.execute_command(
-                        module, command.get('function_name'), args)
+                    self.execute_command(module, command.get("function_name"), args)
                 else:
-                    self.execute_command(module, command.get('function_name'))
+                    self.execute_command(module, command.get("function_name"))
             else:
                 self.queue.add_to_queue("ISTK", True)
                 continue
@@ -509,8 +552,7 @@ class CommandsManager:
             # get the function reference
             function = getattr(module, function_name)
         except Exception as e:
-            self.console_handler.write(
-                self.tag, f"{e}, Cannot get Function Ref.")
+            self.console_handler.write(self.tag, f"{e}, Cannot get Function Ref.")
             return
         # call the function
         try:
@@ -521,8 +563,7 @@ class CommandsManager:
                 if r != None:
                     self.console_handler.write(self.tag, r)
 
-            self.console_handler.write(
-                self.tag, f"{function_name} has been execute")
+            self.console_handler.write(self.tag, f"{function_name} has been execute")
             self.queue.add_to_queue("ISTK", False)
         except Exception as e:
             self.console_handler.write(

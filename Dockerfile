@@ -16,11 +16,20 @@ RUN python -m pip install --upgrade pip
 RUN python -m  pip install --upgrade setuptools
 RUN python -m pip install -r requirements.txt
 
+
+
 WORKDIR /emma
 COPY . /emma
-
 ENV FLASK_APP emma/web_server/app.py
 ENV FLASK_ENV development
 EXPOSE 3018
 
-CMD ["sh", "-c", "python -c 'import pyaudio' && python run.py"]
+RUN echo '#!/bin/bash' > /emma/startup.sh && \
+	echo 'Xvfb :99 -screen 0 1280x1024x16 &' >> /emma/startup.sh && \
+	echo 'export DISPLAY=:99' >> /emma/startup.sh && \
+	echo 'python -c "import pyaudio"' >> /emma/startup.sh && \
+	echo 'python run.py' >> /emma/startup.sh && \
+	chmod +x /emma/startup.sh
+
+# Start Xvfb and run the application using the shell script
+CMD ["/emma/startup.sh"]

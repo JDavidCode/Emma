@@ -8,20 +8,24 @@ class EMMA_GLOBALS:
 
         self.task_module = importlib.import_module("emma.task_module")
         self.sys_v = importlib.import_module("emma.sys_v")
-        self.services_db = importlib.import_module(
-            "emma.services.integrated.db")
+        self.services_db = importlib.import_module("emma.services.integrated.db")
         self.services_cam_module = importlib.import_module(
-            "emma.services.integrated.cam_module")
+            "emma.services.integrated.cam_module"
+        )
         self.services_listening = importlib.import_module(
-            "emma.services.integrated.comunication._listening")
+            "emma.services.integrated.comunication._listening"
+        )
         self.services_talking = importlib.import_module(
-            "emma.services.integrated.comunication._talking")
+            "emma.services.integrated.comunication._talking"
+        )
         self.forge_server = importlib.import_module("emma.forge.builder")
 
         self.tools_converters = importlib.import_module(
-            "emma.tools.converters.local.kit")
+            "emma.tools.converters.local.kit"
+        )
         self.tools_generators = importlib.import_module(
-            "emma.tools.generators.local.kit")
+            "emma.tools.generators.local.kit"
+        )
         self.tools_data = importlib.import_module("emma.tools.data.local.kit")
         self.instances()
 
@@ -34,7 +38,9 @@ class EMMA_GLOBALS:
         stcpath_extensions = "emma/assets/json/extension.json"
 
         global stcmodel_visual_frontalface, stcmode_vosk_en, stcmode_vosk_es
-        stcmodel_visual_frontalface = "emma/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
+        stcmodel_visual_frontalface = (
+            "emma/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
+        )
         stcmode_vosk_en = "emma/assets/models/vosk_models/en-model"
         stcmode_vosk_es = "emma/assets/models/vosk_models/es-model"
 
@@ -55,7 +61,9 @@ class EMMA_GLOBALS:
         sys_v_th_ch = self.sys_v.ThreadHandler.ConsoleHandler(sys_v_th_qh)
         sys_v_th_eh = self.sys_v.ThreadHandler.EventHandler()
         sys_v_cm = self.sys_v.CommandsManager
-        sys_v_sa = self.sys_v.SystemAwake()
+        sys_v_sa = self.sys_v.SystemAwake(
+            sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh
+        )
         sys_v = self.sys_v.SysV(sys_v_th_qh, sys_v_th_ch)
 
         global services_db_lg, services_db_dt
@@ -77,7 +85,7 @@ class EMMA_GLOBALS:
         thread_instances = None
 
 
-class FORGE_GLOBALS():
+class FORGE_GLOBALS:
     def __init__(self):
         self.variables()
 
@@ -87,7 +95,8 @@ class FORGE_GLOBALS():
 
     def create_instance(self, package_name, endpoint):
         package = importlib.import_module(
-            f"emma.services.external.{package_name}.{endpoint}")
+            f"emma.services.external.{package_name}.{endpoint}"
+        )
         global_namespace = globals()
         global_variable_name = f"forge_package_{package_name}"
         try:

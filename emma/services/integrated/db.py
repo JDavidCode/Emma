@@ -26,8 +26,7 @@ class Login:
             user_lang = result[7]
             rut = f".temp/face_{user_name}.zip"
             EMMA_GLOBALS.tools_da.unbinary(result[8], rut)
-            EMMA_GLOBALS.tools_cs.unzipper(
-                [(f".temp/face_{user_name}.zip", ".temp/")])
+            EMMA_GLOBALS.tools_cs.unzipper([(f".temp/face_{user_name}.zip", ".temp/")])
             user_data = user_id, user_lvl, user_name, age, genre
             logged = os.getenv("LOGGED")
             if logged == "False":
@@ -62,9 +61,7 @@ class Login:
         return True
 
     def invited():
-        os.environ["user_lvl"] = "1"
-        os.environ["user_name"] = input("insert your name: ")
-        os.environ["user_lang"] = input("select your language en/es: ")
+
         return True
 
     def user_prefix():
@@ -115,11 +112,12 @@ class EmmaData:
                 print("Cannot Connect To the server ")
         except Exception as e:
             print(
-                f"An error ocurred while triying to connect to the database {e} \n the server continue running but some functions can be stops")
-            os.environ['SQL_CONNECTION'] = False
+                f"An error ocurred while triying to connect to the database {e} \n the server continue running but some functions can be stops"
+            )
+            os.environ["SQL_CONNECTION"] = False
 
     def json_task_updater():
-        if not os.environ.get('SQL_CONNECTION'):
+        if not os.environ.get("SQL_CONNECTION"):
             return
         directory = EMMA_GLOBALS.stcpath_command_dir
         sql = "SELECT caller,function_name, module, args_key, arguments, required_lvl FROM functions"
@@ -157,7 +155,7 @@ class EmmaData:
             f.write(json_data)
 
     def data_writer():
-        if not os.environ.get('SQL_CONNECTION'):
+        if not os.environ.get("SQL_CONNECTION"):
             return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")
@@ -181,7 +179,7 @@ class EmmaData:
         print("Data has been uploaded")
 
     def data_updater():
-        if not os.environ.get('SQL_CONNECTION'):
+        if not os.environ.get("SQL_CONNECTION"):
             return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")
@@ -207,7 +205,7 @@ class EmmaData:
         print("Data has been updated")
 
     def data_remover():
-        if not os.environ.get('SQL_CONNECTION'):
+        if not os.environ.get("SQL_CONNECTION"):
             return
         table_i = input("Insert table's name: ")
         table_list = ("chatdata", "funfacts", "taskdata")

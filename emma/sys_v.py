@@ -20,7 +20,7 @@ class SystemAwake:
 
     def initialize_configuration(self):
         msc = EMMA_GLOBALS.task_msc
-        os.environ["USERLANG"] = "en"
+        os.environ["USERLANG"] = "es"
         os.environ["LOGGED"] = "True"
         os.environ["DATE"] = f"{msc.date_clock(2)}"
         EMMA_GLOBALS.sys_v.data_auto_updater()
@@ -106,7 +106,8 @@ class SystemAwake:
             quit()
 
         def perform_login(self, email, password):
-            x, userData = EMMA_GLOBALS.services_db_lg.user_login(email, password)
+            x, userData = EMMA_GLOBALS.services_db_lg.user_login(
+                email, password)
             if x:
                 if userData[0] == "5":
                     print("Facial Recognizer is needed for this user level")
@@ -256,7 +257,8 @@ class SysV:
                 endpoint = dic["endpoint"]
 
             # Find the appropriate function call based on the argument combination
-            func_call = argument_mappings.get(tuple(args), argument_mappings.get(()))
+            func_call = argument_mappings.get(
+                tuple(args), argument_mappings.get(()))
             func_instance = func_call()  # Call the function to get the instance
 
             func_instances[dic["thread_name"]] = func_instance
@@ -417,7 +419,8 @@ class ThreadHandler:
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    thread_instance = EMMA_GLOBALS.thread_instances.get(thread_name)
+                    thread_instance = EMMA_GLOBALS.thread_instances.get(
+                        thread_name)
                     thread_instance.stop()
                     return f"\n{thread_name} has been stopped."
                 else:
@@ -430,7 +433,8 @@ class ThreadHandler:
             for _, thread in self.threads.items():
                 if str(thread.name) == thread_name:
                     if thread.is_alive():
-                        thread_instance = EMMA_GLOBALS.thread_instances.get(thread_name)
+                        thread_instance = EMMA_GLOBALS.thread_instances.get(
+                            thread_name)
                         thread_instance.stop()
 
     class EventHandler:
@@ -478,7 +482,7 @@ class ThreadHandler:
                 return
             if self.queues[name].maxsize == 1:
                 if not self.queues[name].empty():
-                    self.get_queue(name)
+                    _ = self.get_queue(name)
                 self.queues[name].put(command)
             else:
                 self.queues[name].put(command)
@@ -540,7 +544,8 @@ class CommandsManager:
                 module = getattr(EMMA_GLOBALS, command.get("module"))
                 # Execute the command
                 if args != None:
-                    self.execute_command(module, command.get("function_name"), args)
+                    self.execute_command(
+                        module, command.get("function_name"), args)
                 else:
                     self.execute_command(module, command.get("function_name"))
             else:
@@ -552,7 +557,8 @@ class CommandsManager:
             # get the function reference
             function = getattr(module, function_name)
         except Exception as e:
-            self.console_handler.write(self.tag, f"{e}, Cannot get Function Ref.")
+            self.console_handler.write(
+                self.tag, f"{e}, Cannot get Function Ref.")
             return
         # call the function
         try:
@@ -563,7 +569,8 @@ class CommandsManager:
                 if r != None:
                     self.console_handler.write(self.tag, r)
 
-            self.console_handler.write(self.tag, f"{function_name} has been execute")
+            self.console_handler.write(
+                self.tag, f"{function_name} has been execute")
             self.queue.add_to_queue("ISTK", False)
         except Exception as e:
             self.console_handler.write(

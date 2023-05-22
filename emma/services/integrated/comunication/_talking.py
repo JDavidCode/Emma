@@ -25,24 +25,28 @@ class Talking:
         self.event.wait()
         while not self.stop_flag:
             # Wait for a command to be put in the queue
-            question = self.queue.get_queue("TALKING", 1)
+            question = self.queue.get_queue("TALKING", 1.5)
             if question == None:
                 continue
             else:
                 key = self.queue.get_queue("ISTK")
-                if key:
-                    response = openai.ChatCompletion.create(
-                        model="gpt-3.5-turbo",
-                        messages=[
-                            {"role": "user", "content": f"{question}"}],
-                        max_tokens=150,
-                        temperature=0)
-                    answer = response["choices"][0]["message"]["content"]
-                    self.console_handler.write(self.tag, f"Emma: {answer}")
+                try:
+                    if key:
+                        response = openai.ChatCompletion.create(
+                            model="gpt-3.5-turbo",
+                            messages=[
+                                {"role": "user", "content": f"{question}"}],
+                            max_tokens=150,
+                            temperature=0)
+                        answer = response["choices"][0]["message"]["content"]
+                        self.console_handler.write(self.tag, f"Emma: {answer}")
 
-                    tts = _TTS()
-                    tts.start(answer)
-                    del tts
+                        if not "Lo siento" in answer:
+                            tts = _TTS()
+                            tts.start(answer)
+                            del tts
+                except Exception as e:
+                    self.console_handler.write(self.tag, e)
 
     def run(self):
         self.event.set()

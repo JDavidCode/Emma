@@ -19,7 +19,6 @@ class EMCLKX:
             )
             self.queue_handler.add_to_queue("SERVERDATA", json)
             if timer >= 4999:
-                # Sleep for a certain period of time before checking again
                 thread_status = self.thread_handler.get_thread_status()
                 for status in thread_status:
                     self.console_handler.write(

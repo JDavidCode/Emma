@@ -1,0 +1,96 @@
+{
+    "rest": {
+        "function_name": "server_shutdown",
+        "module": "sys_v",
+        "args_key": "None",
+        "required_lvl": 1
+    },
+    "activate thread": {
+        "function_name": "start_thread",
+        "module": "sys_v",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "stop thread": {
+        "function_name": "stop_thread",
+        "module": "sys_v",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "reload thread": {
+        "function_name": "restart_thread",
+        "module": "sys_v",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "charge module": {
+        "function_name": "module_reloader",
+        "module": "sys_v",
+        "args_key": "*args",
+        "required_lvl": 2
+    },
+    "open app": {
+        "function_name": "open_app",
+        "module": "task_os",
+        "args_key": "args",
+        "arguments": "1",
+        "required_lvl": 1
+    },
+    "loudness": {
+        "function_name": "volume_management",
+        "module": "task_os",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "weather": {
+        "function_name": "weather",
+        "module": "task_msc",
+        "args_key": "args",
+        "arguments": "1",
+        "required_lvl": 0
+    },
+    "day is": {
+        "function_name": "date_clock",
+        "module": "task_msc",
+        "args_key": "args",
+        "arguments": "2",
+        "required_lvl": 0
+    },
+    "part of the day": {
+        "function_name": "day_parts",
+        "module": "task_msc",
+        "args_key": "None",
+        "required_lvl": 0
+    },
+    "time": {
+        "function_name": "date_clock",
+        "module": "task_msc",
+        "args_key": "args",
+        "arguments": "3",
+        "required_lvl": 0
+    },
+    "lets play": {
+        "function_name": "youtube_player",
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "search about": {
+        "function_name": "google_search",
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "open website": {
+        "function_name": "open_website",
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+    },
+    "open web console": {
+        "function_name": "open_local_site",
+        "module": "task_web",
+        "args_key": "None",
+        "required_lvl": 1
+    }
+}

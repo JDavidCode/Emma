@@ -30,9 +30,11 @@ class VoiceListener:
                 result = result[14:-3].lower()
                 if result != "":
                     self.console_handler.write(self.tag, result)
-                    if "emma" in result:
-                        result = result.replace("emma", "").strip().lower()
-                        result = result
+                    if "computadora" in result:
+                        result = result.replace(
+                            "computadora", "").strip().lower()
+
+                        result = result.replace("'", "")
                         self.console_handler.write(self.tag, result)
                         self.queue.add_to_queue("COMMANDS", result)
                         self.queue.add_to_queue("CURRENT_INPUT", result)

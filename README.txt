@@ -9,3 +9,5 @@ This model allows EMMA to easily search, download, install, and manage modules b
 Using the MSIP model, EMMA can manage any package with ease, making it a versatile and powerful tool for both industrial and domestic environments.
 
 EMMA from CoffeNow is a python based application.
+
+¿NextCloud?

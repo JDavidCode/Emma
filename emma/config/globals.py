@@ -1,14 +1,17 @@
 import importlib
+import os
 import sys
 
 
 class EMMA_GLOBALS:
     def __init__(self):
-        self.variables()
-
-        self.task_module = importlib.import_module("emma.task_module")
         self.sys_v = importlib.import_module("emma.sys_v")
-        self.services_db = importlib.import_module("emma.services.integrated.db")
+        self.tools_instances()
+        self.sys_v.SystemAwake(fase=0, tools=tools_da)
+
+        self.variables()
+        self.services_db = importlib.import_module(
+            "emma.services.integrated.db")
         self.services_cam_module = importlib.import_module(
             "emma.services.integrated.cam_module"
         )
@@ -19,20 +22,14 @@ class EMMA_GLOBALS:
             "emma.services.integrated.comunication._talking"
         )
         self.forge_server = importlib.import_module("emma.forge.builder")
+        self.task_module = importlib.import_module("emma.task_module")
 
-        self.tools_converters = importlib.import_module(
-            "emma.tools.converters.local.kit"
-        )
-        self.tools_generators = importlib.import_module(
-            "emma.tools.generators.local.kit"
-        )
-        self.tools_data = importlib.import_module("emma.tools.data.local.kit")
         self.instances()
 
     def variables(self):
         global stcpath_app_dir, stcpath_command_dir, stcpath_module_dir, stcpath_web_dir, stcpath_extensions
         stcpath_app_dir = "emma/assets/json/app_directory.json"
-        stcpath_command_dir = "emma/assets/json/command_directory.json"
+        stcpath_command_dir = f"emma/assets/json/command_directory-{os.environ.get('USERLANG')}.json"
         stcpath_module_dir = "emma/assets/json/module_directory.json"
         stcpath_web_dir = "emma/assets/json/web_sites.json"
         stcpath_extensions = "emma/assets/json/extension.json"
@@ -44,12 +41,21 @@ class EMMA_GLOBALS:
         stcmode_vosk_en = "emma/assets/models/vosk_models/en-model"
         stcmode_vosk_es = "emma/assets/models/vosk_models/es-model"
 
-    def instances(self):
+    def tools_instances(self):
+        self.tools_converters = importlib.import_module(
+            "emma.tools.converters.local.kit"
+        )
+        self.tools_generators = importlib.import_module(
+            "emma.tools.generators.local.kit"
+        )
+        self.tools_data = importlib.import_module("emma.tools.data.local.kit")
+
         global tools_cs, tools_gs, tools_da
         tools_cs = self.tools_converters.ToolKit
         tools_gs = self.tools_generators.ToolKit
         tools_da = self.tools_data.ToolKit
 
+    def instances(self):
         global task_msc, task_os, task_web
         task_msc = self.task_module.MiscellaneousModule
         task_os = self.task_module.OsModule
@@ -61,9 +67,8 @@ class EMMA_GLOBALS:
         sys_v_th_ch = self.sys_v.ThreadHandler.ConsoleHandler(sys_v_th_qh)
         sys_v_th_eh = self.sys_v.ThreadHandler.EventHandler()
         sys_v_cm = self.sys_v.CommandsManager
-        sys_v_sa = self.sys_v.SystemAwake(
-            sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh
-        )
+        sys_v_sa = self.sys_v.SystemAwake(1,
+                                          sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
         sys_v = self.sys_v.SysV(sys_v_th_qh, sys_v_th_ch)
 
         global services_db_lg, services_db_dt

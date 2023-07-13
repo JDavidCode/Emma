@@ -42,7 +42,7 @@ class Talking:
                         self.console_handler.write(self.tag, f"Emma: {answer}")
 
                         if not "Lo siento" in answer:
-                            tts = _TTS()
+                            tts = _TTS(self.console_handler)
                             tts.start(answer)
                             del tts
                 except Exception as e:
@@ -59,7 +59,9 @@ class _TTS:
     engine = None
     rate = None
 
-    def __init__(self):
+    def __init__(self, console_handler):
+        self.tag = "TTS"
+        self.console_handler = console_handler
         self.lang = os.environ["USERLANG"]
         self.engine = pyttsx3.init()
         self.engVoice = self.engine.getProperty("voices")
@@ -74,11 +76,15 @@ class _TTS:
             for voice in self.engVoice:
                 if voice.languages == [b'\x02en-us']:
                     self.engine.setProperty('voice', voice.id)
+                else:
+                    self.engine.setProperty('voice', self.engVoice[0].id)
 
         elif self.lang == "es":
             for voice in self.engVoice:
                 if voice.languages == [b'\x05es-la']:
                     self.engine.setProperty('voice', voice.id)
+                else:
+                    self.engine.setProperty('voice', self.engVoice[1].id)
         else:
             print("A voice language is null please enter the index")
             for i in self.engVoice:

@@ -144,6 +144,8 @@ class Builder:
         FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
     def run(self, package_list):
+        if len(package_list) == 0:
+            return
         for package in package_list:
             self.package_name = package.get('package_name')
             repository = package.get('repository')

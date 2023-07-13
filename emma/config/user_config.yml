@@ -1,7 +1,7 @@
 user:
   name: 'USERNAME'
   age: 100
-  language: 'en'
+  language: 'es'
   level: 10
 
 preferences:

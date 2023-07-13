@@ -1,16 +1,4 @@
 Forge:
   queues:
-  - []
   services:
-  - {}
-  - args:
-    - console
-    - queue
-    autostart: true
-    custom_packages: false
-    endpoint: app
-    package_name: web_server
-    queue: SERVERDATA
-    queue_maxsize: 1
-    thread_is_daemon: false
-    thread_name: T0_WEB_SERVER
+  

@@ -18,3 +18,4 @@ img2pdf
 psutil
 openai
 pyaudio
+pyatv

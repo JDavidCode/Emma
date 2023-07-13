@@ -30,7 +30,8 @@ class WebModule:
         for i in json.keys():
             if i == index:
                 get = json.get(i)
-                webbrowser.open(get)
+                browser = webbrowser.get()  # Get the default web browser
+                browser.open(get)
 
     def open_local_site():
         webbrowser.open("http://localhost:3018/")

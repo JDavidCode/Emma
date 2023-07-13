@@ -13,7 +13,7 @@ class VoiceListener:
         self.system_events = system_events
         self.system_events.subscribe(self)
         self.console_handler = console_handler
-        self.tag = "Voice Thread"
+        self.tag = "Voice Listener Thread"
         self.queue = queue_handler
         self.init_recognizer()
         self.stop_flag = False
@@ -51,10 +51,12 @@ class VoiceListener:
         self.stream.close()
 
     def init_recognizer(self):
+
         try:
+            lang = os.environ.get('USERLANG')
             self.mic = pya.PyAudio()
             self.model = vosk.Model(
-                f"emma/assets/models/vosk_models/{os.environ.get('USERLANG')}-model")
+                f"emma/assets/models/vosk_models/{lang}-model")
             self.recognizer = vosk.KaldiRecognizer(self.model, 16000)
             self.stream = self.mic.open(
                 format=pya.paInt16,

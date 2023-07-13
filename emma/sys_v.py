@@ -12,24 +12,40 @@ import emma.config.globals as EMMA_GLOBALS
 
 
 class SystemAwake:
-    def __init__(self, console_handler, queue_handler, thread_manager, system_events):
-        self.console_handler = console_handler
-        self.queue_handler = queue_handler
-        self.thread_manager = thread_manager
-        self.system_events = system_events
+    def __init__(self, fase, console_handler=None, queue_handler=None, thread_manager=None, system_events=None, tools=None):
+        self.tools_da = tools
+        if fase == 0:
+            self.establish_connections()
+            self.set_environ_variables()
+        else:
+            self.console_handler = console_handler
+            self.queue_handler = queue_handler
+            self.thread_manager = thread_manager
+            self.system_events = system_events
+            os.environ["DATE"] = f"{EMMA_GLOBALS.task_msc.date_clock(2)}"
+
+    def establish_connections(self):
+        pass
+
+    def set_environ_variables(self):
+        user_file_path = "./emma/config/user_config.yml"
+        data = self.tools_da.yaml_loader(user_file_path)
+        if data == {} or data == [] or data == None:
+            os.environ["USERLANG"] = str(input("Select a language en - es"))
+            os.environ["LOGGED"] = 'False'
+            os.environ['USERNAME'] = str(input("Your Name"))
+            self.console_handler.write(
+                "SYSTEM AWAKE", "Setting default config")
+        else:
+            os.environ["USERLANG"] = data['user']['language']
+            os.environ["LOGGED"] = str(data['preferences']['stay_signed_in'])
+            os.environ["USERNAME"] = data['user']['name']
 
     def initialize_configuration(self):
-        msc = EMMA_GLOBALS.task_msc
-        os.environ["USERLANG"] = "es"
-        os.environ["LOGGED"] = "True"
-        os.environ["DATE"] = f"{msc.date_clock(2)}"
         EMMA_GLOBALS.sys_v.data_auto_updater()
         EMMA_GLOBALS.sys_v.verify_paths()
         EMMA_GLOBALS.sys_v.initialize_queues()
         EMMA_GLOBALS.sys_v.initialize_threads()
-
-    def establish_connections(self):
-        pass
 
     def check_dependencies(self):
         pass
@@ -51,12 +67,13 @@ class SystemAwake:
         pass
 
     def run(self):
-        package_list = [
+        package_lis1t = [
             {
                 "repository": "https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip",
                 "package_name": "web_server",
             }
         ]
+        package_list = []
         self.initialize_configuration()
         self.establish_connections()
         self.check_dependencies()
@@ -181,7 +198,7 @@ class SysV:
 
         if forge:
             data = data["Forge"]["services"]
-            if data == []:
+            if data == [] or data == None:
                 return
         else:
             data = data["defaults"]["services"]
@@ -329,17 +346,11 @@ class SysV:
 
     def verify_paths(self):
         DirsStructure = [
-            "./emma/.EmmaRootUser/",
-            "./emma/.EmmaRootUser/.preferences",
-            "./emma/.EmmaRootUser/.temp",
-            "./emma/.EmmaRootUser/disk",
-            "./emma/.EmmaRootUser/disk/user",
-            "./emma/.EmmaRootUser/disk/apps",
-            "./emma/.EmmaRootUser/disk/home/recycler",
-            "./emma/.EmmaRootUser/disk/home/documents",
-            "./emma/.EmmaRootUser/disk/home/music",
-            "./emma/.EmmaRootUser/disk/home/pictures",
-            "./emma/.EmmaRootUser/disk/home/videos",
+            "./emma/forge/config",
+            "./emma/forge/handlers",
+            "./emma/services/external",
+            "./emma/services/integrated",
+            "./emma/config/"
         ]
         # Loop through the paths and verify their existence
         for path in DirsStructure:
@@ -467,6 +478,7 @@ class ThreadHandler:
     class QueueHandler:
         def __init__(self):
             self.queues = {}
+            self.coutdown = 150
 
         def create_queue(self, name, size=None):
             if name in self.queues:
@@ -478,7 +490,11 @@ class ThreadHandler:
 
         def add_to_queue(self, name, command):
             if name not in self.queues:
-                print(f"No queue found with name {name}")
+                if self.coutdown >= 150:
+                    print(f"No queue found with name {name}")
+                    self.coutdown = 0
+                else:
+                    self.coutdown += 1
                 return
             if self.queues[name].maxsize == 1:
                 if not self.queues[name].empty():

@@ -18,30 +18,33 @@ class ToolKit:
         with open(path, "w") as file:
             yaml.dump(data, file)
 
-    def json_loader(path, i, json_type="dict", console_output=None):
+    def json_loader(path, i=None, json_type="dict", console_output=None):
         with open(path) as f:
             direct = json.load(f)
 
-            if json_type == "list":
-                dictionary = direct.get(i, [])
-            elif json_type == "dict":
-                dictionary = direct.get(i, {})
-            elif json_type == "command":
-                for key, value in direct.items():
-                    if key == i or key in i:
-                        dictionary = value
-                        args_dict = dictionary.get("args_key")
-                        if args_dict == "args":
-                            args = int(dictionary.get("arguments", 0))
-                            return args, dictionary
-                        elif args_dict == "*args":
-                            args = re.sub(f"{key}", "", i).lstrip()
-                            return args, dictionary
-                        else:
-                            return None, dictionary
-                return None, None
-            else:
-                return None
+        if json_type == "command":
+            for key, value in direct.items():
+                if key == i or key in i:
+                    dictionary = value
+                    args_key = dictionary.get("args_key")
+                    if args_key == "args":
+                        return True, dictionary
+                    elif args_key == "*args":
+                        return False, dictionary
+                    else:
+                        return None, dictionary
+            return None, None
+
+        if json_type == "list" and i is None:
+            dictionary = direct  # all the json
+        elif json_type == "dict" and i is None:
+            dictionary = direct  # all the json
+        elif json_type == "list":
+            dictionary = direct.get(i, [])
+        elif json_type == "dict":
+            dictionary = direct.get(i, {})
+        else:
+            return None
 
         return dictionary
 

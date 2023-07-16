@@ -19,3 +19,5 @@ psutil
 openai
 pyaudio
 pyatv
+Flask-SocketIO
+Flask

@@ -1,0 +1,75 @@
+{
+    "server_shutdown": {
+    "module": "sys_v",
+    "args_key": "None",
+    "required_lvl": 1
+},
+    "start_thread": {
+    "module": "sys_v",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "stop_thread": {
+    "module": "sys_v",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "restart_thread": {
+    "module": "sys_v",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "module_reloader": {
+    "module": "sys_v",
+    "args_key": "*args",
+    "required_lvl": 2
+},
+    "open_app": {
+    "module": "task_os",
+    "args_key": "args",
+    "arguments": "1",
+    "required_lvl": 1
+},
+    "volume_management": {
+    "module": "task_os",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "weather": {
+    "module": "task_msc",
+    "args_key": "args",
+    "arguments": "1",
+    "required_lvl": 0
+},
+    "date_clock": {
+    "module": "task_msc",
+    "args_key": "args",
+    "arguments": "2",
+    "required_lvl": 0
+},
+    "day_parts": {
+    "module": "task_msc",
+    "args_key": "None",
+    "required_lvl": 0
+},
+    "youtube_player": {
+    "module": "task_web",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "google_search": {
+    "module": "task_web",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "open_website": {
+    "module": "task_web",
+    "args_key": "*args",
+    "required_lvl": 1
+},
+    "open_local_site": {
+    "module": "task_web",
+    "args_key": "None",
+    "required_lvl": 1
+}
+}

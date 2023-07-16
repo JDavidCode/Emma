@@ -1,7 +1,7 @@
 user:
   name: 'USERNAME'
   age: 100
-  language: 'es'
+  language: 'en'
   level: 10
 
 preferences:
@@ -11,3 +11,4 @@ preferences:
   max_ram: 2048
   clear_temp: True
   max_cache: 'AUTO'
+  tts_mode: 'low'

@@ -1,45 +1,51 @@
 import importlib
 import os
 import sys
+# Las 'Instancias' de las clases que se ejecuran un thread no se les debe pasar argumentos, esto se hara en sys_initialize thread automaticamente, solo dejar la referencia de la clase
 
 
 class EMMA_GLOBALS:
     def __init__(self):
-        self.sys_v = importlib.import_module("emma.sys_v")
+        self.sys_awake = importlib.import_module("emma.system.awake")
+
         self.tools_instances()
-        self.sys_v.SystemAwake(fase=0, tools=tools_da)
+        self.sys_awake.SystemAwake(fase=0, tools=tools_da)
 
         self.variables()
+        self.sys_v = importlib.import_module("emma.system.sys_v")
+
         self.services_db = importlib.import_module(
             "emma.services.integrated.db")
-        self.services_cam_module = importlib.import_module(
-            "emma.services.integrated.cam_module"
+
+        self.services_gpt = importlib.import_module(
+            "emma.services.integrated.gpt"
         )
-        self.services_listening = importlib.import_module(
-            "emma.services.integrated.comunication._listening"
+        self.services_tts = importlib.import_module(
+            "emma.services.integrated.tts"
         )
-        self.services_talking = importlib.import_module(
-            "emma.services.integrated.comunication._talking"
+        self.services_api_user_io = importlib.import_module(
+            "emma.services.API.user_io.app"
         )
         self.forge_server = importlib.import_module("emma.forge.builder")
-        self.task_module = importlib.import_module("emma.task_module")
+        self.task_module = importlib.import_module("emma.system.task_module")
 
         self.instances()
 
     def variables(self):
-        global stcpath_app_dir, stcpath_command_dir, stcpath_module_dir, stcpath_web_dir, stcpath_extensions
-        stcpath_app_dir = "emma/assets/json/app_directory.json"
-        stcpath_command_dir = f"emma/assets/json/command_directory-{os.environ.get('USERLANG')}.json"
-        stcpath_module_dir = "emma/assets/json/module_directory.json"
-        stcpath_web_dir = "emma/assets/json/web_sites.json"
-        stcpath_extensions = "emma/assets/json/extension.json"
+        global stcpath_app_dir, stcpath_command_dir, stcpath_module_dir, stcpath_web_dir, stcpath_extensions, stcpath_command_sch
+        stcpath_app_dir = "emma/common/json/app_directory.json"
+        stcpath_command_dir = f"emma/common/json/command_directory-{os.environ.get('USERLANG')}.json"
+        stcpath_module_dir = "emma/common/json/module_directory.json"
+        stcpath_web_dir = "emma/common/json/web_sites.json"
+        stcpath_extensions = "emma/common/json/extension.json"
+        stcpath_command_sch = "emma/common/json/command_schema.json"
 
         global stcmodel_visual_frontalface, stcmode_vosk_en, stcmode_vosk_es
         stcmodel_visual_frontalface = (
-            "emma/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
+            "emma/common/assets/models/visual/haarcascade/haarcascade_frontalface_default.xml"
         )
-        stcmode_vosk_en = "emma/assets/models/vosk_models/en-model"
-        stcmode_vosk_es = "emma/assets/models/vosk_models/es-model"
+        stcmode_vosk_en = "emma/common/assets/models/vosk_models/en-model"
+        stcmode_vosk_es = "emma/common/assets/models/vosk_models/es-model"
 
     def tools_instances(self):
         self.tools_converters = importlib.import_module(
@@ -61,27 +67,27 @@ class EMMA_GLOBALS:
         task_os = self.task_module.OsModule
         task_web = self.task_module.WebModule
 
-        global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_v_cm, sys_v_sa, sys_v
+        global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_v_cm, sys_v_ir, sys_awake, sys_v
         sys_v_th = self.sys_v.ThreadHandler()
         sys_v_th_qh = self.sys_v.ThreadHandler.QueueHandler()
         sys_v_th_ch = self.sys_v.ThreadHandler.ConsoleHandler(sys_v_th_qh)
         sys_v_th_eh = self.sys_v.ThreadHandler.EventHandler()
         sys_v_cm = self.sys_v.CommandsManager
-        sys_v_sa = self.sys_v.SystemAwake(1,
-                                          sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
+        sys_v_ir = self.sys_v.InputRouter
+        sys_awake = self.sys_awake.SystemAwake(
+            1, sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
         sys_v = self.sys_v.SysV(sys_v_th_qh, sys_v_th_ch)
 
         global services_db_lg, services_db_dt
         services_db_lg = self.services_db.Login
         services_db_dt = self.services_db.EmmaData
 
-        global services_cam_ec, services_cam_fr
-        services_cam_ec = self.services_cam_module.EmmaCamera
-        services_cam_fr = self.services_cam_module.FacialRecognizer
+        global services_gpt, services_tts
+        services_tts = self.services_tts.TTS(sys_v_th_ch)
+        services_gpt = self.services_gpt.GPT
 
-        global services_comunication_lg, services_comunication_tg
-        services_comunication_lg = self.services_listening.VoiceListener
-        services_comunication_tg = self.services_talking.Talking
+        global services_api_user_io
+        services_api_user_io = self.services_api_user_io.APP
 
         global forge_server
         forge_server = self.forge_server.Builder([tools_cs, tools_da])

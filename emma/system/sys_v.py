@@ -5,150 +5,9 @@ import queue
 import shutil
 import yaml
 import threading
-import time
 import psutil
 import importlib
 import emma.config.globals as EMMA_GLOBALS
-
-
-class SystemAwake:
-    def __init__(self, fase, console_handler=None, queue_handler=None, thread_manager=None, system_events=None, tools=None):
-        self.tools_da = tools
-        if fase == 0:
-            self.establish_connections()
-            self.set_environ_variables()
-        else:
-            self.console_handler = console_handler
-            self.queue_handler = queue_handler
-            self.thread_manager = thread_manager
-            self.system_events = system_events
-            os.environ["DATE"] = f"{EMMA_GLOBALS.task_msc.date_clock(2)}"
-
-    def establish_connections(self):
-        pass
-
-    def set_environ_variables(self):
-        user_file_path = "./emma/config/user_config.yml"
-        data = self.tools_da.yaml_loader(user_file_path)
-        if data == {} or data == [] or data == None:
-            os.environ["USERLANG"] = str(input("Select a language en - es"))
-            os.environ["LOGGED"] = 'False'
-            os.environ['USERNAME'] = str(input("Your Name"))
-            self.console_handler.write(
-                "SYSTEM AWAKE", "Setting default config")
-        else:
-            os.environ["USERLANG"] = data['user']['language']
-            os.environ["LOGGED"] = str(data['preferences']['stay_signed_in'])
-            os.environ["USERNAME"] = data['user']['name']
-
-    def initialize_configuration(self):
-        EMMA_GLOBALS.sys_v.data_auto_updater()
-        EMMA_GLOBALS.sys_v.verify_paths()
-        EMMA_GLOBALS.sys_v.initialize_queues()
-        EMMA_GLOBALS.sys_v.initialize_threads()
-
-    def check_dependencies(self):
-        pass
-
-    def start_services(self, package_list):
-        EMMA_GLOBALS.forge_server.run(package_list)
-        EMMA_GLOBALS.sys_v.initialize_threads(forge=True)
-
-    def perform_health_checks(self):
-        pass
-
-    def setup_logging(self):
-        pass
-
-    def handle_errors(self):
-        pass
-
-    def trigger_startup_events(self):
-        pass
-
-    def run(self):
-        package_lis1t = [
-            {
-                "repository": "https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip",
-                "package_name": "web_server",
-            }
-        ]
-        package_list = []
-        self.initialize_configuration()
-        self.establish_connections()
-        self.check_dependencies()
-        self.start_services(package_list)
-        self.perform_health_checks()
-        self.setup_logging()
-        self.handle_errors()
-        self.trigger_startup_events()
-
-    class Auth:
-        def __init__(self):
-            self.max_login_attempts = 3
-
-        def authenticate(self):
-            for _ in range(self.max_login_attempts):
-                option = input("Login, Register, or Invited? ").lower()
-
-                if option == "login":
-                    if self.login():
-                        return
-                elif option == "register":
-                    self.register()
-                    return
-                elif option == "invited":
-                    self.invited()
-                    return
-                else:
-                    print("Invalid option. Please try again.")
-
-            print("Too many login attempts. Please try again later.")
-            quit()
-
-        def login(self):
-            for _ in range(self.max_login_attempts):
-                email = input("Email: ")
-                password = input("Password: ")
-
-                if email.strip() == "" or password.strip() == "":
-                    print("Some fields are empty.")
-                else:
-                    if self.perform_login(email, password):
-                        return True
-                    else:
-                        print("Incorrect credentials. Please try again.")
-
-            print("Too many login attempts. Please try again later.")
-            quit()
-
-        def perform_login(self, email, password):
-            x, userData = EMMA_GLOBALS.services_db_lg.user_login(
-                email, password)
-            if x:
-                if userData[0] == "5":
-                    print("Facial Recognizer is needed for this user level")
-                    if EMMA_GLOBALS.services_cam_fr.run(userData[2], 1):
-                        return True
-                    else:
-                        return False
-                else:
-                    return True
-            else:
-                return False
-
-        def register(self):
-            # Implement registration logic here
-            pass
-
-        def invited(self):
-            os.environ["user_lvl"] = "1"
-            os.environ["user_name"] = input("insert your name: ")
-            os.environ["user_lang"] = input("select your language en/es: ")
-
-        def logout(self):
-            # Implement logout logic here
-            pass
 
 
 class SysV:
@@ -265,7 +124,7 @@ class SysV:
         for dic in data:
             if dic == {}:
                 continue
-            if dic["queue"] != []:
+            if "queue" in dic and dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
             args = dic.get("args", [])
             if forge:
@@ -308,14 +167,13 @@ class SysV:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
 
     def server_shutdown(self):
-        self.queue.get_queue("CURRENT_INPUT")
         self.console_handler.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
-        time.sleep(3)
-        log = self.queue.get_queue("CURRENT_INPUT")
-        if log.lower() == "yes":
-            self.enviroment_clearer()
-        elif log.lower() == "cancel":
-            return
+        log = self.queue.get_queue("CURRENT_INPUT", 1)
+        if log != None:
+            if log.lower() == "yes":
+                self.enviroment_clearer()
+            elif log.lower() == "cancel":
+                return
 
         EMMA_GLOBALS.sys_v_th.kill()
         self.temp_clearer()
@@ -364,7 +222,7 @@ class SysV:
         EMMA_GLOBALS.services_db_dt.json_task_updater()
 
     def temp_clearer(self):
-        path = "./emma/.EmmaRootUser/.temp"
+        path = "./emma/common/.temp"
         for file in os.listdir(path):
             x = path + "/" + file
             try:
@@ -540,9 +398,8 @@ class ThreadHandler:
 class CommandsManager:
     def __init__(self, console_handler, queue_handler, thread_handler):
         self.tag = "Commands Thread"
-        self.talk = EMMA_GLOBALS.services_comunication_tg
         self.bp = SysV(queue_handler, console_handler)
-        self.queue = queue_handler
+        self.queue_handler = queue_handler
         self.stop_flag = False
         self.event = threading.Event()
         self.console_handler = console_handler
@@ -552,21 +409,19 @@ class CommandsManager:
         module = ""
         self.event.wait()
         while not self.stop_flag:
-            command_keyword = self.queue.get_queue("COMMANDS")
+            data = self.queue_handler.get_queue("COMMAND")
 
-            _, args, command = self.command_indexer(command_keyword)
-            if _:
-                self.queue.add_to_queue("ISTK", False)
+            try:
+                func, _func = data
+                args, command = func
                 module = getattr(EMMA_GLOBALS, command.get("module"))
                 # Execute the command
                 if args != None:
-                    self.execute_command(
-                        module, command.get("function_name"), args)
+                    self.execute_command(module, _func, args)
                 else:
-                    self.execute_command(module, command.get("function_name"))
-            else:
-                self.queue.add_to_queue("ISTK", True)
-                continue
+                    self.execute_command(module, _func)
+            except Exception as e:
+                self.console_handler.write(self.tag, e)
 
     def execute_command(self, module, function_name, args=None):
         try:
@@ -575,43 +430,75 @@ class CommandsManager:
         except Exception as e:
             self.console_handler.write(
                 self.tag, f"{e}, Cannot get Function Ref.")
-            return
         # call the function
         try:
             if args == None:
+                self.console_handler.write(self.tag, 'without args')
                 function()
             elif type(args) == int or type(args) == str:
+                self.console_handler.write(self.tag, ['args', args])
                 r = function(args)
                 if r != None:
                     self.console_handler.write(self.tag, r)
 
             self.console_handler.write(
                 self.tag, f"{function_name} has been execute")
-            self.queue.add_to_queue("ISTK", False)
         except Exception as e:
             self.console_handler.write(
                 self.tag, f"{function_name} failed or is unknown: {e}"
             )
 
-    def command_indexer(self, command_keyword):
-        args, diccionary = EMMA_GLOBALS.tools_da.json_loader(
+    def args_identifier(self, args):
+        return args
+
+    def run(self):
+        self.event.set()
+
+    def stop(self):
+        self.stop_flag = True
+
+
+class InputRouter:
+    def __init__(self, console_handler, queue_handler) -> None:
+        self.tag = "ROUTER IO"
+        self.console_handler = console_handler
+        self.queue_handler = queue_handler
+        self.stop_flag = False
+        self.event = threading.Event()
+
+    def main(self):
+        self.event.wait()
+        while not self.stop_flag:
+            # Here suppose that have many io queues than only 1
+            a_input = self.queue_handler.get_queue("API_INPUT")
+
+            self.queue_handler.add_to_queue(
+                'GPT_INPUT', a_input)
+            _, data = self.queue_handler.get_queue("RESPONSE")
+
+            if _:
+                function = self.command_indexer(data[0], data[1])
+                self.queue_handler.add_to_queue(
+                    'COMMAND', [function, data[1]])
+            else:
+                self.queue_handler.add_to_queue('API_RESPONSE', data)
+
+    def command_indexer(self, args, keyword):
+        def_args, diccionary = EMMA_GLOBALS.tools_da.json_loader(
             EMMA_GLOBALS.stcpath_command_dir,
-            command_keyword,
+            keyword,
             "command",
             self.console_handler,
         )
 
-        if diccionary != None and (type(args) == int or args == None):
-            return True, args, diccionary
-        elif diccionary != None and type(args) == str:
-            # args = self.args_identifier(args)
-            return True, args, diccionary
+        if diccionary != None and (def_args == True or def_args == None):
+            if args == '{}':
+                args = None
+            return args, diccionary
+        elif diccionary != None and def_args == False:
+            return args, diccionary
         else:
-            self.queue.add_to_queue("ISTK", True)
-            return False, args, {}
-
-    def args_identifier(self, args):
-        return args
+            return False
 
     def run(self):
         self.event.set()

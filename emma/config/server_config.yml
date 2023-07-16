@@ -8,7 +8,7 @@ defaults:
     password: root
  
   services: 
-    - queue: COMMANDS
+    - queue: COMMAND
       queue_maxsize: 0
       endpoint: sys_v_cm
       args: 
@@ -18,32 +18,45 @@ defaults:
       thread_name: T0_COMMANDS
       thread_is_daemon: True
       autostart: True
+      autorestart: True
 
-    - queue: TALKING
-      queue_maxsize: 0
-      endpoint: services_comunication_tg
+    - endpoint: sys_v_ir
       args: 
         - console
         - queue
-      thread_name: T1_TALKING
+      thread_name: T0_INPUT_ROUTER
       thread_is_daemon: True
       autostart: True
-    
-    - queue: []
+      autorestart: True
+
+    - queue: API_INPUT
       queue_maxsize: 0
-      endpoint: services_comunication_lg
+      endpoint: services_api_user_io
       args: 
         - console
         - queue
-        - system_events
-      thread_name: T1_LISTENING
+      thread_name: T0_USER_API_IO
       thread_is_daemon: True
       autostart: True
+      autorestart: True
+
+    - queue: GPT_INPUT
+      queue_maxsize: 1
+      endpoint: services_gpt
+      args: 
+        - console
+        - queue
+      thread_name: T1_GPT
+      thread_is_daemon: True
+      autostart: True
+      autorestart: True
 
   queues:
     - queue: CURRENT_INPUT
       queue_maxsize: 1
-    - queue: ISTK
+    - queue: API_RESPONSE
+      queue_maxsize: 1
+    - queue: RESPONSE
       queue_maxsize: 1
     - queue: CONSOLE
       queue_maxsize: 0
@@ -55,6 +68,7 @@ defaults:
     talking:
       language: 'en'
       model: 'my/model'
+      tts_mode: 'low' #low to send just text, high to send the audio
       rate: 125
       volume: 1
 

@@ -219,7 +219,7 @@ class SysV:
         return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
-        EMMA_GLOBALS.services_db_dt.json_task_updater()
+        EMMA_GLOBALS.iservices_db  # request
 
     def temp_clearer(self):
         path = "./emma/common/.temp"
@@ -234,19 +234,18 @@ class SysV:
             except:
                 pass
 
-    def module_reloader(self, index):
+    def module_reloader(self, module_name):
         diccionary = EMMA_GLOBALS.tools_da.json_loader(
             EMMA_GLOBALS.stcpath_module_dir, "module_dir", "dict"
         )
         key = diccionary.keys()
         try:
             for i in key:
-                if index in i:
-                    index = diccionary.get(i)
-                    print(index)
-                    importlib.reload(sys.modules[index])
-                    print("module", i, "has been reloaded")
-                    importlib.invalidate_caches(sys.modules[index])
+                if module_name in i:
+                    module_name = diccionary.get(i)
+                    importlib.reload(sys.modules[module_name])
+                    print(f"module {i} has been reloaded")
+                    importlib.invalidate_caches(sys.modules[module_name])
         except:
             pass
 
@@ -393,118 +392,6 @@ class ThreadHandler:
 
         def write(self, remitent, output):
             self.output_queue.put(f"{remitent}: {output}")
-
-
-class CommandsManager:
-    def __init__(self, console_handler, queue_handler, thread_handler):
-        self.tag = "Commands Thread"
-        self.bp = SysV(queue_handler, console_handler)
-        self.queue_handler = queue_handler
-        self.stop_flag = False
-        self.event = threading.Event()
-        self.console_handler = console_handler
-        self.thread_handler = thread_handler
-
-    def main(self):
-        module = ""
-        self.event.wait()
-        while not self.stop_flag:
-            data = self.queue_handler.get_queue("COMMAND")
-
-            try:
-                func, _func = data
-                args, command = func
-                module = getattr(EMMA_GLOBALS, command.get("module"))
-                # Execute the command
-                if args != None:
-                    self.execute_command(module, _func, args)
-                else:
-                    self.execute_command(module, _func)
-            except Exception as e:
-                self.console_handler.write(self.tag, e)
-
-    def execute_command(self, module, function_name, args=None):
-        try:
-            # get the function reference
-            function = getattr(module, function_name)
-        except Exception as e:
-            self.console_handler.write(
-                self.tag, f"{e}, Cannot get Function Ref.")
-        # call the function
-        try:
-            if args == None:
-                self.console_handler.write(self.tag, 'without args')
-                function()
-            elif type(args) == int or type(args) == str:
-                self.console_handler.write(self.tag, ['args', args])
-                r = function(args)
-                if r != None:
-                    self.console_handler.write(self.tag, r)
-
-            self.console_handler.write(
-                self.tag, f"{function_name} has been execute")
-        except Exception as e:
-            self.console_handler.write(
-                self.tag, f"{function_name} failed or is unknown: {e}"
-            )
-
-    def args_identifier(self, args):
-        return args
-
-    def run(self):
-        self.event.set()
-
-    def stop(self):
-        self.stop_flag = True
-
-
-class InputRouter:
-    def __init__(self, console_handler, queue_handler) -> None:
-        self.tag = "ROUTER IO"
-        self.console_handler = console_handler
-        self.queue_handler = queue_handler
-        self.stop_flag = False
-        self.event = threading.Event()
-
-    def main(self):
-        self.event.wait()
-        while not self.stop_flag:
-            # Here suppose that have many io queues than only 1
-            a_input = self.queue_handler.get_queue("API_INPUT")
-
-            self.queue_handler.add_to_queue(
-                'GPT_INPUT', a_input)
-            _, data = self.queue_handler.get_queue("RESPONSE")
-
-            if _:
-                function = self.command_indexer(data[0], data[1])
-                self.queue_handler.add_to_queue(
-                    'COMMAND', [function, data[1]])
-            else:
-                self.queue_handler.add_to_queue('API_RESPONSE', data)
-
-    def command_indexer(self, args, keyword):
-        def_args, diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            EMMA_GLOBALS.stcpath_command_dir,
-            keyword,
-            "command",
-            self.console_handler,
-        )
-
-        if diccionary != None and (def_args == True or def_args == None):
-            if args == '{}':
-                args = None
-            return args, diccionary
-        elif diccionary != None and def_args == False:
-            return args, diccionary
-        else:
-            return False
-
-    def run(self):
-        self.event.set()
-
-    def stop(self):
-        self.stop_flag = True
 
 
 if __name__ == "__main__":

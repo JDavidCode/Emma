@@ -25,14 +25,9 @@ class ToolKit:
         if json_type == "command":
             for key, value in direct.items():
                 if key == i or key in i:
-                    dictionary = value
-                    args_key = dictionary.get("args_key")
-                    if args_key == "args":
-                        return True, dictionary
-                    elif args_key == "*args":
-                        return False, dictionary
-                    else:
-                        return None, dictionary
+                    value['key'] = key
+                    return value
+
             return None, None
 
         if json_type == "list" and i is None:

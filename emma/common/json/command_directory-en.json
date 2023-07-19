@@ -5,17 +5,17 @@
     "required_lvl": 1
 },
     "start_thread": {
-    "module": "sys_v",
+    "module": "sys_v_th",
     "args_key": "*args",
     "required_lvl": 1
 },
     "stop_thread": {
-    "module": "sys_v",
+    "module": "sys_v_th",
     "args_key": "*args",
     "required_lvl": 1
 },
     "restart_thread": {
-    "module": "sys_v",
+    "module": "sys_v_th",
     "args_key": "*args",
     "required_lvl": 1
 },

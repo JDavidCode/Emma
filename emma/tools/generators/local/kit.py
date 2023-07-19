@@ -40,6 +40,22 @@ class ToolKit:
 
         return std_color
 
+    def generate_emd_id():
+        # Generate a random number from 0 to 9
+        random_number = random.randint(0, 9)
+
+        # Generate the acronym 'emd'
+        acronym = 'emd'
+
+        # Generate a random alphanumeric string with 8 characters
+        random_alphanumeric = ''.join(random.choices(
+            string.ascii_letters + string.digits, k=8))
+
+        # Combine all parts of the ID with '-'
+        custom_id = f"{random_number}-{acronym}-{random_alphanumeric}"
+
+        return custom_id
+
     def random_rgb_color():
         r = random.randint(0, 255)
         g = random.randint(0, 255)

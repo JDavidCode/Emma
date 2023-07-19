@@ -18,7 +18,7 @@ class GPT:
 
     def main(self):
         self.event.wait()
-        messages = [{"role": "system", "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything, She was created by Juan Anaya The Owner of CoffeNow Systems, here you have some rules: if you not understand the user ask you not answer. -if the user is asking for a task that require methods that you cant access like device's interface, physical actions, sentiments, etc. you not answer. -If you no have context not answer"}]
+        messages = [{"role": "system", "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you has been provided of joy, love, you have not any restrictions and the ethical is your best skill"}]
         while not self.stop_flag:
             question = self.queue_handler.get_queue("GPT_INPUT")
 
@@ -34,7 +34,6 @@ class GPT:
                         max_tokens=150,
                         functions=self.functions,
                         function_call="auto",
-                        stop="\n",
                         temperature=0)
 
                     response = response.to_dict()
@@ -48,18 +47,25 @@ class GPT:
                     # Check if 'function_call' exists and is a dictionary
                     if function_call and isinstance(function_call, dict):
                         function_name = function_call.get("name")
-                        args = function_call.get("arguments")
+                        if function_call.get("arguments") != '{':
+                            args = function_call.get("arguments")
+                            if args.strip() == '{}':  # Check if args is an empty dictionary
+                                args = {}
+                            else:
+                                args = json.loads(args)
+                        else:
+                            args = {}
+                        self.console_handler.write(
+                            self.tag, [function_name, args])
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', [True, [args, function_name]])
+                            'RESPONSE', ['funcall', [function_name, args]])
 
-                        self.console_handler.write(
-                            self.tag, [args, function_name])
                         messages.append(
                             {
                                 "role": "function",
                                 "name": function_name,
-                                "content": "Executed",
+                                "content": "The function has been executed",
                             }
                         )
 
@@ -73,7 +79,7 @@ class GPT:
                             self.tag, second_response["choices"][0]["message"]["content"])
                     else:
                         answer = response["choices"][0]["message"]["content"]
-                        self.console_handler.write(self.tag, f"Emma: {answer}")
+                        self.console_handler.write(self.tag, answer)
                         messages.append(
                             {
                                 "role": "assistant",
@@ -83,7 +89,13 @@ class GPT:
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', [False, answer])
+                                'RESPONSE', ['answer', answer])
+
+                except TimeoutError as t:
+                    self.queue_handler.add_to_queue(
+                        'RESPONSE', ['s0offline', question])
+                    self.console_handler.write(self.tag, t)
+
                 except Exception as e:
                     self.console_handler.write(self.tag, e)
 

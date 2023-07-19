@@ -18,6 +18,7 @@ class WebModule:
         pass
 
     def youtube_player(index):
+
         pywhatkit.playonyt(index)
 
     def google_search(index):
@@ -41,12 +42,12 @@ class OsModule:
     def __init__(self):
         pass
 
-    def open_app(index):
+    def open_app(name):
         json = EMMA_GLOBALS.tools_da.json_loader(
             EMMA_GLOBALS.stcpath_app_dir, "app_dir", "dict"
         )
         for i in json.keys():
-            if i == index:
+            if i == name:
                 get = json.get(i)
                 os.startfile(get)
 
@@ -79,7 +80,7 @@ class OsModule:
                 os.rename(downFolder + "/" + filename, folder + "/" + filename)
                 print("changes have been applied")
 
-    def volume_management(index):
+    def volume_management(action):
         # rework to linux
         return
 
@@ -89,9 +90,7 @@ class MiscellaneousModule:
         pass
 
     def weather(city):
-        url = "https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=163ea3a6fc8b3ea62e3f640d2b53567b".format(
-            city
-        )
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=163ea3a6fc8b3ea62e3f640d2b53567b"
         quest = requests.get(url)
         data = quest.json()
         temperature = int(data["main"]["temp"])

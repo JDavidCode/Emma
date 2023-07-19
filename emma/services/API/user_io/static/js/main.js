@@ -9,7 +9,23 @@ document.addEventListener('DOMContentLoaded', function () {
 		input.value = ''; // Clear the input field after sending
 	});
 
-	var socket = io.connect();
+	function getQueryParams(url) {
+		var queryParams = {};
+		var query = url.split('?')[1];
+		if (query) {
+			query.split('&').forEach(function (param) {
+				var parts = param.split('=');
+				if (parts.length >= 2) {
+					queryParams[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+				}
+			});
+		}
+		return queryParams;
+	}
+
+	var socket = io.connect('', {
+		query: getQueryParams(window.location.search) // Extract query parameters from the URL
+	});
 
 	// initialize socket.io
 	socket.on('connect', function (data) {

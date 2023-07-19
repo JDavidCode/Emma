@@ -1,3 +1,4 @@
+import base64
 import emma.config.globals as EMMA_GLOBALS
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
@@ -12,14 +13,13 @@ class APP:
         self.app = Flask(__name__)
         self.history = self.json_history()
         self.console_handler = console_handler
-        self.queue = queue_handler
+        self.queue_handler = queue_handler
         self.event = threading.Event()
         self.tag = "API Thread"
         self.socketio = SocketIO(self.app)
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
-        global time_breakout
-        time_breakout = 0
+        self.sessions = {}
 
     def json_history(self):
         module_dir = os.path.dirname(os.path.abspath(__file__))
@@ -47,24 +47,48 @@ class APP:
 
         @self.socketio.on("connect")
         def connect():
-            f = open(self.history)
-            jsoni = json.load(f)
-            f.close()
+            data = request.args
+            # Get the client's IP addresses
+            public_ip = EMMA_GLOBALS.tools_net.get_public_ip(request)
+            # Generate a unique session ID (you can use UUID or any other suitable method)
+            session_id = EMMA_GLOBALS.tools_gs.generate_emd_id()
+            device_name = data.get("device_name")
+            session_name = data.get("session_name")
+            user_id = data.get("user")
+            ip4, ip6 = EMMA_GLOBALS.tools_net.get_client_ip_addresses(request)
+            device_id = base64.urlsafe_b64encode(
+                ip6.encode("utf-8")).decode("utf-8")
+
+            # Register the session
+            session_info = {
+                'session_name': session_name,
+                'session_id': session_id,
+            }
+
+            data = {
+                'device_name': device_name,
+                'device_id': device_id,
+                'session': session_info,
+                'public_ips': public_ip
+            }
+
+            self.console_handler.write(self.tag, data)
+            self.queue_handler.add_to_queue("NET_SESSIONS", {user_id: data})
+
             # emit the data to the client
-            self.socketio.emit("connect", jsoni)
+            self.socketio.emit("connect", {"session_id": session_id})
 
         @self.socketio.on("message")
         def handle_message(data):
-            global time_breakout
             data.lower()
-            if 'computer' in data:
-                data.replace('computer', '').strip()
-                self.queue.add_to_queue("API_INPUT", data)
-                self.console_handler.write(self.tag, data)
+            # if 'computer' in data:
+            # data.replace('computer', '').strip()
+            self.queue_handler.add_to_queue("API_INPUT", data)
+            self.console_handler.write(self.tag, data)
 
-                response = self.queue.get_queue("API_RESPONSE")
+            response = self.queue_handler.get_queue("API_RESPONSE")
 
-                self.socketio.emit("response", response)
+            self.socketio.emit("response", response)
 
     def main(self):
         self.event.wait()

@@ -13,9 +13,15 @@ class EMMA_GLOBALS:
 
         self.variables()
         self.sys_v = importlib.import_module("emma.system.sys_v")
+        self.sys_net_sh = importlib.import_module(
+            "emma.system.network.network_session_handler")
+        self.sys_rout_ir = importlib.import_module(
+            "emma.system.routers.input_router")
+        self.sys_cm = importlib.import_module(
+            "emma.system.command_manager")
 
-        self.services_db = importlib.import_module(
-            "emma.services.integrated.db")
+        self.iservices_db = importlib.import_module(
+            "emma.services.integrated.db_connection")
 
         self.services_gpt = importlib.import_module(
             "emma.services.integrated.gpt"
@@ -55,11 +61,13 @@ class EMMA_GLOBALS:
             "emma.tools.generators.local.kit"
         )
         self.tools_data = importlib.import_module("emma.tools.data.local.kit")
+        self.tools_network = importlib.import_module("emma.tools.network.ip")
 
-        global tools_cs, tools_gs, tools_da
+        global tools_cs, tools_gs, tools_da, tools_net
         tools_cs = self.tools_converters.ToolKit
         tools_gs = self.tools_generators.ToolKit
         tools_da = self.tools_data.ToolKit
+        tools_net = self.tools_network.ToolKit
 
     def instances(self):
         global task_msc, task_os, task_web
@@ -67,20 +75,20 @@ class EMMA_GLOBALS:
         task_os = self.task_module.OsModule
         task_web = self.task_module.WebModule
 
-        global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_v_cm, sys_v_ir, sys_awake, sys_v
+        global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_cm, sys_rout_ir, sys_net_sh, sys_awake, sys_v
         sys_v_th = self.sys_v.ThreadHandler()
         sys_v_th_qh = self.sys_v.ThreadHandler.QueueHandler()
         sys_v_th_ch = self.sys_v.ThreadHandler.ConsoleHandler(sys_v_th_qh)
         sys_v_th_eh = self.sys_v.ThreadHandler.EventHandler()
-        sys_v_cm = self.sys_v.CommandsManager
-        sys_v_ir = self.sys_v.InputRouter
+        sys_cm = self.sys_cm.CommandsManager
+        sys_rout_ir = self.sys_rout_ir.InputRouter
         sys_awake = self.sys_awake.SystemAwake(
             1, sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
         sys_v = self.sys_v.SysV(sys_v_th_qh, sys_v_th_ch)
+        sys_net_sh = self.sys_net_sh.NetworkHandler
 
-        global services_db_lg, services_db_dt
-        services_db_lg = self.services_db.Login
-        services_db_dt = self.services_db.EmmaData
+        global iservices_db
+        iservices_db = self.iservices_db.DBHandler(sys_v_th_qh, sys_v_th_ch)
 
         global services_gpt, services_tts
         services_tts = self.services_tts.TTS(sys_v_th_ch)

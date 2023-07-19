@@ -10,7 +10,7 @@ defaults:
   services: 
     - queue: COMMAND
       queue_maxsize: 0
-      endpoint: sys_v_cm
+      endpoint: sys_cm
       args: 
         - console
         - queue
@@ -20,7 +20,18 @@ defaults:
       autostart: True
       autorestart: True
 
-    - endpoint: sys_v_ir
+    - queue: NET_SESSIONS
+      queue_maxsize: 0
+      endpoint: sys_net_sh
+      args: 
+        - console
+        - queue
+      thread_name: T0_NET_SESSIONS
+      thread_is_daemon: True
+      autostart: True
+      autorestart: True
+
+    - endpoint: sys_rout_ir
       args: 
         - console
         - queue

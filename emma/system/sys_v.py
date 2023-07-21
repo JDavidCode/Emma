@@ -204,11 +204,9 @@ class SysV:
 
     def verify_paths(self):
         DirsStructure = [
-            "./emma/forge/config",
-            "./emma/forge/handlers",
+            "./emma/common/.temp",
             "./emma/services/external",
-            "./emma/services/integrated",
-            "./emma/config/"
+
         ]
         # Loop through the paths and verify their existence
         for path in DirsStructure:
@@ -223,16 +221,17 @@ class SysV:
 
     def temp_clearer(self):
         path = "./emma/common/.temp"
-        for file in os.listdir(path):
-            x = path + "/" + file
-            try:
-                os.rmdir(x)
-            except:
-                pass
-            try:
-                os.remove(x)
-            except:
-                pass
+        if os.path.exists(path):
+            for file in os.listdir(path):
+                x = path + "/" + file
+                try:
+                    os.rmdir(x)
+                except:
+                    pass
+                try:
+                    os.remove(x)
+                except:
+                    pass
 
     def module_reloader(self, module_name):
         diccionary = EMMA_GLOBALS.tools_da.json_loader(

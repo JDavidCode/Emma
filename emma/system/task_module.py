@@ -4,7 +4,7 @@ import datetime
 import requests
 import time
 
-import pywhatkit
+# import pywhatkit
 import webbrowser
 
 # ImportedPythonLibraries

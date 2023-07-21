@@ -26,9 +26,7 @@ class EMMA_GLOBALS:
         self.services_gpt = importlib.import_module(
             "emma.services.integrated.gpt"
         )
-        self.services_tts = importlib.import_module(
-            "emma.services.integrated.tts"
-        )
+        # self.services_tts = importlib.import_module("emma.services.integrated.tts")
         self.services_api_user_io = importlib.import_module(
             "emma.services.API.user_io.app"
         )
@@ -90,8 +88,8 @@ class EMMA_GLOBALS:
         global iservices_db
         iservices_db = self.iservices_db.DBHandler(sys_v_th_qh, sys_v_th_ch)
 
-        global services_gpt, services_tts
-        services_tts = self.services_tts.TTS(sys_v_th_ch)
+        global services_gpt  # , services_tts
+        # services_tts = self.services_tts.TTS(sys_v_th_ch)
         services_gpt = self.services_gpt.GPT
 
         global services_api_user_io

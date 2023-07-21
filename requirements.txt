@@ -17,7 +17,6 @@ pyyaml
 img2pdf
 psutil
 openai
-pyaudio
 pyatv
 Flask-SocketIO
 Flask

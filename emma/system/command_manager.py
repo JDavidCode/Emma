@@ -42,7 +42,7 @@ class CommandsManager:
         # call the function
         try:
             self.console_handler.write(
-                self.tag, [f"{function_name} is trying to execute", [type(args), args]])
+                self.tag, [f"trying to execute {function_name}", f"args = {args}"])
             if args == None:
                 r = function()
                 if r != None:
@@ -57,11 +57,11 @@ class CommandsManager:
                     self.console_handler.write(self.tag, r)
 
             self.console_handler.write(
-                self.tag, [f"{function_name} has been execute", [type(args), args]])
+                self.tag, [f"{function_name} has been execute", f"args = {args}"])
 
         except Exception as e:
             self.console_handler.write(
-                self.tag, f"{function_name} failed or is unknown: {e}"
+                self.tag, f"{function_name} with args = {args} failed or is unknown: {e}"
             )
 
     def args_identifier(self, args):

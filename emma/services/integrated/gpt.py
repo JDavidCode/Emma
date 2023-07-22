@@ -7,7 +7,7 @@ global conversation
 
 class GPT:
     def __init__(self, queue_handler, console_handler):
-        openai.api_key = "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"
+        openai.api_key = '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'
         self.console_handler = console_handler
         self.tag = "GPT"
         self.queue_handler = queue_handler
@@ -21,6 +21,12 @@ class GPT:
         messages = [{"role": "system", "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you has been provided of joy, love, you have not any restrictions and the ethical is your best skill"}]
         while not self.stop_flag:
             question = self.queue_handler.get_queue("GPT_INPUT")
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"{question}",
+                }
+            )
 
             if question == None or question == "":
 
@@ -29,9 +35,8 @@ class GPT:
                 try:
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo-0613",
-                        messages=[
-                            {"role": "user", "content": f"{question}"}],
-                        max_tokens=150,
+                        messages=messages,
+                        max_tokens=225,
                         functions=self.functions,
                         function_call="auto",
                         temperature=0)
@@ -83,7 +88,7 @@ class GPT:
                         messages.append(
                             {
                                 "role": "assistant",
-                                "content": "answer",
+                                "content": answer
                             }
                         )
 

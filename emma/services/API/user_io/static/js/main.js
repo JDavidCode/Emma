@@ -39,6 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	// update the server data when new data arrives
 	socket.on('response', function (data) {
 		textResponse.textContent = data;
-		console.log(data);
+		synthesize(data);
 	});
+
+	function synthesize(text) {
+		const menssage = new SpeechSynthesisUtterance(text);
+		window.speechSynthesis.speak(menssage);
+	}
 });

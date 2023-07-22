@@ -49,7 +49,7 @@ class ToolKit:
 
         # Generate a random alphanumeric string with 8 characters
         random_alphanumeric = ''.join(random.choices(
-            string.ascii_letters + string.digits, k=8))
+            string.ascii_letters + string.digits, k=12))
 
         # Combine all parts of the ID with '-'
         custom_id = f"{random_number}-{acronym}-{random_alphanumeric}"

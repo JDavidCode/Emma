@@ -3,6 +3,7 @@ user:
   age: 100
   language: 'en'
   level: 10
+  timezone: utc
 
 preferences:
   stay_signed_in: True

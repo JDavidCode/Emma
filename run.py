@@ -1,6 +1,6 @@
 # BasePythonLibraries
 import time
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 
 
 class EMCLKX:

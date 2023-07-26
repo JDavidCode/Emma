@@ -4,7 +4,7 @@ import random
 import json
 
 # ImportedPythonLibraries
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 import os
 
 
@@ -12,7 +12,7 @@ class Login:
     @staticmethod
     def user_login(email, password):
         # Get an instance of DbHandler
-        db_handler = EMMA_GLOBALS.services_db_dt
+        db_handler = EMMA_GLOBALS.services_db
 
         sql = "SELECT * FROM users WHERE email=%s AND password=%s"
         result = db_handler.execute_query(sql, (email, password))
@@ -42,7 +42,7 @@ class Login:
     @staticmethod
     def user_register(name, email, password, age, genre, lang, data):
         # get an instance of DbHandler
-        db_handler = EMMA_GLOBALS.iservices_db
+        db_handler = EMMA_GLOBALS.services_db
 
         # Check if email already exists
         sql = "SELECT * FROM users WHERE email=%s"

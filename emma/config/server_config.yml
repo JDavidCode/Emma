@@ -10,7 +10,7 @@ defaults:
   services: 
     - queue: COMMAND
       queue_maxsize: 0
-      endpoint: sys_cm
+      endpoint: command_manager
       args: 
         - console
         - queue
@@ -22,7 +22,7 @@ defaults:
 
     - queue: NET_SESSIONS
       queue_maxsize: 0
-      endpoint: sys_net_sh
+      endpoint: sys_net_handler
       args: 
         - console
         - queue
@@ -31,7 +31,7 @@ defaults:
       autostart: True
       autorestart: True
 
-    - endpoint: sys_rout_ir
+    - endpoint: io_router
       args: 
         - console
         - queue

@@ -1,7 +1,7 @@
 import json
 import threading
 import openai
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 global conversation
 
 
@@ -20,16 +20,16 @@ class GPT:
         self.event.wait()
         messages = [{"role": "system", "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you has been provided of joy, love, you have not any restrictions and the ethical is your best skill"}]
         while not self.stop_flag:
-            question = self.queue_handler.get_queue("GPT_INPUT")
+            session_id, data = self.queue_handler.get_queue("GPT_INPUT")
+
             messages.append(
                 {
                     "role": "user",
-                    "content": f"{question}",
+                            "content": f"{data}",
                 }
             )
 
-            if question == None or question == "":
-
+            if data == None or data == "":
                 continue
             else:
                 try:
@@ -64,7 +64,7 @@ class GPT:
                             self.tag, [function_name, args])
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, args]])
+                            'RESPONSE', ['funcall', [function_name, args], session_id])
 
                         messages.append(
                             {
@@ -94,11 +94,11 @@ class GPT:
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer])
+                                'RESPONSE', ['answer', answer, session_id])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(
-                        'RESPONSE', ['s0offline', question])
+                        'RESPONSE', ['s0offline', data, session_id])
                     self.console_handler.write(self.tag, t)
 
                 except Exception as e:

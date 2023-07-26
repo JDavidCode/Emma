@@ -1,5 +1,5 @@
 import threading
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 
 
 class InputRouter:
@@ -14,23 +14,29 @@ class InputRouter:
         self.event.wait()
         while not self.stop_flag:
             # Here suppose that have many io queues than only 1
-            a_input = self.queue_handler.get_queue("API_INPUT")
+            try:
+                session_id, data = self.queue_handler.get_queue("API_INPUT")
+                self.queue_handler.add_to_queue(
+                    'GPT_INPUT', (session_id, data))  # Updated to pass a tuple
+            except Exception as e:
+                self.console_handler.write(self.tag, e)
 
-            self.queue_handler.add_to_queue(
-                'GPT_INPUT', a_input)
-            key, data = self.queue_handler.get_queue("RESPONSE")
+    def process_responses(self):
+        while True:
+            key, data, session_id = self.queue_handler.get_queue("RESPONSE")
 
             if key == 's0offline':
                 self.command_indexer(keyword=data, off_key=True)
 
             elif key == 'funcall':
-                result = self.command_indexer(
-                    keyword=data[0])
+                result = self.command_indexer(keyword=data[0])
                 if result is not False:
                     result.append(data[1])
-                    self.queue_handler.add_to_queue('COMMAND', result)
+                    self.queue_handler.add_to_queue(
+                        'COMMAND', (session_id, result))
             elif key == 'answer':
-                self.queue_handler.add_to_queue('API_RESPONSE', data)
+                self.queue_handler.add_to_queue(
+                    'API_RESPONSE', (session_id, data))
 
     def command_indexer(self, keyword, off_key=False):
         diccionary = EMMA_GLOBALS.tools_da.json_loader(
@@ -51,6 +57,8 @@ class InputRouter:
 
     def run(self):
         self.event.set()
+        response_thread = threading.Thread(target=self.process_responses)
+        response_thread.start()
 
     def stop(self):
         self.stop_flag = True

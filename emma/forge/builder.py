@@ -3,7 +3,7 @@ import importlib
 import os
 import tarfile
 import subprocess
-from emma.config.globals import FORGE_GLOBALS
+from emma.globals import FORGE_GLOBALS
 
 
 class Builder:

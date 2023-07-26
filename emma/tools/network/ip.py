@@ -52,8 +52,8 @@ class ToolKit:
             response = requests.get('https://api.ipify.org')
             if response.status_code == 200:
                 return response.text.strip()
-        except requests.RequestException:
-            pass
+        except Exception as e:
+            return e
 
         # Return None if unable to retrieve the public IP
         return None

@@ -1,6 +1,6 @@
 
 import os
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 
 
 class SystemAwake:

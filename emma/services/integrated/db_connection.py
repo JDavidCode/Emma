@@ -5,7 +5,7 @@ import random
 import json
 
 # ImportedPythonLibraries
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 
 #################################################################################
 

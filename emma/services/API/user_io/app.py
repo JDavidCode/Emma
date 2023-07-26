@@ -1,5 +1,5 @@
 import base64
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 import os
@@ -81,14 +81,26 @@ class APP:
         @self.socketio.on("message")
         def handle_message(data):
             data.lower()
-            # if 'computer' in data:
-            # data.replace('computer', '').strip()
-            self.queue_handler.add_to_queue("API_INPUT", data)
+            session_id = request.sid  # Get the session_id associated with the current request
+
+            # Add the data and session_id to the queue
+            self.queue_handler.add_to_queue(
+                "API_INPUT", (session_id, data))
             self.console_handler.write(self.tag, data)
 
-            response = self.queue_handler.get_queue("API_RESPONSE")
+        @self.app.route("/get_user_sessions", methods=["GET"])
+        def get_user_sessions():
+            user_id = request.args.get("user_id")
+            self.queue_handler.add_to_queue(
+                "NET_SESSIONS", {"user_id": user_id})
+            user_sessions = [
+                {"session_name": "Session 1", "session_id": "12345"},
+                {"session_name": "Session 2", "session_id": "67890"},
+                # Add more session dictionaries as needed
+            ]
 
-            self.socketio.emit("response", response)
+            # Return the user sessions as JSON response
+            return jsonify(user_sessions)
 
     def main(self):
         self.event.wait()
@@ -100,8 +112,16 @@ class APP:
         except Exception as e:
             self.console_handler.write(self.tag, str(e))
 
+    def process_responses(self):
+        while True:
+            session_id, data = self.queue_handler.get_queue("API_RESPONSE")
+            # Emit the response to the correct session_id
+            self.socketio.emit("response", data, room=session_id)
+
     def run(self):
         self.event.set()
+        response_thread = threading.Thread(target=self.process_responses)
+        response_thread.start()
 
     def stop(self):
         self.stop_flag = True

@@ -3,11 +3,12 @@ import sys
 import os
 import queue
 import shutil
+import datetime
 import yaml
 import threading
 import psutil
 import importlib
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 
 
 class SysV:
@@ -217,7 +218,7 @@ class SysV:
         return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
-        EMMA_GLOBALS.iservices_db  # request
+        EMMA_GLOBALS.services_db  # request
 
     def temp_clearer(self):
         path = "./emma/common/.temp"
@@ -366,7 +367,11 @@ class ThreadHandler:
                 except:
                     return None
             else:
-                return self.queues[name].get()
+                try:
+                    return self.queues[name].get()
+                except Exception as e:
+                    print(e)
+                    return None
 
         def remove_queue(self, name):
             if name not in self.queues:
@@ -376,7 +381,9 @@ class ThreadHandler:
     class ConsoleHandler:
         def __init__(self, queue_handler):
             self.queue = queue_handler
-            self.msc = EMMA_GLOBALS.task_msc
+            dateTime = datetime.datetime.now()
+            clock = dateTime.time()
+            self.clock = clock.strftime("%H:%M:%S")
             self.output_queue = queue.Queue()
             self.console_thread = threading.Thread(
                 target=self._output_console, daemon=True
@@ -387,7 +394,7 @@ class ThreadHandler:
             while True:
                 output = self.output_queue.get()
                 self.queue.add_to_queue("CONSOLE", str(output))
-                print(f"[{self.msc.date_clock(3)}] | {output}")
+                print(f"[{self.clock}] | {output}")
 
         def write(self, remitent, output):
             self.output_queue.put(f"{remitent}: {output}")

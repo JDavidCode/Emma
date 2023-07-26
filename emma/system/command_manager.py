@@ -1,5 +1,5 @@
 import threading
-import emma.config.globals as EMMA_GLOBALS
+import emma.globals as EMMA_GLOBALS
 from emma.system.sys_v import SysV
 
 
@@ -17,7 +17,8 @@ class CommandsManager:
         module = ""
         self.event.wait()
         while not self.stop_flag:
-            data = self.queue_handler.get_queue("COMMAND")
+            session_id, data = self.queue_handler.get_queue("COMMAND")
+
             dic, args = data
             try:
                 module = getattr(EMMA_GLOBALS, dic.get("module"))

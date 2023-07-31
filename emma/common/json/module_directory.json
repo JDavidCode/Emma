@@ -1,14 +1,22 @@
      {
-        "module_dir" : {
-            "data": "amy_basic_process.data_module",
-            "voice": "amy_basic_process.voice_module",
-            "task": "amy_basic_process.task_module",
-            "login": "amy_basic_process.login_module",
-            "miscellaneous": "amy_basic_process.miscellaneous_module",
-            "system": "amy_basic_process.sys_module",
-            "local data": "tools.data.local.kit",
-            "local generators": "tools.generators.local.kit",
-            "local converters": "tools.converters.local.kit",
-            "system tools": "tools.os"
+        "module_directories" : {
+
+            "os": "emma.services.integrated.task.ost",
+            "web": "emma.services.integrated.task.web",
+            "miscellaneous": "emma.services.integrated.task.miscellaneous",
+            
+            "geolocation": "emma.services.integrated.common.geolocation",
+            "time": "emma.services.integrated.common.time",
+            "weather": "emma.services.integrated.common.weather",
+
+            "db": "emma.services.integrated.common.weather",
+            "tts": "emma.services.integrated.common.weather",
+            "system": "emma.services.integrated.task.sys_module",
+
+            "local data": "emma.tools.data.local.kit",
+            "local generators": "emma.tools.generators.local.kit",
+            "local converters": "emma.tools.converters.local.kit",
+            "local network": "emma.tools.converters.local.kit"
+
         }
     }

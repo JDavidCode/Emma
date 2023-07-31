@@ -1,13 +1,32 @@
 document.addEventListener('DOMContentLoaded', function () {
-	var input = document.getElementById('commandInput');
-	var sendBtn = document.getElementById('sendBtn');
-	var textResponse = document.getElementById('response');
+	const input = document.getElementById('commandInput');
+	const sendBtn = document.getElementById('sendBtn');
+	const chat = document.getElementById('chat');
 
 	sendBtn.addEventListener('click', function () {
 		let message = input.value;
-		socket.emit('message', message);
-		input.value = ''; // Clear the input field after sending
+		processChat(message)
+
 	});
+
+	function handleKeyDown(event) {
+		// Check if the pressed key is the Enter key (keyCode 13)
+		if (event.keyCode === 13) {
+			event.preventDefault(); // Prevent the default behavior (new line in textarea)
+
+			// Call your desired function here
+			let message = input.value;
+			processChat(message)
+		}
+	}
+	function processChat(message) {
+		const listItem = document.createElement('li');
+		listItem.textContent = message;
+		chat.appendChild(listItem);
+		socket.emit('message', message);
+		input.value = '';
+	}
+	input.addEventListener("keydown", handleKeyDown);
 
 	function getQueryParams(url) {
 		var queryParams = {};
@@ -36,9 +55,17 @@ document.addEventListener('DOMContentLoaded', function () {
 		console.log("Error!");
 	});
 
-	// update the server data when new data arrives
 	socket.on('response', function (data) {
-		textResponse.textContent = data;
+		// Obtener el elemento de la lista
+
+		// Crear un nuevo elemento de lista (<li>) para mostrar la respuesta
+		const listItem = document.createElement('li');
+		listItem.textContent = data;
+
+		// Agregar el nuevo elemento de lista a la lista existente
+		chat.appendChild(listItem);
+
+		// Llamar a la función synthesize (supongo que esta función reproduce el texto en voz)
 		synthesize(data);
 	});
 

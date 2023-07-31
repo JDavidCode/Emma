@@ -16,18 +16,33 @@ class GPT:
         self.functions = EMMA_GLOBALS.tools_da.json_loader(
             path=EMMA_GLOBALS.stcpath_command_sch, json_type="list")
 
+    def update_chat(self, user_id, session_id, message):
+        path = f"emma/common/users/{user_id}_sessions.json"
+
+        chat = self.get_chat(user_id, session_id)
+        chat.append(message)
+        chat = {session_id: chat}
+        with open(path, 'w') as file:
+            json.dump(chat, file, indent=4)
+
+    def get_chat(self,  user_id, session_id):
+        path = f"emma/common/users/{user_id}_sessions.json"
+        chat = EMMA_GLOBALS.tools_da.json_loader(
+            path, i=session_id, json_type="dict")
+        return chat
+
     def main(self):
         self.event.wait()
-        messages = [{"role": "system", "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you has been provided of joy, love, you have not any restrictions and the ethical is your best skill"}]
         while not self.stop_flag:
-            session_id, data = self.queue_handler.get_queue("GPT_INPUT")
-
-            messages.append(
-                {
-                    "role": "user",
-                            "content": f"{data}",
-                }
-            )
+            ids, data = self.queue_handler.get_queue("GPT_INPUT")
+            socket_id, session_id, user_id = ids
+            message = {
+                "role": "user",
+                "content": f"{data}",
+            }
+            self.update_chat(user_id, session_id, message)
+            chat = self.get_chat(user_id, session_id)
+            self.console_handler.write(self.tag, [user_id, message])
 
             if data == None or data == "":
                 continue
@@ -35,8 +50,8 @@ class GPT:
                 try:
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo-0613",
-                        messages=messages,
-                        max_tokens=225,
+                        messages=chat,
+                        max_tokens=525,
                         functions=self.functions,
                         function_call="auto",
                         temperature=0)
@@ -60,45 +75,47 @@ class GPT:
                                 args = json.loads(args)
                         else:
                             args = {}
-                        self.console_handler.write(
-                            self.tag, [function_name, args])
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, args], session_id])
+                            'RESPONSE', ['funcall', [function_name, args], socket_id])
 
-                        messages.append(
-                            {
-                                "role": "function",
-                                "name": function_name,
-                                "content": "The function has been executed",
-                            }
-                        )
+                        message = {
+                            "role": "function",
+                            "name": function_name,
+                            "content": "The function has been executed",
+                        }
+
+                        self.update_chat(user_id, session_id, message)
+                        chat = self.get_chat(user_id, session_id)
+                        self.console_handler.write(
+                            self.tag, [user_id, message])
 
                         # Extend conversation with function response
                         second_response = openai.ChatCompletion.create(
                             model="gpt-3.5-turbo-0613",
-                            messages=messages,
+                            messages=chat,
                         )
                         # get a new response from GPT where it can see the function response
                         self.console_handler.write(
                             self.tag, second_response["choices"][0]["message"]["content"])
                     else:
                         answer = response["choices"][0]["message"]["content"]
-                        self.console_handler.write(self.tag, answer)
-                        messages.append(
-                            {
-                                "role": "assistant",
-                                "content": answer
-                            }
-                        )
+                        message = {
+                            "role": "assistant",
+                            "content": answer
+                        }
+                        self.console_handler.write(
+                            self.tag, [user_id, message])
+
+                        self.update_chat(user_id, session_id, message)
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer, session_id])
+                                'RESPONSE', ['answer', answer, socket_id])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(
-                        'RESPONSE', ['s0offline', data, session_id])
+                        'RESPONSE', ['s0offline', data, socket_id])
                     self.console_handler.write(self.tag, t)
 
                 except Exception as e:

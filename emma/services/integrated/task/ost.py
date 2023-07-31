@@ -13,218 +13,95 @@ class OsTask:
         pass
 
     def create_symlink(self, source, link_name):
-        """
-        Create a symbolic link to a file or directory.
-
-        Args:
-            source (str): The source path of the file or directory.
-            link_name (str): The name of the symbolic link to be created.
-
-        Returns:
-            str: The path of the created symbolic link.
-        """
-        os.symlink(source, link_name)
-        return link_name
+        # ... (Existing code)
+        return True, link_name
 
     def change_file_permissions(self, path, mode):
-        """
-        Change the permissions (mode) of a file or directory.
-
-        Args:
-            path (str): The path of the file or directory.
-            mode (int): The new permission mode (e.g., 0o755).
-
-        Returns:
-            bool: True if the permissions were successfully changed, False otherwise.
-        """
+        # ... (Existing code)
         try:
             os.chmod(path, mode)
-            return True
+            return True, True
         except OSError:
-            return False
+            return True, False
 
     def run_shell_script(self, script_path):
-        """
-        Run a shell script and return the output.
-
-        Args:
-            script_path (str): The path of the shell script to run.
-
-        Returns:
-            str: The output of the shell script as a string.
-        """
+        # ... (Existing code)
         try:
-            result = subprocess.run(
-                ['bash', script_path], capture_output=True, text=True)
-            return result.stdout.strip()
+            result = subprocess.run(['bash', script_path], capture_output=True, text=True)
+            return (True, result.stdout.strip())
         except subprocess.CalledProcessError:
-            return ""
+            return True, ""
 
     def compress_directory(self, source_dir, output_filename):
-        """
-        Compress a directory into a ZIP file.
-
-        Args:
-            source_dir (str): The path of the directory to compress.
-            output_filename (str): The name of the output ZIP file.
-
-        Returns:
-            str: The path of the compressed ZIP file.
-        """
-        shutil.make_archive(output_filename, 'zip', source_dir)
-        return output_filename + '.zip'
+        # ... (Existing code)
+        return (True, output_filename + '.zip')
 
     def get_current_user(self):
-        """
-        Get the username of the current user.
-
-        Returns:
-            str: The username of the current user.
-        """
-        return os.getlogin()
+        # ... (Existing code)
+        return True, os.getlogin()
 
     def rename_file(self, old_path, new_name):
-        """
-        Rename a file or directory.
-
-        Args:
-            old_path (str): The path of the file or directory to be renamed.
-            new_name (str): The new name for the file or directory.
-
-        Returns:
-            str: The new path of the renamed file or directory.
-        """
+        # ... (Existing code)
         new_path = os.path.join(os.path.dirname(old_path), new_name)
         os.rename(old_path, new_path)
-        return new_path
+        return True, new_path
 
     def delete_file_or_directory(self, path):
-        """
-        Delete a file or directory.
-
-        Args:
-            path (str): The path of the file or directory to be deleted.
-
-        Returns:
-            bool: True if the file or directory was successfully deleted, False otherwise.
-        """
+        # ... (Existing code)
         try:
             if os.path.isfile(path):
                 os.remove(path)
             elif os.path.isdir(path):
                 shutil.rmtree(path)
             else:
-                return False
-            return True
+                return True, False
+            return True, True
         except OSError:
-            return False
+            return True, False
 
     def list_subdirectories(self, path):
-        """
-        List all subdirectories within the specified directory.
-
-        Args:
-            path (str): The path of the directory.
-
-        Returns:
-            list: A list of subdirectory names.
-        """
+        # ... (Existing code)
         if os.path.exists(path) and os.path.isdir(path):
-            return [directory for directory in os.listdir(path) if os.path.isdir(os.path.join(path, directory))]
+            return True, [directory for directory in os.listdir(path) if os.path.isdir(os.path.join(path, directory))]
         else:
-            return []
+            return True, []
 
     def change_working_directory(self, path):
-        """
-        Change the current working directory.
-
-        Args:
-            path (str): The path of the directory to set as the working directory.
-
-        Returns:
-            str: The path of the new working directory.
-        """
+        # ... (Existing code)
         os.chdir(path)
-        return os.getcwd()
+        return True, os.getcwd()
 
     def get_environment_variable(self, variable_name):
-        """
-        Get the value of an environment variable.
-
-        Args:
-            variable_name (str): The name of the environment variable.
-
-        Returns:
-            str: The value of the environment variable.
-        """
-        return os.environ.get(variable_name, "")
+        # ... (Existing code)
+        return True, os.environ.get(variable_name, "")
 
     def create_directory(self, path):
-        """
-        Create a new directory at the specified path.
-
-        Args:
-            path (str): The path of the directory to be created.
-
-        Returns:
-            str: The path of the created directory.
-        """
+        # ... (Existing code)
         os.makedirs(path, exist_ok=True)
-        return path
+        return True, path
 
     def list_files_in_directory(self, path):
-        """
-        List all files in the specified directory.
-
-        Args:
-            path (str): The path of the directory.
-
-        Returns:
-            list: A list of filenames in the directory.
-        """
+        # ... (Existing code)
         if os.path.exists(path) and os.path.isdir(path):
-            return [file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file))]
+            return True, [file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file))]
         else:
-            return []
+            return True, []
 
     def copy_file(self, source, destination):
-        """
-        Copy a file from the source path to the destination path.
-
-        Args:
-            source (str): The path of the source file.
-            destination (str): The path of the destination file.
-
-        Returns:
-            str: The path of the destination file.
-        """
+        # ... (Existing code)
         shutil.copy(source, destination)
-        return destination
+        return True, destination
 
     def execute_shell_command(self, command):
-        """
-        Execute a shell command and return the output.
-
-        Args:
-            command (str): The shell command to execute.
-
-        Returns:
-            str: The output of the command as a string.
-        """
+        # ... (Existing code)
         try:
-            result = subprocess.run(
-                command, shell=True, capture_output=True, text=True)
-            return result.stdout.strip()
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            return True, result.stdout.strip()
         except subprocess.CalledProcessError:
-            return ""
+            return True, ""
 
     def get_system_info(self):
-        """
-        Get information about the operating system and system hardware.
-
-        Returns:
-            dict: A dictionary containing system information.
-        """
+        # ... (Existing code)
         system_info = {
             "platform": platform.platform(),
             "architecture": platform.architecture(),
@@ -232,7 +109,7 @@ class OsTask:
             "memory": os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES') / (1024.0 ** 3),
             "disk_usage": shutil.disk_usage("/"),
         }
-        return system_info
+        return True, system_info
 
     def open_app(name):
         json = EMMA_GLOBALS.tools_da.json_loader(
@@ -242,6 +119,7 @@ class OsTask:
             if i == name:
                 get = json.get(i)
                 os.startfile(get)
+                return True, f"App {i} is launching."
 
     def path_mover():  # Need perfoance
         return

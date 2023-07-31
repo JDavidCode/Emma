@@ -10,7 +10,7 @@ defaults:
   services: 
     - queue: COMMAND
       queue_maxsize: 0
-      endpoint: command_manager
+      endpoint: command_router
       args: 
         - console
         - queue
@@ -20,13 +20,13 @@ defaults:
       autostart: True
       autorestart: True
 
-    - queue: NET_SESSIONS
+    - queue: PROTO_SESSIONS
       queue_maxsize: 0
-      endpoint: sys_net_handler
+      endpoint: session_protocols
       args: 
         - console
         - queue
-      thread_name: T0_NET_SESSIONS
+      thread_name: T0_PROTO_SESSIONS
       thread_is_daemon: True
       autostart: True
       autorestart: True
@@ -71,15 +71,10 @@ defaults:
       queue_maxsize: 1
     - queue: CONSOLE
       queue_maxsize: 0
+
+  secure_queues:
+    - queue: SECURE_NET_SESSIONS
+      queue_maxsize: 0
   
-  speech_recognition:
-    listening:
-      language: 'en'
-      model: 'my/Model'
-    talking:
-      language: 'en'
-      model: 'my/model'
-      tts_mode: 'low' #low to send just text, high to send the audio
-      rate: 125
-      volume: 1
+  
 

@@ -48,45 +48,64 @@ class APP:
         @self.socketio.on("connect")
         def connect():
             data = request.args
-            # Get the client's IP addresses
-            public_ip = EMMA_GLOBALS.tools_net.get_public_ip(request)
-            # Generate a unique session ID (you can use UUID or any other suitable method)
-            session_id = EMMA_GLOBALS.tools_gs.generate_emd_id()
-            device_name = data.get("device_name")
-            session_name = data.get("session_name")
-            user_id = data.get("user")
-            ip4, ip6 = EMMA_GLOBALS.tools_net.get_client_ip_addresses(request)
-            device_id = base64.urlsafe_b64encode(
-                ip6.encode("utf-8")).decode("utf-8")
 
-            # Register the session
-            session_info = {
-                'session_name': session_name,
-                'session_id': session_id,
-            }
+            user_id = data.get("user", None)
+            whitelist_data = EMMA_GLOBALS.tools_da.yaml_loader(
+                "./emma/config/withelist.yml")
 
-            data = {
-                'device_name': device_name,
-                'device_id': device_id,
-                'session': session_info,
-                'public_ips': public_ip
-            }
+            # Verify if user_id is in the whitelist_data
+            if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
+                # Verify if user_id.json data is in the local storage
+                socket_id = request.sid
+                public_ip = data.get("ip", None)
+                session_name = data.get("session_name", "Default Session")
+                session_id = data.get("session", None)
+                device_name = data.get("device_name", "Unknown Device")
+                device_id = data.get("device_id", None)
 
-            self.console_handler.write(self.tag, data)
-            self.queue_handler.add_to_queue("NET_SESSIONS", {user_id: data})
+                session_info = {
+                    'session_name': session_name,
+                    'session_id': session_id,
+                }
 
-            # emit the data to the client
-            self.socketio.emit("connect", {"session_id": session_id})
+                data = {
+                    'device_name': device_name,
+                    'device_id': device_id,
+                    'session': session_info,
+                    'public_ips': public_ip
+                }
+                self.queue_handler.add_to_queue(
+                    "PROTO_SESSIONS", ('run', {user_id: data, 'socket': socket_id}))
+
+                # Emit the data to the client
+                self.socketio.emit("connect", {"session_id": session_id})
+            else:
+                # User is not in the whitelist, handle it accordingly (e.g., reject the connection)
+                self.socketio.emit("connect_error", {
+                                   "error": "Unauthorized user"})
 
         @self.socketio.on("message")
         def handle_message(data):
-            data.lower()
-            session_id = request.sid  # Get the session_id associated with the current request
+            params = request.args
+            user_id = params.get("user", None)
+            session_id = params.get("session", None)
+            socket_id = request.sid
 
-            # Add the data and session_id to the queue
-            self.queue_handler.add_to_queue(
-                "API_INPUT", (session_id, data))
-            self.console_handler.write(self.tag, data)
+            whitelist_data = EMMA_GLOBALS.tools_da.yaml_loader(
+                "./emma/config/withelist.yml")
+
+            if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
+                # Verify if user_id.json data is in the local storage
+                data.lower()
+                # Get the session_id associated with the current request
+
+                # Add the data and session_id to the queue
+                self.queue_handler.add_to_queue(
+                    "API_INPUT", ((socket_id, session_id, user_id), data))
+                self.console_handler.write(self.tag, data)
+            else:
+                self.socketio.emit(
+                    "response", "Unauthorized user", room=socket_id)
 
         @self.app.route("/get_user_sessions", methods=["GET"])
         def get_user_sessions():

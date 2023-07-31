@@ -1,0 +1,18 @@
+{
+    "user": {
+        "name": "Susana",
+        "age": "17",
+        "birthday": "09/10/2005",
+        "level": "7"
+    },
+    "devices": [
+        {
+            "device_id": null,
+            "device_name": "Unknown Device",
+            "sessions": [
+
+            ],
+            "public_ips": []
+        }
+    ]
+}

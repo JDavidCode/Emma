@@ -15,16 +15,17 @@ class InputRouter:
         while not self.stop_flag:
             # Here suppose that have many io queues than only 1
             try:
-                session_id, data = self.queue_handler.get_queue("API_INPUT")
+                ids, data = self.queue_handler.get_queue("API_INPUT")
+                self.console_handler.write(self.tag, [ids, data])
                 self.queue_handler.add_to_queue(
-                    'GPT_INPUT', (session_id, data))  # Updated to pass a tuple
+                    'GPT_INPUT', (ids, data))  # Updated to pass a tuple
             except Exception as e:
                 self.console_handler.write(self.tag, e)
 
     def process_responses(self):
         while True:
             key, data, session_id = self.queue_handler.get_queue("RESPONSE")
-
+            self.console_handler.write(self.tag, [session_id, data])
             if key == 's0offline':
                 self.command_indexer(keyword=data, off_key=True)
 

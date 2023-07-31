@@ -3,7 +3,7 @@ import emma.globals as EMMA_GLOBALS
 from emma.system.sys_v import SysV
 
 
-class CommandsManager:
+class CommandsRouter:
     def __init__(self, console_handler, queue_handler, thread_handler):
         self.tag = "Commands Thread"
         self.bp = SysV(queue_handler, console_handler)
@@ -24,16 +24,18 @@ class CommandsManager:
                 module = getattr(EMMA_GLOBALS, dic.get("module"))
                 # Execute the command
                 if dic.get('args_key') == 'args':
-                    self.execute_command(module, dic.get(
-                        'key'), dic.get('arguments'))
+                    self.execute_command(module, function_name=dic.get(
+                        'key'), session_id=session_id, args=dic.get('arguments'))
                 elif dic.get('args_key') == '*args':
-                    self.execute_command(module, dic.get('key'), args)
+                    self.execute_command(module, function_name=dic.get(
+                        'key'), session_id=session_id, args=args)
                 else:
-                    self.execute_command(module, dic.get('key'))
+                    self.execute_command(module, function_name=dic.get(
+                        'key'), session_id=session_id)
             except Exception as e:
                 self.console_handler.write(self.tag, e)
 
-    def execute_command(self, module, function_name, args=None):
+    def execute_command(self, module, function_name, session_id, args=None):
         try:
             # get the function reference
             function = getattr(module, function_name)
@@ -45,17 +47,23 @@ class CommandsManager:
             self.console_handler.write(
                 self.tag, [f"trying to execute {function_name}", f"args = {args}"])
             if args == None:
-                r = function()
-                if r != None:
-                    self.console_handler.write(self.tag, r)
+                key, r = function()
+                if key:
+                    self.queue_handler.add_to_queue(
+                        'API_RESPONSE', (session_id, r))
+                self.console_handler.write(self.tag, r)
             elif isinstance(args, (int, str)):
-                r = function(args)
-                if r is not None:
-                    self.console_handler.write(self.tag, r)
+                key, r = function(args)
+                if key:
+                    self.queue_handler.add_to_queue(
+                        'API_RESPONSE', (session_id, r))
+                self.console_handler.write(self.tag, r)
             elif isinstance(args, dict):
-                r = function(**args)
-                if r is not None:
-                    self.console_handler.write(self.tag, r)
+                key, r = function(**args)
+                if key:
+                    self.queue_handler.add_to_queue(
+                        'API_RESPONSE', (session_id, r))
+                self.console_handler.write(self.tag, r)
 
             self.console_handler.write(
                 self.tag, [f"{function_name} has been execute", f"args = {args}"])

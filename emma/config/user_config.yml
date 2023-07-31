@@ -13,3 +13,14 @@ preferences:
   clear_temp: True
   max_cache: 'AUTO'
   tts_mode: 'low'
+
+speech_recognition:
+    listening:
+      language: 'en'
+      model: 'my/Model'
+    talking:
+      language: 'en'
+      model: 'my/model'
+      tts_mode: 'low' #low to send just text, high to send the audio
+      rate: 125
+      volume: 1

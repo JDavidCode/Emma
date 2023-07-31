@@ -18,7 +18,7 @@ class EMCLKX:
                 self.thread_handler.get_thread_status()
             )
             if timer >= 4999:
-                thread_status = self.thread_handler.get_thread_status()
+                key, thread_status = self.thread_handler.get_thread_status()
                 for status in thread_status:
                     self.console_handler.write(
                         "Main Thread",

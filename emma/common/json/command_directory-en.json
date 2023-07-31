@@ -19,6 +19,11 @@
     "args_key": "*args",
     "required_lvl": 1
 },
+    "get_thread_status": {
+    "module": "sys_v_th",
+    "args_key": "None",
+    "required_lvl": 1
+},
     "module_reloader": {
     "module": "sys_v",
     "args_key": "*args",
@@ -37,8 +42,7 @@
 },
     "weather": {
     "module": "task_msc",
-    "args_key": "args",
-    "arguments": "1",
+    "args_key": "*args",
     "required_lvl": 0
 },
     "date_clock": {
@@ -52,7 +56,7 @@
     "args_key": "None",
     "required_lvl": 0
 },
-    "youtube_player": {
+    "youtube_search": {
     "module": "task_web",
     "args_key": "*args",
     "required_lvl": 1
@@ -62,14 +66,10 @@
     "args_key": "*args",
     "required_lvl": 1
 },
-    "open_website": {
+    "open_webpage": {
     "module": "task_web",
     "args_key": "*args",
     "required_lvl": 1
-},
-    "open_local_site": {
-    "module": "task_web",
-    "args_key": "None",
-    "required_lvl": 1
 }
+
 }

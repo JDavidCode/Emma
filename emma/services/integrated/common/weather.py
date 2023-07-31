@@ -107,7 +107,7 @@ class WeatherService:
         except requests.exceptions.RequestException:
             return None
 
-    def get_weather_data_by_zip(self, zip_code, country_code=None):
+    def c(self, zip_code, country_code=None):
         """
         Get weather data for a specific ZIP code.
 

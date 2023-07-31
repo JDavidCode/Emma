@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import yaml
 
@@ -17,6 +18,17 @@ class ToolKit:
     def yaml_saver(path, data):
         with open(path, "w") as file:
             yaml.dump(data, file)
+
+    def create_json_file(custom_route,filename, data):
+        try:
+            filepath = os.path.join(custom_route, filename)
+            with open(filepath, 'w') as file:
+                json.dump(data, file)
+            # Open the file in write mode
+
+            return True, f"JSON file '{filename}' created successfully."
+        except Exception as e:
+            return False, f"Failed to create JSON file: {e}"
 
     def json_loader(path, i=None, json_type="dict", console_output=None):
         with open(path) as f:

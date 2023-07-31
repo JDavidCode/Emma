@@ -49,7 +49,7 @@ class EMMA_GLOBALS:
     class system:
         def __init__(self) -> None:
             self.main()
-            self.network()
+            self.protocols()
 
         def main(self):
             sys = importlib.import_module("emma.system.sys_v")
@@ -62,12 +62,15 @@ class EMMA_GLOBALS:
             sys_v_th_eh = sys.ThreadHandler.EventHandler()
             sys_v = sys.SysV(sys_v_th_qh, sys_v_th_ch)
 
-        def network(self):
-            sys_net = importlib.import_module(
-                "emma.system.network.network_session_handler")
+        def protocols(self):
+            prt_session = importlib.import_module(
+                "emma.system.protocols.sessions.sessions_handler")
 
-            global sys_net_handler
-            sys_net_handler = sys_net.NetworkHandler
+            global session_protocols
+            session_protocols = prt_session.SessionsHandler
+
+        def network(self):
+            pass
 
     class services:
         def __init__(self) -> None:
@@ -123,15 +126,15 @@ class EMMA_GLOBALS:
     def instances(self):
         i_router = importlib.import_module(
             "emma.system.routers.input_router")
-        cmmand_manager = importlib.import_module(
-            "emma.system.command_manager")
+        cmmand_router = importlib.import_module(
+            "emma.system.routers.command_router")
         forge = importlib.import_module("emma.forge.builder")
 
-        global command_manager, io_router, sys_awake, forge_server, thread_instances
+        global command_router, io_router, sys_awake, forge_server, thread_instances
 
         sys_awake = self.sys_awake.SystemAwake(
             1, sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
-        command_manager = cmmand_manager.CommandsManager
+        command_router = cmmand_router.CommandsRouter
         io_router = i_router.InputRouter
         thread_instances = None
         forge_server = forge.Builder([tools_cs, tools_da])

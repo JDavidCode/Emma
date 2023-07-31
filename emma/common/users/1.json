@@ -1,0 +1,27 @@
+{
+    "user": {
+        "name": "Juan",
+        "age": "19",
+        "birthday": "18/07/2004",
+        "level": "7"
+    },
+    "devices": [
+        {
+            "device_id": null,
+            "device_name": "Unknown Device",
+            "sessions": [
+                {
+                    "session_name": "MySession",
+                    "session_id": "1-emd-91hd012"
+                },
+                [
+                    {
+                        "session_name": "Default Session",
+                        "session_id": "1-emd-91hd012"
+                    }
+                ]
+            ],
+            "public_ips": []
+        }
+    ]
+}

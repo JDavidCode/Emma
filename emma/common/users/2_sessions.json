@@ -1,0 +1,32 @@
+{
+    "2-emd-91htd012": [
+        {
+            "role": "system",
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Wilmer, age: 25, birthday: 09/07/1998, level: 1"
+        },
+        {
+            "role": "user",
+            "content": "hola"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfEn qu\u00e9 puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": "tengo hambre"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Oh, entiendo! \u00bfTe gustar\u00eda que te recomiende alg\u00fan lugar para comer o alguna receta para preparar en casa?"
+        },
+        {
+            "role": "user",
+            "content": "una receta"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Claro! Aqu\u00ed tienes una receta sencilla y deliciosa para preparar unos tacos de pollo:\n\nIngredientes:\n- 2 pechugas de pollo\n- 1 cebolla\n- 2 dientes de ajo\n- 1 pimiento rojo\n- 1 pimiento verde\n- 1 cucharadita de comino en polvo\n- 1 cucharadita de paprika\n- Sal y pimienta al gusto\n- Tortillas de ma\u00edz\n- Salsa de tu elecci\u00f3n (salsa verde, salsa roja, guacamole, etc.)\n- Cilantro fresco (opcional)\n- Lim\u00f3n (opcional)\n\nInstrucciones:\n1. Corta las pechugas de pollo en trozos peque\u00f1os y saz\u00f3nalos con sal, pimienta, comino y paprika.\n2. En una sart\u00e9n grande, calienta un poco de aceite y agrega la cebolla picada, el ajo picado, el pimiento rojo y el pimiento verde. Cocina hasta que est\u00e9n tiernos.\n3. Agrega el pollo sazonado a la sart\u00e9n y cocina hasta que est\u00e9 dorado y cocido por completo.\n4. Calienta las tortillas de ma\u00edz en una sart\u00e9n o en el horno.\n5. Rellena cada tortilla con el pollo y las verduras salteadas. Puedes agregar salsa, cilantro y jugo de lim\u00f3n al gusto.\n6. \u00a1Disfruta tus tacos de pollo caseros!\n\nEspero que disfrutes de esta receta. \u00a1Buen provecho!"
+        }
+    ]
+}

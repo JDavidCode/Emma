@@ -1,0 +1,7 @@
+#commandInput {
+	display: block;
+  margin: 0 auto; /* This centers the element horizontally */
+  margin-top: 20px; /* Add some top margin */
+  margin-bottom: 20px; /* Add some bottom margin */
+  width: 80vw; /* Set a fixed width for the textarea */
+}

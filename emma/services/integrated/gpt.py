@@ -2,7 +2,6 @@ import json
 import threading
 import openai
 import emma.globals as EMMA_GLOBALS
-global conversation
 
 
 class GPT:
@@ -19,22 +18,29 @@ class GPT:
     def update_chat(self, user_id, session_id, message):
         path = f"emma/common/users/{user_id}_sessions.json"
 
-        chat = self.get_chat(user_id, session_id)
-        chat.append(message)
-        chat = {session_id: chat}
-        with open(path, 'w') as file:
-            json.dump(chat, file, indent=4)
+        sessions = EMMA_GLOBALS.tools_da.json_loader(path, json_type="dict")
 
-    def get_chat(self,  user_id, session_id):
+        try:
+            sessions[session_id].append(message)
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+            #manage unendintefied session
+        with open(path, 'w') as file:
+            json.dump(sessions, file, indent=4)
+
+    def get_chat(self, user_id, session_id):
         path = f"emma/common/users/{user_id}_sessions.json"
         chat = EMMA_GLOBALS.tools_da.json_loader(
-            path, i=session_id, json_type="dict")
+            path, i=session_id, json_type="list")
         return chat
 
     def main(self):
         self.event.wait()
         while not self.stop_flag:
-            ids, data = self.queue_handler.get_queue("GPT_INPUT")
+            ids, data = self.queue_handler.get_queue("GPT_INPUT", 0.1, (None, None))
+            if ids is None:
+                continue
             socket_id, session_id, user_id = ids
             message = {
                 "role": "user",
@@ -42,7 +48,6 @@ class GPT:
             }
             self.update_chat(user_id, session_id, message)
             chat = self.get_chat(user_id, session_id)
-            self.console_handler.write(self.tag, [user_id, message])
 
             if data == None or data == "":
                 continue
@@ -116,10 +121,12 @@ class GPT:
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(
                         'RESPONSE', ['s0offline', data, socket_id])
-                    self.console_handler.write(self.tag, t)
+                    traceback_str = traceback.format_exc()
+                    self.queue_handler.add_to_queue("LOGGING", (self.tag, (t, traceback_str)))
 
                 except Exception as e:
-                    self.console_handler.write(self.tag, e)
+                    traceback_str = traceback.format_exc()
+                    self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
 
     def run(self):
         self.event.set()

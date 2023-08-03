@@ -5,22 +5,22 @@
     "required_lvl": 1
 },
     "start_thread": {
-    "module": "sys_v_th",
+    "module": "core_thread_handler",
     "args_key": "*args",
     "required_lvl": 1
 },
     "stop_thread": {
-    "module": "sys_v_th",
+    "module": "core_thread_handler",
     "args_key": "*args",
     "required_lvl": 1
 },
     "restart_thread": {
-    "module": "sys_v_th",
+    "module": "core_thread_handler",
     "args_key": "*args",
     "required_lvl": 1
 },
     "get_thread_status": {
-    "module": "sys_v_th",
+    "module": "core_thread_handler",
     "args_key": "None",
     "required_lvl": 1
 },

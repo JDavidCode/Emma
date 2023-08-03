@@ -1,15 +1,14 @@
 import datetime
 import sys
 import os
-import queue
 import shutil
-import datetime
+import time
 import yaml
 import threading
 import psutil
 import importlib
 import emma.globals as EMMA_GLOBALS
-
+import traceback
 
 class SysV:
     def __init__(self, queue_handler=None, console_handler=None):
@@ -51,10 +50,10 @@ class SysV:
             data = yaml.load(f, Loader=yaml.FullLoader)
         func_instances = {}
 
-        queue = EMMA_GLOBALS.sys_v_th_qh
-        console = EMMA_GLOBALS.sys_v_th_ch
-        thread = EMMA_GLOBALS.sys_v_th
-        system_events = EMMA_GLOBALS.sys_v_th_eh
+        queue = EMMA_GLOBALS.core_queue_handler
+        console = EMMA_GLOBALS.core_console_handler
+        thread = EMMA_GLOBALS.core_thread_handler
+        events = EMMA_GLOBALS.core_event_handler
 
         if forge:
             data = data["Forge"]["services"]
@@ -65,20 +64,20 @@ class SysV:
 
         # Define the mappings of argument combinations to function calls
         argument_mappings = {
-            ("console", "queue", "system_events", "thread"): lambda: getattr(
+            ("console", "queue", "events", "thread"): lambda: getattr(
                 EMMA_GLOBALS, endpoint
             )(
                 console_handler=console,
                 queue_handler=queue,
-                system_events=system_events,
+                event_handler=events,
                 thread_handler=thread,
             ),
-            ("console", "queue", "system_events"): lambda: getattr(
+            ("console", "queue", "events"): lambda: getattr(
                 EMMA_GLOBALS, endpoint
             )(
                 console_handler=console,
                 queue_handler=queue,
-                system_events=system_events,
+                event_handler=events,
             ),
             ("console", "queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
                 console_handler=console, queue_handler=queue, thread_handler=thread
@@ -86,15 +85,15 @@ class SysV:
             ("console", "queue"): lambda: getattr(EMMA_GLOBALS, endpoint)(
                 console_handler=console, queue_handler=queue
             ),
-            ("console", "system_events", "thread"): lambda: getattr(
+            ("console", "events", "thread"): lambda: getattr(
                 EMMA_GLOBALS, endpoint
             )(
                 console_handler=console,
-                system_events=system_events,
+                event_handler=events,
                 thread_handler=thread,
             ),
-            ("console", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, system_events=system_events
+            ("console", "events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                console_handler=console, event_handler=events
             ),
             ("console", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
                 console_handler=console, thread_handler=thread
@@ -102,24 +101,24 @@ class SysV:
             ("console",): lambda: getattr(EMMA_GLOBALS, endpoint)(
                 console_handler=console
             ),
-            ("queue", "system_events", "thread"): lambda: getattr(
+            ("queue", "events", "thread"): lambda: getattr(
                 EMMA_GLOBALS, endpoint
-            )(queue_handler=queue, system_events=system_events, thread_handler=thread),
-            ("queue", "system_events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, system_events=system_events
+            )(queue_handler=queue, event_handler=events, thread_handler=thread),
+            ("queue", "events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                queue_handler=queue, event_handler=events
             ),
             ("queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
                 queue_handler=queue, thread_handler=thread
             ),
             ("queue",): lambda: getattr(EMMA_GLOBALS, endpoint)(queue_handler=queue),
-            ("system_events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                system_events=system_events, thread_handler=thread
+            ("events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                event_handler=events, thread_handler=thread
             ),
-            ("system_events",): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                system_events=system_events
+            ("events",): lambda: getattr(EMMA_GLOBALS, endpoint)(
+                event_handler=events
             ),
             ("thread",): lambda: getattr(EMMA_GLOBALS, endpoint)(thread_handler=thread),
-            (): lambda: getattr(EMMA_GLOBALS, endpoint)(),
+            (): lambda: getattr(EMMA_GLOBALS, endpoint)()
         }
 
         for dic in data:
@@ -127,6 +126,8 @@ class SysV:
                 continue
             if "queue" in dic and dic["queue"] != []:
                 queue.create_queue(dic["queue"], dic["queue_maxsize"])
+                
+        for dic in data:   
             args = dic.get("args", [])
             if forge:
                 endpoint = f"forge_package_{dic['package_name']}"
@@ -159,7 +160,7 @@ class SysV:
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
-        queue = EMMA_GLOBALS.sys_v_th_qh
+        queue = EMMA_GLOBALS.core_queue_handler
 
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
@@ -170,20 +171,27 @@ class SysV:
             if dic["queue"] != []:
                 queue.create_secure_queue(dic["queue"], dic["queue_maxsize"])
 
-    def server_shutdown(self):
-        self.console_handler.write("SHUTDOWN", "DO YOU WANT TO LOG OUT?")
-        log = self.queue.get_queue("CURRENT_INPUT", 1)
-        if log != None:
-            if log.lower() == "yes":
-                self.enviroment_clearer()
-            elif log.lower() == "cancel":
-                return
+    def server_shutdown(self):       
+        key= False
+        timer = 0
+        EMMA_GLOBALS.core_event_handler.notify_shutdown()
+        while not key:
+            key = EMMA_GLOBALS.core_event_handler.subscribers_shutdown_flag(start=True)
+            time.sleep(1)
+            timer+=1
+            if timer >= 120:
+                key = True
+        EMMA_GLOBALS.core_thread_handler.kill_thread()
+        
+        for i in range(7, 0, -1):
+            self.console_handler.write("SYS SHUTDOWN", f"SERVER WILL STOP IN {i}")
+            time.sleep(1.1)
 
-        EMMA_GLOBALS.sys_v_th.kill_thread()
+        _, val = EMMA_GLOBALS.core_thread_handler.get_thread_status()
+        self.console_handler.write("SYS SHUTDOWN", val)
         self.temp_clearer()
         self.remove_pycache("./emma")
         os._exit(0)
-        return True, "Server is shuting down"
 
     def remove_pycache(self, dir_path):
         for dir_name, subdirs, files in os.walk(dir_path):
@@ -231,12 +239,15 @@ class SysV:
                 x = path + "/" + file
                 try:
                     os.rmdir(x)
-                except:
-                    pass
+                except Exception as e:
+                    traceback_str = traceback.format_exc()
+                    self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
                 try:
                     os.remove(x)
-                except:
-                    pass
+                except Exception as e:
+                    traceback_str = traceback.format_exc()
+                    self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
+                    
 
     def module_reloader(self, module_name):
         diccionary = EMMA_GLOBALS.tools_da.json_loader(
@@ -251,213 +262,12 @@ class SysV:
                     importlib.invalidate_caches(sys.modules[module_name])
                     return True, f"module {i} has been reloaded"
         except Exception as e:
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
             return False, e
 
 
-class ThreadHandler:
-    def __init__(self):
-        self.threads = {}
 
-    def add_thread(self, thread):
-        thread_id = id(thread)
-        self.threads[thread_id] = thread
-
-    def start_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            if str(thread.name) == thread_name:
-                if not thread.is_alive():
-                    thread.start()
-                    return True, f"\n{thread_name} has been started."
-
-    def get_thread_status(self):
-        status_list = []
-        for _, thread in self.threads.items():
-            status = thread.is_alive()
-            status_list.append((thread, status))
-        return True, status_list
-
-    def restart_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            if str(thread.name) == thread_name:
-                if thread.is_alive():
-                    self.stop_thread(thread_name)
-                    self.start_thread(thread_name)
-                    return f"\n{thread_name} has been restarted."
-                else:
-                    return f"\nThread '{thread_name}' not running"
-        return True, f"\nThread '{thread_name}' not found"
-
-    def stop_thread(self, thread_name):
-        for _, thread in self.threads.items():
-            if str(thread.name) == thread_name:
-                if thread.is_alive():
-                    thread_instance = EMMA_GLOBALS.thread_instances.get(
-                        thread_name)
-                    thread_instance.stop()
-                    return f"\n{thread_name} has been stopped."
-                else:
-                    return f"\n{thread_name} is not running."
-        return True, f"\nThread '{thread_name}' not found."
-
-    def kill_thread(self):  # '?? XD
-        threads = EMMA_GLOBALS.thread_instances
-        for thread_name in threads:
-            for _, thread in self.threads.items():
-                if str(thread.name) == thread_name:
-                    if thread.is_alive():
-                        thread_instance = EMMA_GLOBALS.thread_instances.get(
-                            thread_name)
-                        thread_instance.stop()
-                        return True, f"\nThread '{thread_name}' has been killed."
-
-    class EventHandler:
-        def __init__(self):
-            self.subscribers = []
-
-        def subscribe(self, subscriber):
-            self.subscribers.append(subscriber)
-
-        def notify_shutdown(self):
-            for subscriber in self.subscribers:
-                try:
-                    subscriber.handle_shutdown()
-                except Exception as e:
-                    print(f"ERROR WHEN NOTIFY {subscriber} SHUTDOWN {e}")
-                    continue
-
-        def notify_overload(self):
-            pass
-
-        def notify_connection(self):
-            pass
-
-        def notify_disconnection(self):
-            pass
-
-        def notify_progress(self, progress_percentage):
-            pass
-
-    class QueueHandler:
-        def __init__(self):
-            self.queues = {}
-            self.secure_queues = {}  # New dictionary to store secure queues
-            self.coutdown = 150
-
-        def create_queue(self, name, size=None):
-            if name in self.queues:
-                raise ValueError(f"Queue with name {name} already exists")
-            elif size is not None:
-                self.queues[name] = queue.Queue(maxsize=size)
-            else:
-                self.queues[name] = queue.Queue()
-
-        def create_secure_queue(self, name, size=None):
-            if name in self.secure_queues:
-                raise ValueError(
-                    f"Secure queue with name {name} already exists")
-            elif size is not None:
-                self.secure_queues[name] = {}
-            else:
-                self.secure_queues[name] = {}
-
-        def add_to_queue(self, name, command):
-            if name not in self.queues:
-                if self.coutdown >= 150:
-                    print(f"No queue found with name {name}")
-                    self.coutdown = 0
-                else:
-                    self.coutdown += 1
-                return
-            if self.queues[name].maxsize == 1:
-                if not self.queues[name].empty():
-                    _ = self.get_queue(name)
-                self.queues[name].put(command)
-            else:
-                self.queues[name].put(command)
-
-        def add_to_secure_queue(self, name, special_id, command):
-            if name not in self.secure_queues:
-                raise ValueError(f"No secure queue found with name {name}")
-            if special_id in self.secure_queues[name]:
-                self.secure_queues[name][special_id].put(command)
-            else:
-                self.secure_queues[name][special_id] = queue.Queue()
-                self.secure_queues[name][special_id].put(command)
-
-        def get_queue(self, name, out=None):
-            if out is not None:
-                try:
-                    return self.queues[name].get(timeout=out)
-                except Exception as e:
-                    print(e)
-                    return None
-            else:
-                try:
-                    return self.queues[name].get()
-                except Exception as e:
-                    print(e)
-                    return None
-
-        def get_secure_queue_item(self, name, special_id, out=None):
-            if name not in self.secure_queues or special_id not in self.secure_queues[name]:
-                return None
-            if out is not None:
-                try:
-                    return self.secure_queues[name][special_id].get(timeout=out)
-                except Exception as e:
-                    print(e)
-                    return None
-            else:
-                try:
-                    return self.secure_queues[name][special_id].get()
-                except Exception as e:
-                    print(e)
-                    return None
-
-        def queue_exists(self, name):
-            """
-            Check if a regular queue with the given name exists.
-            :param name: The name of the regular queue.
-            :return: True if the queue exists, False otherwise.
-            """
-            return name in self.queues
-
-        def remove_queue(self, name):
-            if name not in self.queues:
-                raise ValueError(f"No queue found with name {name}")
-            del self.queues[name]
-
-        def remove_secure_queue(self, name):
-            if name not in self.secure_queues:
-                raise ValueError(f"No secure queue found with name {name}")
-            del self.secure_queues[name]
-
-        def remove_secure_queue_item(self, name, special_id):
-            if name not in self.secure_queues or special_id not in self.secure_queues[name]:
-                raise ValueError(
-                    f"No secure queue item found with name {name} and special_id {special_id}")
-            del self.secure_queues[name][special_id]
-
-    class ConsoleHandler:
-        def __init__(self, queue_handler):
-            self.queue = queue_handler
-            dateTime = datetime.datetime.now()
-            clock = dateTime.time()
-            self.clock = clock.strftime("%H:%M:%S")
-            self.output_queue = queue.Queue()
-            self.console_thread = threading.Thread(
-                target=self._output_console, daemon=True
-            )
-            self.console_thread.start()
-
-        def _output_console(self):
-            while True:
-                output = self.output_queue.get()
-                self.queue.add_to_queue("CONSOLE", str(output))
-                print(f"[{self.clock}] | {output}")
-
-        def write(self, remitent, output):
-            self.output_queue.put(f"{remitent}: {output}")
 
 
 if __name__ == "__main__":

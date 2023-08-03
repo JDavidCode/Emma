@@ -11,15 +11,41 @@
             "device_name": "Unknown Device",
             "sessions": [
                 {
-                    "session_name": "MySession",
-                    "session_id": "1-emd-91hd012"
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-91h63td012"
                 },
-                [
-                    {
-                        "session_name": "Default Session",
-                        "session_id": "1-emd-91hd012"
-                    }
-                ]
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-91h3td012"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-9h3td012"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-9h312d012"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-9h32d012"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-92d012"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-92d0"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-2d0"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-2d664"
+                }
             ],
             "public_ips": []
         }

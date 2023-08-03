@@ -6,9 +6,9 @@ import emma.globals as EMMA_GLOBALS
 class EMCLKX:
     def __init__(self) -> None:
         EMMA_GLOBALS.sys_awake.run()
-        self.thread_handler = EMMA_GLOBALS.sys_v_th
-        self.queue_handler = EMMA_GLOBALS.sys_v_th_qh
-        self.console_handler = EMMA_GLOBALS.sys_v_th_ch
+        self.thread_handler = EMMA_GLOBALS.core_thread_handler
+        self.queue_handler = EMMA_GLOBALS.core_queue_handler
+        self.console_handler = EMMA_GLOBALS.core_console_handler
         self.server_integrity()
 
     def server_integrity(self):

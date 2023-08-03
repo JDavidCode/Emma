@@ -1,4 +1,3 @@
-import base64
 import emma.globals as EMMA_GLOBALS
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
@@ -6,37 +5,24 @@ import os
 import json
 import logging
 import threading
-
+import traceback
 
 class APP:
-    def __init__(self, queue_handler, console_handler):
+    def __init__(self, queue_handler, console_handler, event_handler):
         self.app = Flask(__name__)
-        self.history = self.json_history()
         self.console_handler = console_handler
         self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        # Subscribe itself to the EventHandler
+        self.event_handler.subscribe(self)
         self.event = threading.Event()
         self.tag = "API Thread"
         self.socketio = SocketIO(self.app)
+        self.stop_flag = False
+
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
         self.sessions = {}
-
-    def json_history(self):
-        module_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(module_dir)
-        date = EMMA_GLOBALS.task_msc.date_clock(2)
-        history_dir = os.path.join(
-            parent_dir, "user_io", "history")  # Relative folder path
-        history_path = os.path.join(history_dir, f"{date}.json")
-
-        if not os.path.exists(history_dir):
-            # Create the directory if it doesn't exist
-            os.makedirs(history_dir)
-        if not os.path.exists(history_path):
-            # Create the file if it doesn't exist
-            with open(history_path, "w") as f:
-                json.dump({}, f, indent=4)
-        return history_path
 
     def register_routes(self):
         self.event.wait()
@@ -129,11 +115,14 @@ class APP:
             self.socketio.run(self.app, host="0.0.0.0", port=3018)
             self.console_handler.write(self.tag, "API IS RUNNING")
         except Exception as e:
-            self.console_handler.write(self.tag, str(e))
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
 
     def process_responses(self):
-        while True:
-            session_id, data = self.queue_handler.get_queue("API_RESPONSE")
+        while not self.stop_flag:
+            session_id, data = self.queue_handler.get_queue("API_RESPONSE", 0.1, (None, None))
+            if session_id is None:
+                continue
             # Emit the response to the correct session_id
             self.socketio.emit("response", data, room=session_id)
 
@@ -144,6 +133,16 @@ class APP:
 
     def stop(self):
         self.stop_flag = True
+
+    def handle_shutdown(self):
+        try:
+            # Handle shutdown logic here
+            self.console_handler.write(self.tag, "Handling shutdown...")
+            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+
 
 
 if __name__ == "__main__":

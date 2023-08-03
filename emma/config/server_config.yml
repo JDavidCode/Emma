@@ -8,13 +8,26 @@ defaults:
     password: root
  
   services: 
+    - queue: LOGGING
+      queue_maxsize: 0
+      endpoint: logger
+      args: 
+        - queue
+        - events
+      thread_name: T0_LOGGER
+      thread_is_daemon: True
+      autostart: True
+      autorestart: True
+
     - queue: COMMAND
       queue_maxsize: 0
       endpoint: command_router
       args: 
         - console
         - queue
+        - events
         - thread
+
       thread_name: T0_COMMANDS
       thread_is_daemon: True
       autostart: True
@@ -26,6 +39,7 @@ defaults:
       args: 
         - console
         - queue
+        - events
       thread_name: T0_PROTO_SESSIONS
       thread_is_daemon: True
       autostart: True
@@ -35,6 +49,7 @@ defaults:
       args: 
         - console
         - queue
+        - events
       thread_name: T0_INPUT_ROUTER
       thread_is_daemon: True
       autostart: True
@@ -46,6 +61,7 @@ defaults:
       args: 
         - console
         - queue
+        - events
       thread_name: T0_USER_API_IO
       thread_is_daemon: True
       autostart: True
@@ -63,14 +79,11 @@ defaults:
       autorestart: True
 
   queues:
-    - queue: CURRENT_INPUT
-      queue_maxsize: 1
     - queue: API_RESPONSE
       queue_maxsize: 1
     - queue: RESPONSE
       queue_maxsize: 1
-    - queue: CONSOLE
-      queue_maxsize: 0
+
 
   secure_queues:
     - queue: SECURE_NET_SESSIONS

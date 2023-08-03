@@ -49,18 +49,21 @@ class EMMA_GLOBALS:
     class system:
         def __init__(self) -> None:
             self.main()
+            self.logger()
             self.protocols()
 
         def main(self):
-            sys = importlib.import_module("emma.system.sys_v")
+            sys_variations = importlib.import_module("emma.system.sys_v")
+            core = importlib.import_module("emma.system.core_threading")
 
-            global sys_v_th, sys_v_th_ch, sys_v_th_qh, sys_v_th_eh, sys_v
+            global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v
 
-            sys_v_th = sys.ThreadHandler()
-            sys_v_th_qh = sys.ThreadHandler.QueueHandler()
-            sys_v_th_ch = sys.ThreadHandler.ConsoleHandler(sys_v_th_qh)
-            sys_v_th_eh = sys.ThreadHandler.EventHandler()
-            sys_v = sys.SysV(sys_v_th_qh, sys_v_th_ch)
+            core_thread_handler = core.ThreadHandler()
+            core_queue_handler = core.QueueHandler()
+            core_console_handler = core.ConsoleHandler(core_queue_handler)
+            core_event_handler = core.EventHandler(core_console_handler)
+            sys_v = sys_variations.SysV(core_queue_handler, core_console_handler)
+
 
         def protocols(self):
             prt_session = importlib.import_module(
@@ -68,6 +71,13 @@ class EMMA_GLOBALS:
 
             global session_protocols
             session_protocols = prt_session.SessionsHandler
+        
+        def logger(self):
+            _logger = importlib.import_module("emma.system.logging.logger")
+
+            global logger
+            logger= _logger.Logger
+
 
         def network(self):
             pass
@@ -83,7 +93,7 @@ class EMMA_GLOBALS:
                 "emma.services.integrated.gpt"
             )
             # self.services_tts = importlib.import_module("emma.services.integrated.tts")
-            # services_tts = self.services_tts.TTS(sys_v_th_ch)
+            # services_tts = self.services_tts.TTS(core_console_handler)
             _services_api_user_io = importlib.import_module(
                 "emma.services.API.user_io.app")
             _services_db = importlib.import_module(
@@ -91,7 +101,7 @@ class EMMA_GLOBALS:
 
             global services_db, services_gpt, services_api_user_io        # , services_tts
 
-            services_db = _services_db.DBHandler(sys_v_th_qh, sys_v_th_ch)
+            services_db = _services_db.DBHandler(core_queue_handler, core_console_handler)
             services_gpt = _services_gpt.GPT
 
             services_api_user_io = _services_api_user_io.APP
@@ -133,7 +143,7 @@ class EMMA_GLOBALS:
         global command_router, io_router, sys_awake, forge_server, thread_instances
 
         sys_awake = self.sys_awake.SystemAwake(
-            1, sys_v_th_ch, sys_v_th_qh, sys_v_th, sys_v_th_eh, tools_da)
+            1, core_console_handler, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
         command_router = cmmand_router.CommandsRouter
         io_router = i_router.InputRouter
         thread_instances = None

@@ -3,5 +3,6 @@
 		"editor.defaultFormatter": "ms-python.autopep8"
 	},
 	"python.formatting.provider": "none",
-	"sqltools.connections": []
+	"sqltools.connections": [],
+	"python.analysis.typeCheckingMode": "off"
 }

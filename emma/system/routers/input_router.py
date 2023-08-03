@@ -1,31 +1,46 @@
 import threading
 import emma.globals as EMMA_GLOBALS
-
+import traceback
 
 class InputRouter:
-    def __init__(self, console_handler, queue_handler) -> None:
-        self.tag = "ROUTER IO"
-        self.console_handler = console_handler
-        self.queue_handler = queue_handler
+    def __init__(self, console_handler, queue_handler, event_handler):
+        self.tag = "IO ROUTER"
         self.stop_flag = False
         self.event = threading.Event()
+        self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        self.console_handler = console_handler
+
+        # Subscribe itself to the EventHandler
+        self.event_handler.subscribe(self)
+
+    def handle_shutdown(self):
+        try:
+            # Handle shutdown logic here
+            self.console_handler.write(self.tag, "Handling shutdown...")
+            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+
 
     def main(self):
         self.event.wait()
         while not self.stop_flag:
             # Here suppose that have many io queues than only 1
             try:
-                ids, data = self.queue_handler.get_queue("API_INPUT")
-                self.console_handler.write(self.tag, [ids, data])
+                ids, data = self.queue_handler.get_queue("API_INPUT", 0.1, (None, None))
+                if ids is None:
+                    continue
                 self.queue_handler.add_to_queue(
                     'GPT_INPUT', (ids, data))  # Updated to pass a tuple
             except Exception as e:
-                self.console_handler.write(self.tag, e)
+                traceback_str = traceback.format_exc()
+                self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
 
     def process_responses(self):
-        while True:
+        while  not self.stop_flag:
             key, data, session_id = self.queue_handler.get_queue("RESPONSE")
-            self.console_handler.write(self.tag, [session_id, data])
             if key == 's0offline':
                 self.command_indexer(keyword=data, off_key=True)
 
@@ -62,6 +77,7 @@ class InputRouter:
         response_thread.start()
 
     def stop(self):
+        self.console_handler.write(self.tag, "is here")
         self.stop_flag = True
 
 

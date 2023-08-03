@@ -1,21 +1,53 @@
 import json
 import threading
 import emma.globals as EMMA_GLOBALS
-
+import traceback
 
 class SessionsHandler:
-    def __init__(self, queue_handler, console_handler):
+    def __init__(self, queue_handler, console_handler,event_handler):
         self.console_handler = console_handler
         self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        # Subscribe itself to the EventHandler
+        self.event_handler.subscribe(self)
         self.event = threading.Event()
         self.stop_flag = False
         self.user_storage = {}
         self.lock = threading.Lock()
-        self.tag = "NETWORK_HANDLER"
+        self.tag = "NETWORK HANDLER"
+
+    def handle_shutdown(self):
+        try:
+            # Handle shutdown logic here
+            self.console_handler.write(self.tag, "Handling shutdown...")
+            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
 
     def load_user(self, user_id):
         self.user_storage = EMMA_GLOBALS.tools_da.json_loader(
             f"emma/common/users/{user_id}.json")
+        
+    def create_user_json(self, name, age, birthday, level):
+        user_data = {
+            "user": {
+                "name": name,
+                "age": str(age),
+                "birthday": birthday,
+                "level": str(level)
+            },
+            "devices": [
+                {
+                    "device_id": None,
+                    "device_name": "Unknown Device",
+                    "sessions": [],
+                    "public_ips": []
+                }
+            ]
+        }
+        return user_data
 
     def save_user(self, user_id):
         path = f"emma/common/users/{user_id}.json"
@@ -36,55 +68,60 @@ class SessionsHandler:
         with self.lock:
             path = f"emma/common/users/{user_id}_sessions.json"
             session_id = session_info.get("session_id")
-            messages = EMMA_GLOBALS.tools_da.json_loader(
-                path, i=session_id, json_type="dict")
-            if messages == []:
-                messages.append(self.create_prompt_session())
-                messages = {session_id: messages}
-                with open(path, 'w') as file:
-                    json.dump(messages, file, indent=4)
+            # Create the prompt session
+            prompt_session = self.create_prompt_session()
+
+            # Load existing sessions or create an empty dictionary
+            sessions = EMMA_GLOBALS.tools_da.json_loader(path, json_type="dict")
+            if sessions is None:
+                sessions = {}
+
+
+            if session_id not in sessions:
+                sessions[session_id] = [prompt_session]
+
+
+
+            # Check if the prompt session is already in the sessions list
+            if prompt_session not in sessions[session_id]:
+                # If not, add it to the list at the first position
+                sessions[session_id].insert(0, prompt_session)
+
+            # Save the updated sessions dictionary back to the file
+            with open(path, 'w') as file:
+                json.dump(sessions, file, indent=4)
 
     def device_handler(self, user_id, device_name, device_id, session_info, public_ip=None):
         with self.lock:
-            if "devices" not in self.user_storage:
-                self.user_storage["devices"] = []
+            # Create the 'devices' list if it doesn't exist in user_storage
+            self.user_storage.setdefault("devices", [])
 
-            if self.user_storage["devices"] == []:
-                self.user_storage["devices"] = [{
-                    'device_id': device_id,
-                    'device_name': device_name,
-                    'sessions': [session_info] if session_info else [],
-                    'public_ips': [public_ip] if public_ip else []
-                }]
+            # Find the index of the device with the given device_id, or -1 if not found
+            existing_device_index = next((i for i, device in enumerate(self.user_storage["devices"]) if device["device_id"] == device_id), -1)
+
+            if existing_device_index == -1:
+                # If the device doesn't exist, create a new entry
+                new_device = {
+                    "device_id": device_id,
+                    "device_name": device_name,
+                    "sessions": [session_info] if session_info else [],
+                    "public_ips": [public_ip] if public_ip else []
+                }
+                self.user_storage["devices"].append(new_device)
             else:
-                if device_id not in [device['device_id'] for device in self.user_storage['devices']]:
-                    self.user_storage['devices'].append({
-                        'device_id': device_id,
-                        'device_name': device_name,
-                        'sessions': [session_info] if session_info else [],
-                        'public_ips': [public_ip] if public_ip else []
-                    })
+                # Get the existing device
+                existing_device = self.user_storage["devices"][existing_device_index]
 
-                existing_device = next(
-                    (device for device in self.user_storage['devices'] if device['device_id'] == device_id), None)
+                # Update existing device's sessions and public_ips if provided
+                if session_info:
+                    existing_device.setdefault("sessions", [])
+                    if session_info not in existing_device["sessions"]:
+                        existing_device["sessions"].append(session_info)
 
-                if existing_device:
-                    if session_info:
-                        if 'sessions' in existing_device:
-                            if session_info not in existing_device['sessions']:
-                                existing_device['sessions'].append(
-                                    [session_info])
-                        else:
-                            existing_device['sessions'] = [session_info]
-
-                    if public_ip:
-                        if 'public_ips' in existing_device:
-                            if public_ip not in existing_device['public_ips']:
-                                existing_device['public_ips'].append(public_ip)
-
-                        else:
-                            existing_device['public_ips'] = [public_ip]
-            self.save_user(user_id)
+                if public_ip:
+                    existing_device.setdefault("public_ips", [])
+                    if public_ip not in existing_device["public_ips"]:
+                        existing_device["public_ips"].append(public_ip)
 
     def get_user_devices(self, user_id):
         with self.lock:
@@ -157,8 +194,10 @@ class SessionsHandler:
     def main(self):
         self.event.wait()
         while not self.stop_flag:
-            request, session_data = self.queue_handler.get_queue(
-                'PROTO_SESSIONS')
+            request, session_data = self.queue_handler.get_queue('PROTO_SESSIONS',0.1, (None, None))
+            if request is None:
+                continue
+            self.user_storage = {}
 
             if session_data:
                 special_id = session_data['socket']
@@ -180,6 +219,7 @@ class SessionsHandler:
                         }
                     self.device_handler(
                         user_id, device_name, device_id, session_info)
+                    self.save_user(user_id)
                     self.session_handler(user_id, session_info)
 
             if request == "register":
@@ -199,8 +239,8 @@ class SessionsHandler:
                                 'session_id': session_id
                             }
 
-                            self.register_session(
-                                user_id, device_name, device_id, session_info, public_ip)
+                            self.add_user_session(
+                                user_id, session_info)
                         else:
                             # Handle the case when 'session_name' is missing
                             self.console_handler.write(self.tag, [

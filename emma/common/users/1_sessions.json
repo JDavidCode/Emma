@@ -1,1 +1,183 @@
-{}
+{
+    "1-emd-2d0": [
+        {
+            "role": "system",
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
+        },
+        {
+            "role": "user",
+            "content": "stop the app"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma recarga modulo core_thread_handler"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma recarga modulo core_thread_handler\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "Reboot thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop thread T1_GPT"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "EMMA STOP THREAD T0_PROTO_SESSIONS"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "EMMA START THREAD T0_PROTO_SESSIONS"
+        },
+        {
+            "role": "function",
+            "name": "start_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "ey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        }
+    ],
+    "1-emd-2123d0": [
+        {
+            "role": "system",
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
+        },
+        {
+            "role": "user",
+            "content": "ey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I help you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma tell me an history"
+        },
+        {
+            "role": "assistant",
+            "content": "Sure! Here's a short story for you:\n\nOnce upon a time, in a small village nestled in the mountains, there lived a young girl named Lily. She was known for her kind heart and adventurous spirit. One day, while exploring the forest near her village, Lily stumbled upon a hidden path that led to a magical waterfall.\n\nAs she approached the waterfall, she noticed a shimmering light coming from behind it. Curiosity got the better of her, and she decided to investigate. To her amazement, she discovered a secret cave filled with ancient artifacts and glowing crystals.\n\nLily couldn't believe her luck. She spent hours exploring the cave, marveling at the beauty and mystery of it all. As she touched one of the crystals, a surge of energy coursed through her body, filling her with a newfound sense of purpose.\n\nFrom that day forward, Lily dedicated herself to protecting the natural wonders of the world. She became an advocate for environmental conservation and worked tirelessly to raise awareness about the importance of preserving our planet.\n\nHer efforts inspired others to join her cause, and together they made a significant impact on the world. Lily's story spread far and wide, inspiring people from all walks of life to take action and make a difference.\n\nAnd so, the young girl who stumbled upon a hidden cave became a symbol of hope and change. Her story serves as a reminder that even the smallest actions can have a profound impact on the world around us.\n\nI hope you enjoyed the story, Juan! Is there anything else I can assist you with?"
+        },
+        {
+            "role": "user",
+            "content": "i like lily"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm glad you liked Lily! She is indeed a remarkable character. Her adventurous spirit and dedication to making a positive impact on the world are truly inspiring. If there's anything else you'd like to know or discuss, feel free to ask!"
+        },
+        {
+            "role": "user",
+            "content": "emma hows it going"
+        },
+        {
+            "role": "user",
+            "content": "stop the app"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        }
+    ]
+}

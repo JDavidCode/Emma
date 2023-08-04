@@ -18,8 +18,11 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if not thread.is_alive():
                     thread.start()
-                    return True, f"\n{thread_name} has been started."
-
+                    return True, f"{thread_name} has been started."
+                else:
+                    return True, f"{thread_name} is current active."
+        return True, f"{thread_name} not found."
+                
     def get_thread_status(self):
         status_list = []
         for _, thread in self.threads.items():
@@ -32,11 +35,13 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if thread.is_alive():
                     self.stop_thread(thread_name)
+                    EMMA_GLOBALS.sys_v.module_reloader(thread_name, True)
                     self.start_thread(thread_name)
-                    return f"\n{thread_name} has been restarted."
+                    return f"{thread_name} has been restarted."
                 else:
-                    return f"\nThread '{thread_name}' not running"
-        return True, f"\nThread '{thread_name}' not found"
+                    return f"Thread '{thread_name}' is not running"
+            else:
+                return True, f"Thread '{thread_name}' not found"
 
     def stop_thread(self, thread_name):
         for _, thread in self.threads.items():
@@ -47,8 +52,7 @@ class ThreadHandler:
                     thread_instance.stop()
                     return f"\n{thread_name} has been stopped."
                 else:
-                    return f"\n{thread_name} is not running."
-        return True, f"\nThread '{thread_name}' not found."
+                    return f"\n{thread_name} not found."
 
     def kill_thread(self): 
         threads = EMMA_GLOBALS.thread_instances
@@ -59,8 +63,12 @@ class ThreadHandler:
                         thread_instance = EMMA_GLOBALS.thread_instances.get(
                             thread_name)
                         thread_instance.stop()
-                        print(f"\nThread '{thread_name}' has been killed.")
-        return True
+                        EMMA_GLOBALS.thread_instances.pop(thread_name)
+                        return f"\n{thread_name} has been killed."
+                else:
+                    return f"\n{thread_name} is unk."
+            else:
+                return True, f"\nThread '{thread_name}' not found."
 
 class EventHandler:
     def __init__(self, console_handler):

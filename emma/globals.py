@@ -1,6 +1,6 @@
 import importlib
 import os
-import sys
+import traceback
 # Las 'Instancias' de las clases que se ejecuran un thread no se les debe pasar argumentos, esto se hara en sys_initialize thread automaticamente, solo dejar la referencia de la clase
 
 
@@ -13,6 +13,9 @@ class EMMA_GLOBALS:
         self.system()
         self.services()
         self.instances()
+        
+
+    
 
     def tools_instances(self):
         tools_converters = importlib.import_module(
@@ -31,13 +34,13 @@ class EMMA_GLOBALS:
         tools_net = tools_network.ToolKit
 
     def variables(self):
-        global stcpath_app_dir, stcpath_command_dir, stcpath_module_dir, stcpath_web_dir, stcpath_extensions, stcpath_command_sch
+        global stcpath_app_dir, stcpath_command_dir, stcpath_web_dir, stcpath_extensions, stcpath_command_sch,stcpath_globals
         stcpath_app_dir = "emma/common/json/app_directory.json"
         stcpath_command_dir = f"emma/common/json/command_directory-{os.environ.get('USERLANG')}.json"
-        stcpath_module_dir = "emma/common/json/module_directory.json"
         stcpath_web_dir = "emma/common/json/web_sites.json"
         stcpath_extensions = "emma/common/json/extension.json"
         stcpath_command_sch = "emma/common/json/command_schema.json"
+        stcpath_globals= "emma/common/json/globals.json"
 
         global stcmodel_visual_frontalface, stcmode_vosk_en, stcmode_vosk_es
         stcmodel_visual_frontalface = (
@@ -97,7 +100,7 @@ class EMMA_GLOBALS:
             _services_api_user_io = importlib.import_module(
                 "emma.services.API.user_io.app")
             _services_db = importlib.import_module(
-                "emma.services.integrated.db_connection")
+                "emma.services.integrated.db_handler")
 
             global services_db, services_gpt, services_api_user_io        # , services_tts
 
@@ -144,9 +147,9 @@ class EMMA_GLOBALS:
 
         sys_awake = self.sys_awake.SystemAwake(
             1, core_console_handler, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
-        command_router = cmmand_router.CommandsRouter
+        command_router = cmmand_router.CommandRouter
         io_router = i_router.InputRouter
-        thread_instances = None
+        thread_instances = {}
         forge_server = forge.Builder([tools_cs, tools_da])
 
 
@@ -169,5 +172,42 @@ class FORGE_GLOBALS:
         except Exception as e:
             print(f"Error creating instance of {package_name}: {e}")
 
+def recreate_reloaded_module(module_name):
+    diccionary = tools_da.json_loader(
+                stcpath_globals)
+    key = diccionary.keys()
 
+    for i in key:
+        if module_name in i:
+            module_info = diccionary.get(i)
+            endpoint = module_info.get("endpoint")
+            module_path = module_info.get("path")
+            args = module_info.get("args")
+            isinsta= module_info.get("instance")
+            args = [eval(arg) for arg in args]
+
+            try:
+                # Load the module dynamically based on its path
+                module = importlib.import_module(module_path)
+
+                # Create a new instance of the reloaded module with the given arguments
+
+                if eval(isinsta) and args != []:
+                    new_instance = getattr(module, endpoint)(*args)
+                elif eval(isinsta):
+                    new_instance = getattr(module, endpoint)()
+                else:
+                    new_instance = getattr(module, endpoint)
+
+                # Replace the old instance with the new on
+                global_namespace = globals()
+                global_namespace[module_name] = new_instance
+
+                
+                return True, f"Instance {module_name} of module {module_name} has been reloaded."
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                core_queue_handler.add_to_queue("LOGGING", ("RECREATE INSTANCE", [f"Error recreating instance of {module_name}: {e}", traceback_str]))
+                return False, traceback_str
+                
 EMMA_GLOBALS()

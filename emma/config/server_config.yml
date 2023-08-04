@@ -27,7 +27,6 @@ defaults:
         - queue
         - events
         - thread
-
       thread_name: T0_COMMANDS
       thread_is_daemon: True
       autostart: True

@@ -8,6 +8,20 @@
         }
     },
     {
+        "name": "restart_thread",
+        "description": "Reboot a specific thread or process.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "thread_name": {
+                    "type": "string",
+                    "description": "The name of the thread or process"
+                }
+            },
+            "required": ["name"]
+        }
+    },
+    {
         "name": "start_thread",
         "description": "Start a new thread or process",
         "parameters": {
@@ -35,20 +49,7 @@
             "required": ["name"]
         }
     },
-    {
-        "name": "restart_thread",
-        "description": "Restart a specific thread or process.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "thread_name": {
-                    "type": "string",
-                    "description": "The name of the thread or process"
-                }
-            },
-            "required": ["name"]
-        }
-    },
+    
     {
         "name": "module_reloader",
         "description": "Reload or refresh specific modules or libraries",

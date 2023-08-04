@@ -1,0 +1,141 @@
+{
+    "tools_cs": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.converters.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_gs": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.generators.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_da": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.data.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_net": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.network.ip",
+        "args": [],
+				"instance": "False"
+    },
+    "core_thread_handler": {
+        "endpoint": "ThreadHandler",
+        "path": "emma.system.core_threading",
+        "args": [],
+				"instance": "True"
+    },
+    "core_queue_handler": {
+        "endpoint": "QueueHandler",
+        "path": "emma.system.core_threading",
+        "args": [],
+				"instance": "True"
+    },
+    "core_console_handler": {
+        "endpoint": "ConsoleHandler",
+        "path": "emma.system.core_threading",
+        "args": ["core_queue_handler"],
+				"instance": "True"
+    },
+    "core_event_handler": {
+        "endpoint": "EventHandler",
+        "path": "emma.system.core_threading",
+        "args": ["core_console_handler"],
+				"instance": "True"
+    },
+    "sys_v": {
+        "endpoint": "SysV",
+        "path": "emma.system.sys_v",
+        "args": ["core_queue_handler","core_console_handler"],
+				"instance": "True"
+    },
+    "session_protocols": {
+        "endpoint": "SessionsHandler",
+        "path": "emma.system.protocols.sessions.sessions_handler",
+        "args": [],
+				"instance": "False"
+    },
+    "logger": {
+        "endpoint": "Logger",
+        "path": "emma.system.logging.logger",
+        "args": [],
+				"instance": "False"
+    },
+    "services_db": {
+        "endpoint": "DBHandler",
+        "path": "emma.services.integrated.db_handler",
+        "args": ["core_queue_handler","core_console_handler"],
+				"instance": "True"
+    },
+    "services_gpt": {
+        "endpoint": "GPT",
+        "path": "emma.services.integrated.gpt",
+        "args": [],
+				"instance": "False"
+    },
+    "services_api_user_io": {
+        "endpoint": "APP",
+        "path": "emma.services.API.user_io.app",
+        "args": [],
+				"instance": "False"
+    },
+    "service_geolocation": {
+        "endpoint": "GeoLocationService",
+        "path": "emma.services.integrated.common.geolocation",
+        "args": [],
+				"instance": "False"
+    },
+    "service_time": {
+        "endpoint": "TimeService",
+        "path": "emma.services.integrated.common.time",
+        "args": [],
+				"instance": "False"
+    },
+    "service_weather": {
+        "endpoint": "WeatherService",
+        "path": "emma.services.integrated.common.weather",
+        "args": [],
+				"instance": "False"
+    },
+    "task_msc": {
+        "endpoint": "MiscellaneousTask",
+        "path": "emma.services.integrated.task.miscellaneous",
+        "args": [],
+				"instance": "False"
+    },
+    "task_os": {
+        "endpoint": "OsTask",
+        "path": "emma.services.integrated.task.ost",
+        "args": [],
+				"instance": "False"
+    },
+    "task_web": {
+        "endpoint": "WebTask",
+        "path": "emma.services.integrated.task.web",
+        "args": [],
+				"instance": "False"
+    },
+    "CommandRouter": {
+        "endpoint": "DBHandler",
+        "path": "emma.system.routers.command_router",
+        "args": [],
+				"instance": "True"
+    },
+    "io_router": {
+        "endpoint": "InputRouter",
+        "path": "emma.system.routers.input_router",
+        "args": [],
+				"instance": "True"
+    },
+    "forge_server": {
+        "endpoint": "DBHandler",
+        "path": "emma.forge.builder"
+    },
+    "thread_instances": {
+        "args": []
+    }
+}

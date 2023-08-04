@@ -2,7 +2,7 @@ import json
 import threading
 import openai
 import emma.globals as EMMA_GLOBALS
-
+import traceback
 
 class GPT:
     def __init__(self, queue_handler, console_handler):
@@ -92,17 +92,14 @@ class GPT:
 
                         self.update_chat(user_id, session_id, message)
                         chat = self.get_chat(user_id, session_id)
-                        self.console_handler.write(
-                            self.tag, [user_id, message])
+                        #self.console_handler.write(self.tag, [user_id, message])
 
                         # Extend conversation with function response
-                        second_response = openai.ChatCompletion.create(
-                            model="gpt-3.5-turbo-0613",
-                            messages=chat,
-                        )
+                        #second_response = openai.ChatCompletion.create(
+                        #    model="gpt-3.5-turbo-0613",
+                        #   messages=chat,)
                         # get a new response from GPT where it can see the function response
-                        self.console_handler.write(
-                            self.tag, second_response["choices"][0]["message"]["content"])
+                        #self.console_handler.write(self.tag, second_response["choices"][0]["message"]["content"])
                     else:
                         answer = response["choices"][0]["message"]["content"]
                         message = {

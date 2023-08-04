@@ -3,7 +3,7 @@ import emma.globals as EMMA_GLOBALS
 from emma.system.sys_v import SysV
 import traceback
 
-class CommandsRouter:
+class CommandRouter:
     def __init__(self, console_handler, queue_handler, thread_handler, event_handler):
         self.tag = "COMMAND ROUTER"
         self.bp = SysV(queue_handler, console_handler)
@@ -57,35 +57,31 @@ class CommandsRouter:
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, ("Cannot get Function Ref.", traceback_str))))
+
         # call the function
         try:
-            self.console_handler.write(
-                self.tag, [f"trying to execute {function_name}", f"args = {args}"])
-            if args == None:
-                key, r = function()
-                if key:
-                    self.queue_handler.add_to_queue(
-                        'API_RESPONSE', (session_id, r))
-                self.console_handler.write(self.tag, r)
+            self.console_handler.write(self.tag, [f"trying to execute {function_name}", f"args = {args}"])
+            print(function)
+            if args is None:
+                result = function()
             elif isinstance(args, (int, str)):
-                key, r = function(args)
-                if key:
-                    self.queue_handler.add_to_queue(
-                        'API_RESPONSE', (session_id, r))
-                self.console_handler.write(self.tag, r)
+                result = function(args)
             elif isinstance(args, dict):
-                key, r = function(**args)
-                if key:
-                    self.queue_handler.add_to_queue(
-                        'API_RESPONSE', (session_id, r))
-                self.console_handler.write(self.tag, r)
+                result = function(**args)
+            else:
+                result = None
 
-            self.console_handler.write(
-                self.tag, [f"{function_name} has been execute", f"args = {args}"])
+            if result is not None:
+                key, r = result
+                if key:
+                    self.queue_handler.add_to_queue('API_RESPONSE', (session_id, r))
+                self.console_handler.write(self.tag, [r, f"{function_name} has been executed", f"args = {args}"])
+            else:
+                self.console_handler.write(self.tag, "Function result is None, unable to unpack the result.")
 
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, (f"{function_name} with args = {args} failed or is unknown", traceback_str))))
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, ("Error executing function.", traceback_str))))
 
     def args_identifier(self, args):
         return args

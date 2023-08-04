@@ -1,0 +1,30 @@
+{"timestamp": "2023-08-04T02:49:52.240075", "remitent": "Main Thread", "output": "<Thread(T0_LOGGER, started daemon 140259151779584)> is active: True"}
+{"timestamp": "2023-08-04T02:49:52.240274", "remitent": "Main Thread", "output": "<Thread(T0_COMMANDS, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T02:49:52.240348", "remitent": "Main Thread", "output": "<Thread(T0_PROTO_SESSIONS, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T02:49:52.240447", "remitent": "Main Thread", "output": "<Thread(T0_INPUT_ROUTER, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T02:49:52.240489", "remitent": "Main Thread", "output": "<Thread(T0_USER_API_IO, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T02:49:52.240529", "remitent": "Main Thread", "output": "<Thread(T1_GPT, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T03:04:53.561331", "remitent": "Main Thread", "output": "<Thread(T0_LOGGER, started daemon 140259151779584)> is active: True"}
+{"timestamp": "2023-08-04T03:04:53.561580", "remitent": "Main Thread", "output": "<Thread(T0_COMMANDS, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T03:04:53.561693", "remitent": "Main Thread", "output": "<Thread(T0_PROTO_SESSIONS, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T03:04:53.561761", "remitent": "Main Thread", "output": "<Thread(T0_INPUT_ROUTER, initial daemon)> is active: False"}
+{"timestamp": "2023-08-04T03:11:03.087458", "remitent": "Main Thread", "output": "<Thread(T0_LOGGER, started daemon 140119198566144)> is active: True"}
+{"timestamp": "2023-08-04T03:11:03.087615", "remitent": "Main Thread", "output": "<Thread(T0_COMMANDS, started daemon 140119190173440)> is active: True"}
+{"timestamp": "2023-08-04T03:11:03.087713", "remitent": "Main Thread", "output": "<Thread(T0_PROTO_SESSIONS, started daemon 140119181780736)> is active: True"}
+{"timestamp": "2023-08-04T03:11:03.087778", "remitent": "Main Thread", "output": "<Thread(T0_INPUT_ROUTER, started daemon 140119173388032)> is active: True"}
+{"timestamp": "2023-08-04T03:11:03.087836", "remitent": "Main Thread", "output": "<Thread(T0_USER_API_IO, started daemon 140119156602624)> is active: True"}
+{"timestamp": "2023-08-04T03:11:03.087864", "remitent": "Main Thread", "output": "<Thread(T1_GPT, started daemon 140118803343104)> is active: True"}
+{"timestamp": "2023-08-04T03:11:35.650119", "remitent": "API Thread", "output": "hey emma"}
+{"timestamp": "2023-08-04T03:11:36.485727", "remitent": "GPT", "output": ["1", {"role": "assistant", "content": "Hello! How can I help you today?"}]}
+{"timestamp": "2023-08-04T03:12:41.274308", "remitent": "API Thread", "output": "emma tell me an history"}
+{"timestamp": "2023-08-04T03:12:57.196921", "remitent": "GPT", "output": ["1", {"role": "assistant", "content": "Sure! Here's a short story for you:\n\nOnce upon a time, in a small village nestled in the mountains, there lived a young girl named Lily. She was known for her kind heart and adventurous spirit. One day, while exploring the forest near her village, Lily stumbled upon a hidden path that led to a magical waterfall.\n\nAs she approached the waterfall, she noticed a shimmering light coming from behind it. Curiosity got the better of her, and she decided to investigate. To her amazement, she discovered a secret cave filled with ancient artifacts and glowing crystals.\n\nLily couldn't believe her luck. She spent hours exploring the cave, marveling at the beauty and mystery of it all. As she touched one of the crystals, a surge of energy coursed through her body, filling her with a newfound sense of purpose.\n\nFrom that day forward, Lily dedicated herself to protecting the natural wonders of the world. She became an advocate for environmental conservation and worked tirelessly to raise awareness about the importance of preserving our planet.\n\nHer efforts inspired others to join her cause, and together they made a significant impact on the world. Lily's story spread far and wide, inspiring people from all walks of life to take action and make a difference.\n\nAnd so, the young girl who stumbled upon a hidden cave became a symbol of hope and change. Her story serves as a reminder that even the smallest actions can have a profound impact on the world around us.\n\nI hope you enjoyed the story, Juan! Is there anything else I can assist you with?"}]}
+{"timestamp": "2023-08-04T03:16:40.236643", "remitent": "Main Thread", "output": "<Thread(T0_LOGGER, started daemon 139811365103360)> is active: True"}
+{"timestamp": "2023-08-04T03:16:40.236822", "remitent": "Main Thread", "output": "<Thread(T0_COMMANDS, started daemon 139811356710656)> is active: True"}
+{"timestamp": "2023-08-04T03:16:40.236928", "remitent": "Main Thread", "output": "<Thread(T0_PROTO_SESSIONS, started daemon 139811348317952)> is active: True"}
+{"timestamp": "2023-08-04T03:16:40.237021", "remitent": "Main Thread", "output": "<Thread(T0_INPUT_ROUTER, started daemon 139811339925248)> is active: True"}
+{"timestamp": "2023-08-04T03:16:40.237067", "remitent": "Main Thread", "output": "<Thread(T0_USER_API_IO, started daemon 139810983376640)> is active: True"}
+{"timestamp": "2023-08-04T03:16:40.237094", "remitent": "Main Thread", "output": "<Thread(T1_GPT, started daemon 139810966591232)> is active: True"}
+{"timestamp": "2023-08-04T03:17:10.703269", "remitent": "API Thread", "output": "stop the app"}
+{"timestamp": "2023-08-04T03:17:11.402007", "remitent": "COMMAND ROUTER", "output": ["trying to execute server_shutdown", "args = None"]}
+{"timestamp": "2023-08-04T03:17:11.402381", "remitent": "LOGGER", "output": "Handling shutdown..."}
+{"timestamp": "2023-08-04T03:17:11.402453", "remitent": "Event Handler", "output": "<emma.system.logging.logger.Logger object at 0x7f285ed28460> HAS BEEN NOTIFY THE SHUTDOWN"}

@@ -12,7 +12,7 @@ import traceback
 
 class SysV:
     def __init__(self, queue_handler=None, console_handler=None):
-        self.queue = queue_handler
+        self.queue_handler = queue_handler
         self.console_handler = console_handler
 
     def server_performance(self, threads):
@@ -156,7 +156,8 @@ class SysV:
             if autostart:
                 thread.start_thread(thread_name)
                 func_instance.run()
-                EMMA_GLOBALS.thread_instances = func_instances
+                
+        EMMA_GLOBALS.thread_instances = func_instances
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
@@ -249,24 +250,46 @@ class SysV:
                     self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
                     
 
-    def module_reloader(self, module_name):
-        diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            EMMA_GLOBALS.stcpath_module_dir, "module_directories", "dict"
-        )
-        key = diccionary.keys()
+    def module_reloader(self, module_name, is_thread=False):
+        self.console_handler.write("SYS V", "IS HERE")
         try:
+            if is_thread:
+                config_file = "emma/config/server_config.yml"
+                with open(config_file) as f:
+                    data = yaml.load(f, Loader=yaml.FullLoader)
+                    for dic in data["defaults"]["services"]:
+                        if dic.get("thread_name") == module_name:
+                            module_name = dic.get("endpoint")
+
+            diccionary = EMMA_GLOBALS.tools_da.json_loader(
+                EMMA_GLOBALS.stcpath_globals)
+            key = diccionary.keys()
+            reloaded = False
+
             for i in key:
                 if module_name in i:
-                    module_name = diccionary.get(i)
-                    importlib.reload(sys.modules[module_name])
-                    importlib.invalidate_caches(sys.modules[module_name])
-                    return True, f"module {i} has been reloaded"
+                    module_info = diccionary.get(i)
+                    endpoint = module_info.get("endpoint")
+                    path = module_info.get("path")
+
+
+                    # Reload the module
+                    module = importlib.import_module(path)
+                    importlib.reload(module)
+                    importlib.invalidate_caches()
+
+                    reloaded, message= EMMA_GLOBALS.recreate_reloaded_module(module_name)
+                    break
+
+            if reloaded:
+                return True, message
+            else:
+                return False, message
+            
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
-            return False, e
-
-
+            self.queue_handler.add_to_queue("LOGGING", ("SYS V", (e, traceback_str)))
+            return False, traceback_str
 
 
 

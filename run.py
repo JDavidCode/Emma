@@ -12,18 +12,15 @@ class EMCLKX:
         self.server_integrity()
 
     def server_integrity(self):
-        timer = 5000
+        timer = 1000
         while True:
             json = EMMA_GLOBALS.sys_v.server_performance(
                 self.thread_handler.get_thread_status()
             )
-            if timer >= 4999:
+            if timer >= 900:
                 key, thread_status = self.thread_handler.get_thread_status()
                 for status in thread_status:
-                    self.console_handler.write(
-                        "Main Thread",
-                        f"{str(status[0])} is active: {status[1]}",
-                    )
+                    self.console_handler.write("Main Thread",f"{str(status[0])} is active: {status[1]}")
                 timer = 0
             timer += 1
             time.sleep(1)

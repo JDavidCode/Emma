@@ -87,37 +87,37 @@
         "endpoint": "GeoLocationService",
         "path": "emma.services.integrated.common.geolocation",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "service_time": {
         "endpoint": "TimeService",
         "path": "emma.services.integrated.common.time",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "service_weather": {
         "endpoint": "WeatherService",
         "path": "emma.services.integrated.common.weather",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "task_msc": {
         "endpoint": "MiscellaneousTask",
         "path": "emma.services.integrated.task.miscellaneous",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "task_os": {
         "endpoint": "OsTask",
         "path": "emma.services.integrated.task.ost",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "task_web": {
         "endpoint": "WebTask",
         "path": "emma.services.integrated.task.web",
         "args": [],
-				"instance": "False"
+				"instance": "True"
     },
     "CommandRouter": {
         "endpoint": "DBHandler",

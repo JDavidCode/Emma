@@ -62,14 +62,84 @@
     "required_lvl": 1
 },
     "google_search": {
-    "module": "task_web",
-    "args_key": "*args",
-    "required_lvl": 1
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
 },
     "open_webpage": {
-    "module": "task_web",
-    "args_key": "*args",
-    "required_lvl": 1
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "scrape_webpage": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "convert_currency": {
+        "module": "task_msc",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "check_website_security": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "check_domain_availability": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "get_webpage_headers": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "generate_qr_code": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "search_images_google": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "check_website_status": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "generate_link": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "shorten_link": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "screenshot_webpage": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "extract_links_from_webpage": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "download_file": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
+},
+    "get_website_title": {
+        "module": "task_web",
+        "args_key": "*args",
+        "required_lvl": 1
 }
 
 }

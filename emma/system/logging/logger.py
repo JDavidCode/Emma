@@ -1,9 +1,8 @@
+import os
+import traceback
+import datetime
 import threading
 import json
-import datetime
-import emma.globals as EMMA_GLOBALS
-import traceback
-import os
 
 
 class Logger:
@@ -34,19 +33,17 @@ class Logger:
         parent_dir = os.path.dirname(module_dir)
         date = datetime.datetime.now().strftime("%Y-%m-%d")  # Get the current date in the format "YYYY-MM-DD"
         history_dir = os.path.join(parent_dir, "logging", "history")  # Relative folder path
-        log_path = os.path.join(history_dir, f"{date}.json")
+        log_path = os.path.join(history_dir, f"{date}.txt")
 
         if not os.path.exists(history_dir):
             # Create the directory if it doesn't exist
             os.makedirs(history_dir)
 
-        if not os.path.exists(log_path):
-            # Create the file if it doesn't exist
-            with open(log_path, "w") as f:
-                json.dump([], f, indent=4)  # Initialize the JSON file as an empty list
-
-        self.log_buffer.set_log_path(log_path)  # Set the log_path before appending log entries
-        self.log_buffer.append(log_entry) 
+        # Set the log path for the log buffer
+        self.log_buffer.set_log_path(log_path)
+        
+        # Append the log entry to the log buffer
+        self.log_buffer.append(log_entry)
 
     def run(self):
         self.event.set()
@@ -68,12 +65,16 @@ class LogBuffer:
     def __init__(self):
         self.log_path = None
         self.buffer = []
-        self.buffer_size = 10  # Set the buffer size as desired, adjust if necessary
+        self.buffer_size = 1  # Set the buffer size as desired, adjust if necessary
 
     def set_log_path(self, log_path):
         self.log_path = log_path
 
     def append(self, log_entry):
+        # Convert the traceback to a string representation
+        if isinstance(log_entry["output"], Exception):
+            log_entry["output"] = traceback.format_exc()
+
         self.buffer.append(log_entry)
         if len(self.buffer) >= self.buffer_size:
             self.flush_buffer()
@@ -81,11 +82,8 @@ class LogBuffer:
     def flush_buffer(self):
         with open(self.log_path, "a") as log_file:
             for log_entry in self.buffer:
-                log_file.write(json.dumps(log_entry) + "\n")
+                log_entry = str(log_entry)
+                log_entry = log_entry.replace('\\n', '\n')  # Replace '\\n' with actual newline
+                log_file.write(log_entry + "\n \n")
             self.buffer.clear()
 
-
-
-
-if __name__ == "__main__":
-    pass

@@ -1,5 +1,4 @@
 {
-  "web_dir":{
     "nike": "https://www.nike.com/",
     "foxnews": "https://www.foxnews.com/",
     "aol": "https://www.aol.com/",
@@ -84,5 +83,4 @@
     "wikihow": "https://www.wikihow.com/",
     "usatoday": "https://www.usatoday.com/",
     "wayfair": "https://www.wayfair.com/"
-}
 }

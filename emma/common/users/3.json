@@ -10,7 +10,10 @@
             "device_id": null,
             "device_name": "Unknown Device",
             "sessions": [
-
+                {
+                    "session_name": "Sessio",
+                    "session_id": "3-emd-212ywd0"
+                }
             ],
             "public_ips": []
         }

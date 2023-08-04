@@ -251,7 +251,6 @@ class SysV:
                     
 
     def module_reloader(self, module_name, is_thread=False):
-        self.console_handler.write("SYS V", "IS HERE")
         try:
             if is_thread:
                 config_file = "emma/config/server_config.yml"

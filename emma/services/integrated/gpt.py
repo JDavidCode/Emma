@@ -33,7 +33,13 @@ class GPT:
         path = f"emma/common/users/{user_id}_sessions.json"
         chat = EMMA_GLOBALS.tools_da.json_loader(
             path, i=session_id, json_type="list")
-        return chat
+        
+        if len(chat) >= 11:
+            truncated_chat = [chat[0]] + chat[-10:]
+        else:
+            truncated_chat = chat
+            
+        return truncated_chat
 
     def main(self):
         self.event.wait()
@@ -56,7 +62,7 @@ class GPT:
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo-0613",
                         messages=chat,
-                        max_tokens=525,
+                        max_tokens=120,
                         functions=self.functions,
                         function_call="auto",
                         temperature=0)
@@ -81,6 +87,7 @@ class GPT:
                         else:
                             args = {}
 
+                        self.queue_handler.add_to_queue("LOGGING", (self.tag, function_call))
                         self.queue_handler.add_to_queue(
                             'RESPONSE', ['funcall', [function_name, args], socket_id])
 
@@ -91,7 +98,7 @@ class GPT:
                         }
 
                         self.update_chat(user_id, session_id, message)
-                        chat = self.get_chat(user_id, session_id)
+                        #chat = self.get_chat(user_id, session_id)
                         #self.console_handler.write(self.tag, [user_id, message])
 
                         # Extend conversation with function response
@@ -106,8 +113,6 @@ class GPT:
                             "role": "assistant",
                             "content": answer
                         }
-                        self.console_handler.write(
-                            self.tag, [user_id, message])
 
                         self.update_chat(user_id, session_id, message)
 

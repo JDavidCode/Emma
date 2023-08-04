@@ -88,8 +88,11 @@ class APP:
                 # Add the data and session_id to the queue
                 self.queue_handler.add_to_queue(
                     "API_INPUT", ((socket_id, session_id, user_id), data))
-                self.console_handler.write(self.tag, data)
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag,(socket_id, session_id, user_id, data)))
             else:
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag, ("unauthorized User on socket: ", socket_id)))
                 self.socketio.emit(
                     "response", "Unauthorized user", room=socket_id)
 
@@ -124,11 +127,16 @@ class APP:
             if session_id is None:
                 continue
             # Emit the response to the correct session_id
-            self.socketio.emit("response", data, room=session_id)
+            try:
+                self.socketio.emit("response", data, room=session_id)
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                self.console_handler.write(self.tag, f"ERROR while tryin response to {session_id} request. {e}")
+                self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
 
     def run(self):
         self.event.set()
-        response_thread = threading.Thread(target=self.process_responses)
+        response_thread = threading.Thread(target=self.process_responses, name=f"{self.tag} process_responses")
         response_thread.start()
 
     def stop(self):

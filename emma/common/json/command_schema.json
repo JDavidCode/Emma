@@ -123,14 +123,14 @@
         }
     },
         {
-        "name": "youtube_player",
-        "description": "Search and play a video on YouTube.",
+        "name": "youtube_search",
+        "description": "Search or play a video, music on YouTube.",
         "parameters": {
             "type": "object",
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "is the object of the action in the sentence, e.g 'play on youtube Music', 'search on youtube Ambient Sounds', on these 'Music' and 'Ambient Sounds' are the objects."
+                    "description": "the topic or anything to want to find through Youtube"
                 }
             },
             "required": ["query"]
@@ -151,17 +151,17 @@
         }
     },
     {
-        "name": "open_website",
+        "name": "open_webpage",
         "description": "Open a specific website",
         "parameters": {
             "type": "object",
             "properties": {
-                "name": {
+                "query": {
                     "type": "string",
                     "description": "The name of the website to open, e.g. facebook, twitter"
                 }
             },
-            "required": ["name"]
+            "required": ["query"]
         }
     },
     {
@@ -171,5 +171,228 @@
             "type": "object",
             "properties": {}
         }
+    }, 
+    {
+    "name": "generate_link",
+    "description": "Generate a link by combining a protocol, domain, and optional path.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "protocol": {
+                "type": "string",
+                "description": "Protocol to use (e.g., 'http' or 'https')."
+            },
+            "domain": {
+                "type": "string",
+                "description": "Domain name for the link."
+            },
+            "path": {
+                "type": "string",
+                "description": "Optional path to append to the domain (default: '')."
+            }
+        },
+        "required": ["protocol", "domain"]
+                }
+    },
+    {
+    "name": "shorten_link",
+    "description": "Shorten a long URL using a URL shortening service.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "long_url": {
+                "type": "string",
+                "description": "The long URL to be shortened."
+            }
+        },
+        "required": ["long_url"]
     }
+},
+{
+    "name": "screenshot_webpage",
+    "description": "Capture a screenshot of a webpage and save it to a specified path.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the webpage to capture."
+            },
+            "save_path": {
+                "type": "string",
+                "description": "The file path where the screenshot will be saved."
+            }
+        },
+        "required": ["url", "save_path"]
+    }
+},
+{
+    "name": "extract_links_from_webpage",
+    "description": "Extract hyperlinks from a webpage's HTML content.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the webpage to extract links from."
+            }
+        },
+        "required": ["url"]
+    }
+},
+    {
+    "name": "download_file",
+    "description": "Download a file from a given URL and save it to a specified path.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the file to download."
+            },
+            "save_path": {
+                "type": "string",
+                "description": "The file path where the downloaded file will be saved."
+            }
+        },
+        "required": ["url", "save_path"]
+    }},
+{
+    "name": "get_website_title",
+    "description": "Retrieve the title of a webpage from its HTML content.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the webpage to retrieve the title from."
+            }
+        },
+        "required": ["url"]
+    }},
+    {
+    "name": "check_website_status",
+    "description": "Check the status of a website by sending a GET request and analyzing the response.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the website to check."
+            }
+        },
+        "required": ["url"]
+    }},
+    {
+    "name": "search_images_google",
+    "description": "Search for images on Google Images and retrieve links to the results.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "Search query for images."
+            }
+        },
+        "required": ["query"]
+    }},
+    {
+    "name": "check_domain_availability",
+    "description": "Check the availability of a domain name.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "domain": {
+                "type": "string",
+                "description": "The domain name to check for availability."
+            }
+        },
+        "required": ["domain"]
+    }
+},
+{
+    "name": "get_webpage_headers",
+    "description": "Retrieve the headers of a webpage using a HEAD request.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the webpage to retrieve headers from."
+            }
+        },
+        "required": ["url"]
+    }
+},
+{
+    "name": "generate_qr_code",
+    "description": "Generate a QR code containing the specified data.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "data": {
+                "type": "string",
+                "description": "The data to be encoded in the QR code."
+            },
+            "size": {
+                "type": "integer",
+                "description": "The size of the QR code image (default: 200)."
+            }
+        }
+    }
+},
+{
+    "name": "scrape_webpage",
+    "description": "Scrape content from a webpage using specified HTML element tags.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the webpage to scrape."
+            },
+            "element": {
+                "type": "string",
+                "description": "The HTML element tag to scrape (default: 'p')."
+            }
+        },
+        "required": ["url"]
+    }
+}, 
+{
+    "name": "convert_currency",
+    "description": "Convert an amount from one currency to another.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "amount": {
+                "type": "number",
+                "description": "The amount to be converted."
+            },
+            "from_currency": {
+                "type": "string",
+                "description": "The source currency code."
+            },
+            "to_currency": {
+                "type": "string",
+                "description": "The target currency code."
+            }
+        },
+        "required": ["amount", "from_currency", "to_currency"]
+    }
+},
+{
+    "name": "check_website_security",
+    "description": "Check the security status of a website's SSL/TLS certificate.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL of the website to check security for."
+            }
+        },
+        "required": ["url"]
+    }
+}
 ]

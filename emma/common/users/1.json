@@ -49,6 +49,14 @@
                 {
                     "session_name": "SKSESSION",
                     "session_id": "1-emd-2123d0"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-2123y0"
+                },
+                {
+                    "session_name": "SKSESSION",
+                    "session_id": "1-emd-2563y0"
                 }
             ],
             "public_ips": []

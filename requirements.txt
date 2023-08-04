@@ -21,3 +21,5 @@ pyatv
 Flask-SocketIO
 Flask
 geopy
+selenium
+chromedriver_autoinstaller

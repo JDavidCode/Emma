@@ -3,8 +3,8 @@ import requests
 
 
 class WeatherService:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
+        self.api_key = "api_key"
 
     def get_weather_data(self, city, country_code=None):
         """
@@ -33,11 +33,11 @@ class WeatherService:
                     "wind_speed": weather_data["wind"]["speed"],
                     "icon": weather_data["weather"][0]["icon"],
                 }
-                return weather_info
+                return True, weather_info
             else:
-                return None
+                return False, ""
         except requests.exceptions.RequestException:
-            return None
+            return False, "Bad Request"
 
     def get_weather_data_by_coords(self, latitude, longitude):
         """

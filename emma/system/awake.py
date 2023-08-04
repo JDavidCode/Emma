@@ -14,7 +14,8 @@ class SystemAwake:
             self.queue_handler = queue_handler
             self.thread_manager = thread_manager
             self.system_events = system_events
-            os.environ["DATE"] = f"{EMMA_GLOBALS.task_msc.date_clock(2)}"
+            _, clock = EMMA_GLOBALS.task_msc.date_clock(2)
+            os.environ["DATE"] = f"{clock}"
 
     def establish_connections(self):
         pass

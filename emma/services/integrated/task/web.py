@@ -5,42 +5,72 @@ import re
 import webbrowser
 from bs4 import BeautifulSoup
 import requests
-
+import emma.globals as EMMA_GLOBALS
+from selenium import webdriver
+import chromedriver_autoinstaller
 
 class WebTask:
     def __init__(self):
-        pass
+        self.web_pages = EMMA_GLOBALS.tools_da.json_loader(EMMA_GLOBALS.stcpath_web_dir)
 
     def google_search(self, query):
         link = f"https://www.google.com/search?q={query.replace(' ', '+')}"
-        return True, link
+        return True, str(link)
 
     def youtube_search(self, query):
-        link = f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}"
-        return True, link
+        url = f"https://www.youtube.com/results?q={query}"
+        count = 0
+        cont = requests.get(url)
+        data = cont.content
+        data = str(data)
+        lst = data.split('"')
+        for i in lst:
+            count += 1
+            if i == "WEB_PAGE_TYPE_WATCH":
+                break
+        if lst[count - 5] == "/results":
+            return False, "No Video Found for this Topic!"
+        else:
+            return True, f"https://www.youtube.com{lst[count - 5]}"
 
-    def open_webpage(self, page):
-        url=page
-        #index btw pages and return url
-        return True, url
+    def open_webpage(self, query):
+        for key in self.web_pages.keys():
+            if query.lower() == key:
+               return True, str(self.web_pages.get(key))
+        return False, "Unknow web"
 
     def generate_link(self, protocol, domain, path=""):
         link = f"{protocol}://{domain}/{path}" if path else f"{protocol}://{domain}"
-        return True, link
+        return True, str(link)
 
     def shorten_link(self, long_url):
         shortened_url = "https://short.link/abc123"
-        return True, shortened_url
+        return True, str(shortened_url)
 
     def screenshot_webpage(self, url, save_path):
-        screenshot_path = "/path/to/screenshot.png"
-        return True, screenshot_path
+
+        # Create a new instance of the web driver (change 'Chrome' to 'Firefox' or other supported browsers)
+        driver = webdriver.Chrome()
+
+        try:
+            # Open the provided URL
+            driver.get(url)
+
+            # Take a screenshot and save it to the specified path
+            driver.save_screenshot(save_path)
+            print(f"Screenshot saved to {save_path}")
+            return True, str(save_path)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            # Close the web browser
+            driver.quit()
 
     def extract_links_from_webpage(self, url):
         try:
             response = requests.get(url)
             links = re.findall(r'href=[\'"]?([^\'" >]+)', response.text)
-            return True, links
+            return True, str(links)
         except requests.exceptions.RequestException:
             return False, []
 
@@ -98,7 +128,7 @@ class WebTask:
         try:
             response = requests.head(url)
             headers = response.headers
-            return True, headers
+            return True, str(headers)
         except requests.exceptions.RequestException:
             return False, {}
 
@@ -116,12 +146,7 @@ class WebTask:
         except requests.exceptions.RequestException:
             return False, []
 
-    def convert_currency(self, amount, from_currency, to_currency):
-        # Implement the logic to use a currency exchange API to perform the conversion
-        # and return the converted amount
-        conversion_rate = 0.85  # Dummy conversion rate for demonstration purposes
-        converted_amount = amount * conversion_rate
-        return True, converted_amount
+
 
     def check_website_security(self, url):
         # Implement the logic to check the SSL/TLS certificate of the website

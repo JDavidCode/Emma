@@ -65,6 +65,7 @@ class InputRouter:
         if off_key:
             first_key = next(iter(diccionary))
             args = keyword.replace(first_key, '')
+        self.queue_handler.add_to_queue("LOGGING", (self.tag, diccionary))
 
         if diccionary != None:
             return [diccionary]
@@ -77,7 +78,6 @@ class InputRouter:
         response_thread.start()
 
     def stop(self):
-        self.console_handler.write(self.tag, "is here")
         self.stop_flag = True
 
 

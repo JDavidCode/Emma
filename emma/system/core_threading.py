@@ -242,5 +242,4 @@ class ConsoleHandler:
                 print(f"[{self.clock}] | {output}")
 
     def write(self, remitent, output):
-            self.queue.add_to_queue("LOGGING", [remitent, output])
             self.output_queue.put(f"{remitent}: {output}")

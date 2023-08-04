@@ -118,9 +118,9 @@ class EMMA_GLOBALS:
                 "emma.services.integrated.common.weather")
 
             global service_geolocation, service_time, service_weather
-            service_geolocation = _geolocation_module.GeoLocationService
-            service_time = _time_module.TimeService
-            service_weather = _weather_module.WeatherService
+            service_geolocation = _geolocation_module.GeoLocationService()
+            service_time = _time_module.TimeService()
+            service_weather = _weather_module.WeatherService()
 
         def task(self):
             _miscellaneous_module = importlib.import_module(
@@ -132,9 +132,9 @@ class EMMA_GLOBALS:
 
             global task_msc, task_os, task_web
 
-            task_msc = _miscellaneous_module.MiscellaneousTask
-            task_os = _ost_module.OsTask
-            task_web = _web_module.WebTask
+            task_msc = _miscellaneous_module.MiscellaneousTask()
+            task_os = _ost_module.OsTask()
+            task_web = _web_module.WebTask()
 
     def instances(self):
         i_router = importlib.import_module(

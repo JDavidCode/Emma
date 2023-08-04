@@ -1,7 +1,113 @@
+/* Reset some default styles */
+body, ul {
+    margin: 0;
+    padding: 0;
+    background-color: #9c9c9c;
+
+}
+
+#header {
+    background-color: #525252; /* Dark background color for the header */
+    padding: .2em 0;
+    text-align: center;
+}
+
+#banner_h2 {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 36px; /* Increase the font size for "EMMA" */
+    margin: 0;
+    color: white; /* Text color for "EMMA" */
+}
+
+#beta {
+    font-style: italic;
+    color: #fbab2b; /* Color for "BETA" */
+}
+/* Style for the chat container */
+.data-container {
+    margin: 20px auto;
+    padding: 1em; /* Space for the command bar */
+}
+
+#chat {
+    list-style: none;
+    padding: 0;
+}
+
+/* Style for chat messages */
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex; /* Add flex display for message items */
+}
+
+/* Style for user messages */
+.user-message {
+    background-color: #4caf50;
+    color: white;
+    align-self: flex-end;
+    max-width: 65vw;
+    width:fit-content;
+    border-radius: 10px 10px 0 10px; /* Adjust border radius for user message */
+    margin-left: auto; /* Push user message to the right */
+}
+
+/* Style for bot messages */
+.emma-message {
+    background-color: #2196f3;
+    color: white;
+    align-self: flex-start;
+    max-width: 65vw;
+    width:fit-content;
+
+    border-radius: 10px 10px 10px 0; /* Adjust border radius for bot message */
+    margin-right: auto; /* Push bot message to the left */
+}
+
+#command-bar {
+    background-color: #8c8c8c;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
 #commandInput {
-	display: block;
-  margin: 0 auto; /* This centers the element horizontally */
-  margin-top: 20px; /* Add some top margin */
-  margin-bottom: 20px; /* Add some bottom margin */
-  width: 80vw; /* Set a fixed width for the textarea */
+    flex: 1;
+    padding: 10px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#sendBtn, #speakBtn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 600px) {
+    #command-bar {
+        padding: 10px;
+    }
+    
+    #commandInput {
+        padding: 5px;
+    }
+    
+    #sendBtn, #speakBtn {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
 }

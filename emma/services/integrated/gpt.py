@@ -19,9 +19,10 @@ class GPT:
         path = f"emma/common/users/{user_id}_sessions.json"
 
         sessions = EMMA_GLOBALS.tools_da.json_loader(path, json_type="dict")
-
         try:
             sessions[session_id].append(message)
+            self.queue_handler.add_to_queue("LOGGING", (self.tag,(user_id, session_id, message)))
+
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
@@ -88,6 +89,7 @@ class GPT:
                             args = {}
 
                         self.queue_handler.add_to_queue("LOGGING", (self.tag, function_call))
+                        
                         self.queue_handler.add_to_queue(
                             'RESPONSE', ['funcall', [function_name, args], socket_id])
 

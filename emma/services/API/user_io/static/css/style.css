@@ -3,13 +3,21 @@ body, ul {
     margin: 0;
     padding: 0;
     background-color: #9c9c9c;
+}
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 #header {
-    background-color: #525252; /* Dark background color for the header */
+    background-color: #525252;
     padding: .2em 0;
     text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
 }
 
 #banner_h2 {
@@ -25,8 +33,11 @@ body, ul {
 }
 /* Style for the chat container */
 .data-container {
-    margin: 20px auto;
-    padding: 1em; /* Space for the command bar */
+    margin: auto;
+    padding: 1em;
+    width: 90vw;
+    height: 75vh;
+    overflow-y: auto; /* Add auto-scrolling to the data container */
 }
 
 #chat {
@@ -73,7 +84,6 @@ body, ul {
     width: 100%;
     box-sizing: border-box;
 }
-
 .input-container {
     display: flex;
     align-items: center;
@@ -96,7 +106,6 @@ body, ul {
     cursor: pointer;
 }
 
-/* Media query for responsiveness */
 @media (max-width: 600px) {
     #command-bar {
         padding: 10px;

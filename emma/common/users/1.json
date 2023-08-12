@@ -12,51 +12,15 @@
             "sessions": [
                 {
                     "session_name": "SKSESSION",
-                    "session_id": "1-emd-91h63td012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-91h3td012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-9h3td012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-9h312d012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-9h32d012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-92d012"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-92d0"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-2d0"
-                },
-                {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-2d664"
-                },
-                {
-                    "session_name": "SKSESSION",
                     "session_id": "1-emd-2123d0"
                 },
                 {
                     "session_name": "SKSESSION",
-                    "session_id": "1-emd-2123y0"
+                    "session_id": "1-emd-27823d0"
                 },
                 {
-                    "session_name": "SKSESSION",
-                    "session_id": "1-emd-2563y0"
+                    "session_name": "SkUI",
+                    "session_id": "1-emd-d12oidn"
                 }
             ],
             "public_ips": []

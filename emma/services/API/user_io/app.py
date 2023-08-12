@@ -89,7 +89,8 @@ class APP:
                 self.queue_handler.add_to_queue(
                     "API_INPUT", ((socket_id, session_id, user_id), data))
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag,(socket_id, session_id, user_id, data)))
+                    "LOGGING", (self.tag, ((socket_id, session_id, user_id), data)))
+
             else:
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.tag, ("unauthorized User on socket: ", socket_id)))

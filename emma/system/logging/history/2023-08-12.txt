@@ -1,0 +1,28 @@
+{'timestamp': '2023-08-12T15:44:43.729043', 'remitent': 'API Thread', 'output': (('xMoMStap27CgZD1eAAAD', '1-emd-d12oidn', '1'), 'hey emma')}
+ 
+{'timestamp': '2023-08-12T15:44:43.729781', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'user', 'content': 'hey emma'})}
+ 
+{'timestamp': '2023-08-12T15:44:46.431908', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'assistant', 'content': 'Hello Juan! How can I assist you today?'})}
+ 
+{'timestamp': '2023-08-12T15:44:50.435885', 'remitent': 'API Thread', 'output': (('xMoMStap27CgZD1eAAAD', '1-emd-d12oidn', '1'), 'he main app')}
+ 
+{'timestamp': '2023-08-12T15:44:50.436579', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'user', 'content': 'he main app'})}
+ 
+{'timestamp': '2023-08-12T15:44:52.426888', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'assistant', 'content': 'Sure, I can help you with that. What would you like to do with the main app?'})}
+ 
+{'timestamp': '2023-08-12T15:45:02.286951', 'remitent': 'API Thread', 'output': (('xMoMStap27CgZD1eAAAD', '1-emd-d12oidn', '1'), 'stop the app')}
+ 
+{'timestamp': '2023-08-12T15:45:02.287345', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'user', 'content': 'stop the app'})}
+ 
+{'timestamp': '2023-08-12T15:45:03.292218', 'remitent': 'GPT', 'output': {'name': 'server_shutdown', 'arguments': '{}'}}
+ 
+{'timestamp': '2023-08-12T15:45:03.292663', 'remitent': 'GPT', 'output': ('1', '1-emd-d12oidn', {'role': 'function', 'name': 'server_shutdown', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-12T15:45:03.295385', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': 'None', 'required_lvl': 1, 'key': 'server_shutdown'}}
+ 
+{'timestamp': '2023-08-12T15:45:03.295654', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': 'None', 'required_lvl': 1, 'key': 'server_shutdown'}, <class 'dict'>, {})}
+ 
+{'timestamp': '2023-08-12T15:45:03.295814', 'remitent': 'COMMAND ROUTER', 'output': ['trying to execute server_shutdown with args = None. Session: xMoMStap27CgZD1eAAAD ']}
+ 
+{'timestamp': '2023-08-12T15:45:03.295906', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 

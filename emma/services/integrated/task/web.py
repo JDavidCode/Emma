@@ -14,8 +14,7 @@ class WebTask:
         self.web_pages = EMMA_GLOBALS.tools_da.json_loader(EMMA_GLOBALS.stcpath_web_dir)
 
     def google_search(self, query):
-        link = f"https://www.google.com/search?q={query.replace(' ', '+')}"
-        return True, str(link)
+        return True, str(f"https://www.google.com/search?q={query.replace(' ', '+')}")
 
     def youtube_search(self, query):
         url = f"https://www.youtube.com/results?q={query}"

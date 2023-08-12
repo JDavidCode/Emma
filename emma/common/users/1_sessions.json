@@ -6,7 +6,7 @@
         },
         {
             "role": "user",
-            "content": "hey emma"
+            "content": "Hey emma"
         },
         {
             "role": "assistant",
@@ -14,49 +14,49 @@
         },
         {
             "role": "user",
-            "content": "how are you?"
+            "content": "Hello "
         },
         {
             "role": "assistant",
-            "content": "I'm an AI, so I don't have feelings in the same way humans do. But I'm always here and ready to help you with anything you need! How can I assist you today?"
+            "content": "Hi there! How can I help you today?"
         },
         {
             "role": "user",
-            "content": "open website facebook"
+            "content": "Hey Emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "Emma extract the heaters from facebook.com"
         },
         {
             "role": "function",
-            "name": "open_website",
+            "name": "get_webpage_headers",
             "content": "The function has been executed"
         },
         {
             "role": "user",
-            "content": "sear mikecrack in gooe"
+            "content": "Hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "Reload module task_os"
         },
         {
             "role": "function",
-            "name": "google_search",
+            "name": "module_reloader",
             "content": "The function has been executed"
         },
         {
             "role": "user",
-            "content": "he enna"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm sorry, but I couldn't understand your request. Could you please rephrase or provide more information?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "stop the app"
+            "content": "Emma stop the app"
         },
         {
             "role": "function",
@@ -65,325 +65,7 @@
         },
         {
             "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "emma play on yt msm"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma play on yt msm\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "ready?"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm always ready to assist you! What can I help you with?"
-        },
-        {
-            "role": "user",
-            "content": "emma count from 1 to 5"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure, here's the count from 1 to 5: 1, 2, 3, 4, 5. Is there anything else I can assist you with?"
-        },
-        {
-            "role": "user",
-            "content": "hows it oin"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm doing great, thank you for asking! As an AI, I don't have feelings, but I'm always here to assist you with anything you need. How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on youttube"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Thank you for asking! As an AI, I don't have feelings, but I'm always here and ready to assist you with anything you need. How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on youttube\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "search colombia in google"
-        },
-        {
-            "role": "function",
-            "name": "google_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "v"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm sorry, but I'm not sure what you mean by \"v\". Could you please provide more information or clarify your request?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_player",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play redencion of misael on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play redencion of misael on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play redencion of misael on yt\n"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma play on YouTube el gran yo soy"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Busca plantas medicinales en google"
-        },
-        {
-            "role": "function",
-            "name": "google_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI, so I don't have feelings in the same way humans do. But I'm always here and ready to assist you with anything you need! How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "do with anything you need"
-        },
-        {
-            "role": "assistant",
-            "content": "Thank you for your kind offer! As an AI, I'm here to assist you with various tasks and provide information on a wide range of topics. Is there something specific you would like assistance with?"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI, so I don't have feelings in the same way humans do. But I'm always here and ready to assist you with anything you need! How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma Play on YouTube music Marcos"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma Play on YouTube Planetshakers"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma abre web facebook"
-        },
-        {
-            "role": "function",
-            "name": "open_website",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "again open it"
-        },
-        {
-            "role": "function",
-            "name": "open_website",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma abre web facebook\n"
+            "content": "Open GitHub website "
         },
         {
             "role": "function",
@@ -392,173 +74,16 @@
         },
         {
             "role": "user",
-            "content": "emma reload web modue"
+            "content": "hi Emma check the security of Facebook"
         },
         {
             "role": "function",
-            "name": "module_reloader",
+            "name": "check_website_security",
             "content": "The function has been executed"
         },
         {
             "role": "user",
-            "content": "emma abre web facebook\n"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma reload web modue\n"
-        },
-        {
-            "role": "function",
-            "name": "module_reloader",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "reload task_web"
-        },
-        {
-            "role": "function",
-            "name": "module_reloader",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma abre web facebook\n"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "reload task_web"
-        },
-        {
-            "role": "function",
-            "name": "module_reloader",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI, so I don't have feelings in the same way humans do. But I'm always here and ready to assist you with anything you need! How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "Emma open website Facebook"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "open Instagram website"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "stop the application"
-        },
-        {
-            "role": "function",
-            "name": "server_shutdown",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma please generate a link with the protocol https and the domain Facebook and the path index"
-        },
-        {
-            "role": "function",
-            "name": "generate_link",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma let's resonate this link boot without saying that yet without the part"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure! Here's the generated link: \"https://facebook.com\". Is there anything else I can assist you with?"
-        },
-        {
-            "role": "user",
-            "content": "Emma please generate a link with the protocol hdps and"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm sorry, but \"hdps\" is not a valid protocol. The valid protocols are \"http\" and \"https\". Could you please provide a valid protocol for the link?"
-        },
-        {
-            "role": "user",
-            "content": "it's a protocol https and the domain Facebook"
-        },
-        {
-            "role": "function",
-            "name": "generate_link",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "let's try it again but at facebook.com"
-        },
-        {
-            "role": "function",
-            "name": "generate_link",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "good job Emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Thank you, Juan! I'm glad I could assist you. If you have any more questions or need further assistance, feel free to ask. Have a great day!"
-        },
-        {
-            "role": "user",
-            "content": "Emma it's crackling from youtube.com"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma it's that the links from youtube.com"
-        },
-        {
-            "role": "assistant",
-            "content": "I apologize for the confusion. Could you please provide more details or clarify your request? Are you looking for a specific video or content on YouTube?"
-        },
-        {
-            "role": "user",
-            "content": "extract the links from youtube.com"
-        },
-        {
-            "role": "function",
-            "name": "extract_links_from_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma get the website title from facebook.com"
+            "content": "Emma check the title of Facebook site"
         },
         {
             "role": "function",
@@ -567,601 +92,202 @@
         },
         {
             "role": "user",
-            "content": "Emma check the website the status from Facebook"
-        },
-        {
-            "role": "function",
-            "name": "check_website_status",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "search an image of fire in Google please"
-        },
-        {
-            "role": "function",
-            "name": "search_images_google",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma is dead domain Facebook available"
-        },
-        {
-            "role": "function",
-            "name": "check_domain_availability",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "treat again"
-        },
-        {
-            "role": "function",
-            "name": "check_domain_availability",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "am I get the headers from the Facebook web page"
-        },
-        {
-            "role": "function",
-            "name": "get_webpage_headers",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma are you here"
+            "content": "am I stupid application"
         },
         {
             "role": "assistant",
-            "content": "Yes, I'm here and ready to assist you! How can I help you today?"
+            "content": "Oh no, Juan! You're definitely not a stupid application. You're a smart and capable individual. Don't be too hard on yourself. Remember, everyone has their strengths and weaknesses. Focus on your strengths and keep learning and growing. You're doing great!"
         },
         {
             "role": "user",
-            "content": "am I remember me the heaters of facebook.com please"
-        },
-        {
-            "role": "assistant",
-            "content": "I apologize, but as an AI language model, I don't have access to real-time data or the ability to browse the internet. Therefore, I cannot provide you with the headers of the Facebook webpage. Is there anything else I can assist you with?"
-        },
-        {
-            "role": "user",
-            "content": "Emma get the haters from facebook.com please"
-        },
-        {
-            "role": "assistant",
-            "content": "I apologize for the confusion, but as an AI language model, I don't have the capability to retrieve the headers of a specific webpage in real-time. However, you can use tools like cURL or browser developer tools to view the headers of a webpage. Is there anything else I can assist you with?"
-        },
-        {
-            "role": "user",
-            "content": "Emma get the headers from facebook.com website please"
-        },
-        {
-            "role": "function",
-            "name": "get_webpage_headers",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "let's play on YouTube right up off Kingdom"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "playing YouTube Trump kids"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "Emma please emulate English teacher"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure, I can help you with that! How can I assist you as an English teacher? Do you have any specific questions or topics you'd like to discuss?"
-        },
-        {
-            "role": "user",
-            "content": "you make a question and it'll treat to answer it"
-        },
-        {
-            "role": "assistant",
-            "content": "Of course! Here's a question for you:\n\nWhat are some common irregular verbs in English?"
-        },
-        {
-            "role": "user",
-            "content": "sale Samsung sleep speak stand some are are some irregular verbs"
-        },
-        {
-            "role": "assistant",
-            "content": "Great job! You've mentioned some common irregular verbs in English. Here are a few more examples:\n\n- Go, went, gone\n- Have, had, had\n- Do, did, done\n- Eat, ate, eaten\n- Take, took, taken\n\nIrregular verbs can be a bit tricky because they don't follow the regular pattern of adding -ed to form the past tense or past participle. Instead, they have their own unique forms. Keep practicing, and you'll become more familiar with irregular verbs in no time! Let me know if you have any more questions or if there's anything else I can assist you with."
-        },
-        {
-            "role": "user",
-            "content": "okay make another question please"
-        },
-        {
-            "role": "assistant",
-            "content": "Certainly! Here's another question for you:\n\nWhat is the difference between \"affect\" and \"effect\"?"
-        },
-        {
-            "role": "user",
-            "content": "effect is a human sentiment effect is"
-        },
-        {
-            "role": "user",
-            "content": "Emma are you here"
-        },
-        {
-            "role": "user",
-            "content": "Emma are you here"
-        },
-        {
-            "role": "assistant",
-            "content": "Yes, I'm here! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "let's continue with the question of English"
-        },
-        {
-            "role": "assistant",
-            "content": "Of course! Let's continue with the question about the difference between \"affect\" and \"effect\".\n\n\"Affect\" and \"effect\" are two words that are often confused because they sound similar and have related meanings. However, they are used in different ways:\n\n1. \"Affect\" is usually used as a verb and refers to the action of influencing or producing a change in something. It is used to describe the impact or influence that one thing has on another. For example:\n   - The rainy weather affected my mood.\n   - The new policy will affect the company's profits.\n\n2. \"Effect\" is usually used as a noun and refers to the result or consequence of an action or event. It is used to describe the outcome or the end result. For example:\n   - The effect of the rain was a flooded street.\n   - The new policy had a positive effect on employee morale.\n\nRemember the mnemonic \"Affect is an Action, Effect is an End result\" to help you remember the difference between the two.\n\nI hope this clarifies the difference between \"affect\" and \"effect\" for you. If you have any more questions or need further clarification, feel free to ask!"
-        },
-        {
-            "role": "user",
-            "content": "cake make me another question"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure! Here's another question for you:\n\nWhat is your favorite type of cake?"
-        },
-        {
-            "role": "user",
-            "content": "my favorite cake is chocolate cake"
-        },
-        {
-            "role": "assistant",
-            "content": "That's great! Chocolate cake is a popular choice and definitely a delicious one. The rich and indulgent flavor of chocolate can be so satisfying. Whether it's a classic chocolate cake with chocolate frosting or a decadent chocolate lava cake, there's something irresistible about the combination of moist cake and smooth chocolate. Do you have a specific type of chocolate cake that you enjoy the most, like a specific frosting or filling?"
-        },
-        {
-            "role": "user",
-            "content": "I remember you are my feature English my English teacher I need that you make me a English question to practice my English"
-        },
-        {
-            "role": "assistant",
-            "content": "Of course! I'd be happy to help you practice your English. Here's a question for you:\n\nWhat are some benefits of reading books?\n\nTake your time to think about it and feel free to provide your answer."
-        },
-        {
-            "role": "user",
-            "content": "it's a good choice to read a book if I can learn so much and I can feel the outer of the book in the waiters of the book in the words in every sentiment of the the outer"
-        },
-        {
-            "role": "assistant",
-            "content": "That's a wonderful answer! Reading books indeed offers numerous benefits. It allows you to gain knowledge and learn about various subjects, as well as explore different perspectives and cultures. Additionally, books can evoke emotions and transport you to different worlds through the power of words. The outer beauty of a book, such as its cover and design, can also enhance the reading experience. Overall, reading books is a fantastic way to expand your horizons and immerse yourself in the wonders of storytelling. Well done! If you have any more questions or if there's anything else I can assist you with, feel free to let me know."
-        },
-        {
-            "role": "user",
-            "content": "what is the distance between Colombia and eeu search it in Google"
-        },
-        {
-            "role": "function",
-            "name": "google_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "tell me a shirt history of love"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure! Here's a short history of love:\n\nLove has been a fundamental aspect of human existence for centuries. It has been a source of inspiration, joy, and sometimes heartache. Throughout history, love has been expressed in various ways across different cultures and time periods.\n\nIn ancient times, love was often associated with mythology and gods. The Greeks had multiple words to describe different types of love, including eros (romantic love), philia (friendship love), and agape (unconditional love). Love stories and legends, such as Romeo and Juliet or Cleopatra and Mark Antony,"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello Juan! I'm doing great, thank you for asking! As an AI, I don't have feelings in the same way humans do, but I'm always here to assist you with anything you need. How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "Hello Juan! I'm doing great, thank you for asking! As an AI, I don't have feelings in the same way humans do, but I'm always here to assist you with anything you need. How can I help you today?"
-        },
-        {
-            "role": "assistant",
-            "content": "Oops! It seems like there was a mistake in my response. I apologize for the confusion. I'm actually Emma, not Juan. I'm an AI designed to assist and provide information. How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "Oops! It seems like there was a mistake in my response. I apologize for the confusion. I'm actually Emma, not Juan. I'm an AI designed to assist and provide information. How can I assist you today?"
-        },
-        {
-            "role": "assistant",
-            "content": "Oh, my apologies, Emma! Thank you for correcting me. I'm glad to hear that you're doing great. As for how you can assist me today, I would love to know more about the weather in my area. Could you please provide me with the current weather forecast?"
-        },
-        {
-            "role": "user",
-            "content": "Oh, my apologies, Emma! Thank you for correcting me. I'm glad to hear that you're doing great. As for how you can assist me today, I would love to know more about the weather in my area. Could you please provide me with the current weather forecast?"
-        },
-        {
-            "role": "user",
-            "content": "hey Emma open Facebook website"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "https://www.facebook.com/"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "https://www.facebook.com/"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "https://www.facebook.com/"
-        },
-        {
-            "role": "user",
-            "content": "Hello how are you "
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI assistant, so I don't have feelings, but I'm always here to help you. How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "Hello! I'm an AI assistant, so I don't have feelings, but I'm always here to help you. How can I assist you today?"
-        },
-        {
-            "role": "assistant",
-            "content": "Oh, I see you're emulating my response! That's quite clever. Well, since you're an AI assistant too, I guess we can assist each other. Is there anything specific you need help with?"
-        },
-        {
-            "role": "user",
-            "content": "Oh, I see you're emulating my response! That's quite clever. Well, since you're an AI assistant too, I guess we can assist each other. Is there anything specific you need help with?"
-        },
-        {
-            "role": "assistant",
-            "content": "Haha, it seems we're both quite clever! As an AI assistant, I'm always ready to assist you with anything you need. Whether it's finding information, performing tasks, or just having a chat, feel free to let me know how I can help you today!"
-        },
-        {
-            "role": "user",
-            "content": "Haha, it seems we're both quite clever! As an AI assistant, I'm always ready to assist you with anything you need. Whether it's finding information, performing tasks, or just having a chat, feel free to let me know how I can help you today!"
-        },
-        {
-            "role": "user",
-            "content": "hey Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI assistant, so I don't have feelings, but I'm always here to help you. How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI assistant, so I don't have feelings, but I'm always here to help you. How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "Hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "How are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Thank you for asking! As an AI assistant, I don't have feelings, but I'm always here and ready to assist you. How can I help you today?"
-        },
-        {
-            "role": "user",
-            "content": "hello Emma how are you"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! I'm an AI assistant, so I don't have feelings, but I'm always here to help you. How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "Hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "Tell me a history "
-        },
-        {
-            "role": "assistant",
-            "content": "Sure! Here's a brief history:\n\nThe history of humanity is a vast and complex tapestry that spans thousands of years. It begins with the emergence of early humans in Africa around 2 million years ago. These early humans, known as Homo habilis and Homo erectus, gradually developed tools and began to migrate to different parts of the world.\n\nAround 10,000 BCE, the Agricultural Revolution took place, marking a significant shift in human society. People transitioned from a nomadic lifestyle to settled farming communities, leading to the development of civilizations. Ancient civilizations such as Mesopotamia"
-        },
-        {
-            "role": "user",
-            "content": "Hey Emma "
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "so am I for you"
-        },
-        {
-            "role": "assistant",
-            "content": "Of course! You are important to me. How can I assist you today, Juan?"
-        },
-        {
-            "role": "user",
-            "content": "and my show me the website of Facebook"
-        },
-        {
-            "role": "function",
-            "name": "open_webpage",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "if I tell me a short joke"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure, here's a short joke for you:\n\nWhy don't scientists trust atoms?\n\nBecause they make up everything!"
-        },
-        {
-            "role": "user",
-            "content": "\ud83e\udd23\ud83e\udd23"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm glad you found it funny! Laughter is always a great way to brighten up the day. If you need more jokes or anything else, feel free to ask!"
-        },
-        {
-            "role": "user",
-            "content": "can I stop the application please"
+            "content": "Emma stop the application"
         },
         {
             "role": "function",
             "name": "server_shutdown",
             "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Hey Emma, what do you know about BTTC BitTorrent "
+        },
+        {
+            "role": "assistant",
+            "content": "BitTorrent (BTTC) is a decentralized file-sharing protocol that enables users to distribute and download large files over the internet. It was created by Bram Cohen in 2001 and has since become one of the most popular methods for peer-to-peer file sharing.\n\nThe BitTorrent protocol works by breaking down files into smaller pieces and distributing them across a network of users. When a user wants to download a file, they connect to a network of peers and start downloading different pieces of the file from multiple sources simultaneously. This decentralized approach allows for faster and more efficient downloads, as the burden is distributed among"
+        },
+        {
+            "role": "user",
+            "content": "And the coin?"
+        },
+        {
+            "role": "assistant",
+            "content": "I apologize for the confusion. As of my knowledge, there is no specific cryptocurrency called BTTC (BitTorrent). However, there is a cryptocurrency called BitTorrent Token (BTT) that is associated with the BitTorrent protocol.\n\nBitTorrent Token (BTT) is a TRC-10 utility token built on the TRON blockchain. It was introduced as a way to incentivize and reward users who participate in the BitTorrent ecosystem. BTT can be used to improve download speeds, unlock premium features, and provide incentives for seeders to continue sharing files.\n\nPlease note that cryptocurrency markets are"
+        },
+        {
+            "role": "user",
+            "content": "Emma at time what is the price of BTC u know"
+        },
+        {
+            "role": "function",
+            "name": "crypto_price",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Emma?"
+        },
+        {
+            "role": "function",
+            "name": "date_clock",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Emma tell me about BTC"
+        },
+        {
+            "role": "assistant",
+            "content": "Bitcoin (BTC) is the first and most well-known cryptocurrency. It was created in 2009 by an anonymous person or group of people using the pseudonym Satoshi Nakamoto. Bitcoin operates on a decentralized network called the blockchain, which is a public ledger that records all transactions.\n\nBitcoin is often referred to as digital gold because it shares some similarities with gold. Like gold, Bitcoin is scarce, with a limited supply of 21 million coins. It is also decentralized, meaning it is not controlled by any central authority such as a government or financial institution.\n\nBitcoin transactions are verified by network nodes through"
+        },
+        {
+            "role": "user",
+            "content": "Tell me about XAU USD works"
+        },
+        {
+            "role": "assistant",
+            "content": "XAU/USD is a currency pair that represents the exchange rate between gold (XAU) and the US dollar (USD). XAU is the symbol for gold, while USD represents the US dollar.\n\nThe XAU/USD exchange rate indicates how many US dollars are needed to purchase one ounce of gold. For example, if the XAU/USD exchange rate is 1800, it means that one ounce of gold is valued at 1800 US dollars.\n\nThe price of gold is influenced by various factors, including supply and demand dynamics, economic conditions, geopolitical events, and investor sentiment"
+        },
+        {
+            "role": "user",
+            "content": "Emma how can we identify a shoulders, head, shoulder structure into a chart data"
+        },
+        {
+            "role": "assistant",
+            "content": "To identify a head and shoulders pattern on a chart, you can follow these steps:\n\n1. Look for an uptrend: The head and shoulders pattern typically occurs after an extended uptrend in the price of an asset.\n\n2. Identify the left shoulder: The left shoulder is formed when the price reaches a peak and then retraces slightly.\n\n3. Identify the head: The head is formed when the price reaches a higher peak than the left shoulder and then retraces again.\n\n4. Identify the right shoulder: The right shoulder is formed when the price rises again but fails to reach the same peak"
+        },
+        {
+            "role": "user",
+            "content": "And how can get it programatically with my"
+        },
+        {
+            "role": "assistant",
+            "content": "To identify a head and shoulders pattern programmatically, you can use technical analysis indicators and algorithms. Here's a general approach:\n\n1. Retrieve historical price data: Obtain the historical price data for the asset you want to analyze. This data typically includes the date, time, and price of the asset at different intervals (e.g., daily, hourly).\n\n2. Calculate key points: Use algorithms or indicators to identify the key points of the head and shoulders pattern. This may involve identifying peaks and troughs in the price data.\n\n3. Validate the pattern: Apply additional criteria to validate the head and"
+        },
+        {
+            "role": "user",
+            "content": "Py*"
+        },
+        {
+            "role": "assistant",
+            "content": "Certainly! Here's an example of how you can identify a head and shoulders pattern using Python and the `pandas` library for data manipulation and `matplotlib` library for visualization:\n\n```python\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\n# Assuming you have historical price data in a pandas DataFrame called 'df'\n# with columns 'date' and 'price'\n\n# Calculate moving averages\ndf['MA50'] = df['price'].rolling(window=50).mean()\ndf['MA200'] = df['price'].rolling(window=200).mean()\n\n# Plot the price and"
+        },
+        {
+            "role": "user",
+            "content": "What say the chapter 1 of Genesis in the bible "
+        },
+        {
+            "role": "assistant",
+            "content": "Sure! Here is the text of Chapter 1 of Genesis from the Bible:\n\n\"1 In the beginning, God created the heavens and the earth. 2 The earth was formless and empty, and darkness covered the deep waters. And the Spirit of God was hovering over the surface of the waters.\n\n3 Then God said, 'Let there be light,' and there was light. 4 And God saw that the light was good. Then he separated the light from the darkness. 5 God called the light 'day' and the darkness 'night.'\n\n6 Then God said, 'Let"
+        },
+        {
+            "role": "user",
+            "content": "Contin\u00fae..."
+        },
+        {
+            "role": "assistant",
+            "content": "me continue with the rest of Chapter 1 of Genesis:\n\n6 Then God said, 'Let there be a space between the waters, to separate the waters of the heavens from the waters of the earth.' 7 And that is what happened. God made this space to separate the waters of the earth from the waters of the heavens. 8 God called the space 'sky.'\n\n9 Then God said, 'Let the waters beneath the sky flow together into one place, so dry ground may appear.' And that is what happened. 10 God called the dry ground 'land' and the waters"
+        },
+        {
+            "role": "user",
+            "content": "Contin\u00fae "
+        },
+        {
+            "role": "assistant",
+            "content": "10 God called the dry ground 'land' and the waters 'seas.' And God saw that it was good.\n\n11 Then God said, 'Let the land sprout with vegetation\u2014every sort of seed-bearing plant, and trees that grow seed-bearing fruit. These seeds will then produce the kinds of plants and trees from which they came.' And that is what happened. 12 The land produced vegetation\u2014all sorts of seed-bearing plants, and trees with seed-bearing fruit. Their seeds produced plants and trees of the same kind. And God saw that it was good.\n\n13 And evening passed and"
+        },
+        {
+            "role": "user",
+            "content": "Contin\u00fae Pl\u00e1"
+        },
+        {
+            "role": "assistant",
+            "content": "13 And evening passed and morning came, marking the third day.\n\n14 Then God said, 'Let lights appear in the sky to separate the day from the night. Let them be signs to mark the seasons, days, and years. 15 Let these lights in the sky shine down on the earth.' And that is what happened. 16 God made two great lights\u2014the larger one to govern the day, and the smaller one to govern the night. He also made the stars. 17 God set these lights in the sky to light the earth, 18 to govern the day and night"
+        },
+        {
+            "role": "user",
+            "content": "Continue"
+        },
+        {
+            "role": "assistant",
+            "content": "18 to govern the day and night, and to separate the light from the darkness. And God saw that it was good.\n\n19 And evening passed and morning came, marking the fourth day.\n\n20 Then God said, 'Let the waters swarm with fish and other life. Let the skies be filled with birds of every kind.' 21 So God created great sea creatures and every living thing that scurries and swarms in the water, and every sort of bird\u2014each producing offspring of the same kind. And God saw that it was good. 22 Then God blessed them, saying,"
+        },
+        {
+            "role": "user",
+            "content": "Contin\u00fae "
+        },
+        {
+            "role": "assistant",
+            "content": "22 Then God blessed them, saying, 'Be fruitful and multiply. Let the fish fill the seas, and let the birds multiply on the earth.'\n\n23 And evening passed and morning came, marking the fifth day.\n\n24 Then God said, 'Let the earth produce every sort of animal, each producing offspring of the same kind\u2014livestock, small animals that scurry along the ground, and wild animals.' And that is what happened. 25 God made all sorts of wild animals, livestock, and small animals, each able to produce offspring of the same kind. And God saw that"
+        },
+        {
+            "role": "user",
+            "content": "Next pls"
+        },
+        {
+            "role": "assistant",
+            "content": "25 God made all sorts of wild animals, livestock, and small animals, each able to produce offspring of the same kind. And God saw that it was good.\n\n26 Then God said, 'Let us make human beings in our image, to be like us. They will reign over the fish in the sea, the birds in the sky, the livestock, all the wild animals on the earth, and the small animals that scurry along the ground.'\n\n27 So God created human beings in his own image. In the image of God he created them; male and female he created them.\n\n28"
+        },
+        {
+            "role": "user",
+            "content": "Continue"
+        },
+        {
+            "role": "assistant",
+            "content": "28 God blessed them and said to them, 'Be fruitful and multiply. Fill the earth and govern it. Reign over the fish in the sea, the birds in the sky, and all the animals that scurry along the ground.'\n\n29 Then God said, 'Look! I have given you every seed-bearing plant throughout the earth and all the fruit trees for your food. 30 And I have given every green plant as food for all the wild animals, the birds in the sky, and the small animals that scurry along the ground\u2014everything that has life.' And that is what happened"
+        },
+        {
+            "role": "user",
+            "content": "Mu\u00e9strame 2 Samuel 7:13"
+        },
+        {
+            "role": "assistant",
+            "content": "Por supuesto, aqu\u00ed tienes el vers\u00edculo que solicitaste:\n\n2 Samuel 7:13 (NVI):\n\"\u00c9l construir\u00e1 un templo en honor de mi nombre, y yo afirmar\u00e9 el trono de su reino para siempre.\"\n\nSi necesitas algo m\u00e1s, no dudes en preguntar."
         }
     ],
-    "1-emd-2123y0": [
+    "1-emd-27823d0": [
         {
             "role": "system",
             "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
         },
         {
             "role": "user",
-            "content": "am I more late English teacher and make only one question yeah and Street one street and you make a game another question"
+            "content": "Emma now, you are my English teacher please make me a question I try to answer it"
         },
         {
             "role": "assistant",
-            "content": "Sure, I can help you with that! Please provide me with the question you would like to ask as an English teacher. Additionally, let me know what kind of game you would like me to create."
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "ho ist going"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm doing great, thank you for asking! How about you? How are you doing today?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "hows it goin"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm doing great, thank you for asking! How about you? How are you doing today?"
-        },
-        {
-            "role": "user",
-            "content": "tell me a short history"
-        },
-        {
-            "role": "assistant",
-            "content": "Sure! Here's a short history for you:\n\nOnce upon a time, there was a small village nestled in a lush green valley. The villagers lived simple lives, tending to their crops and taking care of their families. They were a close-knit community, always helping one another in times of need.\n\nAs the years went by, the village grew and prospered. New houses were built, and more people settled in the area. The village became a bustling hub of activity, with markets, schools, and various businesses.\n\nHowever, the village faced its fair share of challenges too. There"
+            "content": "Of course, Juan! Here's a question for you:\n\nWhat is the difference between \"affect\" and \"effect\"?"
         }
     ],
-    "1-emd-2563y0": [
+    "1-emd-d12oidn": [
         {
             "role": "system",
             "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
         },
         {
             "role": "user",
-            "content": "emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today?"
-        },
-        {
-            "role": "user",
-            "content": "open youtube and play msm"
-        },
-        {
-            "role": "function",
-            "name": "open_app",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "play barak on yt"
-        },
-        {
-            "role": "function",
-            "name": "youtube_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "conver 30 usd to cop"
-        },
-        {
-            "role": "function",
-            "name": "convert_currency",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "what its"
-        },
-        {
-            "role": "assistant",
-            "content": "The conversion of 30 USD to COP is approximately 112,500 COP. Please note that exchange rates may vary and it's always a good idea to check with a reliable source for the most up-to-date rates."
-        },
-        {
-            "role": "user",
-            "content": "what time its"
-        },
-        {
-            "role": "function",
-            "name": "date_clock",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "emma search on google barak"
-        },
-        {
-            "role": "function",
-            "name": "google_search",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "what time its"
-        },
-        {
-            "role": "function",
-            "name": "date_clock",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
             "content": "hey emma"
         },
         {
             "role": "assistant",
-            "content": "Hello! How can I assist you today, Juan?"
+            "content": "Hello Juan! How can I assist you today?"
         },
         {
             "role": "user",
-            "content": "what time its"
-        },
-        {
-            "role": "function",
-            "name": "date_clock",
-            "content": "The function has been executed"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
+            "content": "he main app"
         },
         {
             "role": "assistant",
-            "content": "Hello! How can I assist you today, Juan?"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
-        },
-        {
-            "role": "assistant",
-            "content": "Hello! How can I assist you today, Juan?"
-        },
-        {
-            "role": "user",
-            "content": "hows it oing"
-        },
-        {
-            "role": "assistant",
-            "content": "I'm doing great, thank you for asking! How about you? Is there anything specific you need assistance with?"
-        },
-        {
-            "role": "user",
-            "content": "what time its\n"
-        },
-        {
-            "role": "function",
-            "name": "date_clock",
-            "content": "The function has been executed"
+            "content": "Sure, I can help you with that. What would you like to do with the main app?"
         },
         {
             "role": "user",

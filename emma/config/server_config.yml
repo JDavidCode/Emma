@@ -66,13 +66,25 @@ defaults:
       autostart: True
       autorestart: True
 
+    - queue: API_STREAMING
+      queue_maxsize: 0
+      endpoint: services_api_streaming
+      args: 
+        - console
+        - queue
+        - events
+      thread_name: T1_USER_API_STREAMING
+      thread_is_daemon: True
+      autostart: True
+      autorestart: True
+
     - queue: GPT_INPUT
       queue_maxsize: 1
       endpoint: services_gpt
       args: 
         - console
         - queue
-      thread_name: T1_GPT
+      thread_name: T0_GPT
       thread_is_daemon: True
       autostart: True
       autorestart: True
@@ -88,5 +100,3 @@ defaults:
     - queue: SECURE_NET_SESSIONS
       queue_maxsize: 0
   
-  
-

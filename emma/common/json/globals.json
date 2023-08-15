@@ -77,6 +77,12 @@
         "args": [],
 				"instance": "False"
     },
+    "services_api_streaming": {
+        "endpoint": "APP",
+        "path": "emma.services.API.streaming.app",
+        "args": [],
+				"instance": "False"
+    },
     "services_api_user_io": {
         "endpoint": "APP",
         "path": "emma.services.API.user_io.app",

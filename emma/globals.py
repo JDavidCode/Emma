@@ -13,9 +13,6 @@ class EMMA_GLOBALS:
         self.system()
         self.services()
         self.instances()
-        
-
-    
 
     def tools_instances(self):
         tools_converters = importlib.import_module(
@@ -34,13 +31,13 @@ class EMMA_GLOBALS:
         tools_net = tools_network.ToolKit
 
     def variables(self):
-        global stcpath_app_dir, stcpath_command_dir, stcpath_web_dir, stcpath_extensions, stcpath_command_sch,stcpath_globals
+        global stcpath_app_dir, stcpath_command_dir, stcpath_web_dir, stcpath_extensions, stcpath_command_sch, stcpath_globals
         stcpath_app_dir = "emma/common/json/app_directory.json"
         stcpath_command_dir = f"emma/common/json/command_directory-{os.environ.get('USERLANG')}.json"
         stcpath_web_dir = "emma/common/json/web_sites.json"
         stcpath_extensions = "emma/common/json/extension.json"
         stcpath_command_sch = "emma/common/json/command_schema.json"
-        stcpath_globals= "emma/common/json/globals.json"
+        stcpath_globals = "emma/common/json/globals.json"
 
         global stcmodel_visual_frontalface, stcmode_vosk_en, stcmode_vosk_es
         stcmodel_visual_frontalface = (
@@ -65,8 +62,8 @@ class EMMA_GLOBALS:
             core_queue_handler = core.QueueHandler()
             core_console_handler = core.ConsoleHandler(core_queue_handler)
             core_event_handler = core.EventHandler(core_console_handler)
-            sys_v = sys_variations.SysV(core_queue_handler, core_console_handler)
-
+            sys_v = sys_variations.SysV(
+                core_queue_handler, core_console_handler)
 
         def protocols(self):
             prt_session = importlib.import_module(
@@ -74,13 +71,12 @@ class EMMA_GLOBALS:
 
             global session_protocols
             session_protocols = prt_session.SessionsHandler
-        
+
         def logger(self):
             _logger = importlib.import_module("emma.system.logging.logger")
 
             global logger
-            logger= _logger.Logger
-
+            logger = _logger.Logger
 
         def network(self):
             pass
@@ -99,15 +95,19 @@ class EMMA_GLOBALS:
             # services_tts = self.services_tts.TTS(core_console_handler)
             _services_api_user_io = importlib.import_module(
                 "emma.services.API.user_io.app")
+            _services_api_streaming = importlib.import_module(
+                "emma.services.API.streaming.app")
             _services_db = importlib.import_module(
                 "emma.services.integrated.db_handler")
 
-            global services_db, services_gpt, services_api_user_io        # , services_tts
+            global services_db, services_gpt, services_api_user_io, services_api_streaming
 
-            services_db = _services_db.DBHandler(core_queue_handler, core_console_handler)
+            services_db = _services_db.DBHandler(
+                core_queue_handler, core_console_handler)
             services_gpt = _services_gpt.GPT
 
             services_api_user_io = _services_api_user_io.APP
+            services_api_streaming = _services_api_streaming.APP
 
         def common(self):
             _geolocation_module = importlib.import_module(
@@ -172,9 +172,10 @@ class FORGE_GLOBALS:
         except Exception as e:
             print(f"Error creating instance of {package_name}: {e}")
 
+
 def recreate_reloaded_module(module_name):
     diccionary = tools_da.json_loader(
-                stcpath_globals)
+        stcpath_globals)
     key = diccionary.keys()
 
     for i in key:
@@ -183,7 +184,7 @@ def recreate_reloaded_module(module_name):
             endpoint = module_info.get("endpoint")
             module_path = module_info.get("path")
             args = module_info.get("args")
-            isinsta= module_info.get("instance")
+            isinsta = module_info.get("instance")
             args = [eval(arg) for arg in args]
 
             try:
@@ -203,11 +204,12 @@ def recreate_reloaded_module(module_name):
                 global_namespace = globals()
                 global_namespace[module_name] = new_instance
 
-                
                 return True, f"Instance {module_name} of module {module_name} has been reloaded."
             except Exception as e:
                 traceback_str = traceback.format_exc()
-                core_queue_handler.add_to_queue("LOGGING", ("RECREATE INSTANCE", [f"Error recreating instance of {module_name}: {e}", traceback_str]))
+                core_queue_handler.add_to_queue("LOGGING", ("RECREATE INSTANCE", [
+                                                f"Error recreating instance of {module_name}: {e}", traceback_str]))
                 return False, traceback_str
-                
+
+
 EMMA_GLOBALS()

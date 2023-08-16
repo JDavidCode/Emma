@@ -7,9 +7,8 @@ class TTS:
     engine = None
     rate = None
 
-    def __init__(self, console_handler=None):
+    def __init__(self):
         self.tag = "TTS"
-        self.console_handler = console_handler
         self.lang = os.environ["USERLANG"]
         self.engine = pyttsx3.init()
         self.output_file = 'ox02da.wav'

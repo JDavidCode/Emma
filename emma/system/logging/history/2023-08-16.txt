@@ -1,0 +1,1370 @@
+{'timestamp': '2023-08-16T10:30:37.964750', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T10:35:51.427676', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T10:39:41.763818', 'remitent': 'API Thread', 'output': (('3yF1oTaKeUbiLbFkAAAB', '1-emd-idjqw', '1'), 'Emma')}
+ 
+{'timestamp': '2023-08-16T10:39:41.784820', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'Emma'})}
+ 
+{'timestamp': '2023-08-16T10:39:43.658475', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'assistant', 'content': 'Yes, Juan? How can I assist you today?'})}
+ 
+{'timestamp': '2023-08-16T10:40:25.884441', 'remitent': 'API Thread', 'output': (('3yF1oTaKeUbiLbFkAAAB', '1-emd-idjqw', '1'), 'Emma stop the T0_LOGGER thread')}
+ 
+{'timestamp': '2023-08-16T10:40:25.909442', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'Emma stop the T0_LOGGER thread'})}
+ 
+{'timestamp': '2023-08-16T10:40:27.790382', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_LOGGER"
+}'}}
+ 
+{'timestamp': '2023-08-16T10:40:27.794376', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T10:40:27.797377', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T10:40:27.798376', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_LOGGER'})}
+ 
+{'timestamp': '2023-08-16T10:40:27.801378', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_LOGGER'}. Session: 3yF1oTaKeUbiLbFkAAAB "]}
+ 
+{'timestamp': '2023-08-16T10:40:27.803380', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'NoneType' object has no attribute 'stop'"), ('Error executing function.', 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 83, in execute_command
+    result = function(**args)
+             ^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 51, in stop_thread
+    thread_instance.stop()
+    ^^^^^^^^^^^^^^^^^^^^
+AttributeError: \'NoneType\' object has no attribute \'stop\'
+'))}
+ 
+{'timestamp': '2023-08-16T10:42:21.513616', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T10:43:04.748263', 'remitent': 'API Thread', 'output': (('S4iCfsUO4Eb742kZAAAB', '1-emd-idjqw', '1'), 'Emma stop the T0_LOGGER thread
+')}
+ 
+{'timestamp': '2023-08-16T10:43:04.776266', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'Emma stop the T0_LOGGER thread
+'})}
+ 
+{'timestamp': '2023-08-16T10:43:06.797397', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_LOGGER"
+}'}}
+ 
+{'timestamp': '2023-08-16T10:43:06.801391', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T10:43:06.805392', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T10:43:06.808400', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_LOGGER'})}
+ 
+{'timestamp': '2023-08-16T10:43:06.812400', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_LOGGER'}. Session: S4iCfsUO4Eb742kZAAAB "]}
+ 
+{'timestamp': '2023-08-16T10:43:06.815395', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'NoneType' object has no attribute 'stop'"), ('Error executing function.', 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 83, in execute_command
+    result = function(**args)
+             ^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 53, in stop_thread
+    thread_instance.stop()
+    ^^^^^^^^^^^^^^^^^^^^
+AttributeError: \'NoneType\' object has no attribute \'stop\'
+'))}
+ 
+{'timestamp': '2023-08-16T10:43:25.235762', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T10:44:01.185399', 'remitent': 'API Thread', 'output': (('a-eOkGMDOmTuIdHqAAAB', '1-emd-idjqw', '1'), 'Emma stop the T0_LOGGER thread
+')}
+ 
+{'timestamp': '2023-08-16T10:44:01.215399', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'Emma stop the T0_LOGGER thread
+'})}
+ 
+{'timestamp': '2023-08-16T10:44:03.721590', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_LOGGER"
+}'}}
+ 
+{'timestamp': '2023-08-16T10:44:03.725586', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T10:44:03.730594', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T10:44:03.733592', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_LOGGER'})}
+ 
+{'timestamp': '2023-08-16T10:44:03.735595', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_LOGGER'}. Session: a-eOkGMDOmTuIdHqAAAB "]}
+ 
+{'timestamp': '2023-08-16T10:44:03.737593', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'NoneType' object has no attribute 'stop'"), ('Error executing function.', 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 83, in execute_command
+    result = function(**args)
+             ^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 52, in stop_thread
+    thread_instance.stop()
+    ^^^^^^^^^^^^^^^^^^^^
+AttributeError: \'NoneType\' object has no attribute \'stop\'
+'))}
+ 
+{'timestamp': '2023-08-16T10:45:00.683165', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T10:54:35.373922', 'remitent': 'API Thread', 'output': (('0gERywCvd8c3VrbDAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T10:54:35.407922', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T10:54:37.481720', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T10:54:37.485721', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T10:54:37.489718', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T10:54:37.490723', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T10:54:37.493727', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0gERywCvd8c3VrbDAAAB "]}
+ 
+{'timestamp': '2023-08-16T10:54:37.495718', 'remitent': 'RECREATE INSTANCE', 'output': ["Error recreating instance of io_router: InputRouter.__init__() missing 3 required positional arguments: 'console_handler', 'queue_handler', and 'event_handler'", 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 198, in recreate_reloaded_module
+    new_instance = getattr(module, endpoint)()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: InputRouter.__init__() missing 3 required positional arguments: \'console_handler\', \'queue_handler\', and \'event_handler\'
+']}
+ 
+{'timestamp': '2023-08-16T10:54:37.497723', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 198, in recreate_reloaded_module
+    new_instance = getattr(module, endpoint)()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: InputRouter.__init__() missing 3 required positional arguments: \'console_handler\', \'queue_handler\', and \'event_handler\'
+')}
+ 
+{'timestamp': '2023-08-16T10:54:37.498722', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0gERywCvd8c3VrbDAAAB')}
+ 
+{'timestamp': '2023-08-16T11:04:36.939979', 'remitent': 'API Thread', 'output': (('0gERywCvd8c3VrbDAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:04:36.967985', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:04:40.023208', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:04:40.031224', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:04:40.033210', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:04:40.035207', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:04:40.036205', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0gERywCvd8c3VrbDAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:04:40.078213', 'remitent': 'SYS V', 'output': (NameError("name 'console' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:04:40.080213', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:04:40.089210', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0gERywCvd8c3VrbDAAAB')}
+ 
+{'timestamp': '2023-08-16T11:05:45.803910', 'remitent': 'API Thread', 'output': (('0gERywCvd8c3VrbDAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:05:45.826922', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:05:47.715712', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:05:47.719708', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:05:47.724714', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:05:47.726717', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:05:47.729710', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0gERywCvd8c3VrbDAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:05:47.767718', 'remitent': 'SYS V', 'output': (NameError("name 'console_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:05:47.769709', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:05:47.772716', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0gERywCvd8c3VrbDAAAB')}
+ 
+{'timestamp': '2023-08-16T11:06:36.121155', 'remitent': 'API Thread', 'output': (('0gERywCvd8c3VrbDAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:06:36.152133', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:06:37.979326', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:06:37.987326', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:06:37.990335', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:06:37.994328', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:06:37.995332', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0gERywCvd8c3VrbDAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:06:38.037338', 'remitent': 'SYS V', 'output': (NameError("name 'core_events_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'core_events_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:06:38.041339', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 292, in module_reloader
+    reloaded, message = EMMA_GLOBALS.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\globals.py", line 187, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'core_events_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:06:38.046334', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0gERywCvd8c3VrbDAAAB')}
+ 
+{'timestamp': '2023-08-16T11:07:11.519504', 'remitent': 'API Thread', 'output': (('0gERywCvd8c3VrbDAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:07:11.551517', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:07:13.561800', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:07:13.567798', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:07:13.569796', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:07:13.575803', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:07:13.577802', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0gERywCvd8c3VrbDAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:07:13.607803', 'remitent': 'COMMAND ROUTER', 'output': (True, 'Instance io_router of module io_router has been reloaded.')}
+ 
+{'timestamp': '2023-08-16T11:07:13.611804', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0gERywCvd8c3VrbDAAAB')}
+ 
+{'timestamp': '2023-08-16T11:16:50.352473', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:44:23.706488', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:44:23.714474', 'remitent': 'Event Handler', 'output': (AttributeError("type object 'ConsoleHandler' has no attribute 'add_to_queue'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\sessions\\sessions_handler.py", line 23, in handle_shutdown
+    self.queue_handler.add_to_queue(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 100, in notify_shutdown
+    subscriber.handle_shutdown()
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\sessions\\sessions_handler.py", line 30, in handle_shutdown
+    self.queue_handler.add_to_queue(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+')}
+ 
+{'timestamp': '2023-08-16T11:44:23.741478', 'remitent': 'Event Handler', 'output': (AttributeError("type object 'ConsoleHandler' has no attribute 'add_to_queue'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\API\\user_io\\app.py", line 156, in handle_shutdown
+    "CONSOLE", (self.tag, "Handling shutdown..."))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 100, in notify_shutdown
+    subscriber.handle_shutdown()
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\API\\user_io\\app.py", line 162, in handle_shutdown
+    "LOGGING", (self.tag, (e, traceback_str)))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+')}
+ 
+{'timestamp': '2023-08-16T11:44:23.743481', 'remitent': 'Event Handler', 'output': (AttributeError("type object 'ConsoleHandler' has no attribute 'add_to_queue'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\API\\streaming\\app.py", line 154, in handle_shutdown
+    self.queue_handler.add_to_queue(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 100, in notify_shutdown
+    subscriber.handle_shutdown()
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\API\\streaming\\app.py", line 160, in handle_shutdown
+    self.queue_handler.add_to_queue(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+')}
+ 
+{'timestamp': '2023-08-16T11:47:48.150978', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:47:48.184991', 'remitent': 'Event Handler', 'output': (AttributeError("type object 'ConsoleHandler' has no attribute 'add_to_queue'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\sessions\\sessions_handler.py", line 23, in handle_shutdown
+    "CONSOLE", (self.tag, "Handling shutdown..."))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 100, in notify_shutdown
+    subscriber.handle_shutdown()
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\sessions\\sessions_handler.py", line 30, in handle_shutdown
+    "LOGGING", (self.tag, (e, traceback_str)))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object \'ConsoleHandler\' has no attribute \'add_to_queue\'
+')}
+ 
+{'timestamp': '2023-08-16T11:48:50.183630', 'remitent': 'API Thread', 'output': (('h45ykS4uFRqu4yqlAAAB', '1-emd-idjqw', '1'), 'hey emma')}
+ 
+{'timestamp': '2023-08-16T11:48:50.211631', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'hey emma'})}
+ 
+{'timestamp': '2023-08-16T11:48:51.777282', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'assistant', 'content': 'Hello Juan! How can I assist you today?'})}
+ 
+{'timestamp': '2023-08-16T11:49:11.768346', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:49:13.405643', 'remitent': 'API Thread', 'output': (('h45ykS4uFRqu4yqlAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:49:13.433644', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:49:15.831738', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:49:15.841735', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:49:15.843735', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:49:15.846735', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:49:15.860741', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: h45ykS4uFRqu4yqlAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:49:15.863740', 'remitent': 'SYS V', 'output': (NameError("name 'console_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:49:15.865737', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'console_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:49:15.867734', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", 'h45ykS4uFRqu4yqlAAAB')}
+ 
+{'timestamp': '2023-08-16T11:50:22.304196', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:50:25.257416', 'remitent': 'API Thread', 'output': (('fQzOjuxKpr42pWmsAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:50:25.290417', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:50:27.601319', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:50:27.604315', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:50:27.612314', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:50:27.614319', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:50:27.617315', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: fQzOjuxKpr42pWmsAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:50:27.639318', 'remitent': 'SYS V', 'output': (NameError("name 'queue_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:50:27.642321', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:50:27.645315', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", 'fQzOjuxKpr42pWmsAAAB')}
+ 
+{'timestamp': '2023-08-16T11:50:56.320582', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:50:57.926243', 'remitent': 'API Thread', 'output': (('0EZBamNGIzEZPLI2AAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T11:50:57.954235', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T11:51:00.941997', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:51:00.950000', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:51:00.952005', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:51:00.954002', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T11:51:00.961001', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: 0EZBamNGIzEZPLI2AAAB "]}
+ 
+{'timestamp': '2023-08-16T11:51:00.965005', 'remitent': 'SYS V', 'output': (NameError("name 'queue_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:51:00.968002', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T11:51:00.971006', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", '0EZBamNGIzEZPLI2AAAB')}
+ 
+{'timestamp': '2023-08-16T11:54:22.739581', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:55:00.103460', 'remitent': 'API Thread', 'output': (('wciWCkP8R7SqAn0sAAAB', '1-emd-idjqw', '1'), 'hey emma')}
+ 
+{'timestamp': '2023-08-16T11:55:00.126442', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'hey emma'})}
+ 
+{'timestamp': '2023-08-16T11:55:01.860202', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'assistant', 'content': 'Hello Juan! How can I assist you today?'})}
+ 
+{'timestamp': '2023-08-16T11:56:32.059825', 'remitent': 'API Thread', 'output': (('wciWCkP8R7SqAn0sAAAB', '1-emd-idjqw', '1'), 'emma')}
+ 
+{'timestamp': '2023-08-16T11:56:32.081825', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'emma'})}
+ 
+{'timestamp': '2023-08-16T11:56:34.235020', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'assistant', 'content': 'Yes, Juan? How can I assist you?'})}
+ 
+{'timestamp': '2023-08-16T11:56:50.243265', 'remitent': 'API Thread', 'output': (('wciWCkP8R7SqAn0sAAAB', '1-emd-idjqw', '1'), 'reload module router_io')}
+ 
+{'timestamp': '2023-08-16T11:56:50.261267', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module router_io'})}
+ 
+{'timestamp': '2023-08-16T11:56:53.030082', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "router_io"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:56:53.033086', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:56:53.041084', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:56:53.043088', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'router_io'})}
+ 
+{'timestamp': '2023-08-16T11:56:53.045092', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'router_io'}. Session: wciWCkP8R7SqAn0sAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:56:53.070097', 'remitent': 'SYS V', 'output': (UnboundLocalError("cannot access local variable 'message' where it is not associated with a value"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T11:56:53.073091', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T11:56:53.074102', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'router_io'}", 'wciWCkP8R7SqAn0sAAAB')}
+ 
+{'timestamp': '2023-08-16T11:57:23.798456', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T11:58:11.117661', 'remitent': 'API Thread', 'output': (('bMtQQp50XfAf4UoYAAAB', '1-emd-idjqw', '1'), 'reload module router_io
+')}
+ 
+{'timestamp': '2023-08-16T11:58:11.127671', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module router_io
+'})}
+ 
+{'timestamp': '2023-08-16T11:58:13.329085', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "router_io"
+}'}}
+ 
+{'timestamp': '2023-08-16T11:58:13.331086', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T11:58:13.334128', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T11:58:13.334128', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'router_io'})}
+ 
+{'timestamp': '2023-08-16T11:58:13.334128', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'router_io'}. Session: bMtQQp50XfAf4UoYAAAB "]}
+ 
+{'timestamp': '2023-08-16T11:58:13.334128', 'remitent': 'SYS V', 'output': (UnboundLocalError("cannot access local variable 'message' where it is not associated with a value"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T11:58:13.336412', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T11:58:13.337405', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'router_io'}", 'bMtQQp50XfAf4UoYAAAB')}
+ 
+{'timestamp': '2023-08-16T11:58:44.501756', 'remitent': 'API Thread', 'output': (('bMtQQp50XfAf4UoYAAAB', '1-emd-idjqw', '1'), 'emma give me a random number btw 29 and 51')}
+ 
+{'timestamp': '2023-08-16T11:58:44.503619', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'emma give me a random number btw 29 and 51'})}
+ 
+{'timestamp': '2023-08-16T11:58:48.164570', 'remitent': 'GPT', 'output': (JSONDecodeError('Expecting value: line 1 column 1 (char 0)'), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\integrated\\gpt.py", line 90, in main
+    args = json.loads(args)
+           ^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+')}
+ 
+{'timestamp': '2023-08-16T11:59:12.148364', 'remitent': 'API Thread', 'output': (('bMtQQp50XfAf4UoYAAAB', '1-emd-idjqw', '1'), 'emma')}
+ 
+{'timestamp': '2023-08-16T11:59:12.148364', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'emma'})}
+ 
+{'timestamp': '2023-08-16T11:59:13.972463', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'assistant', 'content': 'Yes, Juan? How can I assist you?'})}
+ 
+{'timestamp': '2023-08-16T12:00:04.437692', 'remitent': 'API Thread', 'output': (('bMtQQp50XfAf4UoYAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:00:04.448183', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:00:07.887638', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:00:07.889632', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:00:07.891631', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:00:07.892631', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:00:07.892631', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:04:53.179699', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:05:15.610806', 'remitent': 'API Thread', 'output': (('cyZJFnMi8fK3HMHEAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:05:15.610806', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:05:18.576188', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:05:18.577271', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:05:18.577271', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:05:18.577271', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:05:18.577271', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 46, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:06:03.466504', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:06:23.308029', 'remitent': 'API Thread', 'output': (('a7I6cRYKHM-luRnUAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:06:23.317026', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:06:25.506579', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:06:25.506579', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:06:25.506579', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:06:25.506579', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:06:25.506579', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:08:12.548930', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:08:31.745650', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:08:31.756646', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:08:33.998366', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:08:33.998366', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:08:33.998366', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:08:33.998366', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:08:33.998366', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:10:05.903600', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload module io_router
+')}
+ 
+{'timestamp': '2023-08-16T12:10:05.915609', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload module io_router
+'})}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'io_router'}. Session: RTRfUcYwdeEq4XpQAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:10:08.995077', 'remitent': 'SYS V', 'output': (NameError("name 'queue_handler' is not defined"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T12:10:09.010700', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 282, in module_reloader
+    reloaded, message = self.recreate_reloaded_module(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in recreate_reloaded_module
+    args = [eval(arg) for arg in args]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 143, in <listcomp>
+    args = [eval(arg) for arg in args]
+            ^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name \'queue_handler\' is not defined
+')}
+ 
+{'timestamp': '2023-08-16T12:10:09.010700', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'io_router'}", 'RTRfUcYwdeEq4XpQAAAB')}
+ 
+{'timestamp': '2023-08-16T12:14:24.700204', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:14:24.710202', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:14:27.135435', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:14:27.136434', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:14:27.140438', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:14:27.141435', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:14:27.142436', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:16:12.319513', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload thread T0_GPT
+')}
+ 
+{'timestamp': '2023-08-16T12:16:12.334621', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_GPT
+'})}
+ 
+{'timestamp': '2023-08-16T12:16:15.022310', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_GPT"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:16:15.025289', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:16:15.027299', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:16:15.028301', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_GPT'})}
+ 
+{'timestamp': '2023-08-16T12:16:15.028301', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:16:59.173834', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload thread io_router')}
+ 
+{'timestamp': '2023-08-16T12:16:59.173834', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread io_router'})}
+ 
+{'timestamp': '2023-08-16T12:17:01.754489', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "io_router"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:17:01.756489', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:17:01.758489', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:17:01.759488', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'io_router'})}
+ 
+{'timestamp': '2023-08-16T12:17:01.759488', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:17:47.171655', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:17:47.171655', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:17:47.555275', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), '')}
+ 
+{'timestamp': '2023-08-16T12:17:50.882307', 'remitent': 'GPT', 'output': {'name': 'reload_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:17:50.882307', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'reload_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:17:50.882307', 'remitent': 'IO ROUTER', 'output': (None, None)}
+ 
+{'timestamp': '2023-08-16T12:17:50.897933', 'remitent': 'COMMAND ROUTER', 'output': (<class 'tuple'>, (None, None), <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:17:50.897933', 'remitent': 'COMMAND ROUTER', 'output': (AttributeError("'tuple' object has no attribute 'get'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 45, in main
+    module = getattr(EMMA_GLOBALS, dic.get("module"))
+                                   ^^^^^^^
+AttributeError: \'tuple\' object has no attribute \'get\'
+')}
+ 
+{'timestamp': '2023-08-16T12:17:50.908326', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': ''})}
+ 
+{'timestamp': '2023-08-16T12:18:10.607367', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'search love in google')}
+ 
+{'timestamp': '2023-08-16T12:18:10.607367', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'search love in google'})}
+ 
+{'timestamp': '2023-08-16T12:18:12.726964', 'remitent': 'GPT', 'output': {'name': 'google_search', 'arguments': '{
+  "query": "love"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:18:12.726964', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'google_search', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:18:12.742247', 'remitent': 'IO ROUTER', 'output': {'module': 'task_web', 'args_key': '*args', 'required_lvl': 1, 'key': 'google_search'}}
+ 
+{'timestamp': '2023-08-16T12:18:12.742247', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'task_web', 'args_key': '*args', 'required_lvl': 1, 'key': 'google_search'}, <class 'dict'>, {'query': 'love'})}
+ 
+{'timestamp': '2023-08-16T12:18:12.742247', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute google_search with args = {'query': 'love'}. Session: RTRfUcYwdeEq4XpQAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:18:12.742247', 'remitent': 'COMMAND ROUTER', 'output': (True, 'https://www.google.com/search?q=love')}
+ 
+{'timestamp': '2023-08-16T12:18:12.742247', 'remitent': 'COMMAND ROUTER', 'output': ('google_search has been executed', "args = {'query': 'love'}", 'RTRfUcYwdeEq4XpQAAAB')}
+ 
+{'timestamp': '2023-08-16T12:19:30.245789', 'remitent': 'API Thread', 'output': (('RTRfUcYwdeEq4XpQAAAB', '1-emd-idjqw', '1'), 'stop thread TO_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:19:30.260974', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread TO_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:27:04.507358', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:32:55.212108', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:33:15.162524', 'remitent': 'API Thread', 'output': (('-oqPyubWwXUbQW6UAAAB', '1-emd-idjqw', '1'), 'stop thread TO_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:33:15.177610', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread TO_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:33:17.508955', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "TO_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:33:17.508955', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:33:17.524583', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:33:17.526059', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'TO_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:33:17.527052', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'TO_HOTKEYS'}. Session: -oqPyubWwXUbQW6UAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:33:17.527052', 'remitent': 'COMMAND ROUTER', 'output': None}
+ 
+{'timestamp': '2023-08-16T12:33:17.528054', 'remitent': 'COMMAND ROUTER', 'output': ('Function stop_thread result is None, unable to unpack the result.', '-oqPyubWwXUbQW6UAAAB')}
+ 
+{'timestamp': '2023-08-16T12:38:47.591134', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:39:53.573068', 'remitent': 'API Thread', 'output': (('N8SPxRvMXyP06d4xAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:39:53.586016', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'T0_HOTKEYS'}. Session: N8SPxRvMXyP06d4xAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'SYS V', 'output': (UnboundLocalError("cannot access local variable 'message' where it is not associated with a value"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T12:39:55.752816', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'T0_HOTKEYS'}", 'N8SPxRvMXyP06d4xAAAB')}
+ 
+{'timestamp': '2023-08-16T12:40:04.637017', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:42:11.864958', 'remitent': 'API Thread', 'output': (('BazcuGVBN2R5AweTAAAB', '1-emd-idjqw', '1'), 'restart thread T0_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:42:11.880581', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'restart thread T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:42:14.393071', 'remitent': 'GPT', 'output': {'name': 'restart_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:42:14.395072', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'restart_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:42:14.398072', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'start_thread'}}
+ 
+{'timestamp': '2023-08-16T12:42:14.398072', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'start_thread'}, <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:42:14.399072', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute start_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: BazcuGVBN2R5AweTAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:42:14.400075', 'remitent': 'COMMAND ROUTER', 'output': (True, 'T0_HOTKEYS is current active.')}
+ 
+{'timestamp': '2023-08-16T12:42:14.401074', 'remitent': 'COMMAND ROUTER', 'output': ('start_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'BazcuGVBN2R5AweTAAAB')}
+ 
+{'timestamp': '2023-08-16T12:42:54.402998', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:43:19.370354', 'remitent': 'API Thread', 'output': (('92luZREN68jiQwNdAAAB', '1-emd-idjqw', '1'), 'reload thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:43:19.386352', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'reload thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:43:21.896475', 'remitent': 'GPT', 'output': {'name': 'module_reloader', 'arguments': '{
+  "module_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:43:21.896475', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'module_reloader', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:43:21.912750', 'remitent': 'IO ROUTER', 'output': {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}}
+ 
+{'timestamp': '2023-08-16T12:43:21.914745', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'sys_v', 'args_key': '*args', 'required_lvl': 2, 'key': 'module_reloader'}, <class 'dict'>, {'module_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:43:21.915749', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute module_reloader with args = {'module_name': 'T0_HOTKEYS'}. Session: 92luZREN68jiQwNdAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:43:21.915749', 'remitent': 'SYS V', 'output': (UnboundLocalError("cannot access local variable 'message' where it is not associated with a value"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T12:43:21.916744', 'remitent': 'COMMAND ROUTER', 'output': (False, 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\sys_v.py", line 289, in module_reloader
+    return False, message
+           ^^^^^
+UnboundLocalError: cannot access local variable \'message\' where it is not associated with a value
+')}
+ 
+{'timestamp': '2023-08-16T12:43:21.916744', 'remitent': 'COMMAND ROUTER', 'output': ('module_reloader has been executed', "args = {'module_name': 'T0_HOTKEYS'}", '92luZREN68jiQwNdAAAB')}
+ 
+{'timestamp': '2023-08-16T12:43:44.297175', 'remitent': 'API Thread', 'output': (('92luZREN68jiQwNdAAAB', '1-emd-idjqw', '1'), 'stop thread T0_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:43:44.307822', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:43:46.081079', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:43:46.085099', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:43:46.090099', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:43:46.091080', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:43:46.092095', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: 92luZREN68jiQwNdAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:43:46.092095', 'remitent': 'COMMAND ROUTER', 'output': '
+T0_HOTKEYS has been stopped.'}
+ 
+{'timestamp': '2023-08-16T12:43:46.093085', 'remitent': 'COMMAND ROUTER', 'output': (ValueError('too many values to unpack (expected 2)'), ('Error executing function.', 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 94, in execute_command
+    key, r = result
+    ^^^^^^
+ValueError: too many values to unpack (expected 2)
+'))}
+ 
+{'timestamp': '2023-08-16T12:44:48.499322', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:45:10.196502', 'remitent': 'API Thread', 'output': (('MTfu3m5--xWj4qXzAAAB', '1-emd-idjqw', '1'), 'stop thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:45:10.216497', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:45:12.344643', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:45:12.345645', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:45:12.349646', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:45:12.352645', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:45:12.352645', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: MTfu3m5--xWj4qXzAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:45:12.353645', 'remitent': 'COMMAND ROUTER', 'output': (True, '
+T0_HOTKEYS has been stopped.')}
+ 
+{'timestamp': '2023-08-16T12:45:12.353645', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'MTfu3m5--xWj4qXzAAAB')}
+ 
+{'timestamp': '2023-08-16T12:45:34.148489', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:46:04.468178', 'remitent': 'API Thread', 'output': (('x3OYvGSz4j_o02LvAAAB', '1-emd-idjqw', '1'), 'stop thread T0_INPUT_ROUTER')}
+ 
+{'timestamp': '2023-08-16T12:46:04.483418', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_INPUT_ROUTER'})}
+ 
+{'timestamp': '2023-08-16T12:46:06.424259', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_INPUT_ROUTER"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_INPUT_ROUTER'})}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_INPUT_ROUTER'}. Session: x3OYvGSz4j_o02LvAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'COMMAND ROUTER', 'output': (True, '
+T0_INPUT_ROUTER has been stopped.')}
+ 
+{'timestamp': '2023-08-16T12:46:06.439332', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_INPUT_ROUTER'}", 'x3OYvGSz4j_o02LvAAAB')}
+ 
+{'timestamp': '2023-08-16T12:46:18.474321', 'remitent': 'API Thread', 'output': (('x3OYvGSz4j_o02LvAAAB', '1-emd-idjqw', '1'), 'hey')}
+ 
+{'timestamp': '2023-08-16T12:46:29.851443', 'remitent': 'API Thread', 'output': (('x3OYvGSz4j_o02LvAAAB', '1-emd-idjqw', '1'), 'Emma?')}
+ 
+{'timestamp': '2023-08-16T12:46:36.758750', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:47:13.111961', 'remitent': 'API Thread', 'output': (('rhx92oL1vjvkyaoTAAAB', '1-emd-idjqw', '1'), 'stop thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:47:13.127255', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:47:17.518138', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:47:17.518138', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:47:17.533762', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:47:17.533762', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:47:17.533762', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: rhx92oL1vjvkyaoTAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:47:17.533762', 'remitent': 'COMMAND ROUTER', 'output': (True, '
+T0_HOTKEYS has been stopped.')}
+ 
+{'timestamp': '2023-08-16T12:47:17.533762', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'rhx92oL1vjvkyaoTAAAB')}
+ 
+{'timestamp': '2023-08-16T12:47:30.634271', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:50:28.575822', 'remitent': 'API Thread', 'output': (('S20U4ua0B2IBnxMMAAAB', '1-emd-idjqw', '1'), 'stop thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:50:28.578024', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:50:31.126643', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:50:31.126643', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:50:31.142270', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:50:31.142270', 'remitent': 'COMMAND ROUTER', 'output': (<class 'dict'>, {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}, <class 'dict'>, {'thread_name': 'T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:50:31.142270', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: S20U4ua0B2IBnxMMAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:50:31.142270', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'S20U4ua0B2IBnxMMAAAB')}
+ 
+{'timestamp': '2023-08-16T12:50:53.336845', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:50:53.336845', 'remitent': 'Event Handler', 'output': (AttributeError("'HOTKEYS' object has no attribute 'hotkey_ctrl_0'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 99, in notify_shutdown
+    subscriber.handle_shutdown()
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\hotkeys.py", line 34, in handle_shutdown
+    keyboard.remove_hotkey(self.hotkey_ctrl_0)
+                           ^^^^^^^^^^^^^^^^^^
+AttributeError: \'HOTKEYS\' object has no attribute \'hotkey_ctrl_0\'
+')}
+ 
+{'timestamp': '2023-08-16T12:52:30.295053', 'remitent': 'API Thread', 'output': (('d_mfLIi46lOnOWfAAAAB', '1-emd-idjqw', '1'), 'emma kill thread T0_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:52:30.310300', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'emma kill thread T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:52:32.725002', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:52:32.727001', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:52:32.732004', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: d_mfLIi46lOnOWfAAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:52:32.734005', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'd_mfLIi46lOnOWfAAAAB')}
+ 
+{'timestamp': '2023-08-16T12:52:32.734005', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:57:02.071222', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T12:57:02.089691', 'remitent': 'Event Handler', 'output': (AttributeError("'HOTKEYS' object has no attribute 'hotkey_ctrl_0'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 99, in notify_shutdown
+    if not start and subscriber != None:
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\hotkeys.py", line 34, in handle_shutdown
+    keyboard.remove_hotkey(self.hotkey_ctrl_0)
+                           ^^^^^^^^^^^^^^^^^^
+AttributeError: \'HOTKEYS\' object has no attribute \'hotkey_ctrl_0\'
+')}
+ 
+{'timestamp': '2023-08-16T12:58:06.719123', 'remitent': 'API Thread', 'output': (('alpyZ3_9J2_ABGBcAAAB', '1-emd-idjqw', '1'), 'remove thread TO_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T12:58:06.732558', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread TO_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T12:58:09.360753', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:58:09.360753', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:58:09.360753', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T12:58:09.360753', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: alpyZ3_9J2_ABGBcAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:58:09.360753', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'alpyZ3_9J2_ABGBcAAAB')}
+ 
+{'timestamp': '2023-08-16T12:58:34.711380', 'remitent': 'API Thread', 'output': (('alpyZ3_9J2_ABGBcAAAB', '1-emd-idjqw', '1'), 'stop thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:58:34.722380', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'stop thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:58:37.226586', 'remitent': 'GPT', 'output': {'name': 'stop_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:58:37.226586', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'stop_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:58:37.241844', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'stop_thread'}}
+ 
+{'timestamp': '2023-08-16T12:58:37.241844', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute stop_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: alpyZ3_9J2_ABGBcAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:58:37.241844', 'remitent': 'COMMAND ROUTER', 'output': ('stop_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'alpyZ3_9J2_ABGBcAAAB')}
+ 
+{'timestamp': '2023-08-16T12:58:49.527930', 'remitent': 'API Thread', 'output': (('alpyZ3_9J2_ABGBcAAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T12:58:49.538929', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T12:58:51.529890', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T12:58:51.529890', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T12:58:51.529890', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T12:58:51.529890', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: alpyZ3_9J2_ABGBcAAAB "]}
+ 
+{'timestamp': '2023-08-16T12:58:51.529890', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'alpyZ3_9J2_ABGBcAAAB')}
+ 
+{'timestamp': '2023-08-16T13:01:19.299032', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T13:01:19.314116', 'remitent': 'Event Handler', 'output': (AttributeError("'HOTKEYS' object has no attribute 'hotkey_ctrl_0'"), 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 114, in notify_shutdown
+    self.queue_handler.add_to_queue("CONSOLE",
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\protocols\\hotkeys.py", line 34, in handle_shutdown
+    EMMA_GLOBALS.sys_v.server_shutdown()
+                           ^^^^^^^^^^^^^^
+AttributeError: \'HOTKEYS\' object has no attribute \'hotkey_ctrl_0\'
+')}
+ 
+{'timestamp': '2023-08-16T13:01:44.332798', 'remitent': 'API Thread', 'output': (('ityLwvZUBEPwGj6HAAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T13:01:44.343789', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T13:01:46.663989', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:01:46.663989', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:01:46.663989', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T13:01:46.663989', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: ityLwvZUBEPwGj6HAAAB "]}
+ 
+{'timestamp': '2023-08-16T13:01:46.663989', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'ityLwvZUBEPwGj6HAAAB')}
+ 
+{'timestamp': '2023-08-16T13:02:54.637576', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T13:03:11.842462', 'remitent': 'API Thread', 'output': (('FI_ZEZSZpWXpAZZZAAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T13:03:11.850460', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T13:03:14.155315', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:03:14.170937', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:03:14.170937', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T13:03:14.170937', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: FI_ZEZSZpWXpAZZZAAAB "]}
+ 
+{'timestamp': '2023-08-16T13:03:14.170937', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'FI_ZEZSZpWXpAZZZAAAB')}
+ 
+{'timestamp': '2023-08-16T13:03:48.250883', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T13:04:11.066086', 'remitent': 'API Thread', 'output': (('hMIyTK5UHXo2DucrAAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T13:04:11.079237', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T13:04:13.342545', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:04:13.342545', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:04:13.342545', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T13:04:13.354728', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: hMIyTK5UHXo2DucrAAAB "]}
+ 
+{'timestamp': '2023-08-16T13:04:13.355751', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'hMIyTK5UHXo2DucrAAAB')}
+ 
+{'timestamp': '2023-08-16T13:04:58.575331', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T13:05:14.173268', 'remitent': 'API Thread', 'output': (('8WzitpM7IUV2jH1GAAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T13:05:14.173268', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T13:05:16.314317', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:05:16.314317', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:05:16.314317', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T13:05:16.314317', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: 8WzitpM7IUV2jH1GAAAB "]}
+ 
+{'timestamp': '2023-08-16T13:05:16.314317', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", '8WzitpM7IUV2jH1GAAAB')}
+ 
+{'timestamp': '2023-08-16T13:06:01.585805', 'remitent': 'API Thread', 'output': (('8WzitpM7IUV2jH1GAAAB', '1-emd-idjqw', '1'), 'start thread T0_HOTKEYS')}
+ 
+{'timestamp': '2023-08-16T13:06:01.601411', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'start thread T0_HOTKEYS'})}
+ 
+{'timestamp': '2023-08-16T13:06:03.300101', 'remitent': 'GPT', 'output': {'name': 'start_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:06:03.300101', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'start_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:06:03.300101', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'start_thread'}}
+ 
+{'timestamp': '2023-08-16T13:06:03.300101', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute start_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: 8WzitpM7IUV2jH1GAAAB "]}
+ 
+{'timestamp': '2023-08-16T13:06:03.322354', 'remitent': 'COMMAND ROUTER', 'output': (RuntimeError('threads can only be started once'), ('Error executing function.', 'Traceback (most recent call last):
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\routers\\command_router.py", line 85, in execute_command
+    result = function(**args)
+             ^^^^^^^^^^^^^^^^
+  File "C:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\system\\core_threading.py", line 19, in start_thread
+    thread.start()
+  File "C:\\Users\\RenacerLive\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\threading.py", line 952, in start
+    raise RuntimeError("threads can only be started once")
+RuntimeError: threads can only be started once
+'))}
+ 
+{'timestamp': '2023-08-16T13:06:38.726926', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-08-16T13:07:04.509384', 'remitent': 'API Thread', 'output': (('AyTOv721Tg3kZ9t8AAAB', '1-emd-idjqw', '1'), 'remove thread T0_HOTKEYS
+')}
+ 
+{'timestamp': '2023-08-16T13:07:04.529376', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'remove thread T0_HOTKEYS
+'})}
+ 
+{'timestamp': '2023-08-16T13:07:06.532332', 'remitent': 'GPT', 'output': {'name': 'remove_thread', 'arguments': '{
+  "thread_name": "T0_HOTKEYS"
+}'}}
+ 
+{'timestamp': '2023-08-16T13:07:06.532332', 'remitent': 'GPT', 'output': ('1', '1-emd-idjqw', {'role': 'function', 'name': 'remove_thread', 'content': 'The function has been executed'})}
+ 
+{'timestamp': '2023-08-16T13:07:06.547979', 'remitent': 'IO ROUTER', 'output': {'module': 'core_thread_handler', 'args_key': '*args', 'required_lvl': 1, 'key': 'remove_thread'}}
+ 
+{'timestamp': '2023-08-16T13:07:06.547979', 'remitent': 'COMMAND ROUTER', 'output': ["trying to execute remove_thread with args = {'thread_name': 'T0_HOTKEYS'}. Session: AyTOv721Tg3kZ9t8AAAB "]}
+ 
+{'timestamp': '2023-08-16T13:07:06.547979', 'remitent': 'COMMAND ROUTER', 'output': ('remove_thread has been executed', "args = {'thread_name': 'T0_HOTKEYS'}", 'AyTOv721Tg3kZ9t8AAAB')}
+ 
+{'timestamp': '2023-08-16T13:07:43.514190', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 

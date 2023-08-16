@@ -29,34 +29,40 @@
         "args": [],
 				"instance": "True"
     },
-    "core_queue_handler": {
-        "endpoint": "QueueHandler",
+    "queue_handler": {
+        "endpoint": "queue_handlerHandler",
         "path": "emma.system.core_threading",
         "args": [],
 				"instance": "True"
     },
-    "core_console_handler": {
-        "endpoint": "ConsoleHandler",
+    "console_handler": {
+        "endpoint": "console_handlerHandler",
         "path": "emma.system.core_threading",
-        "args": ["core_queue_handler"],
+        "args": ["queue_handler"],
 				"instance": "True"
     },
     "core_event_handler": {
         "endpoint": "EventHandler",
         "path": "emma.system.core_threading",
-        "args": ["core_console_handler"],
+        "args": ["console_handler"],
 				"instance": "True"
     },
     "sys_v": {
         "endpoint": "SysV",
         "path": "emma.system.sys_v",
-        "args": ["core_queue_handler","core_console_handler"],
+        "args": ["queue_handler","console_handler"],
 				"instance": "True"
     },
     "session_protocols": {
         "endpoint": "SessionsHandler",
         "path": "emma.system.protocols.sessions.sessions_handler",
         "args": [],
+				"instance": "False"
+    },
+    "hotkeys_protocols": {
+        "endpoint": "HOTKEYS",
+        "path": "emma.system.protocols.hotkeys",
+        "args": ["queue_handler", "event_handler"],
 				"instance": "False"
     },
     "logger": {
@@ -68,7 +74,7 @@
     "services_db": {
         "endpoint": "DBHandler",
         "path": "emma.services.integrated.db_handler",
-        "args": ["core_queue_handler","core_console_handler"],
+        "args": ["queue_handler","console_handler"],
 				"instance": "True"
     },
     "services_gpt": {
@@ -134,7 +140,7 @@
     "io_router": {
         "endpoint": "InputRouter",
         "path": "emma.system.routers.input_router",
-        "args": [],
+        "args": ["queue_handler", "event_handler"],
 				"instance": "True"
     },
     "forge_server": {

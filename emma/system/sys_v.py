@@ -10,10 +10,12 @@ import importlib
 import emma.globals as EMMA_GLOBALS
 import traceback
 
+
 class SysV:
-    def __init__(self, queue_handler=None, console_handler=None):
+    def __init__(self, queue_handler=None):
         self.queue_handler = queue_handler
-        self.console_handler = console_handler
+        self.tag = "SYSTEM V"
+        self.func_instances = {}
 
     def server_performance(self, threads):
         dateTime = datetime.datetime.now()
@@ -48,12 +50,13 @@ class SysV:
             config_file = "emma/config/server_config.yml"
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
-        func_instances = {}
 
-        queue = EMMA_GLOBALS.core_queue_handler
-        console = EMMA_GLOBALS.core_console_handler
-        thread = EMMA_GLOBALS.core_thread_handler
-        events = EMMA_GLOBALS.core_event_handler
+        arg_mapping = {
+            "console_handler": EMMA_GLOBALS.core_console_handler,
+            "queue_handler": EMMA_GLOBALS.core_queue_handler,
+            "event_handler": EMMA_GLOBALS.core_event_handler,
+            "thread_handler": EMMA_GLOBALS.core_thread_handler,
+        }
 
         if forge:
             data = data["Forge"]["services"]
@@ -62,72 +65,14 @@ class SysV:
         else:
             data = data["defaults"]["services"]
 
-        # Define the mappings of argument combinations to function calls
-        argument_mappings = {
-            ("console", "queue", "events", "thread"): lambda: getattr(
-                EMMA_GLOBALS, endpoint
-            )(
-                console_handler=console,
-                queue_handler=queue,
-                event_handler=events,
-                thread_handler=thread,
-            ),
-            ("console", "queue", "events"): lambda: getattr(
-                EMMA_GLOBALS, endpoint
-            )(
-                console_handler=console,
-                queue_handler=queue,
-                event_handler=events,
-            ),
-            ("console", "queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue, thread_handler=thread
-            ),
-            ("console", "queue"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, queue_handler=queue
-            ),
-            ("console", "events", "thread"): lambda: getattr(
-                EMMA_GLOBALS, endpoint
-            )(
-                console_handler=console,
-                event_handler=events,
-                thread_handler=thread,
-            ),
-            ("console", "events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, event_handler=events
-            ),
-            ("console", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console, thread_handler=thread
-            ),
-            ("console",): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                console_handler=console
-            ),
-            ("queue", "events", "thread"): lambda: getattr(
-                EMMA_GLOBALS, endpoint
-            )(queue_handler=queue, event_handler=events, thread_handler=thread),
-            ("queue", "events"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, event_handler=events
-            ),
-            ("queue", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                queue_handler=queue, thread_handler=thread
-            ),
-            ("queue",): lambda: getattr(EMMA_GLOBALS, endpoint)(queue_handler=queue),
-            ("events", "thread"): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                event_handler=events, thread_handler=thread
-            ),
-            ("events",): lambda: getattr(EMMA_GLOBALS, endpoint)(
-                event_handler=events
-            ),
-            ("thread",): lambda: getattr(EMMA_GLOBALS, endpoint)(thread_handler=thread),
-            (): lambda: getattr(EMMA_GLOBALS, endpoint)()
-        }
-
         for dic in data:
             if dic == {}:
                 continue
             if "queue" in dic and dic["queue"] != []:
-                queue.create_queue(dic["queue"], dic["queue_maxsize"])
-                
-        for dic in data:   
+                EMMA_GLOBALS.core_queue_handler.create_queue(
+                    dic["queue"], dic["queue_maxsize"])
+
+        for dic in data:
             args = dic.get("args", [])
             if forge:
                 endpoint = f"forge_package_{dic['package_name']}"
@@ -135,17 +80,28 @@ class SysV:
                 endpoint = dic["endpoint"]
 
             # Find the appropriate function call based on the argument combination
-            func_call = argument_mappings.get(
-                tuple(args), argument_mappings.get(()))
-            func_instance = func_call()  # Call the function to get the instance
+            if args != []:
+                # Process each argument
+                processed_args = []
+                for arg in args:
+                    if arg in arg_mapping:
+                        processed_args.append(arg_mapping[arg])
 
-            func_instances[dic["thread_name"]] = func_instance
-
+                    else:
+                        # If the argument is not in the mapping, you might handle this case as needed
+                        # For example, you could raise an error or provide a default value
+                        self.write("Error", f"Invalid argument: {arg}")
+            func_instance = getattr(
+                EMMA_GLOBALS, endpoint)(*processed_args)
             thread_name = dic.get("thread_name")
+            visible = dic.get("visible", True)
+            if visible:
+                self.func_instances[thread_name] = func_instance
+
             thread_is_daemon = dic.get("thread_is_daemon", False)
             autostart = dic.get("autostart", False)
 
-            thread.add_thread(
+            EMMA_GLOBALS.core_thread_handler.add_thread(
                 threading.Thread(
                     target=lambda: func_instance.main(),
                     name=thread_name,
@@ -154,10 +110,10 @@ class SysV:
             )
 
             if autostart:
-                thread.start_thread(thread_name)
+                EMMA_GLOBALS.core_thread_handler.start_thread(thread_name)
                 func_instance.run()
-                
-        EMMA_GLOBALS.thread_instances = func_instances
+
+        EMMA_GLOBALS.thread_instances = self.func_instances
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
@@ -172,24 +128,66 @@ class SysV:
             if dic["queue"] != []:
                 queue.create_secure_queue(dic["queue"], dic["queue_maxsize"])
 
-    def server_shutdown(self):       
-        key= False
+    def recreate_reloaded_module(self, module_name):
+        diccionary = EMMA_GLOBALS.tools_da.json_loader(
+            EMMA_GLOBALS.stcpath_globals)
+        key = diccionary.keys()
+
+        for i in key:
+            if module_name in i:
+                module_info = diccionary.get(i)
+                endpoint = module_info.get("endpoint")
+                module_path = module_info.get("path")
+                args = module_info.get("args")
+                isinsta = module_info.get("instance")
+                args = [eval(arg) for arg in args]
+
+                try:
+                    # Load the module dynamically based on its path
+                    module = importlib.import_module(module_path)
+
+                    # Create a new instance of the reloaded module with the given arguments
+
+                    if eval(isinsta) and args != []:
+                        new_instance = getattr(module, endpoint)(*args)
+                    elif eval(isinsta):
+                        new_instance = getattr(module, endpoint)()
+                    else:
+                        new_instance = getattr(module, endpoint)
+
+                    # Replace the old instance with the new on
+                    global_namespace = globals()
+                    global_namespace[module_name] = new_instance
+
+                    return True, f"Instance {module_name} of module {module_name} has been reloaded."
+                except Exception as e:
+                    traceback_str = traceback.format_exc()
+                    self.queue_handler.que.add_to_queue("LOGGING", ("RECREATE INSTANCE", [
+                        f"Error recreating instance of {module_name}: {e}", traceback_str]))
+                    return False, traceback_str
+
+    def server_shutdown(self):
+        key = False
         timer = 0
-        EMMA_GLOBALS.core_event_handler.notify_shutdown()
+        EMMA_GLOBALS.core_event_handler.notify_shutdown(
+
+        )
         while not key:
-            key = EMMA_GLOBALS.core_event_handler.subscribers_shutdown_flag(start=True)
+            key = EMMA_GLOBALS.core_event_handler.subscribers_shutdown_flag(
+                start=True)
             time.sleep(1)
-            timer+=1
+            timer += 1
             if timer >= 120:
                 key = True
         EMMA_GLOBALS.core_thread_handler.kill_thread()
-        
-        for i in range(7, 0, -1):
-            self.console_handler.write("SYS SHUTDOWN", f"SERVER WILL STOP IN {i}")
+
+        for i in range(3, 0, -1):
+            self.queue_handler.add_to_queue("CONSOLE",
+                                            ("SYS SHUTDOWN", f"SERVER WILL STOP IN {i}"))
             time.sleep(1.1)
 
         _, val = EMMA_GLOBALS.core_thread_handler.get_thread_status()
-        self.console_handler.write("SYS SHUTDOWN", val)
+        self.queue_handler.add_to_queue("CONSOLE", ("SYS SHUTDOWN", val))
         self.temp_clearer()
         self.remove_pycache("./emma")
         os._exit(0)
@@ -242,15 +240,20 @@ class SysV:
                     os.rmdir(x)
                 except Exception as e:
                     traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
+                    self.queue_handler.add_to_queue(
+                        "LOGGING", ("SYS V", (e, traceback_str)))
                 try:
                     os.remove(x)
                 except Exception as e:
                     traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue("LOGGING", ("SYS V",(e, traceback_str)))
-                    
+                    self.queue_handler.add_to_queue(
+                        "LOGGING", ("SYS V", (e, traceback_str)))
 
     def module_reloader(self, module_name, is_thread=False):
+        queue_handler = EMMA_GLOBALS.core_queue_handler
+        console_handler = EMMA_GLOBALS.core_console_handler
+        thread_handler = EMMA_GLOBALS.core_thread_handler
+        events_handler = EMMA_GLOBALS.core_event_handler
         try:
             if is_thread:
                 config_file = "emma/config/server_config.yml"
@@ -271,25 +274,25 @@ class SysV:
                     endpoint = module_info.get("endpoint")
                     path = module_info.get("path")
 
-
                     # Reload the module
                     module = importlib.import_module(path)
                     importlib.reload(module)
                     importlib.invalidate_caches()
 
-                    reloaded, message= EMMA_GLOBALS.recreate_reloaded_module(module_name)
+                    reloaded, message = self.recreate_reloaded_module(
+                        module_name)
                     break
 
             if reloaded:
                 return True, message
             else:
                 return False, message
-            
+
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", ("SYS V", (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", ("SYS V", (e, traceback_str)))
             return False, traceback_str
-
 
 
 if __name__ == "__main__":

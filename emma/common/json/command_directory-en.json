@@ -19,6 +19,11 @@
     "args_key": "*args",
     "required_lvl": 1
 },
+    "remove_thread": {
+    "module": "core_thread_handler",
+    "args_key": "*args",
+    "required_lvl": 1
+},
     "get_thread_status": {
     "module": "core_thread_handler",
     "args_key": "None",

@@ -29,7 +29,7 @@ class Builder:
 
     def unpackage(self):
         self.tools_cs.unzipper(
-            [(f"./emma/.EmmaRootUser/.temp/forge_{self.package_name}.zip", "./emma/services/external/")])
+            [(f"emma/forge/.temp/forge_{self.package_name}.zip", "emma/services/external/")])
 
     def load_service_data(self):
         service_data = self._service.get_service(self.package_name)
@@ -40,11 +40,11 @@ class Builder:
     def service_register(self):
         is_forge_package = True
         repo = self._repository.get_repository(self.package_name)
-        if "my_url.com" in repo.values():
+        if "my_url.com" in repo:
             is_forge_package = False
 
         service_data = self.tools_da.yaml_loader(
-            f"./emma/services/external/{self.package_name}/config/config.yml", "forge_service")
+            f"emma/services/external/{self.package_name}/config/config.yml", "forge_service")
         service_data = service_data[0]
         self.has_custom = service_data.get('custom_packages', False)
         self.endpoint = service_data.get('endpoint')

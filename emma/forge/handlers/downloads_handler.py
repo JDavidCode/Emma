@@ -7,7 +7,7 @@ class DownloadsHandler:
         self.tools_cs, self.tools_da = tools
 
     def download_package(self, repository, package_name):
-        save_path = f"./emma/.EmmaRootUser/.temp/forge_{package_name}.zip"
+        save_path = f"emma/forge/.temp/forge_{package_name}.zip"
         try:
             response = requests.get(repository)
             response.raise_for_status()  # Check for any errors
@@ -23,7 +23,7 @@ class DownloadsHandler:
     def verify_integrity(self, package_name):
         print(f"{package_name} verifyin integrity... \n please wait...")
         expected_checksum = 1234  # DB verify if not in db continue with precaution
-        path = f"./emma/.EmmaRootUser/.temp/forge_{package_name}.zip"
+        path = f"emma/forge/.temp/forge_{package_name}.zip"
         downloaded_checksum = self.calculate_checksum(path)
         if downloaded_checksum == expected_checksum:
             print("Integrity check passed. The file is not corrupted.")

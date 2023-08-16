@@ -298,5 +298,750 @@
             "name": "server_shutdown",
             "content": "The function has been executed"
         }
+    ],
+    "1-emd-idjqw": [
+        {
+            "role": "system",
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "give me a random number btw 20 and 2931"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hows it going"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm doing great, thank you for asking! As an AI, I don't have feelings, but I'm always here to help you with anything you need. How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "give me a random number btw 20 and 2931\n"
+        },
+        {
+            "role": "user",
+            "content": "emma give me a random number"
+        },
+        {
+            "role": "user",
+            "content": "hey emma hows it goings"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! I'm doing great, thank you for asking. How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": ""
+        },
+        {
+            "role": "user",
+            "content": "emma\u00a1?"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "tell me ashort history"
+        },
+        {
+            "role": "assistant",
+            "content": "Sure! Here's a short history for you:\n\nOnce upon a time, in a land far away, there was a small village nestled in the mountains. The villagers lived simple lives, farming the land and taking care of their families.\n\nOne day, a group of explorers stumbled upon the village. They were amazed by the beauty of the surroundings and the warmth of the villagers. The explorers decided to stay and learn from the villagers.\n\nOver time, the village grew and prospered. The villagers shared their knowledge and skills with the explorers, and together they built a strong and vibrant community"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "how represent a dict into yaml file"
+        },
+        {
+            "role": "assistant",
+            "content": "To represent a dictionary in a YAML file, you can follow the YAML syntax. Here's an example of how you can do it:\n\n```yaml\nkey1: value1\nkey2: value2\nkey3:\n  - item1\n  - item2\nkey4:\n  subkey1: subvalue1\n  subkey2: subvalue2\n```\n\nIn this example, `key1` and `key2` have simple values assigned to them. `key3` is a list with two items, `item1` and `item2`. `"
+        },
+        {
+            "role": "user",
+            "content": "if i want just declare the dict withou params"
+        },
+        {
+            "role": "assistant",
+            "content": "If you want to declare an empty dictionary in a YAML file, you can simply use the following syntax:\n\n```yaml\n{}\n```\n\nThis will create an empty dictionary without any key-value pairs."
+        },
+        {
+            "role": "user",
+            "content": "if i want just declare the dict withou params\n"
+        },
+        {
+            "role": "assistant",
+            "content": "If you want to declare a dictionary without any key-value pairs in a YAML file, you can use the following syntax:\n\n```yaml\nmy_dict: {}\n```\n\nThis will create a dictionary named `my_dict` with no key-value pairs."
+        },
+        {
+            "role": "user",
+            "content": "emma?"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the main app"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread \"T0_USER_API_IO\""
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread \"T0_USER_API_IO\"\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm sorry, but I am unable to stop the thread T0_USER_API_IO."
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the thread T0_USER_API_IO\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop the main app"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop the main app\n"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emm"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today, Juan?"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today, Juan?"
+        },
+        {
+            "role": "user",
+            "content": "Emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "Emma stop the T0_LOGGER thread"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Emma stop the T0_LOGGER thread\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Emma stop the T0_LOGGER thread\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Emma stop the T0_LOGGER thread\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "are you here?="
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, I'm here! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you?"
+        },
+        {
+            "role": "user",
+            "content": "reload module router_io"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module router_io\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma give me a random number btw 29 and 51"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you?"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload module io_router\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_GPT\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread io_router"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "reload_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": ""
+        },
+        {
+            "role": "user",
+            "content": "search love in google"
+        },
+        {
+            "role": "function",
+            "name": "google_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread TO_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "stop thread TO_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread TO_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread TO_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread TO_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "restart thread T0_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "restart_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reload thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "module_reloader",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_INPUT_ROUTER"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma kill thread T0_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread TO_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "stop thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "stop_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "start thread T0_HOTKEYS"
+        },
+        {
+            "role": "function",
+            "name": "start_thread",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "remove thread T0_HOTKEYS\n"
+        },
+        {
+            "role": "function",
+            "name": "remove_thread",
+            "content": "The function has been executed"
+        }
     ]
 }

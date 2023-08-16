@@ -16,7 +16,11 @@ class Logger:
         self.log_buffer = LogBuffer()
 
     def main(self):
+        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+
         while not self.stop_flag:
             remitent, output = self.queue_handler.get_queue('LOGGING')
             dateTime = datetime.datetime.now()

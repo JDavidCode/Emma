@@ -9,9 +9,8 @@ import traceback
 
 
 class APP:
-    def __init__(self, queue_handler, console_handler, event_handler):
+    def __init__(self, queue_handler, event_handler):
         self.app = Flask(__name__)
-        self.console_handler = console_handler
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
@@ -113,12 +112,16 @@ class APP:
                     "response", "Unauthorized user", room=socket_id)
 
     def main(self):
+        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
         self.register_routes()
 
         try:
             self.socketio.run(self.app, host="0.0.0.0", port=4010)
-            self.console_handler.write(self.tag, "API IS RUNNING")
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "API IS RUNNING"))
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
@@ -135,16 +138,14 @@ class APP:
                 self.socketio.emit("response", data, room=session_id)
             except Exception as e:
                 traceback_str = traceback.format_exc()
-                self.console_handler.write(
-                    self.tag, f"ERROR while trying response to {session_id} request. {e}")
+                self.queue_handler.add_to_queue("CONSOLE",
+                                                (self.tag, f"ERROR while trying response to {session_id} request. {e}"))
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.tag, (e, traceback_str)))
 
     def run(self):
         self.event.set()
-        response_thread = threading.Thread(
-            target=self.process_responses, name=f"{self.tag} process_responses")
-        response_thread.start()
+
 
     def stop(self):
         self.stop_flag = True
@@ -152,7 +153,8 @@ class APP:
     def handle_shutdown(self):
         try:
             # Handle shutdown logic here
-            self.console_handler.write(self.tag, "Handling shutdown...")
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
         except Exception as e:

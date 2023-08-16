@@ -30,7 +30,7 @@ class RepositoryHandler:
 
     def verify_repository(self, package_name):
         if package_name in self.packages:
-            if os.path.exists(f"./emma/services/external/{package_name}"):
+            if os.path.exists(f"emma/services/external/{package_name}"):
                 print("Package is downloaded")
                 return True
             else:

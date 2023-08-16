@@ -18,7 +18,7 @@ img2pdf
 psutil
 openai
 pyatv
-Flask-SocketIO
+flask-socketio
 Flask
 geopy
 selenium

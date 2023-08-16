@@ -49,6 +49,20 @@
             "required": ["name"]
         }
     },
+    {
+        "name": "remove_thread",
+        "description": "Remove a thread from the list of knowed threads",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "thread_name": {
+                    "type": "string",
+                    "description": "The name of the thread or process."
+                }
+            },
+            "required": ["name"]
+        }
+    },
     
     {
         "name": "module_reloader",

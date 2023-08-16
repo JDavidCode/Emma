@@ -4,13 +4,12 @@ import emma.globals as EMMA_GLOBALS
 
 
 class SystemAwake:
-    def __init__(self, fase, console_handler=None, queue_handler=None, thread_manager=None, system_events=None, tools=None):
+    def __init__(self, fase, queue_handler=None, thread_manager=None, system_events=None, tools=None):
         self.tools_da = tools
         if fase == 0:
             self.establish_connections()
             self.set_environ_variables()
         else:
-            self.console_handler = console_handler
             self.queue_handler = queue_handler
             self.thread_manager = thread_manager
             self.system_events = system_events
@@ -27,8 +26,8 @@ class SystemAwake:
             os.environ["USERLANG"] = str(input("Select a language en - es"))
             os.environ["LOGGED"] = 'False'
             os.environ['USERNAME'] = str(input("Your Name"))
-            self.console_handler.write(
-                "SYSTEM AWAKE", "Setting default config")
+            self.queue_handler.add_to_queue("CONSOLE",
+                                            ("SYSTEM AWAKE", "Setting default config"))
         else:
             os.environ["USERLANG"] = data['user']['language']
             os.environ["LOGGED"] = str(data['preferences']['stay_signed_in'])
@@ -60,17 +59,16 @@ class SystemAwake:
         pass
 
     def run(self):
-        package_lis1t = [
+        package_list = [
             {
-                "repository": "https://github.com/JDavidCode/Emma-Web_Server/releases/download/v1.0.0/web_server.zip",
-                "package_name": "web_server",
+                "repository": "https://github.com/ItsMaper/Emma-Trading_Bots/releases/download/v1.0.0/trading_bots.zip",
+                "package_name": "trading_bots",
             }
         ]
-        package_list = []
         self.initialize_configuration()
         self.establish_connections()
         self.check_dependencies()
-        self.start_services(package_list)
+        self.start_services(package_list=[])
         self.perform_health_checks()
         self.setup_logging()
         self.handle_errors()

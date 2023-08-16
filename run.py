@@ -17,10 +17,12 @@ class EMCLKX:
             json = EMMA_GLOBALS.sys_v.server_performance(
                 self.thread_handler.get_thread_status()
             )
-            if timer >= 900:
+
+            if timer >= 20:
                 key, thread_status = self.thread_handler.get_thread_status()
                 for status in thread_status:
-                    self.console_handler.write("Main Thread",f"{str(status[0])} is active: {status[1]}")
+                    self.queue_handler.add_to_queue(
+                        "CONSOLE", ("Main Thread", f"{str(status[0])} is active: {status[1]}"))
                 timer = 0
             timer += 1
             time.sleep(1)

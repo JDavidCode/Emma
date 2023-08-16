@@ -3,10 +3,11 @@ import emma.globals as EMMA_GLOBALS
 from emma.system.sys_v import SysV
 import traceback
 
+
 class CommandRouter:
-    def __init__(self, console_handler, queue_handler, thread_handler, event_handler):
+    def __init__(self, queue_handler, event_handler, thread_handler):
         self.tag = "COMMAND ROUTER"
-        self.bp = SysV(queue_handler, console_handler)
+        self.bp = SysV(queue_handler)
         self.stop_flag = False
         self.event = threading.Event()
         self.queue_handler = queue_handler
@@ -14,27 +15,34 @@ class CommandRouter:
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
-        self.console_handler = console_handler
         self.thread_handler = thread_handler
 
     def handle_shutdown(self):
         try:
             # Handle shutdown logic here
-            self.console_handler.write(self.tag, "Handling shutdown...")
-            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)  # put it when ready for shutdown
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, traceback_str)))
 
     def main(self):
         module = ""
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.tag, "Is Started"])
         while not self.stop_flag:
-            session_id, data = self.queue_handler.get_queue("COMMAND", 0.1, (None, None))
-            if session_id is None:
+            session_id, data = self.queue_handler.get_queue(
+                "COMMAND", 0.1, (None, None))
+            if session_id is None or data is None:
                 continue
             dic, args = data
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (type(dic), dic, type(args), args)))
 
             try:
                 module = getattr(EMMA_GLOBALS, dic.get("module"))
@@ -48,10 +56,11 @@ class CommandRouter:
                 else:
                     self.execute_command(module, function_name=dic.get(
                         'key'), session_id=session_id)
-                  
+
             except Exception as e:
                 traceback_str = traceback.format_exc()
-                self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag, (e, traceback_str)))
 
     def execute_command(self, module, function_name, session_id, args=None):
         try:
@@ -59,12 +68,15 @@ class CommandRouter:
             function = getattr(module, function_name)
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.console_handler.write(self.tag, (e, "Error executing function.", function_name))
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, ("Cannot get Function Ref.", traceback_str))))
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, (e, "Error executing function.", function_name)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, ("Cannot get Function Ref.", traceback_str))))
 
         # call the function
         try:
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, [f"trying to execute {function_name} with args = {args}. Session: {session_id} "]))
+            self.queue_handler.add_to_queue("LOGGING", (self.tag, [
+                                            f"trying to execute {function_name} with args = {args}. Session: {session_id} "]))
             if args is None:
                 result = function()
             elif isinstance(args, (int, str)):
@@ -73,22 +85,27 @@ class CommandRouter:
                 result = function(**args)
             else:
                 result = None
-            
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (result)))
+
 
             if result is not None:
                 key, r = result
                 if key:
-                    self.queue_handler.add_to_queue('API_RESPONSE', (session_id, r))
-                self.queue_handler.add_to_queue("LOGGING", (self.tag,  (f"{function_name} has been executed", f"args = {args}", session_id)))
+                    self.queue_handler.add_to_queue(
+                        'API_RESPONSE', (session_id, r))
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag,  (f"{function_name} has been executed", f"args = {args}", session_id)))
             else:
-                self.queue_handler.add_to_queue("LOGGING", (self.tag, (f"Function {function_name} result is None, unable to unpack the result.", session_id)))
-                self.console_handler.write(self.tag, "Function result is None, unable to unpack the result.")
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag, (f"Function {function_name} result is None, unable to unpack the result.", session_id)))
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", (self.tag, "Function result is None, unable to unpack the result."))
 
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.console_handler.write(self.tag, f"Error executing {function_name} function.. {e}")
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, ("Error executing function.", traceback_str))))
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, f"Error executing {function_name} function.. {e}"))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, ("Error executing function.", traceback_str))))
 
     def args_identifier(self, args):
         return args

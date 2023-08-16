@@ -49,34 +49,33 @@ class EMMA_GLOBALS:
     class system:
         def __init__(self) -> None:
             self.main()
-            self.logger()
             self.protocols()
 
         def main(self):
             sys_variations = importlib.import_module("emma.system.sys_v")
             core = importlib.import_module("emma.system.core_threading")
+            _logger = importlib.import_module("emma.system.logging.logger")
+            _console = importlib.import_module("emma.system.logging.console")
 
-            global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v
+            global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v, logger
 
             core_thread_handler = core.ThreadHandler()
             core_queue_handler = core.QueueHandler()
-            core_console_handler = core.ConsoleHandler(core_queue_handler)
-            core_event_handler = core.EventHandler(core_console_handler)
+            core_console_handler = _console.ConsoleHandler
+            core_event_handler = core.EventHandler(core_queue_handler)
             sys_v = sys_variations.SysV(
-                core_queue_handler, core_console_handler)
+                core_queue_handler)
+            logger = _logger.Logger
 
         def protocols(self):
+            prt_hotkeys = importlib.import_module(
+                "emma.system.protocols.hotkeys")
             prt_session = importlib.import_module(
                 "emma.system.protocols.sessions.sessions_handler")
 
-            global session_protocols
+            global session_protocols, hotkeys_protocols
             session_protocols = prt_session.SessionsHandler
-
-        def logger(self):
-            _logger = importlib.import_module("emma.system.logging.logger")
-
-            global logger
-            logger = _logger.Logger
+            hotkeys_protocols = prt_hotkeys.HOTKEYS
 
         def network(self):
             pass
@@ -103,7 +102,7 @@ class EMMA_GLOBALS:
             global services_db, services_gpt, services_api_user_io, services_api_streaming
 
             services_db = _services_db.DBHandler(
-                core_queue_handler, core_console_handler)
+                core_queue_handler)
             services_gpt = _services_gpt.GPT
 
             services_api_user_io = _services_api_user_io.APP
@@ -146,10 +145,10 @@ class EMMA_GLOBALS:
         global command_router, io_router, sys_awake, forge_server, thread_instances
 
         sys_awake = self.sys_awake.SystemAwake(
-            1, core_console_handler, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
+            1, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
         command_router = cmmand_router.CommandRouter
         io_router = i_router.InputRouter
-        thread_instances = {}
+        thread_instances = None
         forge_server = forge.Builder([tools_cs, tools_da])
 
 
@@ -173,43 +172,6 @@ class FORGE_GLOBALS:
             print(f"Error creating instance of {package_name}: {e}")
 
 
-def recreate_reloaded_module(module_name):
-    diccionary = tools_da.json_loader(
-        stcpath_globals)
-    key = diccionary.keys()
-
-    for i in key:
-        if module_name in i:
-            module_info = diccionary.get(i)
-            endpoint = module_info.get("endpoint")
-            module_path = module_info.get("path")
-            args = module_info.get("args")
-            isinsta = module_info.get("instance")
-            args = [eval(arg) for arg in args]
-
-            try:
-                # Load the module dynamically based on its path
-                module = importlib.import_module(module_path)
-
-                # Create a new instance of the reloaded module with the given arguments
-
-                if eval(isinsta) and args != []:
-                    new_instance = getattr(module, endpoint)(*args)
-                elif eval(isinsta):
-                    new_instance = getattr(module, endpoint)()
-                else:
-                    new_instance = getattr(module, endpoint)
-
-                # Replace the old instance with the new on
-                global_namespace = globals()
-                global_namespace[module_name] = new_instance
-
-                return True, f"Instance {module_name} of module {module_name} has been reloaded."
-            except Exception as e:
-                traceback_str = traceback.format_exc()
-                core_queue_handler.add_to_queue("LOGGING", ("RECREATE INSTANCE", [
-                                                f"Error recreating instance of {module_name}: {e}", traceback_str]))
-                return False, traceback_str
 
 
 EMMA_GLOBALS()

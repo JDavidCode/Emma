@@ -7,10 +7,10 @@ import logging
 import threading
 import traceback
 
+
 class APP:
-    def __init__(self, queue_handler, console_handler, event_handler):
+    def __init__(self, queue_handler, event_handler):
         self.app = Flask(__name__)
-        self.console_handler = console_handler
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
@@ -19,7 +19,7 @@ class APP:
         self.tag = "API Thread"
         self.socketio = SocketIO(self.app)
         self.stop_flag = False
-
+        self.response_thread = None
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
         self.sessions = {}
@@ -112,19 +112,27 @@ class APP:
             return jsonify(user_sessions)
 
     def main(self):
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.tag, "Is Started"])
         self.register_routes()
 
         try:
             self.socketio.run(self.app, host="0.0.0.0", port=3018)
-            self.console_handler.write(self.tag, "API IS RUNNING")
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "API IS RUNNING"))
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, traceback_str)))
 
     def process_responses(self):
         while not self.stop_flag:
-            session_id, data = self.queue_handler.get_queue("API_RESPONSE", 0.1, (None, None))
+            session_id, data = self.queue_handler.get_queue(
+                "API_RESPONSE", 0.1, (None, None))
             if session_id is None:
                 continue
             # Emit the response to the correct session_id
@@ -132,13 +140,16 @@ class APP:
                 self.socketio.emit("response", data, room=session_id)
             except Exception as e:
                 traceback_str = traceback.format_exc()
-                self.console_handler.write(self.tag, f"ERROR while tryin response to {session_id} request. {e}")
-                self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+                self.queue_handler.add_to_queue("CONSOLE",
+                                                (self.tag, f"ERROR while tryin response to {session_id} request. {e}"))
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.tag, (e, traceback_str)))
 
     def run(self):
         self.event.set()
-        response_thread = threading.Thread(target=self.process_responses, name=f"{self.tag} process_responses")
-        response_thread.start()
+        self.response_thread = threading.Thread(
+            target=self.process_responses, name=f"{self.tag} process_responses")
+        self.response_thread.start()
 
     def stop(self):
         self.stop_flag = True
@@ -146,12 +157,14 @@ class APP:
     def handle_shutdown(self):
         try:
             # Handle shutdown logic here
-            self.console_handler.write(self.tag, "Handling shutdown...")
-            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)  # put it when ready for shutdown
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
-
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, traceback_str)))
 
 
 if __name__ == "__main__":

@@ -3,9 +3,9 @@ import threading
 import emma.globals as EMMA_GLOBALS
 import traceback
 
+
 class SessionsHandler:
-    def __init__(self, queue_handler, console_handler,event_handler):
-        self.console_handler = console_handler
+    def __init__(self, queue_handler, event_handler):
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
@@ -19,17 +19,20 @@ class SessionsHandler:
     def handle_shutdown(self):
         try:
             # Handle shutdown logic here
-            self.console_handler.write(self.tag, "Handling shutdown...")
-            self.event_handler.subscribers_shutdown_flag(self)#put it when ready for shutdown
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)  # put it when ready for shutdown
 
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.tag, (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.tag, (e, traceback_str)))
 
     def load_user(self, user_id):
         self.user_storage = EMMA_GLOBALS.tools_da.json_loader(
             f"emma/common/users/{user_id}.json")
-        
+
     def create_user_json(self, name, age, birthday, level):
         user_data = {
             "user": {
@@ -72,15 +75,13 @@ class SessionsHandler:
             prompt_session = self.create_prompt_session()
 
             # Load existing sessions or create an empty dictionary
-            sessions = EMMA_GLOBALS.tools_da.json_loader(path, json_type="dict")
+            sessions = EMMA_GLOBALS.tools_da.json_loader(
+                path, json_type="dict")
             if sessions is None:
                 sessions = {}
 
-
             if session_id not in sessions:
                 sessions[session_id] = [prompt_session]
-
-
 
             # Check if the prompt session is already in the sessions list
             if prompt_session not in sessions[session_id]:
@@ -97,7 +98,8 @@ class SessionsHandler:
             self.user_storage.setdefault("devices", [])
 
             # Find the index of the device with the given device_id, or -1 if not found
-            existing_device_index = next((i for i, device in enumerate(self.user_storage["devices"]) if device["device_id"] == device_id), -1)
+            existing_device_index = next((i for i, device in enumerate(
+                self.user_storage["devices"]) if device["device_id"] == device_id), -1)
 
             if existing_device_index == -1:
                 # If the device doesn't exist, create a new entry
@@ -192,9 +194,13 @@ class SessionsHandler:
                 del self.user_storage[user_id]
 
     def main(self):
+        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
         while not self.stop_flag:
-            request, session_data = self.queue_handler.get_queue('PROTO_SESSIONS',0.1, (None, None))
+            request, session_data = self.queue_handler.get_queue(
+                'PROTO_SESSIONS', 0.1, (None, None))
             if request is None:
                 continue
             self.user_storage = {}
@@ -243,11 +249,11 @@ class SessionsHandler:
                                 user_id, session_info)
                         else:
                             # Handle the case when 'session_name' is missing
-                            self.console_handler.write(self.tag, [
-                                                       "Missing session_name for session data, this chat will not be saved: ", device_info])
+                            self.queue_handler.add_to_queue("CONSOLE", (self.tag, [
+                                "Missing session_name for session data, this chat will not be saved: ", device_info]))
                     else:
-                        self.console_handler.write(self.tag, [
-                                                   "Missing user_id for session data, this chat will not be saved: ", device_info])
+                        self.queue_handler.add_to_queue("CONSOLE", (self.tag, [
+                            "Missing user_id for session data, this chat will not be saved: ", device_info]))
 
             elif request == "get_user_devices":
                 if session_data:

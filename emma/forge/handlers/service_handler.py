@@ -12,15 +12,14 @@ class ServiceHandler:
         self.tools_da.yaml_saver(self.file_path, self.data)
 
     def add_service(self, service_data, is_forge_package=True):
-        if not is_forge_package:
-            self.file_path = "./emma/config/server_config.yml"
-            self.load_data()
-
-        service_list = self.data.setdefault(
-            "Forge", {}).setdefault("services", [])
+        forge_data = self.data.setdefault("Forge", {})
+        service_list = forge_data.setdefault("services", [])
         service_list.append(service_data)
+
+        if not is_forge_package:
+            self.file_path = "emma/config/server_config.yml"
+            self.load_data()
         self.save_data()
-        print("Service added successfully.")
 
     def update_service(self, package_name, updated_service_data):
         service_list = self.data["Forge"]["services"]

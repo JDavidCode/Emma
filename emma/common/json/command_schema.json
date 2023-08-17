@@ -1,7 +1,15 @@
 [
     {
         "name": "server_shutdown",
-        "description": "stop the app",
+        "description": "stop the server",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+        {
+        "name": "server_restart",
+        "description": "restart the server",
         "parameters": {
             "type": "object",
             "properties": {}

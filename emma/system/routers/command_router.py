@@ -34,9 +34,7 @@ class CommandRouter:
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.tag, "Is Started"])
+        
         while not self.stop_flag:
             session_id, data = self.queue_handler.get_queue(
                 "COMMAND", 0.1, (None, None))
@@ -112,6 +110,8 @@ class CommandRouter:
 
     def run(self):
         self.event.set()
+        self.queue_handler.add_to_queue(
+                "CONSOLE", [self.tag, "Is Started"])
 
     def stop(self):
         self.stop_flag = True

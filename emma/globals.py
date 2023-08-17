@@ -14,6 +14,13 @@ class EMMA_GLOBALS:
         self.services()
         self.instances()
 
+    def reset_globals(self):
+        self.tools_instances()
+        self.variables()
+        self.system()
+        self.services()
+        self.instances()
+
     def tools_instances(self):
         tools_converters = importlib.import_module(
             "emma.tools.converters.local.kit"
@@ -57,7 +64,7 @@ class EMMA_GLOBALS:
             _logger = importlib.import_module("emma.system.logging.logger")
             _console = importlib.import_module("emma.system.logging.console")
 
-            global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v, logger
+            global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v, logger, app
 
             core_thread_handler = core.ThreadHandler()
             core_queue_handler = core.QueueHandler()
@@ -66,6 +73,7 @@ class EMMA_GLOBALS:
             sys_v = sys_variations.SysV(
                 core_queue_handler)
             logger = _logger.Logger
+            app = None
 
         def protocols(self):
             prt_hotkeys = importlib.import_module(
@@ -172,6 +180,4 @@ class FORGE_GLOBALS:
             print(f"Error creating instance of {package_name}: {e}")
 
 
-
-
-EMMA_GLOBALS()
+inst = EMMA_GLOBALS()

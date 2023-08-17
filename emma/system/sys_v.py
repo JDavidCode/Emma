@@ -10,12 +10,12 @@ import importlib
 import emma.globals as EMMA_GLOBALS
 import traceback
 
-
 class SysV:
     def __init__(self, queue_handler=None):
         self.queue_handler = queue_handler
         self.tag = "SYSTEM V"
         self.func_instances = {}
+        self.instances = {}
 
     def server_performance(self, threads):
         dateTime = datetime.datetime.now()
@@ -166,7 +166,7 @@ class SysV:
                         f"Error recreating instance of {module_name}: {e}", traceback_str]))
                     return False, traceback_str
 
-    def server_shutdown(self):
+    def server_shutdown(self, reload=False):
         key = False
         timer = 0
         EMMA_GLOBALS.core_event_handler.notify_shutdown(
@@ -190,7 +190,13 @@ class SysV:
         self.queue_handler.add_to_queue("CONSOLE", ("SYS SHUTDOWN", val))
         self.temp_clearer()
         self.remove_pycache("./emma")
-        os._exit(0)
+        if not reload:
+            os._exit(0)
+
+    def server_restart(self):
+        self.server_shutdown(reload=True)
+        time.sleep(10)
+        EMMA_GLOBALS.app.reload()
 
     def remove_pycache(self, dir_path):
         for dir_name, subdirs, files in os.walk(dir_path):

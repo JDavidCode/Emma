@@ -112,14 +112,15 @@ class APP:
                     "response", "Unauthorized user", room=socket_id)
 
     def main(self):
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+
         self.register_routes()
 
         try:
-            self.socketio.run(self.app, host="0.0.0.0", port=4010)
+            self.socketio.run(self.app, host="0.0.0.0",
+                              port=4010, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.tag, "API IS RUNNING"))
         except Exception as e:
@@ -145,7 +146,7 @@ class APP:
 
     def run(self):
         self.event.set()
-
+        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
 
     def stop(self):
         self.stop_flag = True

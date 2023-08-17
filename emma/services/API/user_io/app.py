@@ -121,7 +121,7 @@ class APP:
         self.register_routes()
 
         try:
-            self.socketio.run(self.app, host="0.0.0.0", port=3018)
+            self.socketio.run(self.app, host="0.0.0.0", port=3018, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.tag, "API IS RUNNING"))
         except Exception as e:

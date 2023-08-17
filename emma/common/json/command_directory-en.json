@@ -4,6 +4,11 @@
     "args_key": "None",
     "required_lvl": 1
 },
+    "server_restart": {
+    "module": "sys_v",
+    "args_key": "None",
+    "required_lvl": 1
+},
     "start_thread": {
     "module": "core_thread_handler",
     "args_key": "*args",

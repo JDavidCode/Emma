@@ -1,24 +1,25 @@
 # BasePythonLibraries
+import threading
 import time
 import emma.globals as EMMA_GLOBALS
 
 
 class EMCLKX:
     def __init__(self) -> None:
-        EMMA_GLOBALS.sys_awake.run()
-        self.thread_handler = EMMA_GLOBALS.core_thread_handler
-        self.queue_handler = EMMA_GLOBALS.core_queue_handler
-        self.console_handler = EMMA_GLOBALS.core_console_handler
-        self.server_integrity()
+        self.event = threading.Event()  # Initialize the event attribute
+        self.stop_flag = False
+        self.run()
 
     def server_integrity(self):
         timer = 1000
-        while True:
+        self.event.wait()
+
+        while not self.stop_flag:
             json = EMMA_GLOBALS.sys_v.server_performance(
                 self.thread_handler.get_thread_status()
             )
 
-            if timer >= 20:
+            if timer >= 1000:
                 key, thread_status = self.thread_handler.get_thread_status()
                 for status in thread_status:
                     self.queue_handler.add_to_queue(
@@ -26,6 +27,24 @@ class EMCLKX:
                 timer = 0
             timer += 1
             time.sleep(1)
+
+    def reload(self):
+        print("is running")
+        EMMA_GLOBALS.inst.reset_globals()
+        self.event.clear()
+        self.run()
+
+    def stop(self):
+        self.stop_flag = True
+
+    def run(self):
+        EMMA_GLOBALS.sys_awake.run()
+        self.thread_handler = EMMA_GLOBALS.core_thread_handler
+        self.queue_handler = EMMA_GLOBALS.core_queue_handler
+        self.console_handler = EMMA_GLOBALS.core_console_handler
+        self.event.set()  # Set the event to indicate readiness
+        EMMA_GLOBALS.app = self
+        self.server_integrity()
 
 
 if __name__ == "__main__":

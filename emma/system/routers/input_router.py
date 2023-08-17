@@ -29,8 +29,7 @@ class InputRouter:
     def main(self):
         self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+        
         while not self.stop_flag:
             # Here suppose that have many io queues than only 1
             try:
@@ -84,6 +83,7 @@ class InputRouter:
         self.event.set()
         response_thread = threading.Thread(target=self.process_responses)
         response_thread.start()
+        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
 
     def stop(self):
         self.stop_flag = True

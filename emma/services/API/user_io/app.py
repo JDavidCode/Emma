@@ -9,14 +9,15 @@ import traceback
 
 
 class APP:
-    def __init__(self, queue_handler, event_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
+        self.name = name
+        self.queue_name = queue_name
         self.app = Flask(__name__)
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
-        self.tag = "API Thread"
         self.socketio = SocketIO(self.app)
         self.stop_flag = False
         self.response_thread = None
@@ -89,11 +90,11 @@ class APP:
                 self.queue_handler.add_to_queue(
                     "API_INPUT", ((socket_id, session_id, user_id), data))
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, ((socket_id, session_id, user_id), data)))
+                    "LOGGING", (self.name, ((socket_id, session_id, user_id), data)))
 
             else:
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, ("unauthorized User on socket: ", socket_id)))
+                    "LOGGING", (self.name, ("unauthorized User on socket: ", socket_id)))
                 self.socketio.emit(
                     "response", "Unauthorized user", room=socket_id)
 
@@ -113,21 +114,22 @@ class APP:
 
     def main(self):
         self.queue_handler.add_to_queue(
-            "CONSOLE", [self.tag, "Has been instanciate"])
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
-                "CONSOLE", [self.tag, "Is Started"])
+                "CONSOLE", [self.name, "Is Started"])
         self.register_routes()
 
         try:
-            self.socketio.run(self.app, host="0.0.0.0", port=3018, allow_unsafe_werkzeug=True)
+            self.socketio.run(self.app, host="0.0.0.0",
+                              port=3018, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "API IS RUNNING"))
+                "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
     def process_responses(self):
         while not self.stop_flag:
@@ -141,14 +143,28 @@ class APP:
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue("CONSOLE",
-                                                (self.tag, f"ERROR while tryin response to {session_id} request. {e}"))
+                                                (self.name, f"ERROR while tryin response to {session_id} request. {e}"))
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, (e, traceback_str)))
+                    "LOGGING", (self.name, (e, traceback_str)))
+    def attach_components(self, module_name):
+            attachable_module = __import__(module_name)
 
+            for component_name in dir(attachable_module):
+                component = getattr(attachable_module, component_name)
+
+                if callable(component):
+                    self.thread_utils.attach_function(
+                        self, component_name, component)
+                elif isinstance(component, threading.Thread):
+                    self.thread_utils.attach_thread(
+                        self, component_name, component)
+                else:
+                    self.thread_utils.attach_variable(
+                        self, component_name, component)
     def run(self):
         self.event.set()
         self.response_thread = threading.Thread(
-            target=self.process_responses, name=f"{self.tag} process_responses")
+            target=self.process_responses, name=f"{self.name} process_responses")
         self.response_thread.start()
 
     def stop(self):
@@ -158,13 +174,13 @@ class APP:
         try:
             # Handle shutdown logic here
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "Handling shutdown..."))
+                "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
 
 if __name__ == "__main__":

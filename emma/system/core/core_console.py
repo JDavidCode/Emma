@@ -4,22 +4,24 @@ import threading
 
 
 class ConsoleHandler:
-    def __init__(self, queue_handler):
+    def __init__(self, name, queue_name, queue_handler):
+        self.name = name
+        self.queue_name = queue_name
         self.queue_handler = queue_handler
         dateTime = datetime.datetime.now()
+        self.event = threading.Event()
+
         clock = dateTime.time()
         self.clock = clock.strftime("%H:%M:%S")
         self.stop_flag = False
-        self.event = threading.Event()
-        self.tag = "CONSOLE"
 
     def main(self):
         self.queue_handler.add_to_queue(
-            "CONSOLE", [self.tag, "Has been instanciate"])
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
-                "CONSOLE", [self.tag, "Is Started"])
+                "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             remitent, output = self.queue_handler.get_queue("CONSOLE")
             print(f"[{self.clock}] {remitent} | {output}")

@@ -3,11 +3,14 @@ import importlib
 import os
 import tarfile
 import subprocess
+import threading
 from emma.globals import FORGE_GLOBALS
 
 
 class Builder:
-    def __init__(self, tools=[]):
+    def __init__(self,  name, queue_name,tools=[]):
+        self.name = name
+        self.queue_name = queue_name
         self.tools_cs, self.tools_da = tools
         _service = importlib.import_module(
             "emma.forge.handlers.service_handler")
@@ -143,6 +146,22 @@ class Builder:
         self.load_service_data()
         FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
+    def attach_components(self, module_name):
+        attachable_module = __import__(module_name)
+
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
+
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
+                
     def run(self, package_list):
         if len(package_list) == 0:
             return

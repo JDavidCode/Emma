@@ -1,14 +1,16 @@
 import json
 import threading
+import time
 import openai
 import emma.globals as EMMA_GLOBALS
 import traceback
 
 
 class GPT:
-    def __init__(self, queue_handler):
+    def __init__(self, name, queue_name, queue_handler):
         openai.api_key = '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'
-        self.tag = "GPT"
+        self.name = name
+        self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.stop_flag = False
         self.event = threading.Event()
@@ -22,12 +24,12 @@ class GPT:
         try:
             sessions[session_id].append(message)
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (user_id, session_id, message)))
+                "LOGGING", (self.name, (user_id, session_id, message)))
 
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
             # manage unendintefied session
         with open(path, 'w') as file:
             json.dump(sessions, file, indent=4)
@@ -44,16 +46,34 @@ class GPT:
 
         return truncated_chat
 
-    def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.tag, "Has been instanciate"])
-        self.event.wait()
-        if not self.stop_flag:
+    def verify_overload(self):
+        global coun
+        lenght = EMMA_GLOBALS.core_queue_handler.get_queue_lenght(
+            self.queue)  # need fix
+        if lenght >= 100:
             self.queue_handler.add_to_queue(
-                "CONSOLE", [self.tag, "Is Started"])
+                "CONSOLE", ("", "creating new worker"))
+            current_thread = threading.current_thread()
+            thread_name = current_thread.name
+            EMMA_GLOBALS.sys_v.create_new_worker(thread_name)
+
+    def main(self):
+        firts = True
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Has been instanciate"])
+
+        self.event.wait()
+
         while not self.stop_flag:
+            if not self.stop_flag and firts:
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", [self.name, "Is Started"])
+                firts = False
+
             ids, data = self.queue_handler.get_queue(
-                "GPT_INPUT", 0.1, (None, None))
+                self.queue_name, 0.1, (None, None))
+            
+
             if ids is None:
                 continue
             socket_id, session_id, user_id = ids
@@ -97,7 +117,7 @@ class GPT:
                             args = {}
 
                         self.queue_handler.add_to_queue(
-                            "LOGGING", (self.tag, function_call))
+                            "LOGGING", (self.name, function_call))
 
                         self.queue_handler.add_to_queue(
                             'RESPONSE', ['funcall', [function_name, args], socket_id])
@@ -110,14 +130,14 @@ class GPT:
 
                         self.update_chat(user_id, session_id, message)
                         # chat = self.get_chat(user_id, session_id)
-                        # self.queue_handler.add_to_queue("CONSOLE",self.tag, [user_id, message])
+                        # self.queue_handler.add_to_queue("CONSOLE",self.name, [user_id, message])
 
                         # Extend conversation with function response
                         # second_response = openai.ChatCompletion.create(
                         #    model="gpt-3.5-turbo-0613",
                         #   messages=chat,)
                         # get a new response from GPT where it can see the function response
-                        # self.queue_handler.add_to_queue("CONSOLE",self.tag, second_response["choices"][0]["message"]["content"])
+                        # self.queue_handler.add_to_queue("CONSOLE",self.name, second_response["choices"][0]["message"]["content"])
                     else:
                         answer = response["choices"][0]["message"]["content"]
                         message = {
@@ -136,12 +156,12 @@ class GPT:
                         'RESPONSE', ['s0offline', data, socket_id])
                     traceback_str = traceback.format_exc()
                     self.queue_handler.add_to_queue(
-                        "LOGGING", (self.tag, (t, traceback_str)))
+                        "LOGGING", (self.name, (t, traceback_str)))
 
                 except Exception as e:
                     traceback_str = traceback.format_exc()
                     self.queue_handler.add_to_queue(
-                        "LOGGING", (self.tag, (e, traceback_str)))
+                        "LOGGING", (self.name, (e, traceback_str)))
 
     def run(self):
         self.event.set()

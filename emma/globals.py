@@ -8,7 +8,7 @@ class EMMA_GLOBALS:
     def __init__(self):
         self.sys_awake = importlib.import_module("emma.system.awake")
         self.tools_instances()
-        self.sys_awake.SystemAwake(fase=0, tools=tools_da)
+        self.sys_awake.SystemAwake("AWAKE", None, fase=0, tools=tools_da)
         self.variables()
         self.system()
         self.services()
@@ -60,18 +60,24 @@ class EMMA_GLOBALS:
 
         def main(self):
             sys_variations = importlib.import_module("emma.system.sys_v")
-            core = importlib.import_module("emma.system.core_threading")
+            core_thread = importlib.import_module(
+                "emma.system.core.core_threading")
+            core_queue = importlib.import_module("emma.system.core.core_queue")
+            core_event = importlib.import_module("emma.system.core.core_event")
+            _console = importlib.import_module("emma.system.core.core_console")
+
             _logger = importlib.import_module("emma.system.logging.logger")
-            _console = importlib.import_module("emma.system.logging.console")
 
             global core_thread_handler, core_queue_handler, core_console_handler, core_event_handler, sys_v, logger, app
 
-            core_thread_handler = core.ThreadHandler()
-            core_queue_handler = core.QueueHandler()
+            core_thread_handler = core_thread.ThreadHandler(
+                "THREAD HANDLER", None)
+            core_queue_handler = core_queue.QueueHandler("QUEUE HANDLER", None)
             core_console_handler = _console.ConsoleHandler
-            core_event_handler = core.EventHandler(core_queue_handler)
-            sys_v = sys_variations.SysV(
-                core_queue_handler)
+            core_event_handler = core_event.EventHandler(
+                "EVENT HANDLER", None, core_queue_handler)
+            sys_v = sys_variations.SysV("SYS", None,
+                                        core_queue_handler)
             logger = _logger.Logger
             app = None
 
@@ -109,8 +115,8 @@ class EMMA_GLOBALS:
 
             global services_db, services_gpt, services_api_user_io, services_api_streaming
 
-            services_db = _services_db.DBHandler(
-                core_queue_handler)
+            services_db = _services_db.DBHandler("SERVICE DB", None,
+                                                 core_queue_handler)
             services_gpt = _services_gpt.GPT
 
             services_api_user_io = _services_api_user_io.APP
@@ -152,12 +158,12 @@ class EMMA_GLOBALS:
 
         global command_router, io_router, sys_awake, forge_server, thread_instances
 
-        sys_awake = self.sys_awake.SystemAwake(
-            1, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
+        sys_awake = self.sys_awake.SystemAwake("QUEUE HANDLER", None,
+                                               1, core_queue_handler, core_thread_handler, core_event_handler, tools_da)
         command_router = cmmand_router.CommandRouter
         io_router = i_router.InputRouter
         thread_instances = None
-        forge_server = forge.Builder([tools_cs, tools_da])
+        forge_server = forge.Builder("FORGE", None, [tools_cs, tools_da])
 
 
 class FORGE_GLOBALS:

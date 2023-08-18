@@ -24,7 +24,7 @@ defaults:
       endpoint: logger
       queue: LOGGING
       queue_maxsize: 0
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_LOGGER
 
     - args:
@@ -32,7 +32,7 @@ defaults:
       autorestart: true
       autostart: true
       endpoint: core_console_handler
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_CONSOLE
       visible: false
 
@@ -54,7 +54,7 @@ defaults:
       endpoint: command_router
       queue: COMMAND
       queue_maxsize: 0
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_COMMANDS
 
     - args:
@@ -65,7 +65,7 @@ defaults:
       endpoint: session_protocols
       queue: PROTO_SESSIONS
       queue_maxsize: 0
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_PROTO_SESSIONS
 
     - args:
@@ -74,7 +74,7 @@ defaults:
       autorestart: true
       autostart: true
       endpoint: io_router
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_INPUT_ROUTER
 
     - args:
@@ -85,7 +85,7 @@ defaults:
       endpoint: services_api_user_io
       queue: API_INPUT
       queue_maxsize: 0
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_USER_API_IO
 
     - args:
@@ -96,7 +96,7 @@ defaults:
       endpoint: services_api_streaming
       queue: API_STREAMING
       queue_maxsize: 0
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T1_USER_API_STREAMING
 
     - args:
@@ -106,6 +106,7 @@ defaults:
       endpoint: services_gpt
       queue: GPT_INPUT
       queue_maxsize: 1
-      thread_is_daemon: true
+      thread_is_daemon: false
       thread_name: T0_GPT
+      
 version: 1.0

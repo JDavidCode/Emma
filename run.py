@@ -29,7 +29,6 @@ class EMCLKX:
             time.sleep(1)
 
     def reload(self):
-        print("is running")
         EMMA_GLOBALS.inst.reset_globals()
         self.event.clear()
         self.run()

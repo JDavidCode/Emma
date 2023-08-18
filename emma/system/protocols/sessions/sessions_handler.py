@@ -5,29 +5,29 @@ import traceback
 
 
 class SessionsHandler:
-    def __init__(self, queue_handler, event_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
+        self.name = name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
+        self.lock = threading.Lock()
         self.stop_flag = False
         self.user_storage = {}
-        self.lock = threading.Lock()
-        self.tag = "NETWORK HANDLER"
 
     def handle_shutdown(self):
         try:
             # Handle shutdown logic here
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "Handling shutdown..."))
+                "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
 
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
     def load_user(self, user_id):
         self.user_storage = EMMA_GLOBALS.tools_da.json_loader(
@@ -194,10 +194,12 @@ class SessionsHandler:
                 del self.user_storage[user_id]
 
     def main(self):
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
         if not self.stop_flag:
-            self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             request, session_data = self.queue_handler.get_queue(
                 'PROTO_SESSIONS', 0.1, (None, None))
@@ -249,10 +251,10 @@ class SessionsHandler:
                                 user_id, session_info)
                         else:
                             # Handle the case when 'session_name' is missing
-                            self.queue_handler.add_to_queue("CONSOLE", (self.tag, [
+                            self.queue_handler.add_to_queue("CONSOLE", (self.name, [
                                 "Missing session_name for session data, this chat will not be saved: ", device_info]))
                     else:
-                        self.queue_handler.add_to_queue("CONSOLE", (self.tag, [
+                        self.queue_handler.add_to_queue("CONSOLE", (self.name, [
                             "Missing user_id for session data, this chat will not be saved: ", device_info]))
 
             elif request == "get_user_devices":
@@ -312,6 +314,23 @@ class SessionsHandler:
                     user_id = session_data.get('user_id')
                     if user_id:
                         self.clear_all_sessions_from_user(user_id)
+
+
+    def attach_components(self, module_name):
+        attachable_module = __import__(module_name)
+
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
+
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
 
             # Add more elif blocks for other requests as needed
     def run(self):

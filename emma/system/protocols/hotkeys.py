@@ -5,24 +5,28 @@ import emma.globals as EMMA_GLOBALS
 
 
 class HOTKEYS:
-    def __init__(self, queue_handler, event_handler) -> None:
+    def __init__(self, name, queue_name, queue_handler, event_handler) -> None:
+        self.name = name
+        self.queue_name = queue_name
         self.event_handler = event_handler
         self.queue_handler = queue_handler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
-        self.tag = "HOTKEY PROTOCOLS"
         self.stop_flag = False
         self.hotkey_ctrl_0 = None
         self.hotkey_ctrl_8 = None
         self.custom_hotkeys = {}
 
     def set_hotkeys(self):
-        self.hotkey_ctrl_0 = keyboard.add_hotkey("ctrl+0", self.local_handle_shutdown)
-        self.hotkey_ctrl_8 = keyboard.add_hotkey("ctrl+8", self.handle_stop_task)
+        self.hotkey_ctrl_0 = keyboard.add_hotkey(
+            "ctrl+0", self.local_handle_shutdown)
+        self.hotkey_ctrl_8 = keyboard.add_hotkey(
+            "ctrl+8", self.handle_stop_task)
         self.hotkey_ctrl_1 = keyboard.add_hotkey("ctrl+1", self.handle_reload)
-    
+
     def add_custom_hotkey(self, hotkey_combination, handler_function):
-        custom_hotkey = keyboard.add_hotkey(hotkey_combination, handler_function)
+        custom_hotkey = keyboard.add_hotkey(
+            hotkey_combination, handler_function)
         self.custom_hotkeys[hotkey_combination] = custom_hotkey
 
     def remove_custom_hotkey(self, hotkey_combination):
@@ -55,7 +59,7 @@ class HOTKEYS:
 
     def main(self):
         self.queue_handler.add_to_queue(
-            "CONSOLE", [self.tag, "Has been instanciate"])
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
         while not self.stop_flag:
             time.sleep(1)
@@ -73,11 +77,26 @@ class HOTKEYS:
 
     def handle_stop_task(self):
         print("Stop task hotkey pressed")
+        
+    def attach_components(self, module_name):
+            attachable_module = __import__(module_name)
 
+            for component_name in dir(attachable_module):
+                component = getattr(attachable_module, component_name)
+
+                if callable(component):
+                    self.thread_utils.attach_function(
+                        self, component_name, component)
+                elif isinstance(component, threading.Thread):
+                    self.thread_utils.attach_thread(
+                        self, component_name, component)
+                else:
+                    self.thread_utils.attach_variable(
+                        self, component_name, component)
     def run(self):
         self.set_hotkeys()
         self.event.set()
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+        self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])
 
     def stop(self):
         self.stop_flag = True

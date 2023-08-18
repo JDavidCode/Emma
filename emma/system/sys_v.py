@@ -10,10 +10,13 @@ import importlib
 import emma.globals as EMMA_GLOBALS
 import traceback
 
+
 class SysV:
-    def __init__(self, queue_handler=None):
+    def __init__(self, name, queue_name, queue_handler=None):
+        self.name = name
+        self.queue_name = queue_name
         self.queue_handler = queue_handler
-        self.tag = "SYSTEM V"
+        self.name = name
         self.func_instances = {}
         self.instances = {}
 
@@ -43,7 +46,7 @@ class SysV:
 
         return data
 
-    def initialize_threads(self, forge=False):
+    def instance_threads(self, forge=False):
         if forge:
             config_file = "emma/config/forge_config.yml"
         else:
@@ -83,6 +86,8 @@ class SysV:
             if args != []:
                 # Process each argument
                 processed_args = []
+                processed_args.append(dic.get("thread_name"))
+                processed_args.append(dic.get("queue", None))
                 for arg in args:
                     if arg in arg_mapping:
                         processed_args.append(arg_mapping[arg])
@@ -90,7 +95,8 @@ class SysV:
                     else:
                         # If the argument is not in the mapping, you might handle this case as needed
                         # For example, you could raise an error or provide a default value
-                        self.write("Error", f"Invalid argument: {arg}")
+                        self.queue_handler.add_to_queue(
+                            "LOGGING", ("Error", f"Invalid argument: {arg}"))
             func_instance = getattr(
                 EMMA_GLOBALS, endpoint)(*processed_args)
             thread_name = dic.get("thread_name")
@@ -100,20 +106,47 @@ class SysV:
 
             thread_is_daemon = dic.get("thread_is_daemon", False)
             autostart = dic.get("autostart", False)
-
-            EMMA_GLOBALS.core_thread_handler.add_thread(
-                threading.Thread(
-                    target=lambda: func_instance.main(),
-                    name=thread_name,
-                    daemon=thread_is_daemon,
-                )
-            )
-
-            if autostart:
-                EMMA_GLOBALS.core_thread_handler.start_thread(thread_name)
-                func_instance.run()
+            self.initialize_thread(
+                func_instance, thread_name, autostart, thread_is_daemon)
 
         EMMA_GLOBALS.thread_instances = self.func_instances
+
+    def initialize_thread(self, func_instance, thread_name, autostart=True, thread_is_daemon=False):
+        EMMA_GLOBALS.core_thread_handler.add_thread(
+            threading.Thread(
+                target=lambda: func_instance.main(),
+                name=thread_name,
+                daemon=thread_is_daemon,
+            )
+        )
+
+        if autostart:
+            EMMA_GLOBALS.core_thread_handler.start_thread(thread_name)
+            func_instance.run()
+
+    def create_new_worker(self, thread_name):
+        # First, check if the specified thread_name exists in the initialized thread instances
+        if thread_name in self.func_instances:
+            instance = self.func_instances[thread_name]
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, f"worker {instance}"))
+
+            # Count the number of threads with the same worker
+            worker_count = sum(
+                1 for name in self.func_instances if name.startswith(thread_name))
+            new_worker_name = f"{thread_name}_{worker_count}"
+            daemon_status = EMMA_GLOBALS.core_thread_handler.get_thread_info(
+                thread_name)
+
+            self.initialize_thread(
+                instance, new_worker_name, autostart=True, thread_is_daemon=daemon_status["is_daemon"])
+            EMMA_GLOBALS.thread_instances[new_worker_name] = instance
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, f"worker {new_worker_name} has been created"))
+
+        else:
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.name, f"Thread instance not found: {thread_name}"))
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
@@ -183,11 +216,12 @@ class SysV:
 
         for i in range(3, 0, -1):
             self.queue_handler.add_to_queue("CONSOLE",
-                                            ("SYS SHUTDOWN", f"SERVER WILL STOP IN {i}"))
+                                            (f"{self.name} SHUTDOWN", f"SERVER WILL STOP IN {i}"))
             time.sleep(1.1)
 
         _, val = EMMA_GLOBALS.core_thread_handler.get_thread_status()
-        self.queue_handler.add_to_queue("CONSOLE", ("SYS SHUTDOWN", val))
+        self.queue_handler.add_to_queue(
+            "CONSOLE", (f"{self.name} SHUTDOWN", val))
         self.temp_clearer()
         self.remove_pycache("./emma")
         if not reload:
@@ -206,9 +240,6 @@ class SysV:
             else:
                 for subdir in subdirs:
                     self.remove_pycache(os.path.join(dir_name, subdir))
-
-    def keyboard_keybinds(self):
-        pass
 
     def enviroment_clearer(self):
         clear = [
@@ -247,13 +278,13 @@ class SysV:
                 except Exception as e:
                     traceback_str = traceback.format_exc()
                     self.queue_handler.add_to_queue(
-                        "LOGGING", ("SYS V", (e, traceback_str)))
+                        "LOGGING", (self.name, (e, traceback_str)))
                 try:
                     os.remove(x)
                 except Exception as e:
                     traceback_str = traceback.format_exc()
                     self.queue_handler.add_to_queue(
-                        "LOGGING", ("SYS V", (e, traceback_str)))
+                        "LOGGING", (self.name, (e, traceback_str)))
 
     def module_reloader(self, module_name, is_thread=False):
         queue_handler = EMMA_GLOBALS.core_queue_handler
@@ -297,7 +328,7 @@ class SysV:
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", ("SYS V", (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
             return False, traceback_str
 
 

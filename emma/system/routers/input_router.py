@@ -4,8 +4,9 @@ import traceback
 
 
 class InputRouter:
-    def __init__(self, queue_handler, event_handler):
-        self.tag = "IO ROUTER"
+    def __init__(self, name, queue_name, queue_handler, event_handler):
+        self.name = name
+        self.queue_name = queue_name
         self.stop_flag = False
         self.event = threading.Event()
         self.queue_handler = queue_handler
@@ -18,18 +19,19 @@ class InputRouter:
         try:
             # Handle shutdown logic here
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "Handling shutdown..."))
+                "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
     def main(self):
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Has been instanciate"])
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
-        
+
         while not self.stop_flag:
             # Here suppose that have many io queues than only 1
             try:
@@ -42,7 +44,7 @@ class InputRouter:
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, (e, traceback_str)))
+                    "LOGGING", (self.name, (e, traceback_str)))
 
     def process_responses(self):
         while not self.stop_flag:
@@ -72,18 +74,35 @@ class InputRouter:
         if off_key:
             first_key = next(iter(diccionary))
             args = keyword.replace(first_key, '')
-        self.queue_handler.add_to_queue("LOGGING", (self.tag, diccionary))
+        self.queue_handler.add_to_queue("LOGGING", (self.name, diccionary))
 
         if diccionary != None:
             return [diccionary]
         else:
             return False
 
+    def attach_components(self, module_name):
+        attachable_module = __import__(module_name)
+
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
+
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
+
     def run(self):
         self.event.set()
-        response_thread = threading.Thread(target=self.process_responses)
+        response_thread = threading.Thread(
+            target=self.process_responses, name=f"{self.name}_responses")
         response_thread.start()
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+        self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])
 
     def stop(self):
         self.stop_flag = True

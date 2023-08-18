@@ -9,17 +9,17 @@ import traceback
 
 
 class APP:
-    def __init__(self, queue_handler, event_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
+        self.name = name
+        self.queue_name = queue_name
         self.app = Flask(__name__)
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
-        self.tag = "API STREAMING Thread"
         self.socketio = SocketIO(self.app)
         self.stop_flag = False
-
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
         self.sessions = {}
@@ -107,13 +107,13 @@ class APP:
 
             else:
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, ("unauthorized User on socket: ", socket_id)))
+                    "LOGGING", (self.name, ("unauthorized User on socket: ", socket_id)))
                 self.socketio.emit(
                     "response", "Unauthorized user", room=socket_id)
 
     def main(self):
         self.queue_handler.add_to_queue(
-            "CONSOLE", [self.tag, "Has been instanciate"])
+            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
 
         self.register_routes()
@@ -122,11 +122,11 @@ class APP:
             self.socketio.run(self.app, host="0.0.0.0",
                               port=4010, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "API IS RUNNING"))
+                "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
     def process_responses(self):
         while not self.stop_flag:
@@ -140,13 +140,28 @@ class APP:
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue("CONSOLE",
-                                                (self.tag, f"ERROR while trying response to {session_id} request. {e}"))
+                                                (self.name, f"ERROR while trying response to {session_id} request. {e}"))
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.tag, (e, traceback_str)))
+                    "LOGGING", (self.name, (e, traceback_str)))
 
+    def attach_components(self, module_name):
+        attachable_module = __import__(module_name)
+
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
+
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
     def run(self):
         self.event.set()
-        self.queue_handler.add_to_queue("CONSOLE", [self.tag, "Is Started"])
+        self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])
 
     def stop(self):
         self.stop_flag = True
@@ -155,13 +170,13 @@ class APP:
         try:
             # Handle shutdown logic here
             self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, "Handling shutdown..."))
+                "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
-                "LOGGING", (self.tag, (e, traceback_str)))
+                "LOGGING", (self.name, (e, traceback_str)))
 
 
 if __name__ == "__main__":

@@ -15,8 +15,9 @@ def clear_screen():
 
 
 class DBHandler:
-    def __init__(self, queue_handler):
-        self.tag = 'I-SERIVCES DB'
+    def __init__(self, name, queue_name, queue_handler):
+        self.name = name
+        self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.connect()
 

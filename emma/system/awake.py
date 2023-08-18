@@ -4,7 +4,9 @@ import emma.globals as EMMA_GLOBALS
 
 
 class SystemAwake:
-    def __init__(self, fase, queue_handler=None, thread_manager=None, system_events=None, tools=None):
+    def __init__(self, name, queue_name, fase, queue_handler=None, thread_manager=None, system_events=None, tools=None):
+        self.name = name
+        self.queue_name = queue_name
         self.tools_da = tools
         if fase == 0:
             self.establish_connections()
@@ -27,7 +29,7 @@ class SystemAwake:
             os.environ["LOGGED"] = 'False'
             os.environ['USERNAME'] = str(input("Your Name"))
             self.queue_handler.add_to_queue("CONSOLE",
-                                            ("SYSTEM AWAKE", "Setting default config"))
+                                            (self.name, "Setting default config"))
         else:
             os.environ["USERLANG"] = data['user']['language']
             os.environ["LOGGED"] = str(data['preferences']['stay_signed_in'])
@@ -37,14 +39,14 @@ class SystemAwake:
         EMMA_GLOBALS.sys_v.data_auto_updater()
         EMMA_GLOBALS.sys_v.verify_paths()
         EMMA_GLOBALS.sys_v.initialize_queues()
-        EMMA_GLOBALS.sys_v.initialize_threads()
+        EMMA_GLOBALS.sys_v.instance_threads()
 
     def check_dependencies(self):
         pass
 
     def start_services(self, package_list):
         EMMA_GLOBALS.forge_server.run(package_list)
-        EMMA_GLOBALS.sys_v.initialize_threads(forge=True)
+        EMMA_GLOBALS.sys_v.instance_threads(forge=True)
 
     def perform_health_checks(self):
         pass

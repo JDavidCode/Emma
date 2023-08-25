@@ -1,5 +1,4 @@
 import datetime
-import sys
 import os
 import shutil
 import time
@@ -7,7 +6,8 @@ import yaml
 import threading
 import psutil
 import importlib
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
+
 import traceback
 
 
@@ -45,6 +45,13 @@ class SysV:
         }
 
         return data
+    def get_nested_attribute(self, obj, attribute_path):
+            attributes = attribute_path.split('.')
+            current_obj = obj
+            for attribute in attributes:
+                current_obj = getattr(current_obj, attribute)
+            return current_obj
+        
 
     def instance_threads(self, forge=False):
         if forge:
@@ -55,12 +62,11 @@ class SysV:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
         arg_mapping = {
-            "console_handler": EMMA_GLOBALS.core_console_handler,
-            "queue_handler": EMMA_GLOBALS.core_queue_handler,
-            "event_handler": EMMA_GLOBALS.core_event_handler,
-            "thread_handler": EMMA_GLOBALS.core_thread_handler,
+            "console_handler": Config.system.core._console,
+            "queue_handler": Config.system.core.queue,
+            "event_handler": Config.system.core.event,
+            "thread_handler": Config.system.core.thread,
         }
-
         if forge:
             data = data["Forge"]["services"]
             if data == [] or data == None:
@@ -72,7 +78,7 @@ class SysV:
             if dic == {}:
                 continue
             if "queue" in dic and dic["queue"] != []:
-                EMMA_GLOBALS.core_queue_handler.create_queue(
+                Config.system.core.queue.create_queue(
                     dic["queue"], dic["queue_maxsize"])
 
         for dic in data:
@@ -97,11 +103,11 @@ class SysV:
                         # For example, you could raise an error or provide a default value
                         self.queue_handler.add_to_queue(
                             "LOGGING", ("Error", f"Invalid argument: {arg}"))
-            func_instance = getattr(
-                EMMA_GLOBALS, endpoint)(*processed_args)
+            func_instance = self.get_nested_attribute(Config, endpoint)
+            func_instance = func_instance(*processed_args)
             thread_name = dic.get("thread_name")
             visible = dic.get("visible", True)
-            if visible:
+            if visible and "T0" not in thread_name:
                 self.func_instances[thread_name] = func_instance
 
             thread_is_daemon = dic.get("thread_is_daemon", False)
@@ -109,10 +115,10 @@ class SysV:
             self.initialize_thread(
                 func_instance, thread_name, autostart, thread_is_daemon)
 
-        EMMA_GLOBALS.thread_instances = self.func_instances
+        Config.system.thread_instances = self.func_instances
 
     def initialize_thread(self, func_instance, thread_name, autostart=True, thread_is_daemon=False):
-        EMMA_GLOBALS.core_thread_handler.add_thread(
+        Config.system.core.thread.add_thread(
             threading.Thread(
                 target=lambda: func_instance.main(),
                 name=thread_name,
@@ -121,7 +127,7 @@ class SysV:
         )
 
         if autostart:
-            EMMA_GLOBALS.core_thread_handler.start_thread(thread_name)
+            Config.system.core.thread.start_thread(thread_name)
             func_instance.run()
 
     def create_new_worker(self, thread_name):
@@ -135,12 +141,12 @@ class SysV:
             worker_count = sum(
                 1 for name in self.func_instances if name.startswith(thread_name))
             new_worker_name = f"{thread_name}_{worker_count}"
-            daemon_status = EMMA_GLOBALS.core_thread_handler.get_thread_info(
+            daemon_status = Config.system.core.thread.get_thread_info(
                 thread_name)
 
             self.initialize_thread(
                 instance, new_worker_name, autostart=True, thread_is_daemon=daemon_status["is_daemon"])
-            EMMA_GLOBALS.thread_instances[new_worker_name] = instance
+            Config.system.thread_instances[new_worker_name] = instance
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, f"worker {new_worker_name} has been created"))
 
@@ -150,7 +156,7 @@ class SysV:
 
     def initialize_queues(self):
         config_file = "emma/config/server_config.yml"
-        queue = EMMA_GLOBALS.core_queue_handler
+        queue = Config.system.core.queue
 
         with open(config_file) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
@@ -162,8 +168,8 @@ class SysV:
                 queue.create_secure_queue(dic["queue"], dic["queue_maxsize"])
 
     def recreate_reloaded_module(self, module_name):
-        diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            EMMA_GLOBALS.stcpath_globals)
+        diccionary = Config.tools.data.json_loader(
+            Config.paths._globals)
         key = diccionary.keys()
 
         for i in key:
@@ -202,24 +208,24 @@ class SysV:
     def server_shutdown(self, reload=False):
         key = False
         timer = 0
-        EMMA_GLOBALS.core_event_handler.notify_shutdown(
+        Config.system.core.event.notify_shutdown(
 
         )
         while not key:
-            key = EMMA_GLOBALS.core_event_handler.subscribers_shutdown_flag(
+            key = Config.system.core.event.subscribers_shutdown_flag(
                 start=True)
             time.sleep(1)
             timer += 1
             if timer >= 120:
                 key = True
-        EMMA_GLOBALS.core_thread_handler.kill_thread()
+        Config.system.core.thread.kill_thread()
 
         for i in range(3, 0, -1):
             self.queue_handler.add_to_queue("CONSOLE",
                                             (f"{self.name} SHUTDOWN", f"SERVER WILL STOP IN {i}"))
             time.sleep(1.1)
 
-        _, val = EMMA_GLOBALS.core_thread_handler.get_thread_status()
+        _, val = Config.system.core.thread.get_thread_status()
         self.queue_handler.add_to_queue(
             "CONSOLE", (f"{self.name} SHUTDOWN", val))
         self.temp_clearer()
@@ -230,7 +236,7 @@ class SysV:
     def server_restart(self):
         self.server_shutdown(reload=True)
         time.sleep(10)
-        EMMA_GLOBALS.app.reload()
+        Config.system.app.reload()
 
     def remove_pycache(self, dir_path):
         for dir_name, subdirs, files in os.walk(dir_path):
@@ -266,7 +272,7 @@ class SysV:
         return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
-        EMMA_GLOBALS.services_db  # request
+        Config.services.core.db  # request
 
     def temp_clearer(self):
         path = "./emma/common/.temp"
@@ -287,10 +293,10 @@ class SysV:
                         "LOGGING", (self.name, (e, traceback_str)))
 
     def module_reloader(self, module_name, is_thread=False):
-        queue_handler = EMMA_GLOBALS.core_queue_handler
-        console_handler = EMMA_GLOBALS.core_console_handler
-        thread_handler = EMMA_GLOBALS.core_thread_handler
-        events_handler = EMMA_GLOBALS.core_event_handler
+        queue_handler = Config.system.core.queue
+        console_handler = Config.system.core._console
+        thread_handler = Config.system.core.thread
+        events_handler = Config.system.core.event
         try:
             if is_thread:
                 config_file = "emma/config/server_config.yml"
@@ -300,8 +306,8 @@ class SysV:
                         if dic.get("thread_name") == module_name:
                             module_name = dic.get("endpoint")
 
-            diccionary = EMMA_GLOBALS.tools_da.json_loader(
-                EMMA_GLOBALS.stcpath_globals)
+            diccionary = Config.tools.data.json_loader(
+                Config.paths._globals)
             key = diccionary.keys()
             reloaded = False
 

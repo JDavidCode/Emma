@@ -14,7 +14,7 @@ class Logger:
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.thread_utils = importlib.import_module(
-            "emma.system.utils.thread_utils").ThreadUtils()
+            "emma.system.utils._attach").Attach()
         self.event_handler.subscribe(self)
         self.event = threading.Event()
         self.stop_flag = False
@@ -72,7 +72,6 @@ class Logger:
             # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "LOGGING", ("LOGGER", "Handling shutdown..."))
-            time.sleep(15)
             self.event_handler.subscribers_shutdown_flag(
                 self)  # put it when ready for shutdown
         except Exception as e:

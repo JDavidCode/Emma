@@ -4,8 +4,7 @@ import os
 import platform
 import shutil
 import subprocess
-
-from emma.globals import EMMA_GLOBALS
+from emma.config.config import Config
 
 
 class OsTask:
@@ -27,7 +26,8 @@ class OsTask:
     def run_shell_script(self, script_path):
         # ... (Existing code)
         try:
-            result = subprocess.run(['bash', script_path], capture_output=True, text=True)
+            result = subprocess.run(
+                ['bash', script_path], capture_output=True, text=True)
             return (True, result.stdout.strip())
         except subprocess.CalledProcessError:
             return True, ""
@@ -95,7 +95,8 @@ class OsTask:
     def execute_shell_command(self, command):
         # ... (Existing code)
         try:
-            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            result = subprocess.run(
+                command, shell=True, capture_output=True, text=True)
             return True, result.stdout.strip()
         except subprocess.CalledProcessError:
             return True, ""
@@ -112,8 +113,8 @@ class OsTask:
         return True, system_info
 
     def open_app(name):
-        json = EMMA_GLOBALS.tools_da.json_loader(
-            EMMA_GLOBALS.stcpath_app_dir, "app_dir", "dict"
+        json = Config.tools.data.json_loader(
+            Config.paths._app_dir, "app_dir", "dict"
         )
         for i in json.keys():
             if i == name:
@@ -123,7 +124,7 @@ class OsTask:
 
     def path_mover():  # Need perfoance
         return
-        diccionary = EMMA_GLOBALS.tools_da.json_loader(
+        diccionary = Config.tools.data.json_loader(
             "assets/json/path_directory.json", "amy_paths", "dict"
         )
         downFolder = diccionary.get("downloads")

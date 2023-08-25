@@ -3,7 +3,7 @@ import os
 import threading
 
 
-class ConsoleHandler:
+class Console:
     def __init__(self, name, queue_name, queue_handler):
         self.name = name
         self.queue_name = queue_name

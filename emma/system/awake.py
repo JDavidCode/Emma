@@ -1,22 +1,20 @@
 
 import os
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 
 
 class SystemAwake:
-    def __init__(self, name, queue_name, fase, queue_handler=None, thread_manager=None, system_events=None, tools=None):
+    def __init__(self, name, queue_name, queue_handler, thread_manager, system_events, tools=[]):
         self.name = name
         self.queue_name = queue_name
-        self.tools_da = tools
-        if fase == 0:
-            self.establish_connections()
-            self.set_environ_variables()
-        else:
-            self.queue_handler = queue_handler
-            self.thread_manager = thread_manager
-            self.system_events = system_events
-            _, clock = EMMA_GLOBALS.task_msc.date_clock(2)
-            os.environ["DATE"] = f"{clock}"
+        self.tools_da, self.msc = tools
+        self.establish_connections()
+        self.set_environ_variables()
+        self.queue_handler = queue_handler
+        self.thread_manager = thread_manager
+        self.system_events = system_events
+        _, clock = self.msc.date_clock(2)
+        os.environ["DATE"] = f"{clock}"
 
     def establish_connections(self):
         pass
@@ -36,17 +34,18 @@ class SystemAwake:
             os.environ["USERNAME"] = data['user']['name']
 
     def initialize_configuration(self):
-        EMMA_GLOBALS.sys_v.data_auto_updater()
-        EMMA_GLOBALS.sys_v.verify_paths()
-        EMMA_GLOBALS.sys_v.initialize_queues()
-        EMMA_GLOBALS.sys_v.instance_threads()
+        Config.system.core.sys_variations.data_auto_updater()
+        Config.system.core.sys_variations.verify_paths()
+        Config.system.core.sys_variations.initialize_queues()
+        Config.system.core.sys_variations.instance_threads()
 
     def check_dependencies(self):
         pass
 
     def start_services(self, package_list):
-        EMMA_GLOBALS.forge_server.run(package_list)
-        EMMA_GLOBALS.sys_v.instance_threads(forge=True)
+        Config.inspect_config_section(Config.system.forge)
+        Config.system.forge.run(package_list=package_list)
+        Config.system.core.sys_variations.instance_threads(forge=True)
 
     def perform_health_checks(self):
         pass

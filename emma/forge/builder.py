@@ -4,14 +4,14 @@ import os
 import tarfile
 import subprocess
 import threading
-from emma.globals import FORGE_GLOBALS
+from emma.config.config import Config
 
 
 class Builder:
     def __init__(self,  name, queue_name,tools=[]):
         self.name = name
         self.queue_name = queue_name
-        self.tools_cs, self.tools_da = tools
+        self.tools_da, self.tools_cs = tools
         _service = importlib.import_module(
             "emma.forge.handlers.service_handler")
         self._service = _service.ServiceHandler(tools)
@@ -22,7 +22,6 @@ class Builder:
         _download = importlib.import_module(
             "emma.forge.handlers.downloads_handler")
         self._download = _download.DownloadsHandler(tools)
-        self.tools_cs, self.tools_da = tools
 
         self.package_name = ""
         self.endpoint = ""
@@ -140,11 +139,11 @@ class Builder:
         self.install_dependencies()
         if self.has_custom:
             self.install_custom_packages()
-        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
+        #FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
     def instanciate_build(self):
         self.load_service_data()
-        FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
+        #FORGE_GLOBALS().create_instance(self.package_name, self.endpoint)
 
     def attach_components(self, module_name):
         attachable_module = __import__(module_name)

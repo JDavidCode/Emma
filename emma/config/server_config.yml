@@ -21,7 +21,7 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: logger
+      endpoint: system.core._logger
       queue: LOGGING
       queue_maxsize: 0
       thread_is_daemon: false
@@ -31,7 +31,7 @@ defaults:
       - queue_handler
       autorestart: true
       autostart: true
-      endpoint: core_console_handler
+      endpoint: system.core._console
       thread_is_daemon: false
       thread_name: T0_CONSOLE
       visible: false
@@ -41,9 +41,20 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: hotkeys_protocols
+      endpoint: system.protocols.hotkeys
       thread_is_daemon: false
       thread_name: T0_HOTKEYS
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.protocols.session
+      queue: PROTO_SESSIONS
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_PROTO_SESSIONS
 
     - args:
       - queue_handler
@@ -51,7 +62,7 @@ defaults:
       - thread_handler
       autorestart: true
       autostart: true
-      endpoint: command_router
+      endpoint: system.routers._command
       queue: COMMAND
       queue_maxsize: 0
       thread_is_daemon: false
@@ -62,27 +73,26 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: session_protocols
-      queue: PROTO_SESSIONS
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T0_PROTO_SESSIONS
-
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: io_router
+      endpoint: system.routers._router
       thread_is_daemon: false
       thread_name: T0_INPUT_ROUTER
 
     - args:
       - queue_handler
+      autorestart: true
+      autostart: true
+      endpoint: services.core.gpt
+      queue: GPT_INPUT
+      queue_maxsize: 1
+      thread_is_daemon: false
+      thread_name: T0_GPT
+      
+    - args:
+      - queue_handler
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: services_api_user_io
+      endpoint: services.core.api_user
       queue: API_INPUT
       queue_maxsize: 0
       thread_is_daemon: false
@@ -93,20 +103,10 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: services_api_streaming
+      endpoint: services.core.api_streaming
       queue: API_STREAMING
       queue_maxsize: 0
       thread_is_daemon: false
       thread_name: T1_USER_API_STREAMING
 
-    - args:
-      - queue_handler
-      autorestart: true
-      autostart: true
-      endpoint: services_gpt
-      queue: GPT_INPUT
-      queue_maxsize: 1
-      thread_is_daemon: false
-      thread_name: T0_GPT
-      
 version: 1.0

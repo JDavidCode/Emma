@@ -29,6 +29,14 @@
                 {
                     "session_name": "e12fwf",
                     "session_id": "1-emd-idjqw"
+                },
+                {
+                    "session_name": "e12fw",
+                    "session_id": "1-emd-idjw"
+                },
+                {
+                    "session_name": "hola",
+                    "session_id": "1-emd-18839"
                 }
             ],
             "public_ips": []

@@ -1,6 +1,8 @@
 import json
 import threading
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
+
+
 import traceback
 
 
@@ -30,7 +32,7 @@ class SessionsHandler:
                 "LOGGING", (self.name, (e, traceback_str)))
 
     def load_user(self, user_id):
-        self.user_storage = EMMA_GLOBALS.tools_da.json_loader(
+        self.user_storage = Config.tools.data.json_loader(
             f"emma/common/users/{user_id}.json")
 
     def create_user_json(self, name, age, birthday, level):
@@ -75,7 +77,7 @@ class SessionsHandler:
             prompt_session = self.create_prompt_session()
 
             # Load existing sessions or create an empty dictionary
-            sessions = EMMA_GLOBALS.tools_da.json_loader(
+            sessions = Config.tools.data.json_loader(
                 path, json_type="dict")
             if sessions is None:
                 sessions = {}
@@ -314,7 +316,6 @@ class SessionsHandler:
                     user_id = session_data.get('user_id')
                     if user_id:
                         self.clear_all_sessions_from_user(user_id)
-
 
     def attach_components(self, module_name):
         attachable_module = __import__(module_name)

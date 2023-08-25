@@ -1,4 +1,4 @@
-import emma.globals as EMMA_GLOBALS
+
 import requests
 
 

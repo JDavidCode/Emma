@@ -1,6 +1,6 @@
 class ServiceHandler:
     def __init__(self, tools=[]):
-        self.tools_cs, self.tools_da = tools
+        self.tools_da, self.tools_cs = tools
         self.file_path = "./emma/config/forge_config.yml"
         self.data = {}
         self.load_data()

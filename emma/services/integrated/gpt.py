@@ -2,7 +2,9 @@ import json
 import threading
 import time
 import openai
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
+
+
 import traceback
 
 
@@ -14,13 +16,13 @@ class GPT:
         self.queue_handler = queue_handler
         self.stop_flag = False
         self.event = threading.Event()
-        self.functions = EMMA_GLOBALS.tools_da.json_loader(
-            path=EMMA_GLOBALS.stcpath_command_sch, json_type="list")
+        self.functions = Config.tools.data.json_loader(
+            path=Config.paths._command_sch, json_type="list")
 
     def update_chat(self, user_id, session_id, message):
         path = f"emma/common/users/{user_id}_sessions.json"
 
-        sessions = EMMA_GLOBALS.tools_da.json_loader(path, json_type="dict")
+        sessions = Config.tools.data.json_loader(path, json_type="dict")
         try:
             sessions[session_id].append(message)
             self.queue_handler.add_to_queue(
@@ -36,7 +38,7 @@ class GPT:
 
     def get_chat(self, user_id, session_id):
         path = f"emma/common/users/{user_id}_sessions.json"
-        chat = EMMA_GLOBALS.tools_da.json_loader(
+        chat = Config.tools.data.json_loader(
             path, i=session_id, json_type="list")
 
         if len(chat) >= 11:
@@ -48,14 +50,14 @@ class GPT:
 
     def verify_overload(self):
         global coun
-        lenght = EMMA_GLOBALS.core_queue_handler.get_queue_lenght(
+        lenght = Config.system.core.queue.get_queue_lenght(
             self.queue)  # need fix
         if lenght >= 100:
             self.queue_handler.add_to_queue(
                 "CONSOLE", ("", "creating new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            EMMA_GLOBALS.sys_v.create_new_worker(thread_name)
+            Config.system.core.sys_variations.create_new_worker(thread_name)
 
     def main(self):
         firts = True
@@ -72,7 +74,6 @@ class GPT:
 
             ids, data = self.queue_handler.get_queue(
                 self.queue_name, 0.1, (None, None))
-            
 
             if ids is None:
                 continue

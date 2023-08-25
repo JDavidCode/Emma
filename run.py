@@ -1,7 +1,7 @@
 # BasePythonLibraries
 import threading
 import time
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 
 
 class EMCLKX:
@@ -15,7 +15,7 @@ class EMCLKX:
         self.event.wait()
 
         while not self.stop_flag:
-            json = EMMA_GLOBALS.sys_v.server_performance(
+            json = Config.system.core.sys_variations.server_performance(
                 self.thread_handler.get_thread_status()
             )
 
@@ -29,7 +29,7 @@ class EMCLKX:
             time.sleep(1)
 
     def reload(self):
-        EMMA_GLOBALS.inst.reset_globals()
+        Config.instance.reset_globals()
         self.event.clear()
         self.run()
 
@@ -37,13 +37,14 @@ class EMCLKX:
         self.stop_flag = True
 
     def run(self):
-        EMMA_GLOBALS.sys_awake.run()
-        self.thread_handler = EMMA_GLOBALS.core_thread_handler
-        self.queue_handler = EMMA_GLOBALS.core_queue_handler
-        self.console_handler = EMMA_GLOBALS.core_console_handler
+        Config.Awake.run()
+        self.thread_handler = Config.system.core.thread
+        self.queue_handler = Config.system.core.queue
+        self.console_handler = Config.system.core._console
         self.event.set()  # Set the event to indicate readiness
-        EMMA_GLOBALS.app = self
+        Config.system.app = self
         self.server_integrity()
+
 
 
 if __name__ == "__main__":

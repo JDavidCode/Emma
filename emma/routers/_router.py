@@ -1,9 +1,9 @@
 import threading
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 import traceback
 
 
-class InputRouter:
+class Router:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
         self.queue_name = queue_name
@@ -64,8 +64,8 @@ class InputRouter:
                     'API_RESPONSE', (session_id, data))
 
     def command_indexer(self, keyword, off_key=False):
-        diccionary = EMMA_GLOBALS.tools_da.json_loader(
-            EMMA_GLOBALS.stcpath_command_dir,
+        diccionary = Config.tools.data.json_loader(
+            Config.paths._command_dir,
             keyword,
             "command",
 

@@ -3,7 +3,7 @@ import os
 
 class RepositoryHandler:
     def __init__(self, tools=[]):
-        self.tools_cs, self.tools_da = tools
+        self.tools_da, self.tools_cs = tools
         self.file_path = "./emma/forge/config/config.yml"
         self.packages = {}
         self.load_data()

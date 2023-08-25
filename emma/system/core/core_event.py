@@ -1,6 +1,6 @@
 import time
 import traceback
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 
 
 class EventHandler:
@@ -47,7 +47,7 @@ class EventHandler:
         pass
 
     def notify_worker_overload(self, thread_name):
-        EMMA_GLOBALS.sys_v.create_new_worker(thread_name)
+        Config.system.core.sys_variations.create_new_worker(thread_name)
 
     def notify_connection(self):
         pass

@@ -1,5 +1,7 @@
 import os
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
+
+
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import requests
@@ -97,7 +99,7 @@ class APP:
             session_id = params.get("session", None)
             socket_id = request.sid
 
-            whitelist_data = EMMA_GLOBALS.tools_da.yaml_loader(
+            whitelist_data = Config.tools.data.yaml_loader(
                 "./emma/config/withelist.yml")
 
             if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
@@ -159,6 +161,7 @@ class APP:
             else:
                 self.thread_utils.attach_variable(
                     self, component_name, component)
+
     def run(self):
         self.event.set()
         self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])

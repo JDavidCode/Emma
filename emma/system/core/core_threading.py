@@ -1,7 +1,4 @@
-import queue
-import emma.globals as EMMA_GLOBALS
-import time
-import traceback
+from emma.config.config import Config
 
 
 class ThreadHandler:
@@ -32,7 +29,7 @@ class ThreadHandler:
         return True, status_list
 
     def get_thread_info(self, thread_name):
-        thread_info= {}
+        thread_info = {}
         for _, thread in self.threads.items():
             if thread.name == thread_name:  # Check if the current thread matches the provided name
                 thread_info = {
@@ -48,7 +45,8 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if thread.is_alive():
                     self.stop_thread(thread_name)
-                    EMMA_GLOBALS.sys_v.module_reloader(thread_name, True)
+                    Config.system.core.sys_variations.module_reloader(
+                        thread_name, True)
                     self.start_thread(thread_name)
                     return True, f"{thread_name} has been restarted."
                 else:
@@ -60,7 +58,7 @@ class ThreadHandler:
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    thread_instance = EMMA_GLOBALS.thread_instances.get(
+                    thread_instance = Config.system.thread_instances.get(
                         thread_name)
                     thread_instance.stop()
                     return True, f"\n{thread_name} has been stopped."
@@ -72,25 +70,25 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if thread.is_alive():
                     self.stop_thread(thread_name)
-                    del EMMA_GLOBALS.thread_instances[thread_name]
+                    del Config.system.thread_instances[thread_name]
                     return True, f"\n{thread_name} has been removed."
                 else:
-                    del EMMA_GLOBALS.thread_instances[thread_name]
+                    del Config.system.thread_instances[thread_name]
                     return True, f"\n{thread_name} has been removed."
 
         else:
             return True, f"\nThread '{thread_name}' not found."
 
     def kill_thread(self):
-        threads = EMMA_GLOBALS.thread_instances
+        threads = Config.system.thread_instances
         for thread_name in threads:
             for _, thread in self.threads.items():
                 if str(thread.name) == thread_name:
                     if thread.is_alive():
-                        thread_instance = EMMA_GLOBALS.thread_instances.get(
+                        thread_instance = Config.system.thread_instances.get(
                             thread_name)
                         thread_instance.stop()
-                        EMMA_GLOBALS.thread_instances.pop(thread_name)
+                        Config.system.thread_instances.pop(thread_name)
                         return f"\n{thread_name} has been killed."
                 else:
                     return f"\n{thread_name} is unk."

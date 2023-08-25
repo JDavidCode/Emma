@@ -23,3 +23,5 @@ Flask
 geopy
 selenium
 chromedriver_autoinstaller
+Panda3D
+mplfinance

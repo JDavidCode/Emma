@@ -1,7 +1,6 @@
 import importlib
 import threading
-import emma.globals as EMMA_GLOBALS
-from emma.system.sys_v import SysV
+from emma.config.config import Config
 import traceback
 
 
@@ -9,7 +8,6 @@ class CommandRouter:
     def __init__(self, name, queue_name, queue_handler, event_handler, thread_handler):
         self.name = name
         self.queue_name = queue_name
-        self.bp = SysV(name, queue_name, queue_handler)
         self.stop_flag = False
         self.event = threading.Event()
         self.queue_handler = queue_handler
@@ -44,7 +42,7 @@ class CommandRouter:
             dic, args = data
 
             try:
-                module = getattr(EMMA_GLOBALS, dic.get("module"))
+                module = Config.system.core.sys_variations.get_nested_attribute(Config, dic.get("module"))
                 # Execute the command
                 if dic.get('args_key') == 'args':
                     self.execute_command(module, function_name=dic.get(

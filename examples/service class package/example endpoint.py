@@ -1,3 +1,4 @@
+import importlib
 import threading
 
 
@@ -10,7 +11,8 @@ class myclass:
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.thread_handler = thread_handler
-
+        self.thread_utils = importlib.import_module(
+            "emma.system.utils._attach").Attach()
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
 

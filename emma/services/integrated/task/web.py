@@ -1,17 +1,17 @@
-
-
 import random
 import re
 import webbrowser
 from bs4 import BeautifulSoup
 import requests
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 from selenium import webdriver
 import chromedriver_autoinstaller
 
+
 class WebTask:
     def __init__(self):
-        self.web_pages = EMMA_GLOBALS.tools_da.json_loader(EMMA_GLOBALS.stcpath_web_dir)
+        self.web_pages = Config.tools.data.json_loader(Config.paths._web_dir)
+        pass
 
     def google_search(self, query):
         return True, str(f"https://www.google.com/search?q={query.replace(' ', '+')}")
@@ -35,7 +35,7 @@ class WebTask:
     def open_webpage(self, query):
         for key in self.web_pages.keys():
             if query.lower() == key:
-               return True, str(self.web_pages.get(key))
+                return True, str(self.web_pages.get(key))
         return False, "Unknow web"
 
     def generate_link(self, protocol, domain, path=""):
@@ -144,8 +144,6 @@ class WebTask:
             return True, scraped_content
         except requests.exceptions.RequestException:
             return False, []
-
-
 
     def check_website_security(self, url):
         # Implement the logic to check the SSL/TLS certificate of the website

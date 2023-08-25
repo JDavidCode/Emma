@@ -1,4 +1,4 @@
-import emma.globals as EMMA_GLOBALS
+
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 import os
@@ -6,6 +6,7 @@ import json
 import logging
 import threading
 import traceback
+from emma.config.config import Config
 
 
 class APP:
@@ -37,7 +38,7 @@ class APP:
             data = request.args
 
             user_id = data.get("user", None)
-            whitelist_data = EMMA_GLOBALS.tools_da.yaml_loader(
+            whitelist_data = Config.tools.data.yaml_loader(
                 "./emma/config/withelist.yml")
 
             # Verify if user_id is in the whitelist_data
@@ -78,7 +79,7 @@ class APP:
             session_id = params.get("session", None)
             socket_id = request.sid
 
-            whitelist_data = EMMA_GLOBALS.tools_da.yaml_loader(
+            whitelist_data = Config.tools.data.yaml_loader(
                 "./emma/config/withelist.yml")
 
             if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
@@ -146,21 +147,23 @@ class APP:
                                                 (self.name, f"ERROR while tryin response to {session_id} request. {e}"))
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.name, (e, traceback_str)))
+
     def attach_components(self, module_name):
-            attachable_module = __import__(module_name)
+        attachable_module = __import__(module_name)
 
-            for component_name in dir(attachable_module):
-                component = getattr(attachable_module, component_name)
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
 
-                if callable(component):
-                    self.thread_utils.attach_function(
-                        self, component_name, component)
-                elif isinstance(component, threading.Thread):
-                    self.thread_utils.attach_thread(
-                        self, component_name, component)
-                else:
-                    self.thread_utils.attach_variable(
-                        self, component_name, component)
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
+
     def run(self):
         self.event.set()
         self.response_thread = threading.Thread(

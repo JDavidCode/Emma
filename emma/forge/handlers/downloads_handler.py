@@ -4,7 +4,7 @@ import requests
 
 class DownloadsHandler:
     def __init__(self, tools=[]):
-        self.tools_cs, self.tools_da = tools
+        self.tools_da, self.tools_cs = tools
 
     def download_package(self, repository, package_name):
         save_path = f"emma/forge/.temp/forge_{package_name}.zip"

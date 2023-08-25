@@ -1,10 +1,10 @@
 import threading
 import time
 import keyboard
-import emma.globals as EMMA_GLOBALS
+from emma.config.config import Config
 
 
-class HOTKEYS:
+class HotKeys:
     def __init__(self, name, queue_name, queue_handler, event_handler) -> None:
         self.name = name
         self.queue_name = queue_name
@@ -65,10 +65,10 @@ class HOTKEYS:
             time.sleep(1)
 
     def local_handle_shutdown(self):
-        EMMA_GLOBALS.sys_v.server_shutdown()
+        Config.system.core.sys_variations.server_shutdown()
 
     def handle_reload(self):
-        EMMA_GLOBALS.sys_v.server_restart()
+        Config.system.core.sys_variations.server_restart()
 
     def handle_shutdown(self):
         keyboard.remove_hotkey(self.hotkey_ctrl_0)
@@ -77,22 +77,23 @@ class HOTKEYS:
 
     def handle_stop_task(self):
         print("Stop task hotkey pressed")
-        
+
     def attach_components(self, module_name):
-            attachable_module = __import__(module_name)
+        attachable_module = __import__(module_name)
 
-            for component_name in dir(attachable_module):
-                component = getattr(attachable_module, component_name)
+        for component_name in dir(attachable_module):
+            component = getattr(attachable_module, component_name)
 
-                if callable(component):
-                    self.thread_utils.attach_function(
-                        self, component_name, component)
-                elif isinstance(component, threading.Thread):
-                    self.thread_utils.attach_thread(
-                        self, component_name, component)
-                else:
-                    self.thread_utils.attach_variable(
-                        self, component_name, component)
+            if callable(component):
+                self.thread_utils.attach_function(
+                    self, component_name, component)
+            elif isinstance(component, threading.Thread):
+                self.thread_utils.attach_thread(
+                    self, component_name, component)
+            else:
+                self.thread_utils.attach_variable(
+                    self, component_name, component)
+
     def run(self):
         self.set_hotkeys()
         self.event.set()

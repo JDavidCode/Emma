@@ -2,9 +2,11 @@ import mysql.connector
 import os
 import random
 import json
+from emma.config.config import Config
+
 
 # ImportedPythonLibraries
-import emma.globals as EMMA_GLOBALS
+
 import os
 
 
@@ -12,7 +14,7 @@ class Login:
     @staticmethod
     def user_login(email, password):
         # Get an instance of DbHandler
-        db_handler = EMMA_GLOBALS.services_db
+        db_handler = Config.services.core.db
 
         sql = "SELECT * FROM users WHERE email=%s AND password=%s"
         result = db_handler.execute_query(sql, (email, password))
@@ -20,8 +22,8 @@ class Login:
         if result:
             user_id, user_lvl, user_name, age, genre, user_lang, user_data = result[0]
             rut = f".temp/face_{user_name}.zip"
-            EMMA_GLOBALS.tools_da.unbinary(user_data, rut)
-            EMMA_GLOBALS.tools_cs.unzipper(
+            Config.tools.data.unbinary(user_data, rut)
+            Config.tools.converters.unzipper(
                 [(f".temp/face_{user_name}.zip", ".temp/")])
 
             user_data = (user_id, user_lvl, user_name, age, genre)
@@ -42,7 +44,7 @@ class Login:
     @staticmethod
     def user_register(name, email, password, age, genre, lang, data):
         # get an instance of DbHandler
-        db_handler = EMMA_GLOBALS.services_db
+        db_handler = Config.services.core.db
 
         # Check if email already exists
         sql = "SELECT * FROM users WHERE email=%s"
@@ -53,7 +55,7 @@ class Login:
 
         # Insert new user
         sql = "INSERT INTO users (lvl, name, email, password, age, genre, lang, data) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        data = EMMA_GLOBALS.tools_cs.to_binary(data)
+        data = Config.tools.converters.to_binary(data)
         values = ("0", name, email, password, age, genre, lang, data)
         db_handler.execute_query(sql, values)
         print("Registering user, please wait...")

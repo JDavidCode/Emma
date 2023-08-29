@@ -171,9 +171,7 @@ def plot_dataset(df):
 # Example usage
 if __name__ == "__main__":
     generator = DatasetGenerator()
-    df = generator.generate_dataset(_size=100, _sweet="stock")
-    plot_dataset(df)
-    #mc = mpf.make_marketcolors(up='green', down='red', edge='black', wick='black')
-    #s = mpf.make_mpf_style(base_mpl_style='seaborn', marketcolors=mc)
-    #mpf.plot(df, type='candle', title='Stock Price', style=s, volume=True,mav=(20, 50), show_nontrading=True)
-    # Plot the candlestick chart with additional feature
+    df = generator.generate_dataset(_size=500, _sweet="stock")
+    mc = mpf.make_marketcolors(up='green', down='red', edge='black', wick='black')
+    s = mpf.make_mpf_style(base_mpl_style='seaborn', marketcolors=mc)
+    mpf.plot(df, type='candle', title='Stock Price', style=s, volume=True,mav=(20, 50), show_nontrading=True)

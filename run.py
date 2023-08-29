@@ -29,7 +29,7 @@ class EMCLKX:
             time.sleep(1)
 
     def reload(self):
-        Config.instance.reset_globals()
+        Config.del_all_sections()
         self.event.clear()
         self.run()
 

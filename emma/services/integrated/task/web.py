@@ -3,15 +3,36 @@ import re
 import webbrowser
 from bs4 import BeautifulSoup
 import requests
-from emma.config.config import Config
+#from emma.config.config import Config
 from selenium import webdriver
 import chromedriver_autoinstaller
-
+import urllib3
+urllib3.disable_warnings()
 
 class WebTask:
     def __init__(self):
-        self.web_pages = Config.tools.data.json_loader(Config.paths._web_dir)
+        #self.web_pages = Config.tools.data.json_loader(Config.paths._web_dir)
         pass
+
+    def search_manuals(self, query):
+        platforms = [
+            {"name": "ManualsLib", "url": "https://www.manualslib.com/search.php?q="},
+            {"name": "ManualsOnline", "url": "https://www.manualsonline.com/search.html?q="},
+            {"name": "Internet Archive", "url": "https://archive.org/search.php?query="}
+        ]
+        
+        results = []
+
+        for platform in platforms:
+            full_url = platform["url"] + query
+            response = requests.get(full_url, verify=False, timeout=10)
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            for link in soup.find_all('a', href=True):
+                results.append({"platform": platform["name"], "title": link.get_text(), "url": link['href']})
+        
+        return results
+
 
     def google_search(self, query):
         return True, str(f"https://www.google.com/search?q={query.replace(' ', '+')}")
@@ -150,3 +171,7 @@ class WebTask:
         # and verify its security level (e.g., valid, expired, self-signed, etc.)
         security_status = "Valid SSL certificate"
         return True, security_status
+
+
+if __name__ == "__main__":
+    pass

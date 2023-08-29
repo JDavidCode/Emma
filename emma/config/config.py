@@ -11,6 +11,13 @@ class _Config:
             setattr(self, section_name, self.sections[section_name])
         else:
             print(f"Section '{section_name}' already exists.")
+            
+    def del_all_sections(self):
+        self.sections = {}
+        for section_name in dir(self):
+            if section_name in self.sections:
+                delattr(self, section_name)
+            
     def resolve_references(self, value, config):
             if isinstance(value, list):
                 return [self.resolve_references(item, config) for item in value]
@@ -25,10 +32,8 @@ class _Config:
                 return current_section
             else:
                 return value
+            
     def populate_section(self, section_obj, content, _locals):
-
-        
-
         for subsection_name, subsection_content in content.items():
             if isinstance(subsection_content, dict):
                 section_obj.add_section(subsection_name)

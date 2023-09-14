@@ -168,6 +168,9 @@ config_structure = {
             "@_logger": "emma.system.core.logging.logger.Logger",
             "sys_variations": ["emma.system.sys_v.SysV", ['SYS', None, '$system.core.queue']],
         },
+        "managers": {
+            "db": ["emma.system.manager.db_manager.DatabaseManager", ['DatabaseManager', '$system.core._console']],
+        },
         "protocols": {
             "@hotkeys": "emma.system.protocols.hotkeys.HotKeys",
             "@session": "emma.system.protocols.sessions.sessions_handler.SessionsHandler"
@@ -187,7 +190,6 @@ config_structure = {
             "@gpt": "emma.services.integrated.gpt.GPT",
             "@api_user": "emma.services.API.user_io.app.APP",
             "@api_streaming": "emma.services.API.streaming.app.APP",
-            "db": ["emma.services.integrated.db_handler.DBHandler", ['SERVICE DB', None, '$system.core.queue']]
         },
         "task": {
             "miscellaneous": ["emma.services.integrated.task.miscellaneous.MiscellaneousTask", []],

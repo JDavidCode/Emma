@@ -10,7 +10,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler):
-        openai.api_key = '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'
+        openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler

@@ -159,14 +159,14 @@
         }
     },
     {
-        "name": "google_search",
-        "description": "Perform a search on Google to find information, answers, or resources.",
+        "name": "web_search",
+        "description": "Perform a search on the web to find information, answers, or resources.",
         "parameters": {
             "type": "object",
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "search query, whether it's a question, a person's name, a phrase, or anything you want to find on the web through Google."
+                    "description": "search query, whether it's a question, a person's name, a phrase, or anything you want to find on the web through."
                 }
             },
             "required": ["query"]

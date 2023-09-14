@@ -71,7 +71,7 @@
     "args_key": "*args",
     "required_lvl": 1
 },
-    "google_search": {
+    "web_search": {
         "module": "system.services.task.web",
         "args_key": "*args",
         "required_lvl": 1

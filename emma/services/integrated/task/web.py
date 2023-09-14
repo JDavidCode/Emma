@@ -34,7 +34,7 @@ class WebTask:
         return results
 
 
-    def google_search(self, query):
+    def web_search(self, query):
         return True, str(f"https://www.google.com/search?q={query.replace(' ', '+')}")
 
     def youtube_search(self, query):

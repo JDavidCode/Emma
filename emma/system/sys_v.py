@@ -272,7 +272,7 @@ class SysV:
         return "All Directories has been verified correctly"
 
     def data_auto_updater(self):
-        Config.services.core.db  # request
+        Config.system.managers.db  # request
 
     def temp_clearer(self):
         path = "./emma/common/.temp"

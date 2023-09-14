@@ -65,18 +65,19 @@
         "args": ["queue_handler", "event_handler"],
 				"instance": "False"
     },
+    "databases_manager": {
+            "endpoint": "DBHandler",
+            "path": "emma.system.manager.db_manager",
+            "args": ["console_handler"],
+    				"instance": "True"
+    },
     "logger": {
         "endpoint": "Logger",
         "path": "emma.system.logging.logger",
         "args": [],
 				"instance": "False"
     },
-    "services_db": {
-        "endpoint": "DBHandler",
-        "path": "emma.services.integrated.db_handler",
-        "args": ["queue_handler","console_handler"],
-				"instance": "True"
-    },
+    
     "services_gpt": {
         "endpoint": "GPT",
         "path": "emma.services.integrated.gpt",

@@ -1,0 +1,112 @@
+defaults:
+  con:
+    database: emma
+    host: mysql_emma
+    password: root
+    user: root
+  queues:
+  - queue: API_RESPONSE
+    queue_maxsize: 1
+  - queue: RESPONSE
+    queue_maxsize: 1
+  - queue: CONSOLE
+    queue_maxsize: 0
+  secure_queues:
+  - queue: SECURE_NET_SESSIONS
+    queue_maxsize: 0
+    
+  services:
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.core._logger
+      queue: LOGGING
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_LOGGER
+
+    - args:
+      - queue_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.core._console
+      thread_is_daemon: false
+      thread_name: T0_CONSOLE
+      visible: false
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.protocols.hotkeys
+      thread_is_daemon: false
+      thread_name: T0_HOTKEYS
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.protocols.session
+      queue: PROTO_SESSIONS
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_PROTO_SESSIONS
+
+    - args:
+      - queue_handler
+      - event_handler
+      - thread_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.routers._command
+      queue: COMMAND
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_COMMANDS
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: system.routers._router
+      thread_is_daemon: false
+      thread_name: T0_INPUT_ROUTER
+
+    - args:
+      - queue_handler
+      autorestart: true
+      autostart: true
+      endpoint: services.core.gpt
+      queue: GPT_INPUT
+      queue_maxsize: 1
+      thread_is_daemon: false
+      thread_name: T0_GPT
+      
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: services.core.api_user
+      queue: API_INPUT
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_USER_API_IO
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: services.core.api_streaming
+      queue: API_STREAMING
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T1_USER_API_STREAMING
+
+version: 1.0

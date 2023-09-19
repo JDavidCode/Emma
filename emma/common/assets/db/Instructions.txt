@@ -1,0 +1,29 @@
+docker build -t mysql_emma .	
+docker run -d --name mysql_emma -p 3307:3306 mysql_emma
+
+
+To update an image and keep the database information in the container, you can follow these steps:
+
+Create a backup of the existing database to a file on the host machine:
+
+docker exec mysql_emma sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > /path/on/host/all-databases.sql
+
+Replace /path/on/host/ with the path on the host machine where you want to store the backup file.
+
+Stop and remove the existing MySQL container:
+docker stop mysql_emma
+docker rm mysql_emma
+
+Pull the updated MySQL image:
+docker pull mysql:latest
+Replace mysql:latest with the name of the updated MySQL image.
+
+Start a new MySQL container using the updated image and the backup file:
+docker run -d --name mysql_emma -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -v /path/on/host:/docker-entrypoint-initdb.d mysql:latest
+
+Replace <new_mysql_container_name> with the name of the new MySQL container, 
+and /path/on/host with the path on the host machine where the backup file is stored.
+
+The -v flag mounts the /path/on/host directory as a volume in the container's /docker-entrypoint-initdb.d directory, which is where the MySQL container looks for initialization scripts to run when it starts up. This way, the backup file is automatically restored when the container starts.
+
+Note that the container will be using the new image, but the data from the previous container will be available in the new container.

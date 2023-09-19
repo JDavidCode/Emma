@@ -1,0 +1,34 @@
+{'timestamp': '2023-09-14T16:17:20.934071', 'remitent': 'T0_USER_API_IO', 'output': (('sLeBZKWMEYY3r268AAAH', '1-emd-18839', '1'), '')}
+ 
+{'timestamp': '2023-09-14T16:17:20.943534', 'remitent': 'T0_GPT', 'output': ('1', '1-emd-18839', {'role': 'user', 'content': ''})}
+ 
+{'timestamp': '2023-09-14T16:17:35.915006', 'remitent': 'T0_USER_API_IO', 'output': (('sLeBZKWMEYY3r268AAAH', '1-emd-18839', '1'), 'Hola emma')}
+ 
+{'timestamp': '2023-09-14T16:17:35.930240', 'remitent': 'T0_GPT', 'output': ('1', '1-emd-18839', {'role': 'user', 'content': 'Hola emma'})}
+ 
+{'timestamp': '2023-09-14T16:17:36.922277', 'remitent': 'T0_GPT', 'output': (AuthenticationError(message='Incorrect API key provided: sk-Un8dE***************************************UFJe. You can find your API key at https://platform.openai.com/account/api-keys.', http_status=401, request_id=None), 'Traceback (most recent call last):
+  File "c:\\Users\\RenacerLive\\Documents\\Emma-ServerSide\\emma\\services\\integrated\\gpt.py", line 92, in main
+    response = openai.ChatCompletion.create(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_resources\\chat_completion.py", line 25, in create
+    return super().create(*args, **kwargs)
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_resources\\abstract\\engine_api_resource.py", line 153, in create
+    response, _, api_key = requestor.request(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 298, in request
+    resp, got_stream = self._interpret_response(result, stream)
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 700, in _interpret_response
+    self._interpret_response_line(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 765, in _interpret_response_line
+    raise self.handle_error_response(
+openai.error.AuthenticationError: Incorrect API key provided: sk-Un8dE***************************************UFJe. You can find your API key at https://platform.openai.com/account/api-keys.
+')}
+ 
+{'timestamp': '2023-09-14T16:18:10.716652', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-09-14T16:18:28.346255', 'remitent': 'T0_USER_API_IO', 'output': (('-G1OmR01dNunw6jCAAAD', '1-emd-18839', '1'), 'Hole emma')}
+ 
+{'timestamp': '2023-09-14T16:18:28.346255', 'remitent': 'T0_GPT', 'output': ('1', '1-emd-18839', {'role': 'user', 'content': 'Hole emma'})}
+ 
+{'timestamp': '2023-09-14T16:18:29.635501', 'remitent': 'T0_GPT', 'output': ('1', '1-emd-18839', {'role': 'assistant', 'content': '¡Hola! ¿En qué puedo ayudarte hoy, Juan?'})}
+ 
+{'timestamp': '2023-09-14T16:23:59.189105', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 

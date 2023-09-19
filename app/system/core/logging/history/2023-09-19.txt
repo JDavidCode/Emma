@@ -1,0 +1,28 @@
+{'timestamp': '2023-09-19T12:15:22.585998', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-09-19T12:37:13.542210', 'remitent': 'T0_USER_API_IO', 'output': (('GEUrXdR_i1w-AILGAAAB', '1-emd-idjqw', '1'), 'hey emma')}
+ 
+{'timestamp': '2023-09-19T12:38:26.558609', 'remitent': 'T0_USER_API_IO', 'output': (('-56V8DGeUh2kKNC7AAAB', '1-emd-idjqw', '1'), 'hey emma')}
+ 
+{'timestamp': '2023-09-19T12:38:26.559607', 'remitent': 'T0_GPT', 'output': ('1', '1-emd-idjqw', {'role': 'user', 'content': 'hey emma'})}
+ 
+{'timestamp': '2023-09-19T12:38:27.416540', 'remitent': 'T0_GPT', 'output': (AuthenticationError(message='Incorrect API key provided: sk-mHjlH***************************************AFhQ. You can find your API key at https://platform.openai.com/account/api-keys.', http_status=401, request_id=None), 'Traceback (most recent call last):
+  File "c:\\Users\\RenacerLive\\Documents\\EmmaReforged\\app\\services\\gpt.py", line 90, in main
+    response = openai.ChatCompletion.create(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_resources\\chat_completion.py", line 25, in create
+    return super().create(*args, **kwargs)
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_resources\\abstract\\engine_api_resource.py", line 153, in create
+    response, _, api_key = requestor.request(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 298, in request
+    resp, got_stream = self._interpret_response(result, stream)
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 700, in _interpret_response
+    self._interpret_response_line(
+  File "C:\\Users\\RenacerLive\\anaconda3\\envs\\emma\\lib\\site-packages\\openai\\api_requestor.py", line 765, in _interpret_response_line
+    raise self.handle_error_response(
+openai.error.AuthenticationError: Incorrect API key provided: sk-mHjlH***************************************AFhQ. You can find your API key at https://platform.openai.com/account/api-keys.
+')}
+ 
+{'timestamp': '2023-09-19T12:41:51.618402', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 
+{'timestamp': '2023-09-19T12:42:57.425359', 'remitent': 'LOGGER', 'output': 'Handling shutdown...'}
+ 

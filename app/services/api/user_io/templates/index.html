@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+
+	<title>EMMA API</title>
+</head>
+<body>
+<div id="header">
+    <h2 id="banner_h2">EMMA</h2>
+    <p id="beta">BETA</p>
+</div>
+
+<div class="wrapper">
+    <section class="data-container">
+        <ul id="chat"></ul>
+    </section>
+
+    <div id="command-bar">
+        <div class="input-container">
+            <button type="button" id="speakBtn">Speak</button>
+            <textarea id="commandInput" rows="3" name="text_input" placeholder="Insert a Command"></textarea>
+            <button type="button" id="sendBtn">Send</button>
+        </div>
+    </div>
+</div>
+	
+</body>
+</html>

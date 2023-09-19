@@ -1,0 +1,26 @@
+{
+    "3-emd-212ywd0": [
+        {
+            "role": "system",
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Susana, age: 17, birthday: 09/10/2005, level: 7"
+        },
+        {
+            "role": "user",
+            "content": "Busca en Google cuanto tarda la tierra en rotar"
+        },
+        {
+            "role": "function",
+            "name": "google_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "Busca en Google cu\u00e1l es la distancia m\u00e1ximo a la que ha llegado un buzo a pulm\u00f3n "
+        },
+        {
+            "role": "function",
+            "name": "google_search",
+            "content": "The function has been executed"
+        }
+    ]
+}

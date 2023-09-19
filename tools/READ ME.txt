@@ -1,0 +1,20 @@
+********THIS IS A RULES FILE, HERE YOU FIND THAT YOU SHOULD FOLLOW FOR DEVELOPMENT HERE********
+
+***TOOLS NEVER USE EMMA_GLOBALS***
+
+***FOR EVERY MODULE***
+~Every Tool that get a Input should get a Array as Input
+
+***CONVERTERS TOOLS***
+
+***DATA TOOLS***
+
+***GENERATORS TOOLS***
+~Always use a Array of tuples for functions that need filename and path 
+~Always get first Filename and next the path
+
+***OS TOOLS***
+
+
+~~~~~~
+SEE the FFMPEG FOR YTDL

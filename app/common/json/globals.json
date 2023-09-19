@@ -1,0 +1,154 @@
+{
+    "tools_cs": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.converters.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_gs": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.generators.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_da": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.data.local.kit",
+        "args": [],
+				"instance": "False"
+    },
+    "tools_net": {
+        "endpoint": "ToolKit",
+        "path": "emma.tools.network.ip",
+        "args": [],
+				"instance": "False"
+    },
+    "core_thread_handler": {
+        "endpoint": "ThreadHandler",
+        "path": "emma.system.core_threading",
+        "args": [],
+				"instance": "True"
+    },
+    "queue_handler": {
+        "endpoint": "queue_handlerHandler",
+        "path": "emma.system.core_threading",
+        "args": [],
+				"instance": "True"
+    },
+    "console_handler": {
+        "endpoint": "console_handlerHandler",
+        "path": "emma.system.core_threading",
+        "args": ["queue_handler"],
+				"instance": "True"
+    },
+    "core_event_handler": {
+        "endpoint": "EventHandler",
+        "path": "emma.system.core_threading",
+        "args": ["console_handler"],
+				"instance": "True"
+    },
+    "sys_v": {
+        "endpoint": "SysV",
+        "path": "emma.system.sys_v",
+        "args": ["queue_handler","console_handler"],
+				"instance": "True"
+    },
+    "session_protocols": {
+        "endpoint": "SessionsHandler",
+        "path": "emma.system.protocols.sessions.sessions_handler",
+        "args": [],
+				"instance": "False"
+    },
+    "hotkeys_protocols": {
+        "endpoint": "HOTKEYS",
+        "path": "emma.system.protocols.hotkeys",
+        "args": ["queue_handler", "event_handler"],
+				"instance": "False"
+    },
+    "databases_manager": {
+            "endpoint": "DBHandler",
+            "path": "emma.system.manager.db_manager",
+            "args": ["console_handler"],
+    				"instance": "True"
+    },
+    "logger": {
+        "endpoint": "Logger",
+        "path": "emma.system.logging.logger",
+        "args": [],
+				"instance": "False"
+    },
+    
+    "services_gpt": {
+        "endpoint": "GPT",
+        "path": "emma.services.integrated.gpt",
+        "args": [],
+				"instance": "False"
+    },
+    "services_api_streaming": {
+        "endpoint": "APP",
+        "path": "emma.services.API.streaming.app",
+        "args": [],
+				"instance": "False"
+    },
+    "services_api_user_io": {
+        "endpoint": "APP",
+        "path": "emma.services.API.user_io.app",
+        "args": [],
+				"instance": "False"
+    },
+    "service_geolocation": {
+        "endpoint": "GeoLocationService",
+        "path": "emma.services.integrated.common.geolocation",
+        "args": [],
+				"instance": "True"
+    },
+    "service_time": {
+        "endpoint": "TimeService",
+        "path": "emma.services.integrated.common.time",
+        "args": [],
+				"instance": "True"
+    },
+    "service_weather": {
+        "endpoint": "WeatherService",
+        "path": "emma.services.integrated.common.weather",
+        "args": [],
+				"instance": "True"
+    },
+    "task_msc": {
+        "endpoint": "MiscellaneousTask",
+        "path": "emma.services.integrated.task.miscellaneous",
+        "args": [],
+				"instance": "True"
+    },
+    "task_os": {
+        "endpoint": "OsTask",
+        "path": "emma.services.integrated.task.ost",
+        "args": [],
+				"instance": "True"
+    },
+    "task_web": {
+        "endpoint": "WebTask",
+        "path": "emma.services.integrated.task.web",
+        "args": [],
+				"instance": "True"
+    },
+    "CommandRouter": {
+        "endpoint": "DBHandler",
+        "path": "emma.system.routers.command_router",
+        "args": [],
+				"instance": "True"
+    },
+    "io_router": {
+        "endpoint": "InputRouter",
+        "path": "emma.system.routers.input_router",
+        "args": ["queue_handler", "event_handler"],
+				"instance": "True"
+    },
+    "forge_server": {
+        "endpoint": "DBHandler",
+        "path": "emma.forge.builder"
+    },
+    "thread_instances": {
+        "args": []
+    }
+}

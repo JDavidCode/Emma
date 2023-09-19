@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming App</title>
+</head>
+<body>
+    <h1>Video Streaming App</h1>
+    <input type="text" id="videoUrlInput" placeholder="Enter Video URL">
+    <button id="requestButton">Request Video</button>
+    <video id="videoPlayer" controls></video>
+    
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoUrlInput = document.getElementById('videoUrlInput');
+            const requestButton = document.getElementById('requestButton');
+            
+            const socket = io.connect('http://localhost:4010');
+            
+            let videoChunks = [];
+            let isBuffering = false;
+
+            socket.on('connect', function () {
+                console.log('Connected to SocketIO server');
+            });
+            
+            socket.on('error', function (error) {
+                console.error('Socket error:', error);
+            });
+
+            socket.on('disconnect', function () {
+                console.log('Disconnected from SocketIO server');
+            });
+            
+            socket.on('video_chunk', function (data) {
+                console.log('Received video chunk:', data);
+                if (!data || !data.chunk || data.chunk.length === 0) {
+                    console.error('Invalid or empty video chunk data received');
+                    return;
+                }
+
+                videoChunks.push(data.chunk);
+                if (!isBuffering) {
+                    bufferAndPlay();
+                }
+            });
+            
+            socket.on('video_not_found', function (data) {
+                console.error('Video not found:', data.message);
+                // Handle error display or messaging to the user
+            });
+
+            function bufferAndPlay() {
+                if (videoChunks.length > 0 && !isBuffering) {
+                    isBuffering = true;
+                    const blob = new Blob(videoChunks, { type: 'video/mp4' });
+                    const videoUrl = URL.createObjectURL(blob);
+                    videoPlayer.src = videoUrl;
+
+                    videoPlayer.play(); // Intentar iniciar la reproducción directamente
+
+                    videoPlayer.addEventListener('canplay', function () {
+                        isBuffering = false;
+                        videoChunks = [];
+                    });
+                }
+            }
+
+            
+            requestButton.addEventListener('click', function () {
+                const videoUrl = videoUrlInput.value.trim();
+                if (!videoUrl) {
+                    console.error('Video URL is empty');
+                    return;
+                }
+                console.log('Requesting video:', videoUrl);
+                socket.emit('request_video', videoUrl);
+            });
+        });
+    </script>
+</body>
+</html>

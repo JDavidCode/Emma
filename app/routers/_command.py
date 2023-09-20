@@ -38,7 +38,7 @@ class CommandRouter:
 
             command_info, args = data
             try:
-                module = Config.app.system.agents._sys.get_nested_attribute(
+                module = Config.app.system.agents.sys.get_nested_attribute(
                     Config, command_info.get("module"))
                 function_name = command_info.get("key")
                 args_key = command_info.get('args_key')

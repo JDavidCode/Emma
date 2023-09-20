@@ -166,15 +166,17 @@ config_structure = {
                 "@_logger": "app.system.core.logging.logger.Logger",
                 
             },
-            "agents": {
-                "_sys": ["app.system.agents._system._system.SystemManager", ['SYS AGENT', None, '$app.system.core.queue']],
-                "db": ["app.system.agents._database._db.DatabaseManager", ['DB AGENT', '$app.system.core._console']],
-                "user": ["app.system.agents._user._usr.UserManager", ["USER AGENT"]]
-            },
             
             "admin": {
+                "agents": {
+                "@withelist" : ["app.system.admin.agents.system._withelist.WhitelistAgent"],
+                "sys": ["app.system.admin.agents.system._system.SystemManager", ['SYS AGENT', None, '$app.system.core.queue']],
+                "@db": "app.system.admin.agents.database._db.DatabaseAgent",
+                "user": ["app.system.admin.agents.user._usr.UserManager", ["USER AGENT"]],
+                "@session": "app.system.admin.agents.sessions._sessions.SessionsAgent"
+
+            },
                 "protocols" : {
-                    "@session": "app.system.admin.protocols.sessions.sessions_handler.SessionsHandler"
                     },
             },
             

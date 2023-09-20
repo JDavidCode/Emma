@@ -108,18 +108,18 @@ class HotKeys:
 
     def local_handle_shutdown(self):
         """Handle local shutdown."""
-        Config.app.system.agents._sys.server_shutdown()
+        Config.app.system.admin.agents.sys.server_shutdown()
 
     def handle_reload(self):
         """Handle server reload."""
-        Config.app.system.agents._sys.server_restart()
+        Config.app.system.admin.agents.sys.server_restart()
 
     def handle_shutdown(self):
         """Handle shutting down the HotKeys instance."""
         keyboard.remove_hotkey(self.hotkey_ctrl_0)
         keyboard.remove_hotkey(self.hotkey_ctrl_8)
         keyboard.remove_hotkey(self.hotkey_ctrl_1)
-        self.stop()
+        self.__stop()
 
     def handle_stop_task(self):
         """Handle stopping a task."""

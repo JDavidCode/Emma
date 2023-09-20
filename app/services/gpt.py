@@ -8,7 +8,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler):
-        openai.api_key = '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'
+        openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -55,7 +55,7 @@ class GPT:
                 "CONSOLE", ("", "creating a new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            Config.app.system.agents._sys.create_new_worker(thread_name)
+            Config.app.system.agents.sys.create_new_worker(thread_name)
 
     def main(self):
         first = True

@@ -61,6 +61,7 @@ class Run:
         """
         Establish connections required for the application.
         """
+        Config.app.system.admin.agents.sys.update_database()
         pass
 
     def set_environ_variables(self):
@@ -85,11 +86,11 @@ class Run:
         """
         Initialize the application's configuration.
         """
-        #self.check_dependencies()
-        Config.app.system.agents._sys.data_auto_updater()
-        Config.app.system.agents._sys.verify_paths()
-        Config.app.system.agents._sys.initialize_queues()
-        Config.app.system.agents._sys.instance_threads()
+        # self.check_dependencies()
+
+        Config.app.system.admin.agents.sys.verify_paths()
+        Config.app.system.admin.agents.sys.initialize_queues()
+        Config.app.system.admin.agents.sys.instance_threads()
 
     def check_dependencies(self):
         """
@@ -136,7 +137,7 @@ class Run:
         """
         Config.inspect_config_section(Config.forge)
         Config.forge.run(package_list=package_list)
-        Config.app.system.agents._sys.instance_threads(forge=True)
+        Config.app.system.admin.agents.sys.instance_threads(forge=True)
 
     def perform_health_checks(self):
         """

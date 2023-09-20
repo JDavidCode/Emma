@@ -17,7 +17,17 @@ class myclass:
         self.event_handler.subscribe(self)
 
     def main(self):
-        pass  # SERVICE/PLUGIN/APP enpoint here the app start when the thread start
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Has been instanciate"])
+        self.event.wait()
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.name, "Is Started"])
+        while not self.stop_flag:
+            request, session_data = self.queue_handler.get_queue(
+                self.queue_name, 0.1, (None, None))
+            if request is None:
+                continue  # SERVICE/PLUGIN/APP enpoint here the app start when the thread start
 
     def attach_components(self, module_name):
         attachable_module = __import__(module_name)

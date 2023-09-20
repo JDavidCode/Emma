@@ -2,13 +2,13 @@ import json
 import threading
 from app.config.config import Config
 
-
 import traceback
 
 
-class SessionsHandler:
+class SessionsAgent:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
+        self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
@@ -204,7 +204,7 @@ class SessionsHandler:
                 "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             request, session_data = self.queue_handler.get_queue(
-                'PROTO_SESSIONS', 0.1, (None, None))
+                self.queue_name, 0.1, (None, None))
             if request is None:
                 continue
             self.user_storage = {}

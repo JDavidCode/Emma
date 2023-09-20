@@ -15,7 +15,7 @@ defaults:
   - queue: SECURE_NET_SESSIONS
     queue_maxsize: 0
     
-  services:
+  Threads:
     - args:
       - queue_handler
       - event_handler
@@ -41,20 +41,33 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: app.services.common.hotkeys
+      endpoint: app.system.admin.agents.db
+      queue: WITHELIST_AGENT
+      queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T0_HOTKEYS
+      thread_name: T1_WITHELIST
 
     - args:
       - queue_handler
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: app.system.admin.protocols.session
-      queue: PROTO_SESSIONS
+      endpoint: app.system.admin.agents.db
+      queue: DB_AGENT
       queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T0_PROTO_SESSIONS
+      thread_name: T1_DB
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: app.system.admin.agents.session
+      queue: SESSION_AGENT
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T1_SESSIONS
 
     - args:
       - queue_handler
@@ -66,7 +79,7 @@ defaults:
       queue: COMMAND
       queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T0_COMMANDS
+      thread_name: T2_COMMANDS
 
     - args:
       - queue_handler
@@ -75,7 +88,7 @@ defaults:
       autostart: true
       endpoint: app.routers._router
       thread_is_daemon: false
-      thread_name: T0_INPUT_ROUTER
+      thread_name: T2_INPUT
 
     - args:
       - queue_handler
@@ -85,7 +98,7 @@ defaults:
       queue: GPT_INPUT
       queue_maxsize: 1
       thread_is_daemon: false
-      thread_name: T0_GPT
+      thread_name: T3_GPT
       
     - args:
       - queue_handler
@@ -96,7 +109,7 @@ defaults:
       queue: API_INPUT
       queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T0_USER_API_IO
+      thread_name: T3_API_IO
 
     - args:
       - queue_handler
@@ -107,6 +120,15 @@ defaults:
       queue: API_STREAMING
       queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T1_USER_API_STREAMING
+      thread_name: T3_API_STREAMING
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: app.services.common.hotkeys
+      thread_is_daemon: false
+      thread_name: T1_HOTKEYS
 
 version: 1.0

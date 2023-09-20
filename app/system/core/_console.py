@@ -2,6 +2,7 @@ import datetime
 import os
 import threading
 
+
 class Console:
     def __init__(self, name, queue_name, queue_handler):
         """

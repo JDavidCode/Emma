@@ -63,7 +63,7 @@ class EventHandler:
         """
         for subscriber in self.subscribers:
             try:
-                subscriber.handle_shutdown()
+                subscriber.__handle_shutdown()
                 self.queue_handler.add_to_queue(
                     "CONSOLE", (self.name, f"{subscriber} HAS BEEN NOTIFIED OF SHUTDOWN"))
             except Exception as e:
@@ -89,7 +89,7 @@ class EventHandler:
         Args:
             thread_name (str): The name of the overloaded worker thread.
         """
-        Config.app.system.agents._sys.create_new_worker(thread_name)
+        Config.app.system.agents.sys.create_new_worker(thread_name)
 
     def notify_connection(self):
         """

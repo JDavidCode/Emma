@@ -91,7 +91,7 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if thread.is_alive():
                     self.stop_thread(thread_name)
-                    Config.app.system.agents._sys.module_reloader(
+                    Config.app.system.agents.sys.module_reloader(
                         thread_name, True)
                     self.start_thread(thread_name)
                     return True, f"{thread_name} has been restarted."
@@ -114,7 +114,7 @@ class ThreadHandler:
                 if thread.is_alive():
                     thread_instance = Config.app.thread_instances.get(
                         thread_name)
-                    thread_instance.stop()
+                    thread_instance.__stop()
                     return True, f"\n{thread_name} has been stopped."
                 else:
                     return True, f"\n{thread_name} not found."
@@ -155,7 +155,7 @@ class ThreadHandler:
                     if thread.is_alive():
                         thread_instance = Config.app.thread_instances.get(
                             thread_name)
-                        thread_instance.stop()
+                        thread_instance.__stop()
                         Config.app.thread_instances.pop(thread_name)
                         return f"\n{thread_name} has been killed."
                 else:

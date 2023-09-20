@@ -98,11 +98,11 @@ class SystemManager:
         }
 
         if forge:
-            data = data["Forge"]["services"]
+            data = data["Forge"]["Threads"]
             if not data:
                 return
         else:
-            data = data["defaults"]["services"]
+            data = data["defaults"]["Threads"]
 
         for dic in data:
             if not dic:
@@ -346,11 +346,11 @@ class SystemManager:
 
         return "All Directories have been verified correctly"
 
-    def data_auto_updater(self):
+    def update_database(self):
         """
         Update data automatically.
         """
-        Config.app.system.agents.db
+        db = Config.app.system.admin.agents.db
 
     def temp_clearer(self):
         """

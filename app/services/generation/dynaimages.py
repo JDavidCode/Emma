@@ -53,7 +53,7 @@ class DYNA:
                 "CONSOLE", ("", "creating new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            Config.app.system.agents._sys.create_new_worker(thread_name)
+            Config.app.system.agents.sys.create_new_worker(thread_name)
 
     def main(self):
         firts = True

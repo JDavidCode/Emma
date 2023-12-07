@@ -37,6 +37,10 @@
                 {
                     "session_name": "hola",
                     "session_id": "1-emd-18839"
+                },
+                {
+                    "session_name": "Default Session",
+                    "session_id": "1-emd-dqo154d2"
                 }
             ],
             "public_ips": []

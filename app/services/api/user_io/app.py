@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, join_room
-import os
-import json
+from flask_cors import CORS
 import logging
 import threading
 import traceback
@@ -13,11 +12,12 @@ class App:
         self.name = name
         self.queue_name = queue_name
         self.app = Flask(__name__)
+        self.socketio = SocketIO(self.app)
+        CORS(self.app)  # Apply CORS to the Flask app
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
-        self.socketio = SocketIO(self.app)
         self.stop_flag = False
         self.response_thread = None
         log = logging.getLogger('werkzeug')
@@ -59,7 +59,7 @@ class App:
                     'public_ips': public_ip
                 }
                 self.queue_handler.add_to_queue(
-                    "PROTO_SESSIONS", ('run', {user_id: data, 'socket': socket_id}))
+                    "SESSION_AGENT", ('run', {user_id: data, 'socket': socket_id}))
                 self.socketio.emit("connect", {"session_id": session_id})
             else:
                 self.socketio.emit("connect_error", {
@@ -76,28 +76,26 @@ class App:
                 "./app/config/withelist.yml")
 
             if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
-                data = data.lower()  # Convert data to lowercase
-                self.queue_handler.add_to_queue(
-                    "API_INPUT", ((socket_id, session_id, user_id), data))
-                self.queue_handler.add_to_queue(
-                    "LOGGING", (self.name, ((socket_id, session_id, user_id), data)))
+                vardw = 1
+                # Process the client message here (e.g., broadcast it to other clients)
+                # self.socketio.emit("message", data, room=session_id)  # Uncomment if broadcasting
             else:
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.name, ("Unauthorized User on socket: ", socket_id)))
                 self.socketio.emit(
                     "response", "Unauthorized user", room=socket_id)
 
-        @self.app.route("/get_user_sessions", methods=["GET"])
-        def get_user_sessions():
-            user_id = request.args.get("user_id")
-            self.queue_handler.add_to_queue(
-                "NET_SESSIONS", {"user_id": user_id})
-            user_sessions = [
-                {"session_name": "Session 1", "session_id": "12345"},
-                {"session_name": "Session 2", "session_id": "67890"},
-                # Add more session dictionaries as needed
-            ]
-            return jsonify(user_sessions)
+                @self.app.route("/get_user_sessions", methods=["GET"])
+                def get_user_sessions():
+                    user_id = request.args.get("user_id")
+                    self.queue_handler.add_to_queue(
+                        "NET_SESSIONS", {"user_id": user_id})
+                    user_sessions = [
+                        {"session_name": "Session 1", "session_id": "12345"},
+                        {"session_name": "Session 2", "session_id": "67890"},
+                        # Add more session dictionaries as needed
+                    ]
+                    return jsonify(user_sessions)
 
     def main(self):
         self.queue_handler.add_to_queue(

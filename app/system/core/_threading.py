@@ -13,6 +13,7 @@ class ThreadHandler:
         self.name = name
         self.queue_name = queue_name
         self.threads = {}
+        self.subthreads = []
 
     def add_thread(self, thread):
         """
@@ -43,6 +44,53 @@ class ThreadHandler:
                     return True, f"{thread_name} is currently active."
         return True, f"{thread_name} not found."
 
+    def create_subthread(self, parent_thread_name, subthread):
+        """
+        Create and add a subthread to the specified parent thread.
+
+        Args:
+            parent_thread_name (str): The name of the parent thread.
+            subthread (Thread): The subthread to be added.
+
+        Returns:
+            tuple: A tuple containing a boolean indicating success and a message.
+        """
+        for _, parent_thread in self.threads.items():
+            if str(parent_thread.name) == parent_thread_name:
+                parent_thread_id = id(parent_thread)
+
+                # Check if the parent thread ID is already in the subthreads dictionary
+                if parent_thread_id in self.subthreads:
+                    # Check if the subthread is already associated with the parent thread
+                    if id(subthread) not in [sub['id'] for sub in self.subthreads[parent_thread_id]]:
+                        self.subthreads[parent_thread_id].append({'id': id(subthread), 'name': subthread.name})
+                        return True, f"Subthread '{subthread.name}' has been added to '{parent_thread.name}'."
+                    else:
+                        return True, f"Subthread '{subthread.name}' is already associated with '{parent_thread.name}'."
+                else:
+                    # If the parent thread ID is not in the dictionary, create a new list with the first subthread
+                    self.subthreads[parent_thread_id] = [{'id': id(subthread), 'name': subthread.name}]
+                    return True, f"Subthread '{subthread.name}' has been created and added to '{parent_thread.name}'."
+        
+        return False, f"Parent thread '{parent_thread_name}' not found."
+
+    def get_subthreads_dict(self, thread):
+        """
+        Get the dictionary mapping parent thread IDs to their subthreads.
+
+        Returns:
+            dict: A dictionary containing parent thread IDs as keys and lists of subthread names as values.
+        """
+        return self.subthreads_dict[id(thread)]
+
+    def subthread_target(self):
+        """
+        The target function for the subthread.
+        Implement the logic for the subthread here.
+        """
+        # Add your subthread logic here.
+        pass
+
     def get_thread_status(self):
         """
         Get the status of all threads.
@@ -55,6 +103,7 @@ class ThreadHandler:
             status = thread.is_alive()
             status_list.append((thread, status))
         return True, status_list
+    
 
     def get_thread_info(self, thread_name):
         """
@@ -101,7 +150,7 @@ class ThreadHandler:
 
     def stop_thread(self, thread_name):
         """
-        Stop a thread by its name.
+        Stop a thread by its name and its associated child threads.
 
         Args:
             thread_name (str): The name of the thread to stop.
@@ -112,13 +161,39 @@ class ThreadHandler:
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    thread_instance = Config.app.thread_instances.get(
-                        thread_name)
+                    thread_instance = Config.app.thread_instances.get(thread_name)
+                    
+                    # Check if the thread has associated child threads
+                    thread_id = id(thread)
+                    if thread_id in self.subthreads:
+                        for subthread_info in self.subthreads[thread_id]:
+                            subthread_id = subthread_info['id']
+                            subthread_instance = self.get_thread_instance(subthread_id)
+                            if subthread_instance and subthread_instance.is_alive():
+                                subthread_instance.__stop()
+
+                    # Stop the main thread
                     thread_instance.__stop()
-                    return True, f"\n{thread_name} has been stopped."
+
+                    return True, f"\n{thread_name} and its associated child threads have been stopped."
                 else:
                     return True, f"\n{thread_name} not found."
         return True, f"\nThread '{thread_name}' not found."
+
+    def get_thread_instance(self, thread_id):
+        """
+        Get the thread instance based on its ID.
+
+        Args:
+            thread_id (int): The ID of the thread.
+
+        Returns:
+            Thread: The thread instance, or None if not found.
+        """
+        for _, thread in self.threads.items():
+            if id(thread) == thread_id:
+                return thread
+        return None
 
     def remove_thread(self, thread_name):
         """

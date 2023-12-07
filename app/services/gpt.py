@@ -8,7 +8,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler):
-        openai.api_key = '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'
+        openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -87,7 +87,7 @@ class GPT:
                 continue
             else:
                 try:
-                    response = openai.ChatCompletion.create(
+                    response = openai.chat.completions.create(
                         model="gpt-3.5-turbo-0613",
                         messages=chat,
                         max_tokens=120,

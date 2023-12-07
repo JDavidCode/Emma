@@ -111,16 +111,16 @@ defaults:
       thread_is_daemon: false
       thread_name: T3_API_IO
 
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.services.core.api_streaming
-      queue: API_STREAMING
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T3_API_STREAMING
+#   - args:
+#      - queue_handler
+#      - event_handler
+#      autorestart: true
+#      autostart: true
+#      endpoint: app.services.core.api_streaming
+#      queue: API_STREAMING
+#      queue_maxsize: 0
+#      thread_is_daemon: false
+#      thread_name: T3_API_STREAMING
 
     - args:
       - queue_handler

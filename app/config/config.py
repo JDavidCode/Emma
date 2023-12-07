@@ -193,7 +193,7 @@ config_structure = {
             "core": {
                 "@gpt": "app.services.gpt.GPT",
                 "@api_user": "app.services.api.user_io.app.App",
-                "@api_streaming": "app.services.api.streaming.app.App",
+                #"@api_streaming": "app.services.api.streaming.app.App",
             },
             "task": {
                 "miscellaneous": ["app.services.task.miscellaneous.MiscellaneousTask", []],
@@ -201,7 +201,7 @@ config_structure = {
                 "web": ["app.services.task.web.WebTask", []]
             },
             "common" : {
-                "@hotkeys": "app.services.common.hotkeys.HotKeys",    
+                "@hotkeys": "app.system.admin.protocols.hotkeys.HotKeys",    
             }
         },
     },

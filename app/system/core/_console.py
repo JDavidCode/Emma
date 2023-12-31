@@ -1,6 +1,8 @@
 import datetime
 import os
 import threading
+import keyboard
+from app.config.config import Config
 
 
 class Console:
@@ -17,7 +19,7 @@ class Console:
         self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event = threading.Event()
-        self.stop_flag = False
+        self.stop_flag = False        
 
     def main(self):
         """
@@ -26,6 +28,14 @@ class Console:
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
+        
+        console_input = self.Input()
+        
+        input_thread = threading.Thread(
+            target=console_input.active_terminal, name=f"{self.name} input_thread")
+        input_thread.start()
+        console_input.set_hotkeys()
+        
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
@@ -80,3 +90,117 @@ class Console:
         Stop the console.
         """
         self.stop_flag = True
+
+    class Input:
+        """
+        Class for managing hotkeys and event handling.
+
+        Args:
+            name (str): The name of the HotKeys instance.
+            queue_name (str): The name of the queue.
+            queue_handler: An object responsible for handling the queue.
+            event_handler: An object responsible for event handling.
+        """
+
+        def __init__(self):
+            self.hotkey_ctrl_0 = None
+            self.hotkey_ctrl_8 = None
+            self.hotkey_ctrl_1 = None
+            self.custom_hotkeys = {}
+
+        def active_terminal(self):
+            input_text = input("Ingrese algo: ")
+            if input_text == "shutdown":
+                self._handle_shutdown()
+
+        def set_hotkeys(self):
+            """Set predefined hotkeys."""
+            self.hotkey_ctrl_0 = keyboard.add_hotkey(
+                "ctrl+0", self.local_handle_shutdown)
+            self.hotkey_ctrl_8 = keyboard.add_hotkey(
+                "ctrl+8", self.handle_stop_task)
+            self.hotkey_ctrl_1 = keyboard.add_hotkey("ctrl+1", self.handle_reload)
+
+        def add_custom_hotkey(self, hotkey_combination, handler_function):
+            """
+            Add a custom hotkey with a specified handler function.
+
+            Args:
+                hotkey_combination (str): The hotkey combination (e.g., "ctrl+alt+X").
+                handler_function (callable): The function to be called when the hotkey is triggered.
+            """
+            custom_hotkey = keyboard.add_hotkey(
+                hotkey_combination, handler_function)
+            self.custom_hotkeys[hotkey_combination] = custom_hotkey
+
+        def remove_custom_hotkey(self, hotkey_combination):
+            """
+            Remove a custom hotkey by its hotkey combination.
+
+            Args:
+                hotkey_combination (str): The hotkey combination to be removed.
+            """
+            if hotkey_combination in self.custom_hotkeys:
+                hotkey = self.custom_hotkeys[hotkey_combination]
+                keyboard.remove_hotkey(hotkey)
+                del self.custom_hotkeys[hotkey_combination]
+
+        def pause_hotkey(self, hotkey_combination):
+            """
+            Pause a custom hotkey by its hotkey combination.
+
+            Args:
+                hotkey_combination (str): The hotkey combination to be paused.
+            """
+            if hotkey_combination in self.custom_hotkeys:
+                hotkey = self.custom_hotkeys[hotkey_combination]
+                hotkey.pause()
+
+        def resume_hotkey(self, hotkey_combination):
+            """
+            Resume a custom hotkey by its hotkey combination.
+
+            Args:
+                hotkey_combination (str): The hotkey combination to be resumed.
+            """
+            if hotkey_combination in self.custom_hotkeys:
+                hotkey = self.custom_hotkeys[hotkey_combination]
+                hotkey.resume()
+
+        def pause_all_hotkeys(self):
+            """Pause all custom hotkeys and predefined hotkeys."""
+            for hotkey in self.custom_hotkeys.values():
+                hotkey.pause()
+            self.hotkey_ctrl_0.pause()
+            self.hotkey_ctrl_8.pause()
+            self.hotkey_ctrl_1.pause()
+
+        def resume_all_hotkeys(self):
+            """Resume all custom hotkeys and predefined hotkeys."""
+            for hotkey in self.custom_hotkeys.values():
+                hotkey.resume()
+            self.hotkey_ctrl_0.resume()
+            self.hotkey_ctrl_8.resume()
+            self.hotkey_ctrl_1.resume()
+
+        def _handle_shutdown(self):
+            """Handle local shutdown."""
+            Config.app.system.admin.agents.sys.server_shutdown()
+
+        def handle_reload(self):
+            """Handle server reload."""
+            Config.app.system.admin.agents.sys.server_restart()
+
+        def handle_shutdown(self):
+            """Handle shutting down the HotKeys instance."""
+            try:
+                keyboard.remove_hotkey(self.hotkey_ctrl_0)
+                keyboard.remove_hotkey(self.hotkey_ctrl_8)
+                keyboard.remove_hotkey(self.hotkey_ctrl_1)
+            except:
+                pass
+            self.__stop()
+
+        def handle_stop_task(self):
+            """Handle stopping a task."""
+            print("Stop task hotkey pressed")

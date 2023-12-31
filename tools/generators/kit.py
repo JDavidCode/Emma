@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-class toolKit:
+class ToolKit:
     def __init__(self):
         pass
 

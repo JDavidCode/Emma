@@ -148,9 +148,9 @@ config_structure = {
     },
 
     "tools": {
-        "@converters": "tools.converters.local.kit.ToolKit",
-        "@generators": "tools.generators.local.kit.ToolKit",
-        "@data": "tools.data.local.kit.ToolKit",
+        "@converters": "tools.converters.kit.ToolKit",
+        "@generators": "tools.generators.kit.ToolKit",
+        "@data": "tools.data.kit.ToolKit",
         "@network": "tools.network.ip.ToolKit"
     },
             
@@ -174,8 +174,12 @@ config_structure = {
                 "@db": "app.system.admin.agents.database._db.DatabaseAgent",
                 "user": ["app.system.admin.agents.user._usr.UserManager", ["USER AGENT"]],
                 "@session": "app.system.admin.agents.sessions._sessions.SessionsAgent"
-
+               
             },
+                "routers": {
+                    "@_input": "app.system.admin.routers._input.InputRouter",
+                    "@_command": "app.system.admin.routers._command.CommandRouter"
+                },
                 "protocols" : {
                     },
             },
@@ -184,10 +188,7 @@ config_structure = {
             "_app": None  # reference to the complete app should be change the value on runing
         },
         
-        "routers": {
-                "@_router": "app.routers._input.InputRouter",
-                "@_command": "app.routers._command.CommandRouter"
-            },
+       
             
         "services": {
             "core": {
@@ -201,7 +202,6 @@ config_structure = {
                 "web": ["app.services.task.web.WebTask", []]
             },
             "common" : {
-                "@hotkeys": "app.system.admin.protocols.hotkeys.HotKeys",    
             }
         },
     },

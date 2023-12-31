@@ -1,0 +1,84 @@
+{'timestamp': '2023-12-31T22:00:26.665812', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666184', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666306', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666439', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666551', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666665', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:00:26.666766', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.682487', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.682697', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.682824', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.682959', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.683076', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.683189', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2023-12-31T22:17:44.683304', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 

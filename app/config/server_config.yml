@@ -75,7 +75,7 @@ defaults:
       - thread_handler
       autorestart: true
       autostart: true
-      endpoint: app.routers._command
+      endpoint: app.system.admin.routers._command
       queue: COMMAND
       queue_maxsize: 0
       thread_is_daemon: false
@@ -86,7 +86,7 @@ defaults:
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: app.routers._router
+      endpoint: app.system.admin.routers._input
       thread_is_daemon: false
       thread_name: T2_INPUT
 
@@ -122,13 +122,5 @@ defaults:
 #      thread_is_daemon: false
 #      thread_name: T3_API_STREAMING
 
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.services.common.hotkeys
-      thread_is_daemon: false
-      thread_name: T1_HOTKEYS
 
 version: 1.0

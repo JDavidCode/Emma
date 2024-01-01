@@ -109,11 +109,48 @@ document.addEventListener('DOMContentLoaded', function () {
 			window.open(data, '_blank');
 		} else {
 			processChat(data, 'emma-message');
-			// If it's not a link, speak the message using speech synthesis
+
+			if (data.chat_content && data.chat_content.length > 0) {
+				loadChatHistory(data.chat_content);
+			}
+
 			currentUtterance = new SpeechSynthesisUtterance(data);
 			window.speechSynthesis.speak(currentUtterance);
 		}
-
 	});
+
+	socket.on("load session", function (data) {
+		chatContent(data);
+	});
+
+	function chatContent(data) {
+		const chat = document.getElementById('chat');
+
+		// Agregar mensajes del historial al DOM
+		data.chat_content.forEach(message => {
+			// Verificar si el mensaje ya está presente en el chat para evitar duplicados
+			if (!isMessagePresent(chat, message.content)) {
+				const listItem = document.createElement('li');
+				listItem.textContent = message.content;
+				listItem.classList.add("message", message.role === 'user' ? 'user-message' : 'emma-message');
+				chat.appendChild(listItem);
+			}
+		});
+	}
+	
+	socket.on('update chat', function (data) {
+		processChat(data, 'user-message')
+	})
+
+	function isMessagePresent(chat, messageContent) {
+		// Verificar si el mensaje ya está presente en el chat
+		const existingMessages = chat.querySelectorAll('.message');
+		for (const existingMessage of existingMessages) {
+			if (existingMessage.textContent === messageContent) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 });

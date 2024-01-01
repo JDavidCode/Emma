@@ -3,12 +3,7 @@ body, ul {
     margin: 0;
     padding: 0;
     background-color: #9c9c9c;
-}
-
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+overflow-y: hidden;
 }
 
 #header {
@@ -32,34 +27,49 @@ body, ul {
     color: #fbab2b; /* Color for "BETA" */
 }
 /* Style for the chat container */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-top: .5em;
+}
+
 .data-container {
     margin: auto;
     padding: 1em;
     width: 90vw;
-    height: 75vh;
-    overflow-y: auto; /* Add auto-scrolling to the data container */
+    max-height: 60vh;
+    display: flex;
+    justify-content: flex-end; /* Alinea los elementos en la parte inferior */
+    align-items: flex-end;
 }
 
 #chat {
     list-style: none;
     padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow-y: scroll; /* Add auto-scrolling to the data container */
+
 }
 
 /* Style for chat messages */
+
 .message {
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 10px;
     display: flex; /* Add flex display for message items */
+    flex-direction: column; /* Change the direction to column */
+    margin: 5px;
 }
-
 /* Style for user messages */
 .user-message {
     background-color: #4caf50;
     color: white;
     align-self: flex-end;
-    max-width: 65vw;
-    width:fit-content;
+    max-width: 60vw;
+    width: fit-content;
     border-radius: 10px 10px 0 10px; /* Adjust border radius for user message */
     margin-left: auto; /* Push user message to the right */
 }
@@ -69,9 +79,8 @@ body, ul {
     background-color: #2196f3;
     color: white;
     align-self: flex-start;
-    max-width: 65vw;
+    max-width: 60vw;
     width:fit-content;
-
     border-radius: 10px 10px 10px 0; /* Adjust border radius for bot message */
     margin-right: auto; /* Push bot message to the left */
 }
@@ -87,12 +96,12 @@ body, ul {
 .input-container {
     display: flex;
     align-items: center;
+    margin: auto;
 }
 
 #commandInput {
     flex: 1;
     padding: 10px;
-    margin-left: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }

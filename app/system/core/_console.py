@@ -29,7 +29,7 @@ class Console:
             "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
         
-        console_input = self.Input()
+        console_input = self.Input(self)
         
         input_thread = threading.Thread(
             target=console_input.active_terminal, name=f"{self.name} input_thread")
@@ -54,6 +54,29 @@ class Console:
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
         formatted_message = f"[{current_time}] {remitent} | {output}"
         print(formatted_message)
+
+    def handle_index(self, section_path):
+        """
+        Handle indexing to display attributes and methods of an instance.
+
+        Args:
+            instance_name (str): The name of the instance to index.
+        """
+        section_names = section_path.split('.')
+        current_section = Config
+
+        for section_name in section_names:
+            try:
+                current_section = getattr(current_section, section_name)
+            except AttributeError:
+                self.display_message(
+                    "Error", f"Config section '{section_path}' not found.")
+                return
+
+        self.display_message(
+            "Index", f"Attributes and methods of {section_path} section:")
+        index = Config.tools.data.format_json(Config.inspect_config_section(current_section))
+        self.display_message("Index", index)
 
     def clear_console(self):
         """
@@ -102,21 +125,34 @@ class Console:
             event_handler: An object responsible for event handling.
         """
 
-        def __init__(self):
+        def __init__(self, pa):
+            self.pa = pa
             self.hotkey_ctrl_0 = None
             self.hotkey_ctrl_8 = None
             self.hotkey_ctrl_1 = None
             self.custom_hotkeys = {}
 
         def active_terminal(self):
-            input_text = input("Ingrese algo: ")
-            if input_text == "shutdown":
-                self._handle_shutdown()
+            while True:
+                current_time = datetime.datetime.now().strftime("%H:%M:%S")
+                try:
+                    print("")
+                    input_text = input(f"[{current_time}] >> ")
+                    if input_text == "shutdown" or input_text == "exit":
+                        self._handle_shutdown()
+                    elif input_text.startswith("index "):
+                        instance_name = input_text.split(" ")[1]
+                        self.pa.handle_index(instance_name)
+                    else:
+                        self.display_message("Error", "Unknown command.")
+                except:
+                    pass
+             
 
         def set_hotkeys(self):
             """Set predefined hotkeys."""
             self.hotkey_ctrl_0 = keyboard.add_hotkey(
-                "ctrl+0", self.local_handle_shutdown)
+                "ctrl+0", self._handle_shutdown)
             self.hotkey_ctrl_8 = keyboard.add_hotkey(
                 "ctrl+8", self.handle_stop_task)
             self.hotkey_ctrl_1 = keyboard.add_hotkey("ctrl+1", self.handle_reload)

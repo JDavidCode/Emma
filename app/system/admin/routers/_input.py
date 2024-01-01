@@ -41,7 +41,7 @@ class InputRouter:
 
     def process_responses(self):
         while not self.stop_flag:
-            key, data, session_id = self.queue_handler.get_queue("RESPONSE")
+            key, data, ids = self.queue_handler.get_queue("RESPONSE")
             if key == 's0offline':
                 self.command_indexer(keyword=data, off_key=True)
             elif key == 'funcall':
@@ -49,10 +49,10 @@ class InputRouter:
                 if result is not False:
                     result.append(data[1])
                     self.queue_handler.add_to_queue(
-                        'COMMAND', (session_id, result))
+                        'COMMAND', (ids, result))
             elif key == 'answer':
                 self.queue_handler.add_to_queue(
-                    'API_RESPONSE', (session_id, data))
+                    'API_RESPONSE', (ids, data))
 
     def command_indexer(self, keyword, off_key=False):
         dictionary = Config.tools.data.json_loader(

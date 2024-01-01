@@ -1,14 +1,12 @@
 import json
 import threading
 from app.config.config import Config
-
 import traceback
 
 
 class SessionsAgent:
-    def __init__(self, name, queue_name, queue_handler, event_handler):
+    def __init__(self, name, queue_handler, event_handler):
         self.name = name
-        self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
@@ -30,6 +28,46 @@ class SessionsAgent:
             traceback_str = traceback.format_exc()
             self.queue_handler.add_to_queue(
                 "LOGGING", (self.name, (e, traceback_str)))
+
+    def create_default_device(self):
+        return {
+            "device_id": None,
+            "device_name": "Unknown Device",
+            "sessions": {"default_session_id": {"session_name": "Default Session", "session_id": "default_session_id"}},
+            "public_ips": []
+        }
+
+    def verify_user(self, user_id):
+        self.load_user(user_id)
+
+        # Verificar si el usuario tiene dispositivos
+        if 'devices' not in self.user_storage:
+            # Si no tiene dispositivos, crea uno predeterminado con una sesión
+            default_device = self.create_default_device()
+            self.user_storage["devices"] = {default_device["device_id"]: default_device}
+
+            # Guardar la actualización del usuario
+            self.save_user(user_id)
+        elif not self.user_storage["devices"]:
+            # Si tiene dispositivos pero la lista está vacía, agregar un dispositivo predeterminado con una sesión
+            default_device = self.create_default_device()
+            self.user_storage["devices"][default_device["device_id"]] = default_device
+
+            # Guardar la actualización del usuario
+            self.save_user(user_id)
+
+
+    def verify_session(self, user_id, session_id):
+        with self.lock:
+                devices = self.user_storage.get('devices', [])
+                for device in devices:
+                    sessions = device.get('sessions', [])
+                    if session_id in [session['session_id'] for session in sessions]:
+                        return True
+
+        return False
+
+
 
     def load_user(self, user_id):
         self.user_storage = Config.tools.data.json_loader(
@@ -58,7 +96,15 @@ class SessionsAgent:
         path = f"./app/common/users/{user_id}.json"
         with open(path, 'w') as file:
             json.dump(self.user_storage, file, indent=4)
+            
+    def get_chat(self, user_id, session_id):
+        path = f"./app/common/users/{user_id}_sessions.json"
+        chat = Config.tools.data.json_loader(path, i=session_id, json_type="list")
 
+        truncated_chat = chat[1:] if len(chat) > 1 else chat
+
+        return truncated_chat
+    
     def create_prompt_session(self):
         data = self.user_storage
         user_data = data["user"]
@@ -149,14 +195,6 @@ class SessionsAgent:
                             return user_id, device['device_name'], session
         return None, None, None
 
-    def verify_session(self, session_id):
-        with self.lock:
-            for user_id, user_data in self.user_storage.items():
-                for device in user_data['devices']:
-                    for session in device['sessions']:
-                        if session['session_id'] == session_id:
-                            return True
-        return False
 
     def get_network_users(self):
         pass  # connect a db and get user for this emma instance
@@ -195,128 +233,6 @@ class SessionsAgent:
             if user_id in self.user_storage:
                 del self.user_storage[user_id]
 
-    def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instanciate"])
-        self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
-        while not self.stop_flag:
-            request, session_data = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None))
-            if request is None:
-                continue
-            self.user_storage = {}
-
-            if session_data:
-                special_id = session_data['socket']
-                user_id = next(iter(session_data.keys()))
-                self.load_user(user_id)
-
-            if request == "run":
-                if session_data:
-                    user_id, device_info = list(session_data.items())[0]
-                    device_name = device_info['device_name']
-                    device_id = device_info['device_id']
-                    session_name = device_info['session'].get('session_name')
-                    session_id = device_info['session'].get('session_id')
-                    public_ip = device_info.get('public_ip')
-                    if session_name is not None:
-                        session_info = {
-                            'session_name': session_name,
-                            'session_id': session_id
-                        }
-                    self.device_handler(
-                        user_id, device_name, device_id, session_info)
-                    self.save_user(user_id)
-                    self.session_handler(user_id, session_info)
-
-            if request == "register":
-                if session_data:
-                    user_id, device_info = list(session_data.items())[0]
-                    device_name = device_info['device_name']
-                    device_id = device_info['device_id']
-                    session_name = device_info['session'].get('session_name')
-                    session_id = device_info['session'].get('session_id')
-                    public_ip = device_info.get('public_ip')
-
-                    # Make sure session_name exists before registering the session
-                    if user_id is not None:
-                        if session_name is not None:
-                            session_info = {
-                                'session_name': session_name,
-                                'session_id': session_id
-                            }
-
-                            self.add_user_session(
-                                user_id, session_info)
-                        else:
-                            # Handle the case when 'session_name' is missing
-                            self.queue_handler.add_to_queue("CONSOLE", (self.name, [
-                                "Missing session_name for session data, this chat will not be saved: ", device_info]))
-                    else:
-                        self.queue_handler.add_to_queue("CONSOLE", (self.name, [
-                            "Missing user_id for session data, this chat will not be saved: ", device_info]))
-
-            elif request == "get_user_devices":
-                if session_data:
-                    user_id = session_data.get('user_id')
-                    if user_id:
-                        devices = self.get_user_devices(user_id)
-                        # Handle the response accordingly
-                        self.queue_handler.add_to_secure_queue(
-                            "SECURE_NET_SESSIONS", special_id, devices)
-
-            elif request == "get_session_by_id":
-                if session_data:
-                    session_id = session_data.get('session_id')
-                    if session_id:
-                        user_id, device_name, session = self.get_session_by_id(
-                            session_id)
-                        # Handle the response accordingly
-                        self.queue_handler.add_to_secure_queue(
-                            "SECURE_NET_SESSIONS", special_id, session)
-
-            elif request == "verify_session":
-                if session_data:
-                    session_id = session_data.get('session_id')
-                    if session_id:
-                        is_valid = self.verify_session(session_id)
-                        # Handle the response accordingly
-                        self.queue_handler.add_to_secure_queue(
-                            "SECURE_NET_SESSIONS", special_id, is_valid)
-
-            elif request == "get_knowed_user_sessions":
-                if session_data:
-                    user_id = session_data.get('user_id')
-                    if user_id:
-                        sessions = self.get_knowed_user_sessions(user_id)
-                        # Handle the response accordingly
-                        self.queue_handler.add_to_secure_queue(
-                            "SECURE_NET_SESSIONS", special_id, sessions)
-
-            elif request == "get_known_sessions":
-                all_sessions = self.get_known_sessions()
-                # Handle the response accordingly
-                self.queue_handler.add_to_secure_queue(
-                    "SECURE_NET_SESSIONS", special_id, all_sessions)
-
-            elif request == "get_user_storage":
-                if session_data:
-                    user_id = session_data.get('user_id')
-                    if user_id:
-                        user_storage = self.get_user_storage(user_id)
-                        # Handle the response accordingly
-                        self.queue_handler.add_to_secure_queue(
-                            "SECURE_NET_SESSIONS", special_id, user_storage)
-
-            elif request == "clear_all_sessions_from_user":
-                if session_data:
-                    user_id = session_data.get('user_id')
-                    if user_id:
-                        self.clear_all_sessions_from_user(user_id)
-
     def attach_components(self, module_name):
         attachable_module = __import__(module_name)
 
@@ -332,14 +248,6 @@ class SessionsAgent:
             else:
                 self.thread_utils.attach_variable(
                     self, component_name, component)
-
-            # Add more elif blocks for other requests as needed
-    def run(self):
-        self.event.set()
-
-    def stop(self):
-        self.stop_flag = True
-
 
 if __name__ == "__main__":
     # Sample usage or test cases can be added here

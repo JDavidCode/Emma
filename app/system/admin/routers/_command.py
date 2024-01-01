@@ -31,24 +31,24 @@ class CommandRouter:
         self.event.wait()
 
         while not self.stop_flag:
-            session_id, data = self.queue_handler.get_queue(
+            ids, data = self.queue_handler.get_queue(
                 "COMMAND", 0.1, (None, None))
-            if session_id is None or data is None:
+            if ids is None or data is None:
                 continue
 
             command_info, args = data
             try:
-                module = Config.app.system.agents.sys.get_nested_attribute(
+                module = Config.app.system.admin.agents.sys.get_nested_attribute(
                     Config, command_info.get("module"))
                 function_name = command_info.get("key")
                 args_key = command_info.get('args_key')
 
                 self.execute_command(module, function_name,
-                                     session_id, args, args_key)
+                                     ids, args, args_key)
             except Exception as e:
                 self.handle_error(e)
 
-    def execute_command(self, module, function_name, session_id, args, args_key):
+    def execute_command(self, module, function_name, ids, args, args_key):
         try:
             function = getattr(module, function_name)
         except AttributeError as e:
@@ -67,12 +67,12 @@ class CommandRouter:
                 key, r = result
                 if key:
                     self.queue_handler.add_to_queue(
-                        'API_RESPONSE', (session_id, r))
+                        'API_RESPONSE', (ids, r))
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.name, f"{function_name} executed with args {args}. Session: {session_id}"))
+                    "LOGGING", (self.name, f"{function_name} executed with args {args}. Session: {ids}"))
             else:
                 self.queue_handler.add_to_queue(
-                    "LOGGING", (self.name, f"Function {function_name} result is None. Session: {session_id}"))
+                    "LOGGING", (self.name, f"Function {function_name} result is None. Session: {ids}"))
                 self.queue_handler.add_to_queue(
                     "CONSOLE", (self.name, "Function result is None."))
 

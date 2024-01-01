@@ -54,6 +54,9 @@ class ToolKit:
             return None
 
         return dictionary
+    
+    def format_json(dict, indent=2):
+        return json.dumps(dict, indent=indent)
 
     def get_filename_target(filename):
         index = filename.split('.')[0]

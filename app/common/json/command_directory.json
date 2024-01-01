@@ -1,153 +1,153 @@
 {
     "server_shutdown": {
-    "module": "system.core.sys_variations",
+    "module": "app.system.core.sys_variations",
     "args_key": "None",
     "required_lvl": 1
 },
     "server_restart": {
-    "module": "system.core.sys_variations",
+    "module": "app.system.core.sys_variations",
     "args_key": "None",
     "required_lvl": 1
 },
     "start_thread": {
-    "module": "system.core.thread",
+    "module": "app.system.core.thread",
     "args_key": "*args",
     "required_lvl": 1
 },
     "stop_thread": {
-    "module": "system.core.thread",
+    "module": "app.system.core.thread",
     "args_key": "*args",
     "required_lvl": 1
 },
     "restart_thread": {
-    "module": "system.core.thread",
+    "module": "app.system.core.thread",
     "args_key": "*args",
     "required_lvl": 1
 },
     "remove_thread": {
-    "module": "system.core.thread",
+    "module": "app.system.core.thread",
     "args_key": "*args",
     "required_lvl": 1
 },
     "get_thread_status": {
-    "module": "system.core.thread",
+    "module": "app.system.core.thread",
     "args_key": "None",
     "required_lvl": 1
 },
     "module_reloader": {
-    "module": "system.core.sys_variations",
+    "module": "app.system.core.sys_variations",
     "args_key": "*args",
     "required_lvl": 2
 },
     "open_app": {
-    "module": "system.services.task.os",
+    "module": "app.services.task.os",
     "args_key": "args",
     "arguments": "1",
     "required_lvl": 1
 },
     "volume_management": {
-    "module": "system.services.task.os",
+    "module": "app.services.task.os",
     "args_key": "*args",
     "required_lvl": 1
 },
     "weather": {
-    "module": "system.services.task.msc",
+    "module": "app.services.task.miscellaneous",
     "args_key": "*args",
     "required_lvl": 0
 },
     "date_clock": {
-    "module": "system.services.task.msc",
+    "module": "app.services.task.miscellaneous",
     "args_key": "args",
     "arguments": "2",
     "required_lvl": 0
 },
     "day_parts": {
-    "module": "system.services.task.msc",
+    "module": "app.services.task.miscellaneous",
     "args_key": "None",
     "required_lvl": 0
 },
     "youtube_search": {
-    "module": "system.services.task.web",
+    "module": "app.services.task.web",
     "args_key": "*args",
     "required_lvl": 1
 },
     "web_search": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "open_webpage": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "scrape_webpage": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "convert_currency": {
-        "module": "system.services.task.msc",
+        "module": "app.services.task.miscellaneous",
         "args_key": "*args",
         "required_lvl": 1
 },
     "check_website_security": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "check_domain_availability": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "get_webpage_headers": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "generate_qr_code": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "search_images_google": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "check_website_status": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "generate_link": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "shorten_link": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "screenshot_webpage": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "extract_links_from_webpage": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "download_file": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 },
     "get_website_title": {
-        "module": "system.services.task.web",
+        "module": "app.services.task.web",
         "args_key": "*args",
         "required_lvl": 1
 }

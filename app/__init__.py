@@ -48,13 +48,13 @@ class Run:
             'keyboard',
             'Pillow'
         ]
-        self.tools_da, self.msc = tools
+        self.tools_da, self.miscellaneous = tools
         self.establish_connections()
         self.set_environ_variables()
         self.queue_handler = queue_handler
         self.thread_manager = thread_manager
         self.system_events = system_events
-        _, clock = self.msc.date_clock(2)
+        _, clock = self.miscellaneous.date_clock(2)
         os.environ["DATE"] = f"{clock}"
 
     def establish_connections(self):
@@ -109,7 +109,8 @@ class Run:
         """
         Get a list of installed packages.
         """
-        installed_packages = [pkg.key for pkg in pkg_resources.working_set]
+        installed_packages = [pkg.project_name.lower()
+                              for pkg in pkg_resources.working_set]
         return installed_packages
 
     def get_missing_packages(self):
@@ -118,15 +119,39 @@ class Run:
         """
         installed_packages = self.get_installed_packages()
         missing_packages = [
-            pkg for pkg in self.required_packages if pkg not in installed_packages]
+            pkg for pkg in self.required_packages if pkg.lower() not in installed_packages
+        ]
         return missing_packages
 
     def install_dependencies(self, packages):
         """
         Install missing packages using pip.
         """
-        for package in packages:
-            subprocess.run(['pip', 'install', package], check=True)
+        try:
+            # Verifica la versión de pip y actualiza si es necesario
+            subprocess.run('pip install --upgrade pip', shell=True, check=True)
+
+            for package in packages:
+                # Verifica si el paquete ya está instalado
+                if not self.is_package_installed(package):
+                    print(f"Installing {package}...")
+                    subprocess.run(
+                        f'pip install {package}', shell=True, check=True)
+                else:
+                    print(f"{package} is already installed.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+
+    def is_package_installed(self, package):
+        """
+        Verifica si un paquete está instalado.
+        """
+        try:
+            subprocess.run(f'pip show {package}', shell=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            return True
+        except subprocess.CalledProcessError:
+            return False
 
     def start_services(self, package_list):
         """

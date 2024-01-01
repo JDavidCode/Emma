@@ -1,48 +1,65 @@
 {
-    "1-emd-idjqw": [
+    "1-emd-dqo154d2": [
         {
             "role": "system",
-            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"
-        },
-        {
-            "role": "system",
-            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7"
+            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: juan, age: 19, birthday: 18-07-2004, level: 7, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"
         },
         {
             "role": "user",
-            "content": "hey emma"
+            "content": "hello"
+        },
+        {
+            "role": "user",
+            "content": "hello"
         },
         {
             "role": "assistant",
-            "content": "Hello Juan! How can I assist you today?"
+            "content": "Hi there! How can I assist you today?"
         },
         {
             "role": "user",
-            "content": "how do you do?"
+            "content": "hows it going emma"
         },
         {
             "role": "assistant",
-            "content": "I'm an AI assistant, so I don't have feelings in the same way humans do. But I'm here and ready to help you with anything you need! How can I assist you today?"
+            "content": "Hello! I'm doing great, thank you for asking! How about you? How can I assist you today?"
         },
         {
             "role": "user",
-            "content": "que es una infografia de mi vecindario"
+            "content": "play barak music on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "tell me a short history of love"
         },
         {
             "role": "assistant",
-            "content": "Una infograf\u00eda de tu vecindario es una representaci\u00f3n visual que combina im\u00e1genes, gr\u00e1ficos y texto para proporcionar informaci\u00f3n sobre tu vecindario de una manera clara y concisa. Puede incluir datos demogr\u00e1ficos, puntos de inter\u00e9s, servicios disponibles, mapas, estad\u00edsticas y cualquier otra informaci\u00f3n relevante sobre tu vecindario. Las infograf\u00edas son una forma efectiva de comunicar informaci\u00f3n de manera visualmente atractiva y f\u00e1cil de entender."
+            "content": "Love is a complex and timeless emotion that has been a central theme in human history. It has been explored and celebrated in various forms across different cultures and time periods.\n\nThe concept of love can be traced back to ancient civilizations. In ancient Greece, love was categorized into different types, including eros (romantic love), philia (friendship love), and agape (unconditional love). Greek philosophers like Plato and Aristotle contemplated the nature of love and its role in human relationships.\n\nThroughout history, love has been a source of inspiration for artists, poets, and writers. In the Middle Ages,"
         },
         {
             "role": "user",
-            "content": "hey emma"
+            "content": "now create a history of two persons getting loved"
+        },
+        {
+            "role": "assistant",
+            "content": "Once upon a time, in a small town, there were two individuals named Sarah and John. Sarah was a kind-hearted and compassionate woman, while John was a charismatic and adventurous man. They lived separate lives, unaware of the love that awaited them.\n\nOne sunny day, fate intervened and their paths crossed at a local coffee shop. Sarah was sitting alone, sipping her favorite latte, when John walked in with a captivating smile. Their eyes met, and in that moment, something magical sparked between them.\n\nAs they got to know each other, Sarah and John discovered shared interests, dreams,"
+        },
+        {
+            "role": "user",
+            "content": "continue"
+        },
+        {
+            "role": "assistant",
+            "content": "and values that brought them closer together. They spent countless hours talking, laughing, and exploring the world around them. Their connection grew stronger with each passing day, and they found solace and comfort in each other's presence.\n\nSarah and John supported each other through life's ups and downs. They celebrated each other's achievements and provided a shoulder to lean on during difficult times. Their love was built on trust, respect, and a deep understanding of one another.\n\nAs time went on, their love blossomed into something extraordinary. They embarked on adventures together, creating beautiful memories that would last a lifetime"
         },
         {
             "role": "user",
             "content": "hey"
-        },
-        {
-            "role": "user",
-            "content": "hey emma"
         },
         {
             "role": "assistant",
@@ -50,55 +67,126 @@
         },
         {
             "role": "user",
-            "content": "how are you?"
+            "content": "hey emma"
         },
         {
             "role": "assistant",
-            "content": "I'm an AI assistant, so I don't have feelings in the same way humans do. But I'm here and ready to help you with anything you need! How can I assist you today?"
+            "content": "Hello! How can I assist you today, Juan?"
         },
         {
             "role": "user",
-            "content": " my name"
+            "content": "hey ema"
         },
         {
             "role": "assistant",
-            "content": "Hello! May I know your name, please?"
+            "content": "Hello! How can I assist you today, Juan?"
         },
         {
             "role": "user",
-            "content": "what is my name"
+            "content": "hello emma"
         },
         {
             "role": "assistant",
-            "content": "Your name is Juan."
-        }
-    ],
-    "1-emd-18839": [
-        {
-            "role": "system",
-            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"
+            "content": "Hello, Juan! How can I assist you today?"
         },
         {
             "role": "user",
-            "content": ""
-        },
-        {
-            "role": "user",
-            "content": "Hola emma"
-        },
-        {
-            "role": "user",
-            "content": "Hole emma"
+            "content": "hello"
         },
         {
             "role": "assistant",
-            "content": "\u00a1Hola! \u00bfEn qu\u00e9 puedo ayudarte hoy, Juan?"
-        }
-    ],
-    "1-emd-dqo154d2": [
+            "content": "Hello! How can I assist you today?"
+        },
         {
-            "role": "system",
-            "content": "Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: Juan, age: 19, birthday: 18/07/2004, level: 7, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"
+            "role": "user",
+            "content": "how's it going "
+        },
+        {
+            "role": "assistant",
+            "content": "I'm doing great, thank you for asking! How about you? How are you doing today?"
+        },
+        {
+            "role": "user",
+            "content": "im great thank you, please play planetshakers on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello there! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "let"
+        },
+        {
+            "role": "assistant",
+            "content": "Let's do what? Please provide more information so I can assist you better."
+        },
+        {
+            "role": "user",
+            "content": "let's play tricky game"
+        },
+        {
+            "role": "assistant",
+            "content": "Sure, I'd love to play a tricky game with you! What kind of game would you like to play?"
+        },
+        {
+            "role": "user",
+            "content": "hello emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma what time is it"
+        },
+        {
+            "role": "function",
+            "name": "date_clock",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "ema"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "what time it"
+        },
+        {
+            "role": "function",
+            "name": "date_clock",
+            "content": "The function has been executed"
         }
     ]
 }

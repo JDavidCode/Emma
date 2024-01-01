@@ -8,7 +8,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler):
-        openai.api_key = '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'
+        openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -55,7 +55,7 @@ class GPT:
                 "CONSOLE", ("", "creating a new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            Config.app.system.agents.sys.create_new_worker(thread_name)
+            Config.app.system.admin.agents.sys.create_new_worker(thread_name)
 
     def main(self):
         first = True
@@ -75,7 +75,8 @@ class GPT:
 
             if ids is None:
                 continue
-            socket_id, session_id, user_id = ids
+            
+            socket_id, session_id, user_id, device_id = ids
             message = {
                 "role": "user",
                 "content": f"{data}",
@@ -95,8 +96,7 @@ class GPT:
                         function_call="auto",
                         temperature=0)
 
-                    response = response.to_dict()
-                    response = json.dumps(response)
+                    response = response.model_dump_json()
                     response = json.loads(response)
 
                     # Access the 'function_call' dictionary inside the 'message' dictionary
@@ -119,7 +119,7 @@ class GPT:
                             "LOGGING", (self.name, function_call))
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, args], socket_id])
+                            'RESPONSE', ['funcall', [function_name, args], (socket_id, session_id)])
 
                         message = {
                             "role": "function",
@@ -139,7 +139,7 @@ class GPT:
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer, socket_id])
+                                'RESPONSE', ['answer', answer, (socket_id, session_id)])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(

@@ -61,17 +61,6 @@ defaults:
     - args:
       - queue_handler
       - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.system.admin.agents.session
-      queue: SESSION_AGENT
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T1_SESSIONS
-
-    - args:
-      - queue_handler
-      - event_handler
       - thread_handler
       autorestart: true
       autostart: true

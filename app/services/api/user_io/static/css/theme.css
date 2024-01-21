@@ -1,0 +1,70 @@
+/*DARK MODE*/
+
+body.dark-mode {
+	background-color: #333;
+	color: #fff;
+}
+
+.dark-mode #main-section {
+	background-color: #555;
+}
+
+.dark-mode #chat-section {
+	background-color: #444;
+}
+
+.dark-mode #chat-header {
+	border-bottom: 1px solid #555;
+}
+
+.dark-mode #chat-content-box {
+	border: 1px solid #555;
+}
+
+.dark-mode #chat-input-box {
+	background-color: #555;
+}
+
+.dark-mode #message-input {
+	background-color: #444;
+	color: #fff;
+}
+
+.dark-mode #message-send {
+	background-color: #6c63ff;
+	color: #fff;
+}
+
+.dark-mode .group-item {
+	background-color: #555;
+}
+
+.dark-mode .group-item.active {
+	background-color: #6c63ff;
+	color: #fff;
+}
+
+.dark-mode .favorite-btn {
+	background-color: #6c63ff;
+	color: #fff;
+}
+
+.dark-mode .popup {
+	background-color: #555;
+	border: 1px solid #555;
+}
+
+.dark-mode .popup h3 {
+	background-color: #6c63ff;
+	color: #fff;
+}
+
+.dark-mode .popup input {
+	background-color: #444;
+	color: #fff;
+}
+
+.dark-mode .popup button {
+	background-color: #6c63ff;
+	color: #fff;
+}

@@ -47,7 +47,7 @@ class InputRouter:
             elif key == 'funcall':
                 result = self.command_indexer(keyword=data[0])
                 if result is not False:
-                    result.append(data[1])
+                    result.append(data[0])
                     self.queue_handler.add_to_queue(
                         'COMMAND', (ids, result))
             elif key == 'answer':

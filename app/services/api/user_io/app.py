@@ -61,9 +61,9 @@ class App:
                         "load session", {"session_id": session_id, "chat_content": chat_content})
                      # Check if the session exists in the dictionary
                     if session_id not in self.sessions:
-                        self.sessions[session_id] = [socket_id]  # Create a new session entry with a list of socket connections
+                        self.sessions[session_id] = [socket_id, device_id]  # Create a new session entry with a list of socket connections
                     else:
-                        self.sessions[session_id].append(socket_id)
+                        self.sessions[session_id].append([socket_id, device_id])
                 else:
                     self.socketio.emit("connect_error", {
                                        "error": "Session not found or invalid"})
@@ -86,12 +86,12 @@ class App:
                 # Process the client message here (e.g., broadcast it to other clients)
                 data = data.lower()  # Convert data to lowercase
                 self.queue_handler.add_to_queue(
-                    "API_INPUT", ((sid, ssid, user_id, device_id), data))
+                    "API_INPUT", ((ssid, user_id, device_id), data))
 
                 # Broadcast the message to other clients in the same session
                 if ssid in self.sessions:
                     if len(self.sessions.get(ssid)) > 1:
-                        for socket_id in self.sessions[ssid]:
+                        for socket_id in self.sessions[ssid][0]:
                             if socket_id != sid:
                                 self.socketio.emit("update chat", data, room=socket_id)
             else:
@@ -108,14 +108,16 @@ class App:
             if ids is None:
                 continue
 
-            ssid = ids[1]
-            did = ids[0]
+            ssid = ids[0]
+            did = ids[1]
             try:
-                print(self.sessions)
                 # Send the response to all sockets associated with the session ID
                 if ssid in self.sessions:
-                    for socket_id in self.sessions[ssid]:
-                        self.socketio.emit("response", data, room=socket_id)
+                    for xids in self.sessions[ssid]:
+                        if xids[1] == did: 
+                            self.socketio.emit("response", data, room=xids[0])
+                        else:
+                            self.socketio.emit("response", f"{data}", room=xids)
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue(

@@ -1,36 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Emma</title>
+	<link rel="stylesheet" href="../static/css/style.css">
+	<link rel="stylesheet" href="../static/css/themify-icons.css">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+		integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+		crossorigin="anonymous"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/theme.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/themify-icons.css') }}" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-
-
-	<title>EMMA API</title>
 </head>
-    <body>
-    <div id="header">
-        <h2 id="banner_h2">EMMA</h2>
-        <p id="beta">BETA</p>
-    </div>
 
-    <div class="wrapper">
-        <section class="data-container">
-            <ul id="chat"></ul>
-        </section>
+<body>
+	<article id="main">
+		<div class="container-fluid">
+			<div class="row">
+				<section id="main-section" class="col-3 p-0">
+					<div id="main-header" class="row">
+						<h2 id="chat-header-title" class="col-9">Emma</h2>
+						<button id="config-btn" class="col-2 m-1 btn">
+							<i class="ti-settings"></i>
+						</button>
+					</div>
 
+					<div class="row justify-content-center">
+						<div class="col-12">
+							<ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link active chats-tab" id="pills-home-tab" data-toggle="pill" href="#chats" role="tab"
+										aria-controls="pills-home" aria-selected="true">Chats</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link groups-tab" id="pills-profile-tab" data-toggle="pill" href="#groups" role="tab"
+										aria-controls="pills-profile" aria-selected="false">Groups</a>
+								</li>
+							</ul>
+						</div>
+					</div>
 
-    </div>
-    	        <div id="command-bar">
-            <div class="input-container">
-                <button type="button" id="speakBtn">Speak</button>
-                <textarea id="commandInput" rows="3" name="text_input" placeholder="Insert a Command"></textarea>
-                <button type="button" id="sendBtn">Send</button>
-            </div>
-        </div>
-    </body>
+					<div id="message-content-section" class="my-auto">
+						<div class="tab-content" id="pills-tabContent">
+							<div class="tab-pane active fade show" id="chats" role="tabpanel">
+								<div class="row mx-auto my-1 col-11 chat-card">
+									<div class="row my-2">
+										<div class="col-2 p-0 my-auto ml-1">
+											<img class="round_image" src="../static/img/port.jpg" />
+										</div>
+										<div class="row col-10 p-0 ml-1">
+											<div class="col-8 card-info m-0 p-0">
+												<p class="card-title my-1">Holamundpl</p>
+												<p class="card-description my-0">
+													Esta es mi Description
+												</p>
+											</div>
+											<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+												<button><i class="ti-heart"></i></button>
+												<button><i class="ti-more"></i></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane fade show" id="groups" role="tabpanel">
+								<div class="row mx-auto my-1 col-11 group-card">
+									<div class="row my-2">
+										<div class="col-2 p-0 my-auto ml-1">
+											<img class="round_image" src="../static/img/port.jpg" />
+										</div>
+										<div class="row col-10 p-0 ml-1">
+											<div class="col-8 card-info my-0 p-0 ">
+												<p class="card-title ">Hola Group</p>
+											</div>
+											<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+												<button><i class="ti-heart"></i></button>
+												<button><i class="ti-more"></i></button>
+											</div>
+										</div>
+										<div class="chats-group-list col-12 m-0 p-0">
+											<button class="col-12"><i class="ti-angle-down"></i></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<select id="toolkits" class="ti-plus">
+						<option id="create-new-group-btn">Create Group</option>
+						<option id="create-new-chat-btn">Create New Chat</option>
+					</select>
+				</section>
+				<section id="chat-section" class="col-9 m-0 p-0">
+					<div id="chat-header" class="row col-12 m-0 p-2">
+						<div class="col-11 p-0 m-auto">
+							<p id="chat-header-name" class="col-9 mt-2 mb-1">My Chat Name</p>
+							<p id="chat-header-description" class="col-9 mb-2">Description for Chat 1</p>
+						</div>
+						<div id="toolkits-box" class="row col-1 m-auto"><i class="ti-info col-2 mx-auto p-0"></i></div>
+					</div>
+					<div id="chat-content-box" class="col-12"></div>
+					<div id="chat-input-box" class="col-12 float-bottom justify-content-center">
+						<button id="attach-docs"><i class="ti-link"></i></button>
+						<input id="message-input" type="text" placeholder="Type a message..." />
+						<button id="message-send"><i class="ti-bolt"></i></button>
+						<button id="message-speak"><i class="ti-microphone"></i></button>
+				</section>
+			</div>
+		</div>
+	</article>
+
+	<div class="models">
+		<div id="new-chat-container" class="popup text-center">
+			<h3 class="mb-3">New Chat</h3>
+			<div class="new-chat-option d-flex justify-content-between my-1">
+				<label for="new-chat-name">Name</label>
+				<input type="text" id="new-chat-name" placeholder="Chat Name" />
+			</div>
+			<div class="new-chat-option d-flex justify-content-between my-2">
+				<label for="new-chat-description" class="mr-2">Description</label>
+				<input type="text" id="new-chat-description" placeholder="Chat Description" />
+			</div>
+			<button id="create-chat-submit-btn" class="float-right btn mt-1">Create chat</button>
+		</div>
+
+		<div id="new-group-container" class="popup text-center">
+			<h3 class="mb-3">Create Group</h3>
+			<div class="new-group-option justify-content-between my-2">
+				<label for=" new-group-name">Name</label>
+				<input type="text" id="group-name" placeholder="Group Name" />
+			</div>
+			<button id="create-group-submit-btn" class="btn float-right">Create Group</button>
+		</div>
+
+		<div id="config-container" class="popup ">
+			<div class="config-header p-2 row">
+				<h3 class="mx-2">Configuración</h3>
+				<button id="close-config-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+			</div>
+
+			<div class="config-options p-2">
+				<div class="config-option d-flex justify-content-between py-1">
+					<label for="theme-select">Theme</label>
+					<select id="theme-select" class="form-select">
+						<option value="light">Light</option>
+						<option value="dark">Dark</option>
+						<option value="custom">Custom</option>
+					</select>
+				</div>
+				<div class="config-option d-flex justify-content-between py-1">
+					<label for="language-select">Language</label>
+					<select id="language-select" class="form-select">
+						<option value="en">English</option>
+						<option value="es">Spanish</option>
+						<option value="fr">French</option>
+					</select>
+				</div>
+				<div class="config-option d-flex justify-content-between py-1">
+					<label for="notification-toggle">Notifications</label>
+					<div class="form-check form-switch">
+						<input type="checkbox" class="form-check-input" id="notification-toggle">
+						<label class="form-check-label" for="notification-toggle">On</label>
+					</div>
+				</div>
+				<div class="config-option d-flex justify-content-between py-1">
+					<label for="voice-toggle">Voice</label>
+					<div class="form-check form-switch">
+						<input type="checkbox" class="form-check-input" id="voice-toggle">
+						<label class="form-check-label" for="voice-toggle">On</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
 </html>

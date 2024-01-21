@@ -44,30 +44,29 @@ class SessionsAgent:
         if 'devices' not in self.user_storage:
             # Si no tiene dispositivos, crea uno predeterminado con una sesión
             default_device = self.create_default_device()
-            self.user_storage["devices"] = {default_device["device_id"]: default_device}
+            self.user_storage["devices"] = {
+                default_device["device_id"]: default_device}
 
             # Guardar la actualización del usuario
             self.save_user(user_id)
         elif not self.user_storage["devices"]:
             # Si tiene dispositivos pero la lista está vacía, agregar un dispositivo predeterminado con una sesión
             default_device = self.create_default_device()
-            self.user_storage["devices"][default_device["device_id"]] = default_device
+            self.user_storage["devices"][default_device["device_id"]
+                                         ] = default_device
 
             # Guardar la actualización del usuario
             self.save_user(user_id)
 
-
     def verify_session(self, user_id, session_id):
         with self.lock:
-                devices = self.user_storage.get('devices', [])
-                for device in devices:
-                    sessions = device.get('sessions', [])
-                    if session_id in [session['session_id'] for session in sessions]:
-                        return True
+            devices = self.user_storage.get('devices', [])
+            for device in devices:
+                sessions = device.get('sessions', [])
+                if session_id in [session['session_id'] for session in sessions]:
+                    return True
 
         return False
-
-
 
     def load_user(self, user_id):
         self.user_storage = Config.tools.data.json_loader(
@@ -79,16 +78,17 @@ class SessionsAgent:
                 "name": name,
                 "age": str(age),
                 "birthday": birthday,
-                "level": str(level)
-            },
-            "devices": [
-                {
-                    "device_id": None,
-                    "device_name": "Unknown Device",
-                    "sessions": [],
-                    "public_ips": []
-                }
-            ]
+                "level": str(level),
+                "devices": [
+                    {
+                        "device_id": None,
+                        "device_name": "Unknown Device",
+                        "ips": []
+                    }],
+                "sessions": [],
+                 
+            }
+
         }
         return user_data
 
@@ -96,15 +96,16 @@ class SessionsAgent:
         path = f"./app/common/users/{user_id}.json"
         with open(path, 'w') as file:
             json.dump(self.user_storage, file, indent=4)
-            
+
     def get_chat(self, user_id, session_id):
         path = f"./app/common/users/{user_id}_sessions.json"
-        chat = Config.tools.data.json_loader(path, i=session_id, json_type="list")
+        chat = Config.tools.data.json_loader(
+            path, i=session_id, json_type="list")
 
         truncated_chat = chat[1:] if len(chat) > 1 else chat
 
         return truncated_chat
-    
+
     def create_prompt_session(self):
         data = self.user_storage
         user_data = data["user"]
@@ -195,7 +196,6 @@ class SessionsAgent:
                             return user_id, device['device_name'], session
         return None, None, None
 
-
     def get_network_users(self):
         pass  # connect a db and get user for this emma instance
 
@@ -248,6 +248,7 @@ class SessionsAgent:
             else:
                 self.thread_utils.attach_variable(
                     self, component_name, component)
+
 
 if __name__ == "__main__":
     # Sample usage or test cases can be added here

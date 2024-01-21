@@ -3,3 +3,4 @@ proof.py
 .conda
 emma/.AmyRootUser
 emma/services/external/
+.pyc

@@ -1,0 +1,528 @@
+{'timestamp': '2024-01-19T00:50:04.267858', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.269472', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.269597', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.269713', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.269820', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.269920', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:04.270020', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:50:34.074401', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hey'})}
+ 
+{'timestamp': '2024-01-19T00:50:34.955350', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': 'Hello! How can I assist you today?'})}
+ 
+{'timestamp': '2024-01-19T00:52:15.970016', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hey'})}
+ 
+{'timestamp': '2024-01-19T00:52:16.510437', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': 'Hello! How can I assist you today?'})}
+ 
+{'timestamp': '2024-01-19T00:52:32.379449', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hell emma how are you'})}
+ 
+{'timestamp': '2024-01-19T00:52:33.910132', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': "Hello! I'm doing great, thank you for asking. How can I assist you today?"})}
+ 
+{'timestamp': '2024-01-19T00:56:19.824513', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826027', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826174', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826302', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826422', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826540', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:56:19.826656', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.928459', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.929470', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.929611', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.929745', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.929870', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.929990', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T00:59:20.930112', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.397912', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.398117', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.398253', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.398782', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.398924', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.399057', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:04:54.399202', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.983818', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.985907', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.986044', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.986159', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.986261', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.986361', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:14:58.986466', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.189024', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.190390', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.190519', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.190629', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.190765', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.190895', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T01:52:25.191033', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.924917', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925128', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925257', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925365', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925490', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925616', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:10:43.925730', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.037479', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.037775', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.037895', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.038003', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.038120', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.038231', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:15:44.038372', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:18:25.980318', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hey'})}
+ 
+{'timestamp': '2024-01-19T02:18:26.733991', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': 'Hello! How can I assist you today?'})}
+ 
+{'timestamp': '2024-01-19T02:28:51.798817', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.800303', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.800526', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.800700', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.800852', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.800999', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:28:51.801178', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T02:35:34.678031', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hey'})}
+ 
+{'timestamp': '2024-01-19T02:35:35.263055', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': 'Hello! How can I assist you today?'})}
+ 
+{'timestamp': '2024-01-19T02:35:35.266422', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'user', 'content': 'hello'})}
+ 
+{'timestamp': '2024-01-19T02:35:36.686358', 'remitent': 'T3_GPT', 'output': ('1', '1-emd-dqo154d2', {'role': 'assistant', 'content': 'Hello! How can I assist you today?'})}
+ 
+{'timestamp': '2024-01-19T13:31:48.724188', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727235', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727380', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727516', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727648', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727776', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T13:31:48.727945', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.302382', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.303937', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.304103', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.304265', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.304413', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.304552', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T14:02:09.304693', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.015921', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'SessionsAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'SessionsAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025196', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'Logger' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'Logger\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025373', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025542', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'DatabaseAgent' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'DatabaseAgent\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025708', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'CommandRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'CommandRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025860', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'InputRouter' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'InputRouter\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 
+{'timestamp': '2024-01-19T17:39:49.025989', 'remitent': 'EVENT HANDLER', 'output': (AttributeError("'App' object has no attribute '_EventHandler__handle_shutdown'"), 'Traceback (most recent call last):
+  File "/workspaces/Emma-ServerSide/app/system/core/_event.py", line 66, in notify_shutdown
+    subscriber.__handle_shutdown()
+AttributeError: \'App\' object has no attribute \'_EventHandler__handle_shutdown\'
+')}
+ 

@@ -187,6 +187,541 @@
             "role": "function",
             "name": "date_clock",
             "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "play planetshakers on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "lets play planetshaker music on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "what is the header of facebook page "
+        },
+        {
+            "role": "function",
+            "name": "get_webpage_headers",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "abre facebook "
+        },
+        {
+            "role": "function",
+            "name": "open_webpage",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "abre web page facebook "
+        },
+        {
+            "role": "function",
+            "name": "open_webpage",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "abre la p\u00e1gina web de facebook "
+        },
+        {
+            "role": "function",
+            "name": "open_webpage",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "abre p\u00e1gina de facebook "
+        },
+        {
+            "role": "function",
+            "name": "open_webpage",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "abre p\u00e1gina web de facebook "
+        },
+        {
+            "role": "function",
+            "name": "open_webpage",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "verifica la seguridad de la p\u00e1gina de facebook "
+        },
+        {
+            "role": "function",
+            "name": "check_website_security",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca la imagen de un gato en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca la imagen de un gato en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca lol en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca consola en google "
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca ventilador en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca guitarra en youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca consola en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca ventilador en google"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "busca una imagen de un bosque"
+        },
+        {
+            "role": "function",
+            "name": "search_images_google",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola Juan! \u00bfEn qu\u00e9 puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": "como puedo tratar las manchas el acne"
+        },
+        {
+            "role": "assistant",
+            "content": "Tratar las manchas del acn\u00e9 puede ser un proceso gradual, pero hay varias opciones que puedes considerar. Aqu\u00ed te dejo algunos consejos:\n\n1. Limpieza adecuada: Lava tu rostro dos veces al d\u00eda con un limpiador suave para eliminar el exceso de grasa y las impurezas. Evita frotar o irritar la piel, ya que esto puede empeorar las manchas.\n\n2. Exfoliaci\u00f3n suave: Utiliza un exfoliante suave una o dos veces por semana para"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfEn qu\u00e9 puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": "abre youtube y reproduce barak"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reproduce miel san marcos en youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "reproce barak en youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "cuentame una historia"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Claro! Aqu\u00ed tienes una historia:\n\nHab\u00eda una vez un peque\u00f1o pueblo en medio de un hermoso valle. En este pueblo viv\u00eda un joven llamado Juan, quien siempre hab\u00eda so\u00f1ado con explorar el mundo y vivir grandes aventuras.\n\nUn d\u00eda, mientras Juan paseaba por el bosque cercano al pueblo, encontr\u00f3 un mapa antiguo que parec\u00eda indicar la ubicaci\u00f3n de un tesoro escondido. Emocionado por la posibilidad de cumplir su sue\u00f1o, decidi\u00f3 emprender un viaje en busca del tesoro.\n\nJuan se adentr\u00f3 en un largo y peligroso camino, enfrentando desaf\u00edos y superando obst\u00e1culos. Con cada paso que daba, se encontraba con personajes fascinantes que le brindaban su ayuda y sabidur\u00eda.\n\nDespu\u00e9s de semanas de viaje, Juan finalmente lleg\u00f3 al lugar indicado en el mapa. All\u00ed, encontr\u00f3 una cueva oculta llena de riquezas y tesoros antiguos"
+        },
+        {
+            "role": "user",
+            "content": "hola"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfC\u00f3mo puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": "asd"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfEn qu\u00e9 puedo ayudarte?"
+        },
+        {
+            "role": "user",
+            "content": ""
+        },
+        {
+            "role": "user",
+            "content": "hola"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfC\u00f3mo puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": ""
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hola"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00bfEn qu\u00e9 puedo ayudarte hoy?"
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hola como estas"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! \u00a1Estoy muy bien, gracias por preguntar! \u00bfY t\u00fa, c\u00f3mo est\u00e1s?"
+        },
+        {
+            "role": "user",
+            "content": "cuantos pelos tien un gato promedio"
+        },
+        {
+            "role": "assistant",
+            "content": "Un gato promedio tiene alrededor de 60,000 pelos. Sin embargo, la cantidad de pelos puede variar dependiendo de la raza y el tama\u00f1o del gato."
+        },
+        {
+            "role": "user",
+            "content": "holaima cuentame"
+        },
+        {
+            "role": "assistant",
+            "content": "\u00a1Hola! Claro, cu\u00e9ntame, \u00bfen qu\u00e9 puedo ayudarte? Estoy aqu\u00ed para responder tus preguntas y brindarte la informaci\u00f3n que necesites."
+        },
+        {
+            "role": "user",
+            "content": "hola cuentame english listen"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! Of course, I'm here to listen. How can I assist you in English? Feel free to ask me anything or share what you'd like to talk about."
+        },
+        {
+            "role": "user",
+            "content": "hello emma play music on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hello emma play barak on youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "play barak on youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "play barak on youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "play barak on youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hello emma play barack music on youtube"
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "coloca barak en youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hello emma "
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "play barak on youtube "
+        },
+        {
+            "role": "function",
+            "name": "youtube_search",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hell emma how are you"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! I'm doing great, thank you for asking. How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! It's great to see you, Juan! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma shutdown the server "
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "hello emma how are you"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello, Juan! I'm an AI, so I don't have feelings, but I'm always here to assist you with anything you need. How can I help you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma stop the server"
+        },
+        {
+            "role": "function",
+            "name": "server_shutdown",
+            "content": "The function has been executed"
+        },
+        {
+            "role": "user",
+            "content": "hey emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today, Juan?"
+        },
+        {
+            "role": "user",
+            "content": "hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "emma"
+        },
+        {
+            "role": "assistant",
+            "content": "Yes, Juan? How can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "tell me a short history"
+        },
+        {
+            "role": "assistant",
+            "content": "Sure! Here's a short history for you:\n\nOnce upon a time, in a land far away, there was a small village nestled in the mountains. The villagers lived simple lives, farming the land and taking care of their families.\n\nOne day, a group of explorers stumbled upon the village. They were amazed by the beauty of the place and the warmth of the villagers. They decided to stay and learn from the villagers' way of life.\n\nOver time, the village grew and prospered. The villagers shared their knowledge and skills with the explorers, and together they built a strong and vibrant community.\n\nAs the years went by, the village faced many challenges, but the villagers and the explorers faced them together, with resilience and determination. They built schools, hospitals, and other infrastructure to improve the quality of life for everyone.\n\nToday, the village is a thriving town, known for its unity and harmony. The villagers and the explorers continue to live side by side, celebrating their shared history and embracing the future with optimism.\n\nAnd that's a short history of a village that turned into a town through the collaboration and unity of its"
         }
     ]
 }

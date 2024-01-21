@@ -76,7 +76,7 @@ class GPT:
             if ids is None:
                 continue
             
-            socket_id, session_id, user_id, device_id = ids
+            session_id, user_id, device_id = ids
             message = {
                 "role": "user",
                 "content": f"{data}",
@@ -91,7 +91,7 @@ class GPT:
                     response = openai.chat.completions.create(
                         model="gpt-3.5-turbo-0613",
                         messages=chat,
-                        max_tokens=120,
+                        max_tokens=230,
                         functions=self.functions,
                         function_call="auto",
                         temperature=0)
@@ -119,7 +119,7 @@ class GPT:
                             "LOGGING", (self.name, function_call))
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, args], (socket_id, session_id)])
+                            'RESPONSE', ['funcall', [function_name, ], (session_id, device_id)])
 
                         message = {
                             "role": "function",
@@ -139,11 +139,11 @@ class GPT:
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer, (socket_id, session_id)])
+                                'RESPONSE', ['answer', answer, (session_id, device_id)])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(
-                        'RESPONSE', ['s0offline', data, socket_id])
+                        'RESPONSE', ['s0offline', data, device_id])
                     traceback_str = traceback.format_exc()
                     self.queue_handler.add_to_queue(
                         "LOGGING", (self.name, (t, traceback_str)))

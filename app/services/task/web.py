@@ -1,3 +1,4 @@
+from app.config.config import Config
 import random
 import re
 import webbrowser
@@ -12,7 +13,7 @@ urllib3.disable_warnings()
 
 class WebTask:
     def __init__(self):
-        # self.web_pages = Config.tools.data.json_loader(Config.paths._web_dir)
+        self.web_pages = Config.tools.data.json_loader(Config.paths._web_dir)
         pass
 
     def search_manuals(self, query):
@@ -37,9 +38,11 @@ class WebTask:
         return results
 
     def web_search(self, query):
+        
         return True, str(f"https://www.google.com/search?q={query.replace(' ', '+')}")
 
-    def youtube_search(self, query):
+    def youtube_search(self, query):    
+        
         url = f"https://www.youtube.com/results?q={query}"
         count = 0
         cont = requests.get(url)
@@ -56,8 +59,9 @@ class WebTask:
             return True, f"https://www.youtube.com{lst[count - 5]}"
 
     def open_webpage(self, query):
+        q = query.get('query')
         for key in self.web_pages.keys():
-            if query.lower() == key:
+            if q.lower() == key:
                 return True, str(self.web_pages.get(key))
         return False, "Unknow web"
 
@@ -129,11 +133,13 @@ class WebTask:
             return True, "Website is unreachable or offline."
 
     def search_images_google(self, query):
+        
         try:
             search_url = f"https://www.google.com/search?tbm=isch&q={query.replace(' ', '+')}"
             response = requests.get(search_url)
             links = re.findall(r'imgurl=([^&]+)', response.text)
-            return True, links
+            print(links)
+            return True, search_url
         except requests.exceptions.RequestException:
             return False, []
 

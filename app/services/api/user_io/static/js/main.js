@@ -3,22 +3,23 @@ document.addEventListener('DOMContentLoaded', function () {
 	const socket = io.connect('', {
 		query: getQueryParams(window.location.search) // Extract query parameters from the URL
 	});
-
+	const currentDateTime = new Date();
 	///CONFIG
 	const configBtn = document.getElementById('config-btn');
 	const configContainer = document.getElementById('config-container');
 	const closeConfigBtn = document.getElementById('close-config-btn')
-	///Themes
-	const darkModeToggle = document.getElementById('dark-mode-toggle');
-	const darkModeToggler = document.getElementById('dark-mode-toggler');
+	const themeSelect = document.getElementById("theme-select");
+	const voiceOption = document.getElementById("voice-toggle");
+	const notificationOption = document.getElementById("notification-toggle")
 
 	///TOOLKITS
-	const createGroupBtn = document.getElementById("create-new-group-btn");
+	const toolkitsSelect = document.getElementById("toolkits");
 	const createGroupSubmitBtn = document.getElementById("create-group-submit-btn");
 	const createGroupContainer = document.getElementById("new-group-container");
-	const createChatBtn = document.getElementById('create-new-chat-btn');
 	const createChatContainer = document.getElementById('new-chat-container');
 	const createChatSubmitBtn = document.getElementById('create-chat-submit-btn');
+	const closeChatContainerBtn = document.getElementById('close-new-chat-container-btn')
+	const closeGroupContainerBtn = document.getElementById('close-new-group-container-btn')
 
 	///CHAT
 	const chatBox = document.getElementById("chat-content-box")
@@ -32,24 +33,67 @@ document.addEventListener('DOMContentLoaded', function () {
 	const favoriteBtns = document.querySelectorAll(".favorite-btn");
 	let currentUtterance;
 
-	darkModeToggle.addEventListener('click', () => {
-		const currentValue = darkModeToggler.value;
-		if (currentValue === '1') {
-			darkModeToggler.value = '0'
-			document.body.classList.toggle('dark-mode');
-		} else {
-			darkModeToggler.value = '1'
-			document.body.classList.toggle('dark-mode');
 
+	themeSelect.addEventListener("change", event => {
+		const selectedTheme = event.target.value;
+
+		if (selectedTheme === "light") {
+			document.body.classList.remove("dark-theme", "aqua-theme", "gray-scale-theme");
+			document.body.classList.add("light-theme");
+		} else if (selectedTheme === "dark") {
+			document.body.classList.remove("light-theme", "aqua-theme", "gray-scale-theme");
+			document.body.classList.add("dark-theme");
+		} else if (selectedTheme === "custom") {
+			// Add code here to handle custom theme
+			applyCustomTheme();
+		} else if (selectedTheme === "aqua") {
+			document.body.classList.remove("light-theme", "dark-theme", "gray-scale-theme");
+			document.body.classList.add("aqua-theme");
+		} else if (selectedTheme === "gray") {
+			document.body.classList.remove("light-theme", "dark-theme", "aqua-theme");
+			document.body.classList.add("gray-scale-theme");
+		}
+	});
+
+
+	notificationOption.addEventListener("change", function () {
+		if (this.checked) {
+			// Request permission to send notifications
+			Notification.requestPermission()
+				.then(permission => {
+					// Check if the user granted permission
+					if (permission === "granted") {
+						// Create and show the notification
+						const notification = new Notification("Hello, World!");
+					} else {
+						console.log("The user denied permission to send notifications.");
+					}
+				})
+				.catch(error => {
+					console.error("An error occurred while requesting permission:", error);
+				});
+		} else {
+			// Cancel any pending notifications
+			notification.close();
 		}
 	});
 
 	configBtn.addEventListener('click', () => {
-		configContainer.style.display = 'block'
+		configContainer.style.display = configContainer.style.display === "block" ? "none" : "block";
 	})
+
 	closeConfigBtn.addEventListener('click', () => {
 		configContainer.style.display = 'none'
 	})
+
+	closeChatContainerBtn.addEventListener('click', () => {
+		createChatContainer.style.display = 'none'
+	})
+
+	closeGroupContainerBtn.addEventListener('click', () => {
+		createGroupContainer.style.display = 'none'
+	})
+
 
 	messageSend.addEventListener('click', function () {
 		let message = messageInput.value;
@@ -65,31 +109,69 @@ document.addEventListener('DOMContentLoaded', function () {
 		startSpeechRecognition();
 	});
 
-	createGroupBtn.addEventListener("click", function () {
-		createGroupContainer.style.display = createGroupContainer.style.display === "block" ? "none" : "block";
+	toolkitsSelect.addEventListener('click', () => {
+		configContainer.style.display = 'none';
+		createChatContainer.style.display = 'none';
+		createGroupContainer.style.display = 'none';
+	})
+
+	toolkitsSelect.addEventListener('change', event => {
+		const tool = event.target.value;
+		if (tool === 'create-new-group') {
+			createGroupContainer.style.display = "block"
+		} else if (tool === 'create-new-chat') {
+			createChatContainer.style.display = "block"
+		}
+
 	});
 
 	createGroupSubmitBtn.addEventListener("click", () => {
-		const groupName = document.getElementById("group-name").value;
+		const groupName = document.getElementById("new-group-name").value;
 		if (groupName) {
-			const newGroupItem = document.createElement("option");
-			newGroupItem.value = groupName.toLowerCase().replace(/\s/g, "");
-			newGroupItem.innerText = groupName;
-			const groupList = document.getElementById("group-list");
-			groupList.appendChild(newGroupItem);
+			fetch('/create_group', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: 'group_name=' + encodeURIComponent(groupName) + '&date=' + encodeURIComponent(currentDateTime),
+			})
+				.then(response => response.text())
+				.then(data => {
+					// Manejar la respuesta del servidor
+					console.log(data);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
 			createGroupContainer.style.display = "none";
 		} else {
 			alert("Please enter a group name");
 		}
 	});
-
-	createChatBtn.addEventListener('click', function () {
-		createChatContainer.style.display = createChatContainer.style.display === "block" ? "none" : "block";
-	});
-
 	createChatSubmitBtn.addEventListener('click', function () {
+		const chatName = document.getElementById("new-chat-name").value;
+		const chatDescription = document.getElementById("new-chat-description").value;
+
+		fetch('/create_chat', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'chat_name=' + encodeURIComponent(chatName) + '&chat_description=' + encodeURIComponent(chatDescription) + '&date=' + encodeURIComponent(currentDateTime),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+		createGroupContainer.style.display = "none";
 		createChatContainer.style.display = 'none';
 	});
+
 
 	attachDocs.addEventListener("click", () => {
 		const input = document.createElement("input");
@@ -108,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			console.log("Favorite button clicked");
 		});
 	});
+
 	function startSpeechRecognition() {
 		recognition = new webkitSpeechRecognition();
 		recognition.lang = 'en-US';
@@ -135,9 +218,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	}
 
-
-
-
 	function processChat(message, messageClass) {
 		const listItem = document.createElement('p');
 		listItem.textContent = message;
@@ -148,9 +228,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	}
 
-	socket.on("load session", function (data) {
-		chatContent(data);
+	socket.on('update chat', function (data) {
+		processChat(data, 'user-message')
 	});
+
+	socket.on("load session", function (data) {
+		const groups = data.groups
+		const chats = data.chats
+
+	});
+
+	socket.on('notification', function (data) {
+		new Notification(data)
+	})
 
 	socket.on('response', function (data) {
 		if (isLink(data)) {
@@ -158,13 +248,14 @@ document.addEventListener('DOMContentLoaded', function () {
 			window.open(data, '_blank');
 		} else {
 			processChat(data, 'emma-message');
-
-			if (data.chat_content && data.chat_content.length > 0) {
-				loadChatHistory(data.chat_content);
+			if (notificationOption.checked) {
+				new Notification(data)
 			}
 
-			currentUtterance = new SpeechSynthesisUtterance(data);
-			window.speechSynthesis.speak(currentUtterance);
+			if (voiceOption.checked) {
+				currentUtterance = new SpeechSynthesisUtterance(data);
+				window.speechSynthesis.speak(currentUtterance);
+			}
 		}
 	});
 
@@ -172,20 +263,24 @@ document.addEventListener('DOMContentLoaded', function () {
 	function createCard(type, title, description, imageUrl) {
 		// Crear elementos
 		var card = document.createElement("div");
-		card.className = "row mx-auto my-1 col-11 " + type + "-card";
+		card.className = "row mx-auto my-1 col-10 " + type + "-card";
 
 		var innerRow1 = document.createElement("div");
 		innerRow1.className = "row my-2";
 
 		var imageCol = document.createElement("div");
-		imageCol.className = "col-2 p-0 my-auto ml-1";
+		imageCol.className = "col-1 p-0 my-auto mx-3";
 
 		var image = document.createElement("img");
 		image.className = "round_image";
-		image.src = imageUrl;
+		if (imageUrl === '') {
+			image.src = "https://picsum.photos/200/200"
+		} else {
+			image.src = imageUrl;
+		}
 
 		var innerRow2 = document.createElement("div");
-		innerRow2.className = "row col-10 p-0 ml-1";
+		innerRow2.className = "row col-9 p-0 mx-2";
 
 		var cardInfoCol = document.createElement("div");
 		cardInfoCol.className = "col-8 card-info m-0 p-0";
@@ -199,19 +294,34 @@ document.addEventListener('DOMContentLoaded', function () {
 		cardDescription.textContent = description;
 
 		var cardControlsCol = document.createElement("div");
-		cardControlsCol.className = "col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center";
+		cardControlsCol.className = "col-3 card-controls d-flex p-3 m-0 ml-3 justify-content-center mx-auto";
 
 		var heartButton = document.createElement("button");
 		var heartIcon = document.createElement("i");
+		heartButton.className = "mx-1"
 		heartIcon.className = "ti-heart";
 		heartButton.appendChild(heartIcon);
 
 		var moreButton = document.createElement("button");
 		var moreIcon = document.createElement("i");
+		moreButton.className = "mx-1"
 		moreIcon.className = "ti-more";
 		moreButton.appendChild(moreIcon);
 
-		// Anidar elementos
+		if (type === "group") {
+			var chatsGroupList = document.createElement("div");
+			chatsGroupList.className = "chats-group-list col-11 m-0 p-0";
+
+			var chatsGroupButton = document.createElement("button");
+			chatsGroupButton.className = "col-12 px-5";
+			var angleDownIcon = document.createElement("i");
+			angleDownIcon.className = "ti-angle-down";
+			chatsGroupButton.appendChild(angleDownIcon);
+
+			chatsGroupList.appendChild(chatsGroupButton);
+			innerRow1.appendChild(chatsGroupList);
+		}
+
 		imageCol.appendChild(image);
 		cardInfoCol.appendChild(cardTitle);
 		cardInfoCol.appendChild(cardDescription);
@@ -223,9 +333,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		innerRow1.appendChild(innerRow2);
 		card.appendChild(innerRow1);
 
-		// Agregar a la página
-		return card
+		return card;
 	}
+
 
 	function isLink(text) {
 		// Regular expression to match common URL patterns
@@ -240,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function chatContent(data) {
 		// Agregar mensajes del historial al DOM
-		data.chat_content.forEach(message => {
+		data.forEach(message => {
 			// Verificar si el mensaje ya está presente en el chat para evitar duplicados
 			if (!isMessagePresent(chatBox, message.content)) {
 				const listItem = document.createElement('p');
@@ -262,10 +372,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 		return false;
 	}
-	socket.on('update chat', function (data) {
-		processChat(data, 'user-message')
-	});
-
 
 
 
@@ -306,10 +412,12 @@ document.addEventListener('DOMContentLoaded', function () {
 			event.preventDefault();
 			let message = messageInput.value;
 			if (message !== "") {
-				socket.emit('message', message);
+				socket.emit('message', { "message": message, "uid": uid, "device": device_id, "chat_id": chat_id });
 				processChat(message, 'user-message');
 			}// Assign user message class
 		}
 	}
 	messageInput.addEventListener("keydown", handleKeyDown);
+
+
 })

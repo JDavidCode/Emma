@@ -4,14 +4,15 @@
 <head>
 	<title>Emma</title>
 	<link rel="stylesheet" href="../static/css/style.css">
-	<link rel="stylesheet" href="../static/css/themify-icons.css">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" href="../static/css/fonts.css">
+
 	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
 		integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
 		crossorigin="anonymous"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fonts.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/theme.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/themify-icons.css') }}" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -23,7 +24,7 @@
 	<article id="main">
 		<div class="container-fluid">
 			<div class="row">
-				<section id="main-section" class="col-3 p-0">
+				<section id="main-section" class="col-4 p-0">
 					<div id="main-header" class="row">
 						<h2 id="chat-header-title" class="col-9">Emma</h2>
 						<button id="config-btn" class="col-2 m-1 btn">
@@ -35,11 +36,11 @@
 						<div class="col-12">
 							<ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
 								<li class="nav-item">
-									<a class="nav-link active chats-tab" id="pills-home-tab" data-toggle="pill" href="#chats" role="tab"
+									<a class="nav-link active chats-tab" id="pills-chats-tab" data-toggle="pill" href="#chats" role="tab"
 										aria-controls="pills-home" aria-selected="true">Chats</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link groups-tab" id="pills-profile-tab" data-toggle="pill" href="#groups" role="tab"
+									<a class="nav-link groups-tab" id="pills-groups-tab" data-toggle="pill" href="#groups" role="tab"
 										aria-controls="pills-profile" aria-selected="false">Groups</a>
 								</li>
 							</ul>
@@ -49,21 +50,21 @@
 					<div id="message-content-section" class="my-auto">
 						<div class="tab-content" id="pills-tabContent">
 							<div class="tab-pane active fade show" id="chats" role="tabpanel">
-								<div class="row mx-auto my-1 col-11 chat-card">
+								<div class="row mx-auto my-1 col-10 chat-card">
 									<div class="row my-2">
-										<div class="col-2 p-0 my-auto ml-1">
+										<div class="col-1 p-0 my-auto mx-3">
 											<img class="round_image" src="../static/img/port.jpg" />
 										</div>
-										<div class="row col-10 p-0 ml-1">
+										<div class="row col-9 p-0 mx-2">
 											<div class="col-8 card-info m-0 p-0">
-												<p class="card-title my-1">Holamundpl</p>
+												<p class="card-title my-1">Hola mundo</p>
 												<p class="card-description my-0">
 													Esta es mi Description
 												</p>
 											</div>
-											<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
-												<button><i class="ti-heart"></i></button>
-												<button><i class="ti-more"></i></button>
+											<div class="col-3 card-controls btn d-flex p-3 m-0 justify-content-center mx-auto">
+												<button class="mx-1"><i class="ti-heart"></i></button>
+												<button class="mx-1"><i class="ti-more"></i></button>
 											</div>
 										</div>
 									</div>
@@ -72,7 +73,7 @@
 							<div class="tab-pane fade show" id="groups" role="tabpanel">
 								<div class="row mx-auto my-1 col-11 group-card">
 									<div class="row my-2">
-										<div class="col-2 p-0 my-auto ml-1">
+										<div class="col-1 p-0 my-auto ml-2">
 											<img class="round_image" src="../static/img/port.jpg" />
 										</div>
 										<div class="row col-10 p-0 ml-1">
@@ -85,7 +86,7 @@
 											</div>
 										</div>
 										<div class="chats-group-list col-12 m-0 p-0">
-											<button class="col-12"><i class="ti-angle-down"></i></button>
+											<button class="col-12 px-5"><i class="ti-angle-down"></i></button>
 										</div>
 									</div>
 								</div>
@@ -94,12 +95,14 @@
 
 					</div>
 
-					<select id="toolkits" class="ti-plus">
-						<option id="create-new-group-btn">Create Group</option>
-						<option id="create-new-chat-btn">Create New Chat</option>
-					</select>
+					<div class="toolkits-select-container ti-plus">
+						<select id="toolkits" class="upward-select">
+							<option value="create-new-group">Create Group</option>
+							<option value="create-new-chat">Create New Chat</option>
+						</select>
+					</div>
 				</section>
-				<section id="chat-section" class="col-9 m-0 p-0">
+				<section id="chat-section" class="col-8 m-0 p-0">
 					<div id="chat-header" class="row col-12 m-0 p-2">
 						<div class="col-11 p-0 m-auto">
 							<p id="chat-header-name" class="col-9 mt-2 mb-1">My Chat Name</p>
@@ -120,7 +123,10 @@
 
 	<div class="models">
 		<div id="new-chat-container" class="popup text-center">
-			<h3 class="mb-3">New Chat</h3>
+			<div class="config-header p-2 row justify-content-center">
+				<h3 class="mx-2">New Chat</h3>
+				<button id="close-new-chat-container-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+			</div>
 			<div class="new-chat-option d-flex justify-content-between my-1">
 				<label for="new-chat-name">Name</label>
 				<input type="text" id="new-chat-name" placeholder="Chat Name" />
@@ -133,15 +139,18 @@
 		</div>
 
 		<div id="new-group-container" class="popup text-center">
-			<h3 class="mb-3">Create Group</h3>
+			<div class="config-header p-2 row justify-content-center">
+				<h3 class="mx-2">Create Group</h3>
+				<button id="close-new-group-container-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+			</div>
 			<div class="new-group-option justify-content-between my-2">
 				<label for=" new-group-name">Name</label>
-				<input type="text" id="group-name" placeholder="Group Name" />
+				<input type="text" id="new-group-name" placeholder="Group Name" />
 			</div>
 			<button id="create-group-submit-btn" class="btn float-right">Create Group</button>
 		</div>
 
-		<div id="config-container" class="popup ">
+		<div id="config-container" class="popup">
 			<div class="config-header p-2 row">
 				<h3 class="mx-2">Configuración</h3>
 				<button id="close-config-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
@@ -153,6 +162,8 @@
 					<select id="theme-select" class="form-select">
 						<option value="light">Light</option>
 						<option value="dark">Dark</option>
+						<option value="aqua">Aqua</option>
+						<option value="gray">Gray</option>
 						<option value="custom">Custom</option>
 					</select>
 				</div>
@@ -181,6 +192,8 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="../static/js/main.js"></script>
 </body>
 
 </html>

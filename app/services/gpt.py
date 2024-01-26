@@ -75,8 +75,8 @@ class GPT:
 
             if ids is None:
                 continue
-            
-            session_id, user_id, device_id = ids
+
+            session_id, user_id, chat_id, device_id = ids
             message = {
                 "role": "user",
                 "content": f"{data}",
@@ -119,7 +119,7 @@ class GPT:
                             "LOGGING", (self.name, function_call))
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, ], (session_id, device_id)])
+                            'RESPONSE', ['funcall', [function_name, ], ids])
 
                         message = {
                             "role": "function",
@@ -139,7 +139,7 @@ class GPT:
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer, (session_id, device_id)])
+                                'RESPONSE', ['answer', answer, ids])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(

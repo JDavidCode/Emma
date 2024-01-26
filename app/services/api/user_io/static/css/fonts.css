@@ -1,0 +1,15 @@
+@font-face {
+	font-family: 'unicons';
+	src: url('fonts/unicons.ttf') format('truetype');
+	font-style: normal;
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: 'themify';
+	src: url('fonts/themify.ttf') format('truetype');
+	font-style: normal;
+	font-weight: normal;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');

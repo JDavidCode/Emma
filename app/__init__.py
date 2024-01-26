@@ -68,19 +68,7 @@ class Run:
         """
         Set environment variables based on user configuration.
         """
-        user_file_path = "app/config/user_config.yml"
-        data = self.tools_da.yaml_loader(user_file_path)
-
-        if not data or data == {} or data == []:
-            os.environ["USERLANG"] = str(input("Select a language en - es: "))
-            os.environ["LOGGED"] = 'False'
-            os.environ['USERNAME'] = str(input("Your Name: "))
-            self.queue_handler.add_to_queue("CONSOLE",
-                                            (self.name, "Setting default config"))
-        else:
-            os.environ["USERLANG"] = data['user']['language']
-            os.environ["LOGGED"] = str(data['preferences']['stay_signed_in'])
-            os.environ["USERNAME"] = data['user']['name']
+        pass
 
     def initialize_configuration(self):
         """

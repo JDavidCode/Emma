@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, make_response, redirect, render_template, request, jsonify, url_for
 from flask_socketio import SocketIO, join_room
 from flask_cors import CORS
 import logging
@@ -28,78 +28,100 @@ class App:
         self.event.wait()
 
         @self.app.route("/")
+        def login():
+            return render_template("login.html")
+
+        @self.app.route("/index")
         def home():
-            return render_template("index.html")
+            uid = request.args.get('uid', '')
+            return render_template("index.html", uid=uid)
 
         @self.socketio.on("connect")
         def connect():
             data = request.args
             user_id = data.get("uid", None)
+
             whitelist_data = Config.tools.data.yaml_loader(
                 "./app/config/withelist.yml")
 
             if "users_id" in whitelist_data and user_id in whitelist_data["users_id"]:
-                socket_id = request.sid
-                public_ip = data.get("ip", None)
-                session_name = data.get("session_name", "Default Session")
-                session_id = data.get("ssid", None)
-                device_name = data.get("device_name", "Unknown Device")
-                device_id = data.get("did", None)
-
-                session_info = {
-                    "session_name": session_name,
-                    "session_id": session_id,
-                }
-
-                # Verificar y cargar o crear usuario y sesiones
-                Config.app.system.admin.agents.session.verify_user(user_id)
-                if Config.app.system.admin.agents.session.verify_session(user_id, session_id):
                 # Obtener el contenido de la sesión y emitir "load session"
-                    chat_content = Config.app.system.admin.agents.session.get_chat(
-                        user_id, session_id)
-                    self.socketio.emit(
-                        "load session", {"session_id": session_id, "chat_content": chat_content})
-                     # Check if the session exists in the dictionary
-                    if session_id not in self.sessions:
-                        self.sessions[session_id] = [socket_id, device_id]  # Create a new session entry with a list of socket connections
-                    else:
-                        self.sessions[session_id].append([socket_id, device_id])
-                else:
-                    self.socketio.emit("connect_error", {
-                                       "error": "Session not found or invalid"})
-            else:
-                self.socketio.emit("connect_error", {"error": "Unauthorized user"})
+                groups, chats, = Config.app.system.admin.agents.session.load_data(
+                    user_id)
+                self.socketio.emit(
+                    "load session", {"groups": groups, "chats": chats})
 
+            else:
+                self.socketio.emit("connect_error", {
+                                   "error": "Unauthorized user"})
+
+        @self.app.route("/login", methods=['POST'])
+        def user_login():
+            try:
+                data = request.json
+                response = Config.app.system.admin.agents.session.user_login(data)
+                if response is not None:
+                    print("is here")
+                    return redirect(url_for('home', uid=response))
+                else:
+                    return jsonify({"ERROR": response})
+            except Exception as e:
+                print(e)
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
+
+        @self.app.route("/signup", methods=['POST'])
+        def user_signup():
+            try:
+                data = request.json
+                response = Config.app.system.admin.agents.session.user_signup(
+                    data)
+                return jsonify({"response": response})
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': f'Error processing the request {e}'}
+                return jsonify(response_data)
 
         @self.socketio.on("message")
         def handle_message(data):
-            params = request.args
-            user_id = params.get("uid", None)
-            ssid = params.get("ssid", None)
-            device_id = params.get("did", None)
+            uid = data.get("uid")
+            device_id = data.get("device_id")
+            chat_id = data.get("chat_id")
             sid = request.sid
 
-            whitelist_data = Config.tools.data.yaml_loader(
-                "./app/config/withelist.yml")
-
-            if 'users_id' in whitelist_data and user_id in whitelist_data['users_id']:
-                # Process the client message here (e.g., broadcast it to other clients)
-                data = data.lower()  # Convert data to lowercase
-                self.queue_handler.add_to_queue(
-                    "API_INPUT", ((ssid, user_id, device_id), data))
-
-                # Broadcast the message to other clients in the same session
-                if ssid in self.sessions:
-                    if len(self.sessions.get(ssid)) > 1:
-                        for socket_id in self.sessions[ssid][0]:
-                            if socket_id != sid:
-                                self.socketio.emit("update chat", data, room=socket_id)
+            if device_id not in self.sessions:
+                self.sessions[uid] = [sid, device_id]
             else:
-                # Log unauthorized access and send a response to the unauthorized user
-                self.queue_handler.add_to_queue(
-                    "LOGGING", (self.name, ("Unauthorized User on socket: ", sid)))
-                self.socketio.emit("response", "Unauthorized user", room=sid)
+                self.sessions[uid].append([sid, device_id])
 
+            data = data.get("message").lower()  # Convert data to lowercase
+            self.queue_handler.add_to_queue(
+                "API_INPUT", ((sid, uid, chat_id, device_id), data))
+
+            # Broadcast the message to other clients in the same session
+            if uid in self.sessions:
+                if len(self.sessions.get(uid)) > 1:
+                    for socket_id in self.sessions[uid][0]:
+                        if socket_id != sid:
+                            self.socketio.emit(
+                                "update chat", data, room=socket_id)
+
+        @self.app.route("/create_chat", methods=['POST'])
+        def create_chat():
+            try:
+                chat_name = request.form.get('chat_name')
+                chat_description = request.form.get('chat_description')
+
+                response_data = {'status': 'success',
+                                 'message': 'Chat created successfully'}
+                return jsonify(response_data)
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
 
     def process_responses(self):
         while not self.stop_flag:
@@ -114,10 +136,11 @@ class App:
                 # Send the response to all sockets associated with the session ID
                 if ssid in self.sessions:
                     for xids in self.sessions[ssid]:
-                        if xids[1] == did: 
+                        if xids[1] == did:
                             self.socketio.emit("response", data, room=xids[0])
                         else:
-                            self.socketio.emit("response", f"{data}", room=xids)
+                            self.socketio.emit(
+                                "response", f"{data}", room=xids)
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue(
@@ -125,7 +148,6 @@ class App:
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.name, (e, traceback_str)))
 
-  
     def main(self):
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Has been instantiated"])
@@ -145,13 +167,11 @@ class App:
             self.queue_handler.add_to_queue(
                 "LOGGING", (self.name, (e, traceback_str)))
 
-
     def run(self):
         self.event.set()
         self.response_thread = threading.Thread(
             target=self.process_responses, name=f"{self.name} process_responses")
         self.response_thread.start()
-       
 
     def stop(self):
         self.stop_flag = True

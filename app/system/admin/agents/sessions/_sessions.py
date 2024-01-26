@@ -1,7 +1,11 @@
 import json
+import os
 import threading
+import uuid
 from app.config.config import Config
 import traceback
+from datetime import datetime
+import yaml
 
 
 class SessionsAgent:
@@ -14,7 +18,6 @@ class SessionsAgent:
         self.event = threading.Event()
         self.lock = threading.Lock()
         self.stop_flag = False
-        self.user_storage = {}
 
     def handle_shutdown(self):
         try:
@@ -29,225 +32,164 @@ class SessionsAgent:
             self.queue_handler.add_to_queue(
                 "LOGGING", (self.name, (e, traceback_str)))
 
-    def create_default_device(self):
-        return {
-            "device_id": None,
-            "device_name": "Unknown Device",
-            "sessions": {"default_session_id": {"session_name": "Default Session", "session_id": "default_session_id"}},
-            "public_ips": []
-        }
+    def load_user_data(self, user_id):
+        user_json_path = f"./app/common/users/{user_id}.json"
+        if os.path.exists(user_json_path):
+            with open(user_json_path, 'r') as json_file:
+                user_data = json.load(json_file)
+            return user_data
 
-    def verify_user(self, user_id):
-        self.load_user(user_id)
+    def user_login(self, info):
+        email = info.get('email')
+        password = info.get('password')
 
-        # Verificar si el usuario tiene dispositivos
-        if 'devices' not in self.user_storage:
-            # Si no tiene dispositivos, crea uno predeterminado con una sesión
-            default_device = self.create_default_device()
-            self.user_storage["devices"] = {
-                default_device["device_id"]: default_device}
+        with open('./app/config/withelist.json', 'r') as file:
+            data = json.load(file)
 
-            # Guardar la actualización del usuario
-            self.save_user(user_id)
-        elif not self.user_storage["devices"]:
-            # Si tiene dispositivos pero la lista está vacía, agregar un dispositivo predeterminado con una sesión
-            default_device = self.create_default_device()
-            self.user_storage["devices"][default_device["device_id"]
-                                         ] = default_device
+        for user in data.get('users', []):
+            # Check if the required keys exist in the user data
+            if all(key in user for key in ('email', 'password', 'id')):
+                db_email = user['email']
+                db_pw = user['password']
 
-            # Guardar la actualización del usuario
-            self.save_user(user_id)
+                # Check for a match
+                if email == db_email and password == db_pw:
+                    uid = user['id']
+                    return uid
+                else:
+                    return None
 
-    def verify_session(self, user_id, session_id):
-        with self.lock:
-            devices = self.user_storage.get('devices', [])
-            for device in devices:
-                sessions = device.get('sessions', [])
-                if session_id in [session['session_id'] for session in sessions]:
-                    return True
-
-        return False
-
-    def load_user(self, user_id):
-        self.user_storage = Config.tools.data.json_loader(
-            f"./app/common/users/{user_id}.json")
-
-    def create_user_json(self, name, age, birthday, level):
+    def user_signup(self, info):
+        name = info.get('name')
+        email = info.get('email')
+        birthday = info.get('date')
+        password = info.get('password')
+        uid = self.generate_uid()
+        did = self.generate_did()
+        gid = self.generate_gid()
+        cid = self.generate_cid()
+        age = self.calculate_age(birthday)
         user_data = {
             "user": {
                 "name": name,
+                "mail": email,
                 "age": str(age),
                 "birthday": birthday,
-                "level": str(level),
+                "level": '1',
+                "id": uid,
                 "devices": [
                     {
-                        "device_id": None,
+                        "device_id": did,
                         "device_name": "Unknown Device",
-                        "ips": []
                     }],
-                "sessions": [],
-                 
+                "groups": [{"group_name": "default", "group_id": gid, "chats": {"id": cid, "name": "My First Chat", "description": "Hello World!"}}],
             }
-
         }
-        return user_data
+        try:
+            self.save_user(uid, user_data)
+            prompt = self.create_prompt_session(name, age, birthday, 1)
+            self.create_chat(uid, cid, prompt)
 
-    def save_user(self, user_id):
-        path = f"./app/common/users/{user_id}.json"
+            json_file_path = './app/config/withelist.json'
+            # Asegúrate de que el archivo JSON exista
+            if not os.path.exists(json_file_path):
+                # Si no existe, crea el archivo JSON con una estructura básica
+                with open(json_file_path, 'w') as new_file:
+                    json.dump({'version': '1.0', 'users': []},
+                              new_file, indent=4)
+
+            # Carga el contenido actual del archivo JSON
+            with open(json_file_path, 'r') as file:
+                data = json.load(file)
+                users_list = data.get('users', [])
+
+            if not any(user.get('email') == email for user in users_list):
+                user_data = {
+                    'email': email,
+                    'password': password,
+                    'id': uid
+                }
+                users_list.append(user_data)
+
+                try:
+                    # Guarda la lista actualizada en el archivo JSON
+                    with open(json_file_path, 'w') as file:
+                        json.dump(data, file, indent=4)
+                    print("Guardado exitosamente.")
+                    return True
+                except Exception as e:
+                    print(f"Error al procesar el archivo JSON: {e}")
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return False
+
+    def save_user(self, user_id, data):
+        directory = "./app/common/users/"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        path = os.path.join(directory, f"{user_id}.json")
         with open(path, 'w') as file:
-            json.dump(self.user_storage, file, indent=4)
+            json.dump(data, file, indent=4)
 
-    def get_chat(self, user_id, session_id):
-        path = f"./app/common/users/{user_id}_sessions.json"
+    def create_chat(self, user_id, chat_id, chat_prompt):
+        directory = "./app/common/chats/"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        path = os.path.join(directory, f"{user_id}-{chat_id}.json")
+
+        with open(path, 'w') as file:
+            json.dump(chat_prompt, file, indent=4)
+
+    def get_chat(self, user_id, chat_id):
+        path = f"./app/common/chats/{user_id}-{chat_id}.json"
         chat = Config.tools.data.json_loader(
-            path, i=session_id, json_type="list")
-
+            path, i=chat_id, json_type="list")
         truncated_chat = chat[1:] if len(chat) > 1 else chat
-
         return truncated_chat
 
-    def create_prompt_session(self):
-        data = self.user_storage
-        user_data = data["user"]
-        u_name = user_data["name"]
-        u_age = user_data["age"]
-        u_birthday = user_data["birthday"]
-        u_level = user_data["level"]
-        prompt = {"role": "system", "content": f"Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: {u_name}, age: {u_age}, birthday: {u_birthday}, level: {u_level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
+    def create_prompt_session(self, name, age, birthday, level, role=None):
+        if role is None:
+            prompt = {"role": "system", "content": f"Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
+        else:
+            prompt = {"role": "system", "content": f"{role}. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
+
         return prompt
 
-    def session_handler(self, user_id, session_info):
-        with self.lock:
-            path = f"./app/common/users/{user_id}_sessions.json"
-            session_id = session_info.get("session_id")
-            # Create the prompt session
-            prompt_session = self.create_prompt_session()
+    def generate_uid(self):
+        return str(uuid.uuid4())
 
-            # Load existing sessions or create an empty dictionary
-            sessions = Config.tools.data.json_loader(
-                path, json_type="dict")
-            if sessions is None:
-                sessions = {}
+    def generate_did(self):
+        did = self.generate_uid()
+        return did[:26]
 
-            if session_id not in sessions:
-                sessions[session_id] = [prompt_session]
+    def generate_cid(self):
+        x = 0
+        cid = ''
+        while x <= 2:
+            cid += self.generate_uid()
+            x += 1
+        return cid
 
-            # Check if the prompt session is already in the sessions list
-            if prompt_session not in sessions[session_id]:
-                # If not, add it to the list at the first position
-                sessions[session_id].insert(0, prompt_session)
+    def generate_gid(self):
+        x = 0
+        gid = ''
+        while x <= 3:
+            gid += self.generate_uid()
+            x += 1
+        return gid
 
-            # Save the updated sessions dictionary back to the file
-            with open(path, 'w') as file:
-                json.dump(sessions, file, indent=4)
+    def calculate_age(self, birthday):
+        birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+        current_date = datetime.now()
 
-    def device_handler(self, user_id, device_name, device_id, session_info, public_ip=None):
-        with self.lock:
-            # Create the 'devices' list if it doesn't exist in user_storage
-            self.user_storage.setdefault("devices", [])
+        age = current_date.year - birth_date.year - \
+            ((current_date.month, current_date.day)
+             < (birth_date.month, birth_date.day))
 
-            # Find the index of the device with the given device_id, or -1 if not found
-            existing_device_index = next((i for i, device in enumerate(
-                self.user_storage["devices"]) if device["device_id"] == device_id), -1)
-
-            if existing_device_index == -1:
-                # If the device doesn't exist, create a new entry
-                new_device = {
-                    "device_id": device_id,
-                    "device_name": device_name,
-                    "sessions": [session_info] if session_info else [],
-                    "public_ips": [public_ip] if public_ip else []
-                }
-                self.user_storage["devices"].append(new_device)
-            else:
-                # Get the existing device
-                existing_device = self.user_storage["devices"][existing_device_index]
-
-                # Update existing device's sessions and public_ips if provided
-                if session_info:
-                    existing_device.setdefault("sessions", [])
-                    if session_info not in existing_device["sessions"]:
-                        existing_device["sessions"].append(session_info)
-
-                if public_ip:
-                    existing_device.setdefault("public_ips", [])
-                    if public_ip not in existing_device["public_ips"]:
-                        existing_device["public_ips"].append(public_ip)
-
-    def get_user_devices(self, user_id):
-        with self.lock:
-            user_data = self.user_storage.get(user_id, {})
-            devices = []
-            for device in user_data.get('devices', []):
-                devices.append({
-                    'device_name': device['device_name'],
-                    'device_id': device['device_id'],
-                    'sessions': device.get('sessions', []),
-                    'public_ips': device.get('public_ips', [])
-                })
-            return devices
-
-    def get_session_by_id(self, session_id):
-        with self.lock:
-            for user_id, user_data in self.user_storage.items():
-                for device in user_data['devices']:
-                    for session in device['sessions']:
-                        if session['session_id'] == session_id:
-                            return user_id, device['device_name'], session
-        return None, None, None
-
-    def get_network_users(self):
-        pass  # connect a db and get user for this emma instance
-
-    def add_user_session(self, user_id, session_info):
-        # Add a session to the user's sessions list
-        with self.lock:
-            if 'sessions' not in self.user_storage[user_id]:
-                self.user_storage[user_id]['sessions'] = []
-            self.user_storage[user_id]['sessions'].append(session_info)
-
-    def get_knowed_user_sessions(self, user_id):
-        with self.lock:
-            user_data = self.user_storage.get(user_id, {})
-            sessions = []
-            for device in user_data.get('devices', []):
-                for session in device.get('sessions', []):
-                    sessions.append(session)
-            return sessions
-
-    def get_known_sessions(self):
-        with self.lock:
-            all_sessions = []
-            for user_id, user_data in self.user_storage.items():
-                for device in user_data['devices']:
-                    for session in device['sessions']:
-                        all_sessions.append(session)
-            return all_sessions
-
-    def get_user_storage(self, user_id):
-        with self.lock:
-            return dict(self.user_storage.get(user_id, {}))
-
-    def clear_all_sessions_from_user(self, user_id):
-        with self.lock:
-            if user_id in self.user_storage:
-                del self.user_storage[user_id]
-
-    def attach_components(self, module_name):
-        attachable_module = __import__(module_name)
-
-        for component_name in dir(attachable_module):
-            component = getattr(attachable_module, component_name)
-
-            if callable(component):
-                self.thread_utils.attach_function(
-                    self, component_name, component)
-            elif isinstance(component, threading.Thread):
-                self.thread_utils.attach_thread(
-                    self, component_name, component)
-            else:
-                self.thread_utils.attach_variable(
-                    self, component_name, component)
+        return age
 
 
 if __name__ == "__main__":

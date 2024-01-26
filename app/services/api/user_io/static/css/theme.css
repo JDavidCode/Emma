@@ -1,70 +1,125 @@
-/*DARK MODE*/
-
-body.dark-mode {
-	background-color: #333;
+.dark-theme {
+	background-color: #33435f;
 	color: #fff;
 }
 
-.dark-mode #main-section {
-	background-color: #555;
+.dark-theme #main {
+	background-color: #5c80c0;
 }
 
-.dark-mode #chat-section {
-	background-color: #444;
+.dark-theme #main-header {
+	background-color: #fff;
+	color: #33435f;
 }
 
-.dark-mode #chat-header {
-	border-bottom: 1px solid #555;
+.dark-theme .groups-tab,
+.dark-theme .chats-tab {
+	background-color: #fff;
+	color: #33435f;
 }
 
-.dark-mode #chat-content-box {
-	border: 1px solid #555;
+.dark-theme .group-card,
+.dark-theme .chat-card {
+	background-color: #4a628b;
 }
 
-.dark-mode #chat-input-box {
-	background-color: #555;
-}
-
-.dark-mode #message-input {
-	background-color: #444;
+.dark-theme .card-controls button {
 	color: #fff;
 }
 
-.dark-mode #message-send {
-	background-color: #6c63ff;
+.dark-theme #chat-header {
+	background-color: #fff;
+}
+
+.dark-theme .user-message {
+	background-color: #fff;
+}
+
+.dark-theme .emma-message {
+	background-color: #fff;
+}
+
+.dark-theme #message-input {
+	border: 1px solid #fff;
+}
+
+.dark-theme #message-send,
+.dark-theme #message-speak {
+	background-color: #fff;
+}
+
+.dark-theme #attach-docs {
+	background-color: #fff;
+}
+
+.dark-theme .popup {
+	background-color: #fff;
+}
+
+
+/*AQUA THEME*/
+
+.aqua-theme {
+	background-color: #00ffff;
 	color: #fff;
 }
 
-.dark-mode .group-item {
-	background-color: #555;
+.aqua-theme #main {
+	background-color: #00bfff;
 }
 
-.dark-mode .group-item.active {
-	background-color: #6c63ff;
+.aqua-theme #main-header {
+	background-color: #fff;
+	color: #00ffff;
+}
+
+.aqua-theme .groups-tab,
+.aqua-theme .chats-tab {
+	background-color: #fff;
+	color: #00ffff;
+}
+
+.aqua-theme .group-card,
+.aqua-theme .chat-card {
+	background-color: #0095cc;
+}
+
+.aqua-theme .card-controls button {
 	color: #fff;
 }
 
-.dark-mode .favorite-btn {
-	background-color: #6c63ff;
-	color: #fff;
+.aqua-theme #chat-header {
+	background-color: #fff;
 }
 
-.dark-mode .popup {
-	background-color: #555;
-	border: 1px solid #555;
+.aqua-theme .user-message {
+	background-color: #fff;
 }
 
-.dark-mode .popup h3 {
-	background-color: #6c63ff;
-	color: #fff;
+.aqua-theme .emma-message {
+	background-color: #fff;
 }
 
-.dark-mode .popup input {
-	background-color: #444;
-	color: #fff;
+.aqua-theme #message-input {
+	border: 1px solid #fff;
 }
 
-.dark-mode .popup button {
-	background-color: #6c63ff;
-	color: #fff;
+.aqua-theme #message-send,
+.aqua-theme #message-speak {
+	background-color: #fff;
+}
+
+.aqua-theme #attach-docs {
+	background-color: #fff;
+}
+
+.aqua-theme .popup {
+	background-color: #fff;
+}
+
+/*GRAY SCALE*/
+.gray-scale-theme {
+
+	filter: grayscale(100%);
+
 }

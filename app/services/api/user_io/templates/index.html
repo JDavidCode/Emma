@@ -5,15 +5,15 @@
 	<title>Emma</title>
 	<link rel="stylesheet" href="../static/css/style.css">
 	<link rel="stylesheet" href="../static/css/fonts.css">
-
 	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
 		integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
 		crossorigin="anonymous"></script>
-	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fonts.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/theme.css') }}" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -21,14 +21,77 @@
 </head>
 
 <body>
-	<article id="main">
+	<article id="login">
+		<div class="container">
+			<div class="row full-height justify-content-center">
+				<div class="col-12 text-center align-self-center py-5">
+					<section class="section pb-5 pt-5 pt-sm-2 text-center">
+						<h6 class="mb-0 pb-3"><span>Log In </span><span>Sign Up</span></h6>
+						<input class="login-checkbox" type="checkbox" id="reg-log" name="reg-log" />
+						<label for="reg-log"></label>
+						<div class="card-3d-wrap mx-auto p-1">
+							<div class="card-3d-wrapper" id="cardWrapper">
+								<div class="login-card-front">
+									<div class="center-wrap">
+										<div class="text-center">
+											<h4 class="mb-4 py-3">Log In</h4>
+											<div class="form-group">
+												<input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail"
+													autocomplete="off">
+												<i class="input-icon icon-mail"></i>
+											</div>
+											<div class="form-group mt-2">
+												<input type="password" name="logpass" class="form-style" placeholder="Your Password"
+													id="logpass" autocomplete="off">
+												<i class="input-icon icon-password"></i>
+											</div>
+											<a href="#" class="btn mt-4" id="login-btn">Login</a>
+											<p class="mb-0 mt-4 text-center"><a href="#0" class="link">Forgot your password?</a></p>
+										</div>
+									</div>
+								</div>
+								<div class="signup-card-back">
+									<div class="center-wrap">
+										<div class="text-center">
+											<h4 class="mb-4 pt-2">Sign Up</h4>
+											<div class="form-group">
+												<input type="text" name="logname" class="form-style" placeholder="Your Full Name" id="logname"
+													autocomplete="off">
+												<i class="input-icon icon-user"></i>
+											</div>
+											<div class="form-group mt-1">
+												<input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail"
+													autocomplete="off">
+												<i class="input-icon icon-mail"></i>
+											</div>
+											<div class="form-group mt-1">
+												<input type="date" name="logdate" class="form-style" placeholder="Your Birthday" id="logdate"
+													autocomplete="off">
+												<i class="input-icon icon-date"></i>
+											</div>
+											<div class="form-group mt-1">
+												<input type="password" name="logpass" class="form-style" placeholder="Your Password"
+													id="logpass" autocomplete="off">
+												<i class="input-icon icon-password"></i>
+											</div>
+											<a href="#" class="btn my-2" id="signup-btn">Sign Up</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+				</div>
+				</section>
+			</div>
+		</div>
+	</article>
+	<article id="home" class="hidden">
 		<div class="container-fluid">
 			<div class="row">
-				<section id="main-section" class="col-4 p-0">
-					<div id="main-header" class="row">
+				<section id="home-section" class="col-4 p-0">
+					<div id="home-header" class="row">
 						<h2 id="chat-header-title" class="col-9">Emma</h2>
 						<button id="config-btn" class="col-2 m-1 btn">
-							<i class="ti-settings"></i>
 						</button>
 					</div>
 
@@ -63,8 +126,8 @@
 												</p>
 											</div>
 											<div class="col-3 card-controls btn d-flex p-3 m-0 justify-content-center mx-auto">
-												<button class="mx-1"><i class="ti-heart"></i></button>
-												<button class="mx-1"><i class="ti-more"></i></button>
+												<button class="mx-1 fav-btn"></i></button>
+												<button class="mx-1 more-btn"></button>
 											</div>
 										</div>
 									</div>
@@ -95,7 +158,7 @@
 
 					</div>
 
-					<div class="toolkits-select-container ti-plus">
+					<div class="toolkits-select-container">
 						<select id="toolkits" class="upward-select">
 							<option value="create-new-group">Create Group</option>
 							<option value="create-new-chat">Create New Chat</option>
@@ -108,14 +171,14 @@
 							<p id="chat-header-name" class="col-9 mt-2 mb-1">My Chat Name</p>
 							<p id="chat-header-description" class="col-9 mb-2">Description for Chat 1</p>
 						</div>
-						<div id="toolkits-box" class="row col-1 m-auto"><i class="ti-info col-2 mx-auto p-0"></i></div>
+						<div id="toolkits-box" class="row col-1 m-auto info-btn"></div>
 					</div>
 					<div id="chat-content-box" class="col-12"></div>
 					<div id="chat-input-box" class="col-12 float-bottom justify-content-center">
-						<button id="attach-docs"><i class="ti-link"></i></button>
+						<button id="attach-docs"></button>
 						<input id="message-input" type="text" placeholder="Type a message..." />
-						<button id="message-send"><i class="ti-bolt"></i></button>
-						<button id="message-speak"><i class="ti-microphone"></i></button>
+						<button id="message-send"></button>
+						<button id="message-speak"></button>
 				</section>
 			</div>
 		</div>
@@ -141,7 +204,7 @@
 		<div id="new-group-container" class="popup text-center">
 			<div class="config-header p-2 row justify-content-center">
 				<h3 class="mx-2">Create Group</h3>
-				<button id="close-new-group-container-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+				<button id="close-new-group-container-btn" class="p-1 mx-1 btn close-btn"></i></button>
 			</div>
 			<div class="new-group-option justify-content-between my-2">
 				<label for=" new-group-name">Name</label>
@@ -153,7 +216,7 @@
 		<div id="config-container" class="popup">
 			<div class="config-header p-2 row">
 				<h3 class="mx-2">Configuración</h3>
-				<button id="close-config-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+				<button id="close-config-btn" class="p-1 mx-1 btn close-btn"></button>
 			</div>
 
 			<div class="config-options p-2">

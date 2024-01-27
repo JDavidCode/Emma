@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+	let uid
 	const socket = io.connect('', {
 		query: getQueryParams(window.location.search) // Extract query parameters from the URL
 	});
@@ -33,7 +33,21 @@ document.addEventListener('DOMContentLoaded', function () {
 	const favoriteBtns = document.querySelectorAll(".favorite-btn");
 	let currentUtterance;
 
+	function animateTransition() {
+		var loginArticle = document.getElementById('login');
+		var homeArticle = document.getElementById('home');
 
+		// Ocultar el artículo de inicio de sesión
+		loginArticle.classList.add('fade-out');
+		loginArticle.addEventListener('transitionend', function () {
+			loginArticle.classList.add('hidden');
+			loginArticle.classList.remove('fade-out');
+
+			// Después de que se oculta, mostrar el artículo de inicio
+			homeArticle.classList.remove('hidden');
+			homeArticle.classList.add('fade-in');
+		});
+	}
 	themeSelect.addEventListener("change", event => {
 		const selectedTheme = event.target.value;
 
@@ -297,16 +311,11 @@ document.addEventListener('DOMContentLoaded', function () {
 		cardControlsCol.className = "col-3 card-controls d-flex p-3 m-0 ml-3 justify-content-center mx-auto";
 
 		var heartButton = document.createElement("button");
-		var heartIcon = document.createElement("i");
-		heartButton.className = "mx-1"
-		heartIcon.className = "ti-heart";
-		heartButton.appendChild(heartIcon);
+		heartButton.className = "mx-1 fav-btn"
 
 		var moreButton = document.createElement("button");
-		var moreIcon = document.createElement("i");
-		moreButton.className = "mx-1"
-		moreIcon.className = "ti-more";
-		moreButton.appendChild(moreIcon);
+		moreButton.className = "mx-1 more-btn"
+
 
 		if (type === "group") {
 			var chatsGroupList = document.createElement("div");
@@ -419,5 +428,94 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	messageInput.addEventListener("keydown", handleKeyDown);
 
+	//LOGIN PAGE
+	//
+	//
+	//
+	var cardWrapper = document.querySelector('.card-3d-wrapper');
+	var loginForm = cardWrapper.querySelector('.card-front');
+	var signupForm = cardWrapper.querySelector('.card-back');
+	const loginBtn = document.getElementById('login-btn')
+	const signUpBtn = document.getElementById('signup-btn')
 
+
+	// Event listener for the login button
+	loginBtn.addEventListener('click', function (e) {
+		e.preventDefault();
+
+		// Get login form values
+		var email = loginForm.querySelector('#logemail').value;
+		var password = loginForm.querySelector('#logpass').value;
+
+
+		fetch('/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				email: email,
+				password: password,
+			}),
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.uid) {
+					uid = data.uid
+					loginForm.querySelector('#logemail').value = '';
+					loginForm.querySelector('#logpass').value = '';
+					animateTransition();
+				}
+
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+
+	});
+
+	// Event listener for the signup button
+	signUpBtn.addEventListener('click', function (e) {
+		e.preventDefault();
+
+		// Get signup form values
+		var name = signupForm.querySelector('#logname').value;
+		var email = signupForm.querySelector('#logemail').value;
+		var date = signupForm.querySelector('#logdate').value;
+		var password = signupForm.querySelector('#logpass').value;
+
+		// Perform signup logic
+		console.log('Performing signup...');
+
+		fetch('/signup', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: name,
+				email: email,
+				date: date,
+				password: password,
+			}),
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data) {
+					cardWrapper.classList.add('flipped');
+					signupForm.querySelector('#logname').value = '';
+					signupForm.querySelector('#logemail').value = '';
+					signupForm.querySelector('#logdate').value = '';
+					signupForm.querySelector('#logpass').value = '';
+
+				}
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+	});
 })

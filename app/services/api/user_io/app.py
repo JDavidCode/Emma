@@ -29,22 +29,17 @@ class App:
 
         @self.app.route("/")
         def login():
-            return render_template("login.html")
-
-        @self.app.route("/index")
-        def home():
-            uid = request.args.get('uid', '')
-            return render_template("index.html", uid=uid)
+            return render_template("index.html")
 
         @self.socketio.on("connect")
         def connect():
             data = request.args
             user_id = data.get("uid", None)
 
-            whitelist_data = Config.tools.data.yaml_loader(
-                "./app/config/withelist.yml")
+            response = Config.app.system.admin.agents.session.verify_id(
+                user_id)
 
-            if "users_id" in whitelist_data and user_id in whitelist_data["users_id"]:
+            if response:
                 # Obtener el contenido de la sesión y emitir "load session"
                 groups, chats, = Config.app.system.admin.agents.session.load_data(
                     user_id)
@@ -59,10 +54,10 @@ class App:
         def user_login():
             try:
                 data = request.json
-                response = Config.app.system.admin.agents.session.user_login(data)
-                if response is not None:
-                    print("is here")
-                    return redirect(url_for('home', uid=response))
+                response = Config.app.system.admin.agents.session.user_login(
+                    data)
+                if response:
+                    return jsonify({"uid": response})
                 else:
                     return jsonify({"ERROR": response})
             except Exception as e:
@@ -122,6 +117,11 @@ class App:
                 response_data = {'status': 'error',
                                  'message': 'Error processing the request'}
                 return jsonify(response_data)
+
+    def load_session(self, uid):
+        data = ""
+        self.socketio.emit("response", data)
+
 
     def process_responses(self):
         while not self.stop_flag:

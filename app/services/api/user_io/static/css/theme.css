@@ -3,11 +3,11 @@
 	color: #fff;
 }
 
-.dark-theme #main {
+.dark-theme #home {
 	background-color: #5c80c0;
 }
 
-.dark-theme #main-header {
+.dark-theme #home-header {
 	background-color: #fff;
 	color: #33435f;
 }
@@ -64,11 +64,11 @@
 	color: #fff;
 }
 
-.aqua-theme #main {
+.aqua-theme #home {
 	background-color: #00bfff;
 }
 
-.aqua-theme #main-header {
+.aqua-theme #home-header {
 	background-color: #fff;
 	color: #00ffff;
 }

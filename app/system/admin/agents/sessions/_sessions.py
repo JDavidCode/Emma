@@ -38,7 +38,21 @@ class SessionsAgent:
             with open(user_json_path, 'r') as json_file:
                 user_data = json.load(json_file)
             return user_data
+        
+    def verify_id(self, id):
+            with open('./app/config/withelist.json', 'r') as file:
+                data = json.load(file)
 
+            for user in data.get('users', []):
+                # Check if the required keys exist in the user data
+                if all(key in user for key in ('email', 'password', 'id')):
+                    db_id= user['id']
+
+                    # Check for a match
+                    if db_id == id:
+                        return True
+                    else:
+                        return False
     def user_login(self, info):
         email = info.get('email')
         password = info.get('password')

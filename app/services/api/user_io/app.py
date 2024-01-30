@@ -33,7 +33,7 @@ class App:
 
         @self.socketio.on("connect")
         def connect():
-            data = request.args
+            data = request.json
             user_id = data.get("uid", None)
 
             response = Config.app.system.admin.agents.session.verify_id(
@@ -49,6 +49,29 @@ class App:
             else:
                 self.socketio.emit("connect_error", {
                                    "error": "Unauthorized user"})
+        @self.socketio.on("message")
+        def handle_message(data):
+            uid = data.get("uid")
+            device_id = data.get("device_id")
+            chat_id = data.get("chat_id")
+            sid = request.sid
+
+            if device_id not in self.sessions:
+                self.sessions[uid] = [sid, device_id]
+            else:
+                self.sessions[uid].append([sid, device_id])
+
+            data = data.get("message").lower()  # Convert data to lowercase
+            self.queue_handler.add_to_queue(
+                "API_INPUT", ((sid, uid, chat_id, device_id), data))
+
+            # Broadcast the message to other clients in the same session
+            if uid in self.sessions:
+                if len(self.sessions.get(uid)) > 1:
+                    for socket_id in self.sessions[uid][0]:
+                        if socket_id != sid:
+                            self.socketio.emit(
+                                "update chat", data, room=socket_id)
 
         @self.app.route("/login", methods=['POST'])
         def user_login():
@@ -79,38 +102,30 @@ class App:
                                  'message': f'Error processing the request {e}'}
                 return jsonify(response_data)
 
-        @self.socketio.on("message")
-        def handle_message(data):
-            uid = data.get("uid")
-            device_id = data.get("device_id")
-            chat_id = data.get("chat_id")
-            sid = request.sid
 
-            if device_id not in self.sessions:
-                self.sessions[uid] = [sid, device_id]
-            else:
-                self.sessions[uid].append([sid, device_id])
 
-            data = data.get("message").lower()  # Convert data to lowercase
-            self.queue_handler.add_to_queue(
-                "API_INPUT", ((sid, uid, chat_id, device_id), data))
+        @self.app.route("/create_group", methods=['POST'])
+        def create_group():
+            try:
+                group_name = request.form.get('group_name')
+                group_date = request.form.get('date')
+                response = Config.app.system.admin.agents.session.create_group(
+                                    data)
+                response_data = {'status': 'success',
+                                 'message': 'Chat created successfully'}
+                return jsonify(response_data)
 
-            # Broadcast the message to other clients in the same session
-            if uid in self.sessions:
-                if len(self.sessions.get(uid)) > 1:
-                    for socket_id in self.sessions[uid][0]:
-                        if socket_id != sid:
-                            self.socketio.emit(
-                                "update chat", data, room=socket_id)
-
-        @self.app.route("/create_chat", methods=['POST'])
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
+         @self.app.route("/create_chat", methods=['POST'])
         def create_chat():
             try:
                 chat_name = request.form.get('chat_name')
                 chat_description = request.form.get('chat_description')
-
-                response_data = {'status': 'success',
-                                 'message': 'Chat created successfully'}
+                response = Config.app.system.admin.agents.session.create_chat(
+                                    data)
                 return jsonify(response_data)
 
             except Exception as e:

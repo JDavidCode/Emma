@@ -1,19 +1,29 @@
 document.addEventListener('DOMContentLoaded', function () {
 	let uid
-	const socket = io.connect('', {
-		query: getQueryParams(window.location.search) // Extract query parameters from the URL
-	});
+	let socket
 	const currentDateTime = new Date();
+	let chatDict = {};
+	let groupDict = {};
+
 	///CONFIG
 	const configBtn = document.getElementById('config-btn');
 	const configContainer = document.getElementById('config-container');
 	const closeConfigBtn = document.getElementById('close-config-btn')
 	const themeSelect = document.getElementById("theme-select");
 	const voiceOption = document.getElementById("voice-toggle");
-	const notificationOption = document.getElementById("notification-toggle")
+	const notificationOption = document.getElementById("notification-toggle");
+
+	//MAIN HEADER
+	const chatsSelectorBtn = document.getElementById("chats-selector-btn");
+	const groupsSelectorBtn = document.getElementById("groups-selector-btn");
+	const checkSelector = document.getElementById("chats-groups")
+	const chatsContainer = document.getElementById("chats-card-front")
+	const groupsContainer = document.getElementById("groups-card-back")
+	const loader = document.getElementById("loader")
 
 	///TOOLKITS
-	const toolkitsSelect = document.getElementById("toolkits");
+	const createChatBtn = document.getElementById("create-chat-btn");
+	const createGroupBtn = document.getElementById("create-group-btn");
 	const createGroupSubmitBtn = document.getElementById("create-group-submit-btn");
 	const createGroupContainer = document.getElementById("new-group-container");
 	const createChatContainer = document.getElementById('new-chat-container');
@@ -30,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	const messageSend = document.getElementById("message-send");
 	const speakBtn = document.getElementById('message-speak');
 
-	const favoriteBtns = document.querySelectorAll(".favorite-btn");
 	let currentUtterance;
 
 	function animateTransition() {
@@ -66,6 +75,25 @@ document.addEventListener('DOMContentLoaded', function () {
 		} else if (selectedTheme === "gray") {
 			document.body.classList.remove("light-theme", "dark-theme", "aqua-theme");
 			document.body.classList.add("gray-scale-theme");
+		}
+	});
+	createChatBtn.addEventListener('click', () => {
+		createChatContainer.style.display = 'block'
+
+	});
+	createGroupBtn.addEventListener('click', () => {
+		createGroupContainer.style.display = 'block'
+
+	});
+
+	chatsSelectorBtn.addEventListener('click', () => {
+		if (checkSelector.checked) {
+			checkSelector.checked = !checkSelector.checked;
+		}
+	});
+	groupsSelectorBtn.addEventListener('click', () => {
+		if (!checkSelector.checked) {
+			checkSelector.checked = !checkSelector.checked;
 		}
 	});
 
@@ -129,16 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		createGroupContainer.style.display = 'none';
 	})
 
-	toolkitsSelect.addEventListener('change', event => {
-		const tool = event.target.value;
-		if (tool === 'create-new-group') {
-			createGroupContainer.style.display = "block"
-		} else if (tool === 'create-new-chat') {
-			createChatContainer.style.display = "block"
-		}
-
-	});
-
 	createGroupSubmitBtn.addEventListener("click", () => {
 		const groupName = document.getElementById("new-group-name").value;
 		if (groupName) {
@@ -162,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			alert("Please enter a group name");
 		}
 	});
+
 	createChatSubmitBtn.addEventListener('click', function () {
 		const chatName = document.getElementById("new-chat-name").value;
 		const chatDescription = document.getElementById("new-chat-description").value;
@@ -199,11 +218,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 
-	favoriteBtns.forEach((btn) => {
-		btn.addEventListener("click", () => {
-			console.log("Favorite button clicked");
-		});
-	});
 
 	function startSpeechRecognition() {
 		recognition = new webkitSpeechRecognition();
@@ -247,9 +261,16 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	socket.on("load session", function (data) {
-		const groups = data.groups
-		const chats = data.chats
+		groupDict = data.groups
+		chatDict = data.chats
+		for (const groupId in data.groups) {
+			for (const group in data.groups[groupId]) {
+				groupDict[groupId] = group.chats;
 
+				// Crea una carta para el grupo
+				createCard("", group.name, 'group');
+			}
+		}
 	});
 
 	socket.on('notification', function (data) {
@@ -273,78 +294,46 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
+	function createCard(imageUrl, title, type) {
+		// Create main card div
+		var cardDiv = document.createElement("div");
+		cardDiv.className = "row mx-auto my-3 col-11" + type + "-card";
 
-	function createCard(type, title, description, imageUrl) {
-		// Crear elementos
-		var card = document.createElement("div");
-		card.className = "row mx-auto my-1 col-10 " + type + "-card";
-
-		var innerRow1 = document.createElement("div");
-		innerRow1.className = "row my-2";
-
-		var imageCol = document.createElement("div");
-		imageCol.className = "col-1 p-0 my-auto mx-3";
-
+		// Create image div
+		var imageDiv = document.createElement("div");
+		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2";
 		var image = document.createElement("img");
 		image.className = "round_image";
-		if (imageUrl === '') {
-			image.src = "https://picsum.photos/200/200"
-		} else {
-			image.src = imageUrl;
+		image.src = imageUrl;
+		imageDiv.appendChild(image);
+		cardDiv.appendChild(imageDiv);
+
+		// Create card info div
+		var infoDiv = document.createElement("div");
+		infoDiv.className = "col-7 card-info my-auto p-0 ml-3";
+		var titlePara = document.createElement("p");
+		titlePara.className = "card-title my-auto";
+		titlePara.textContent = title;
+		infoDiv.appendChild(titlePara);
+		cardDiv.appendChild(infoDiv);
+
+		// Create card controls div
+		var controlsDiv = document.createElement("div");
+		controlsDiv.className = "col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center";
+		var moreBtn = document.createElement("button");
+		moreBtn.className = "mx-1 more-btn btn";
+		controlsDiv.appendChild(moreBtn);
+		cardDiv.appendChild(controlsDiv);
+
+		if (type === 'group') {
+			// Create chats group list button
+			var chatsBtn = document.createElement("button");
+			chatsBtn.className = "chats-group-list col-12 p-0 m-0 btn px-2 down-btn";
+			cardDiv.appendChild(chatsBtn);
 		}
 
-		var innerRow2 = document.createElement("div");
-		innerRow2.className = "row col-9 p-0 mx-2";
 
-		var cardInfoCol = document.createElement("div");
-		cardInfoCol.className = "col-8 card-info m-0 p-0";
-
-		var cardTitle = document.createElement("p");
-		cardTitle.className = "card-title my-1";
-		cardTitle.textContent = title;
-
-		var cardDescription = document.createElement("p");
-		cardDescription.className = "card-description my-0";
-		cardDescription.textContent = description;
-
-		var cardControlsCol = document.createElement("div");
-		cardControlsCol.className = "col-3 card-controls d-flex p-3 m-0 ml-3 justify-content-center mx-auto";
-
-		var heartButton = document.createElement("button");
-		heartButton.className = "mx-1 fav-btn"
-
-		var moreButton = document.createElement("button");
-		moreButton.className = "mx-1 more-btn"
-
-
-		if (type === "group") {
-			var chatsGroupList = document.createElement("div");
-			chatsGroupList.className = "chats-group-list col-11 m-0 p-0";
-
-			var chatsGroupButton = document.createElement("button");
-			chatsGroupButton.className = "col-12 px-5";
-			var angleDownIcon = document.createElement("i");
-			angleDownIcon.className = "ti-angle-down";
-			chatsGroupButton.appendChild(angleDownIcon);
-
-			chatsGroupList.appendChild(chatsGroupButton);
-			innerRow1.appendChild(chatsGroupList);
-		}
-
-		imageCol.appendChild(image);
-		cardInfoCol.appendChild(cardTitle);
-		cardInfoCol.appendChild(cardDescription);
-		cardControlsCol.appendChild(heartButton);
-		cardControlsCol.appendChild(moreButton);
-		innerRow2.appendChild(cardInfoCol);
-		innerRow2.appendChild(cardControlsCol);
-		innerRow1.appendChild(imageCol);
-		innerRow1.appendChild(innerRow2);
-		card.appendChild(innerRow1);
-
-		return card;
 	}
-
 
 	function isLink(text) {
 		// Regular expression to match common URL patterns
@@ -381,8 +370,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 		return false;
 	}
-
-
 
 	function verifyInputState() {
 		let value = messageInput.value
@@ -464,7 +451,8 @@ document.addEventListener('DOMContentLoaded', function () {
 					uid = data.uid
 					loginForm.querySelector('#logemail').value = '';
 					loginForm.querySelector('#logpass').value = '';
-					animateTransition();
+					loader.style.display = "block";
+					socket = io.connect('', { uid: data.uid });
 				}
 
 
@@ -509,7 +497,6 @@ document.addEventListener('DOMContentLoaded', function () {
 					signupForm.querySelector('#logemail').value = '';
 					signupForm.querySelector('#logdate').value = '';
 					signupForm.querySelector('#logpass').value = '';
-
 				}
 
 			})

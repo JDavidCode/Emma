@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<article id="login">
+	<article id="login" class="hidden">
 		<div class="container">
 			<div class="row full-height justify-content-center">
 				<div class="col-12 text-center align-self-center py-5">
@@ -80,115 +80,87 @@
 								</div>
 							</div>
 						</div>
+					</section>
 				</div>
-				</section>
 			</div>
 		</div>
 	</article>
-	<article id="home" class="hidden">
-		<div class="container-fluid">
-			<div class="row">
-				<section id="home-section" class="col-4 p-0">
-					<div id="home-header" class="row">
-						<h2 id="chat-header-title" class="col-9">Emma</h2>
-						<button id="config-btn" class="col-2 m-1 btn">
-						</button>
-					</div>
-
-					<div class="row justify-content-center">
-						<div class="col-12">
-							<ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
-								<li class="nav-item">
-									<a class="nav-link active chats-tab" id="pills-chats-tab" data-toggle="pill" href="#chats" role="tab"
-										aria-controls="pills-home" aria-selected="true">Chats</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link groups-tab" id="pills-groups-tab" data-toggle="pill" href="#groups" role="tab"
-										aria-controls="pills-profile" aria-selected="false">Groups</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div id="message-content-section" class="my-auto">
-						<div class="tab-content" id="pills-tabContent">
-							<div class="tab-pane active fade show" id="chats" role="tabpanel">
-								<div class="row mx-auto my-1 col-10 chat-card">
-									<div class="row my-2">
-										<div class="col-1 p-0 my-auto mx-3">
-											<img class="round_image" src="../static/img/port.jpg" />
-										</div>
-										<div class="row col-9 p-0 mx-2">
-											<div class="col-8 card-info m-0 p-0">
-												<p class="card-title my-1">Hola mundo</p>
-												<p class="card-description my-0">
-													Esta es mi Description
-												</p>
-											</div>
-											<div class="col-3 card-controls btn d-flex p-3 m-0 justify-content-center mx-auto">
-												<button class="mx-1 fav-btn"></i></button>
-												<button class="mx-1 more-btn"></button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="tab-pane fade show" id="groups" role="tabpanel">
-								<div class="row mx-auto my-1 col-11 group-card">
-									<div class="row my-2">
-										<div class="col-1 p-0 my-auto ml-2">
-											<img class="round_image" src="../static/img/port.jpg" />
-										</div>
-										<div class="row col-10 p-0 ml-1">
-											<div class="col-8 card-info my-0 p-0 ">
-												<p class="card-title ">Hola Group</p>
-											</div>
-											<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
-												<button><i class="ti-heart"></i></button>
-												<button><i class="ti-more"></i></button>
-											</div>
-										</div>
-										<div class="chats-group-list col-12 m-0 p-0">
-											<button class="col-12 px-5"><i class="ti-angle-down"></i></button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div>
-
-					<div class="toolkits-select-container">
-						<select id="toolkits" class="upward-select">
-							<option value="create-new-group">Create Group</option>
-							<option value="create-new-chat">Create New Chat</option>
-						</select>
-					</div>
-				</section>
-				<section id="chat-section" class="col-8 m-0 p-0">
-					<div id="chat-header" class="row col-12 m-0 p-2">
-						<div class="col-11 p-0 m-auto">
-							<p id="chat-header-name" class="col-9 mt-2 mb-1">My Chat Name</p>
-							<p id="chat-header-description" class="col-9 mb-2">Description for Chat 1</p>
-						</div>
-						<div id="toolkits-box" class="row col-1 m-auto info-btn"></div>
-					</div>
-					<div id="chat-content-box" class="col-12"></div>
-					<div id="chat-input-box" class="col-12 float-bottom justify-content-center">
-						<button id="attach-docs"></button>
-						<input id="message-input" type="text" placeholder="Type a message..." />
-						<button id="message-send"></button>
-						<button id="message-speak"></button>
-				</section>
+	<article id="home" class="container-fluid row p-0 m-0">
+		<section id="home-section" class="col-4 p-0 m-0 py-1">
+			<div id="home-header" class="row p-2 m-0 rounded col-11 mx-auto">
+				<h2 id="chat-header-title" class="col-8">Emma</h2>
+				<button id="config-btn" class="col-2 m-1 btn"></button>
 			</div>
-		</div>
+
+			<div class="home-content mx-auto pl-1 pr-2 col-11">
+				<input class="home-content-checkbox " type="checkbox" id="chats-groups" name="chats-groups" />
+				<div class="col-10 content-selector py-2 d-flex justify-content-between mx-auto">
+					<button class=" btn col-5 rounded" id="chats-selector-btn">CHATS</button>
+					<button class="btn col-5 rounded" id="groups-selector-btn">GROUPS</button>
+				</div>
+				<div class="card-3d-wrap mx-auto p-0 m-0 card-3d-wrap-cg">
+					<div class="card-3d-wrapper" id="cardWrapper">
+						<div class="chats-card-front">
+							<div class="row mx-auto my-3 col-11 chat-card">
+								<div class="col-1 p-0 my-auto ml-1 mr-2">
+									<img class="round_image" src="../static/img/port.jpg" />
+								</div>
+								<div class="col-7 card-info my-auto p-0 ml-3">
+									<p class="card-title my-auto">Hola Chat</p>
+								</div>
+								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+									<button class="mx-1 more-btn btn"></button>
+								</div>
+							</div>
+							<button class="btn rounded col-12 py-1 px-2" id="create-chat-btn">Create New Chat</button>
+						</div>
+						<div class="groups-card-back">
+							<div class="row mx-auto my-3 col-11 chat-card">
+								<div class="col-1 p-0 my-auto ml-1 mr-2">
+									<img class="round_image" src="../static/img/port.jpg" />
+								</div>
+								<div class="col-7 card-info my-auto p-0 ml-3">
+									<p class="card-title my-auto">Hola Group</p>
+								</div>
+								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+									<button class="mx-1 more-btn btn"></button>
+								</div>
+								<button class="chats-group-list col-12 p-0 m-0 btn px-2 down-btn"></button>
+							</div>
+							<button class="btn rounded col-12 py-1 px-2" id="create-group-btn">Create New Group</button>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</section>
+		<section id="chat-section" class="row col-8 m-0 p-0 pr-4 py-1">
+			<div id="chat-header" class="row col-12 m-0 p-2 rounded">
+				<div class="col-11 p-0 m-auto">
+					<p id="chat-header-name" class="col-9 mt-2 mb-1">My Chat Name</p>
+					<p id="chat-header-description" class="col-9 mb-2">Description for Chat 1</p>
+				</div>
+				<div id="toolkits-box" class="row col-1 m-auto info-btn"></div>
+			</div>
+			<div id="chat-content-box" class="col-12"></div>
+			<div id="chat-input-box" class="col-12 float-bottom justify-content-center">
+				<button id="attach-docs"></button>
+				<input id="message-input" type="text" placeholder="Type a message..." />
+				<button id="message-send"></button>
+				<button id="message-speak"></button>
+			</div>
+		</section>
 	</article>
 
 	<div class="models">
+<div class="loader-container" id="loader">
+  <div class="loader"></div>
+</div>
 		<div id="new-chat-container" class="popup text-center">
 			<div class="config-header p-2 row justify-content-center">
 				<h3 class="mx-2">New Chat</h3>
-				<button id="close-new-chat-container-btn" class="p-1 mx-1 btn"><i class="ti-close"></i></button>
+				<button id="close-new-chat-container-btn" class="close-btn p-1 mx-1 btn"><i class="ti-close"></i></button>
 			</div>
 			<div class="new-chat-option d-flex justify-content-between my-1">
 				<label for="new-chat-name">Name</label>
@@ -204,7 +176,7 @@
 		<div id="new-group-container" class="popup text-center">
 			<div class="config-header p-2 row justify-content-center">
 				<h3 class="mx-2">Create Group</h3>
-				<button id="close-new-group-container-btn" class="p-1 mx-1 btn close-btn"></i></button>
+				<button id="close-new-group-container-btn" class="close-btn p-1 mx-1 btn close-btn"></i></button>
 			</div>
 			<div class="new-group-option justify-content-between my-2">
 				<label for=" new-group-name">Name</label>

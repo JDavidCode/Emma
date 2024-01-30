@@ -3,5 +3,5 @@
 		"editor.defaultFormatter": "ms-python.autopep8"
 	},
 	"python.formatting.provider": "none",
-	"liveServer.settings.port": 5504
+	"liveServer.settings.port": 5507
 }

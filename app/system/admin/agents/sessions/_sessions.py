@@ -102,7 +102,7 @@ class SessionsAgent:
         try:
             self.save_user(uid, user_data)
             prompt = self.create_prompt_session(name, age, birthday, 1)
-            self.create_chat(uid, cid, prompt)
+            self.create_chat(uid, cid, "My First Chat", prompt)
 
             json_file_path = './app/config/withelist.json'
             # Asegúrate de que el archivo JSON exista
@@ -148,7 +148,15 @@ class SessionsAgent:
         with open(path, 'w') as file:
             json.dump(data, file, indent=4)
 
-    def create_chat(self, user_id, chat_id, chat_prompt):
+    def create_chat(self, user_id, chat_id=None, chat_name=None, chat_prompt=None):
+        if chat_id is None:
+            chat_id = self.generate_cid()
+        if prompt is None:
+            name, age, birthday, level = self.get_user_info(user_id)
+            prompt = self.create_prompt_session(name, age, birthday, level)
+        if chat_name is None:
+            chat_name = "My Chat"
+
         directory = "./app/common/chats/"
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -156,6 +164,12 @@ class SessionsAgent:
 
         with open(path, 'w') as file:
             json.dump(chat_prompt, file, indent=4)
+        return chat_id
+
+    def create_group(self, user_id, group_name):
+        group_id = self.generate_gid()
+        cid = self.create_chat(user_id)
+
 
     def get_chat(self, user_id, chat_id):
         path = f"./app/common/chats/{user_id}-{chat_id}.json"

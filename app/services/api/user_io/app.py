@@ -28,7 +28,7 @@ class App:
         self.event.wait()
 
         @self.app.route("/")
-        def login():
+        def index():
             return render_template("index.html")
 
         @self.socketio.on("connect")
@@ -49,6 +49,7 @@ class App:
             else:
                 self.socketio.emit("connect_error", {
                                    "error": "Unauthorized user"})
+
         @self.socketio.on("message")
         def handle_message(data):
             uid = data.get("uid")
@@ -77,9 +78,9 @@ class App:
         def user_login():
             try:
                 data = request.json
-                response = Config.app.system.admin.agents.session.user_login(
+                _, response = Config.app.system.admin.agents.session.user_login(
                     data)
-                if response:
+                if _:
                     return jsonify({"uid": response})
                 else:
                     return jsonify({"ERROR": response})
@@ -93,40 +94,48 @@ class App:
         def user_signup():
             try:
                 data = request.json
-                response = Config.app.system.admin.agents.session.user_signup(
+                _, response = Config.app.system.admin.agents.session.user_signup(
                     data)
-                return jsonify({"response": response})
+                if _:
+                    return jsonify({"uid": response})
+                else:
+                    return jsonify({"ERROR": response})
 
             except Exception as e:
                 response_data = {'status': 'error',
                                  'message': f'Error processing the request {e}'}
                 return jsonify(response_data)
 
-
-
         @self.app.route("/create_group", methods=['POST'])
         def create_group():
             try:
                 group_name = request.form.get('group_name')
                 group_date = request.form.get('date')
-                response = Config.app.system.admin.agents.session.create_group(
-                                    data)
-                response_data = {'status': 'success',
-                                 'message': 'Chat created successfully'}
+                uid = request.form.get('uid')
+                _, response = Config.app.system.admin.agents.session.create_group(uid,
+                                                                                  group_name, group_date)
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
                 return jsonify(response_data)
 
             except Exception as e:
                 response_data = {'status': 'error',
                                  'message': 'Error processing the request'}
                 return jsonify(response_data)
-         @self.app.route("/create_chat", methods=['POST'])
+
+        @self.app.route("/create_chat", methods=['POST'])
         def create_chat():
             try:
                 chat_name = request.form.get('chat_name')
                 chat_description = request.form.get('chat_description')
-                response = Config.app.system.admin.agents.session.create_chat(
-                                    data)
-                return jsonify(response_data)
+                uid = request.form.get('uid')
+                _, response = Config.app.system.admin.agents.session.create_chat(
+                    _id=uid, name=chat_name, description=chat_description)
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
+                    return jsonify(response_data)
 
             except Exception as e:
                 response_data = {'status': 'error',
@@ -136,7 +145,6 @@ class App:
     def load_session(self, uid):
         data = ""
         self.socketio.emit("response", data)
-
 
     def process_responses(self):
         while not self.stop_flag:

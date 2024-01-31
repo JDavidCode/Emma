@@ -2,6 +2,57 @@ import threading
 import mysql.connector
 
 
+class Database:
+    def __init__(self, tag, queue_handler):
+        self.queue_handler = queue_handler
+        self.tag = tag
+        self.host = None
+        self.user = None
+        self.password = None
+        self.database = None
+
+    def connect(self, host, user, password, database):
+        """
+        Connect to a MySQL database.
+
+        Args:
+            host (str): The hostname of the database server.
+            user (str): The username for authentication.
+            password (str): The password for authentication.
+            database (str): The name of the database to connect to.
+
+        Returns:
+            bool: True if the connection was successful, False otherwise.
+        """
+        self.tag = f"{self.tag}-{user}"
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+        try:
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database
+            )
+            return conn
+        except mysql.connector.Error as e:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.tag, f"Error connecting to MySQL: {e}"))
+            return False
+
+    # Add other database-related methods here...
+
+    def close_connection(self):
+        """
+        Close the MySQL database connection.
+        """
+        if self.conn:
+            self.conn.close()
+            self.conn = None
+
+
 class DatabaseAgent:
     """
     A class for managing instances of the Database class.
@@ -79,59 +130,3 @@ class DatabaseAgent:
 
     def stop(self):
         self.stop_flag = True
-
-
-class Database:
-    """
-    A class for managing a MySQL database connection.
-    """
-
-    def __init__(self, tag, queue_handler):
-        self.queue_handler = queue_handler
-        self.tag = tag
-        self.host = None
-        self.user = None
-        self.password = None
-        self.database = None
-        self.conn = None
-
-    def connect(self, host, user, password, database):
-        """
-        Connect to a MySQL database.
-
-        Args:
-            host (str): The hostname of the database server.
-            user (str): The username for authentication.
-            password (str): The password for authentication.
-            database (str): The name of the database to connect to.
-
-        Returns:
-            bool: True if the connection was successful, False otherwise.
-        """
-        self.tag = f"{self.tag}-{user}"
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-        try:
-            self.conn = mysql.connector.connect(
-                host=self.host,
-                user=self.user,
-                password=self.password,
-                database=self.database
-            )
-            return True
-        except mysql.connector.Error as e:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, f"Error connecting to MySQL: {e}"))
-            return False
-
-    # Add other database-related methods here...
-
-    def close_connection(self):
-        """
-        Close the MySQL database connection.
-        """
-        if self.conn:
-            self.conn.close()
-            self.conn = None

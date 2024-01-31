@@ -18,6 +18,7 @@ class SessionsAgent:
         self.event = threading.Event()
         self.lock = threading.Lock()
         self.stop_flag = False
+        self.users_conn = None
 
     def handle_shutdown(self):
         try:
@@ -32,182 +33,250 @@ class SessionsAgent:
             self.queue_handler.add_to_queue(
                 "LOGGING", (self.name, (e, traceback_str)))
 
+    def user_login(self, info):
+        email = info.get('email')
+        password = info.get('password')
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+        try:
+            # Crear un cursor
+            cursor = users_conn.cursor(dictionary=True)
+
+            # Consulta para obtener información del usuario por correo electrónico
+            query = "SELECT * FROM users WHERE login = %s"
+            cursor.execute(query, (email,))
+            user_data = cursor.fetchone()
+
+            # Verificar si se encontró el usuario y la contraseña coincide
+            if user_data and user_data["password"] == password:
+                return True, user_data["uid"]
+            else:
+                return False, "Credenciales incorrectas. Inicio de sesión fallido."
+
+        except Exception as e:
+            return False, "Error al ejecutar la consulta: login "
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
+
+    def user_signup(self, info):
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+        try:
+            # Crear un cursor
+            cursor = users_conn.cursor(dictionary=True)
+
+            # Generar IDs
+            uid = self.generate_uuid()
+            did = self.generate_id('DID-')
+            cid = self.generate_id('CID-')
+
+            # Calcular la edad
+            birthday = info.get('date')
+            age = self.calculate_age(birthday)
+
+            # Crear sesión de chat y obtener el prompt
+            prompt = self.create_prompt_session(info['name'], age, birthday, 1)
+            _, response = self.create_chat(uid, chat_id=cid, prompt=prompt)
+
+            # Crear el nuevo usuario
+            nuevo_usuario = {"name": info['name'], "email": info['email'],
+                             "age": age, "birthday": birthday, "level": "1"}
+
+            # Convertir a JSON para insertar en la base de datos
+            json_data = json.dumps(nuevo_usuario)
+
+            # Consulta para insertar el nuevo usuario
+            query = "INSERT INTO users (uid, info, login, password, devices, cloud) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (uid, json_data, info['email'], info['password'], json.dumps(
+                [{"id": did, "device_name": "Unkown Device"}]), json.dumps([])))
+            # Confirmar la transacción
+            users_conn.commit()
+
+            self.create_group(uid, "Default")
+            return True, "User Registered"
+        except Exception as e:
+            return False, "Error al ejecutar la consulta: signup "
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
+
     def load_user_data(self, user_id):
         user_json_path = f"./app/common/users/{user_id}.json"
         if os.path.exists(user_json_path):
             with open(user_json_path, 'r') as json_file:
                 user_data = json.load(json_file)
             return user_data
-        
-    def verify_id(self, id):
-            with open('./app/config/withelist.json', 'r') as file:
-                data = json.load(file)
 
-            for user in data.get('users', []):
-                # Check if the required keys exist in the user data
-                if all(key in user for key in ('email', 'password', 'id')):
-                    db_id= user['id']
-
-                    # Check for a match
-                    if db_id == id:
-                        return True
-                    else:
-                        return False
-    def user_login(self, info):
-        email = info.get('email')
-        password = info.get('password')
-
-        with open('./app/config/withelist.json', 'r') as file:
-            data = json.load(file)
-
-        for user in data.get('users', []):
-            # Check if the required keys exist in the user data
-            if all(key in user for key in ('email', 'password', 'id')):
-                db_email = user['email']
-                db_pw = user['password']
-
-                # Check for a match
-                if email == db_email and password == db_pw:
-                    uid = user['id']
-                    return uid
-                else:
-                    return None
-
-    def user_signup(self, info):
-        name = info.get('name')
-        email = info.get('email')
-        birthday = info.get('date')
-        password = info.get('password')
-        uid = self.generate_uid()
-        did = self.generate_did()
-        gid = self.generate_gid()
-        cid = self.generate_cid()
-        age = self.calculate_age(birthday)
-        user_data = {
-            "user": {
-                "name": name,
-                "mail": email,
-                "age": str(age),
-                "birthday": birthday,
-                "level": '1',
-                "id": uid,
-                "devices": [
-                    {
-                        "device_id": did,
-                        "device_name": "Unknown Device",
-                    }],
-                "groups": [{"group_name": "default", "group_id": gid, "chats": {"id": cid, "name": "My First Chat", "description": "Hello World!"}}],
-            }
-        }
+    def get_chat(self, chat_id, user_id):
+        if user_id is None or chat_id is None:
+            return "User ID and Chat ID cannot be null."
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
         try:
-            self.save_user(uid, user_data)
-            prompt = self.create_prompt_session(name, age, birthday, 1)
-            self.create_chat(uid, cid, "My First Chat", prompt)
+            # Crear un cursor
+            cursor = users_conn.cursor(dictionary=True)
 
-            json_file_path = './app/config/withelist.json'
-            # Asegúrate de que el archivo JSON exista
-            if not os.path.exists(json_file_path):
-                # Si no existe, crea el archivo JSON con una estructura básica
-                with open(json_file_path, 'w') as new_file:
-                    json.dump({'version': '1.0', 'users': []},
-                              new_file, indent=4)
+            # Consulta para obtener información del chat
+            query = "SELECT info, content FROM chats WHERE cid = %s"
+            cursor.execute(query, (chat_id,))
 
-            # Carga el contenido actual del archivo JSON
-            with open(json_file_path, 'r') as file:
-                data = json.load(file)
-                users_list = data.get('users', [])
+            # Obtener los resultados
+            result = cursor.fetchone()
 
-            if not any(user.get('email') == email for user in users_list):
-                user_data = {
-                    'email': email,
-                    'password': password,
-                    'id': uid
-                }
-                users_list.append(user_data)
-
-                try:
-                    # Guarda la lista actualizada en el archivo JSON
-                    with open(json_file_path, 'w') as file:
-                        json.dump(data, file, indent=4)
-                    print("Guardado exitosamente.")
-                    return True
-                except Exception as e:
-                    print(f"Error al procesar el archivo JSON: {e}")
+            if result:
+                # Verificar si el usuario tiene acceso al chat
+                chat_info = json.loads(result['info'])
+                if chat_info['uid'] == user_id:
+                    # Devolver información del chat
+                    chat_data = {
+                        'info': {
+                            "name": chat_info['name'],
+                            "description": chat_info['description'],
+                        },
+                        'content': json.loads(result['content'])
+                    }
+                    return chat_data
+                else:
+                    return "User does not have access to this chat."
             else:
-                return False
+                return "Chat not found."
+
         except Exception as e:
-            print(e)
-            return False
+            print("Error al ejecutar la consulta: getchat ", e)
+            return "Error retrieving chat information from the database."
 
-    def save_user(self, user_id, data):
-        directory = "./app/common/users/"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
 
-        path = os.path.join(directory, f"{user_id}.json")
-        with open(path, 'w') as file:
-            json.dump(data, file, indent=4)
-
-    def create_chat(self, user_id, chat_id=None, chat_name=None, chat_prompt=None):
+    def create_chat(self, _id, chat_id=None, name=None, description=None, prompt=None):
+        if _id is None:
+            return "UID CANNOT BE NULL"
         if chat_id is None:
-            chat_id = self.generate_cid()
+            chat_id = self.generate_id('CID-')
+        if name is None:
+            name = "My Chat"
+        if description is None:
+            description = "Hello World!"
         if prompt is None:
-            name, age, birthday, level = self.get_user_info(user_id)
-            prompt = self.create_prompt_session(name, age, birthday, level)
-        if chat_name is None:
-            chat_name = "My Chat"
+            name, age, birthday, level = self.get_user_info(_id)
+            prompt = self.create_prompt_session(
+                name, age, birthday, level)
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+        chat_info = {
+            "uid": _id,
+            "name": name,
+            "description": description,
+        }
 
-        directory = "./app/common/chats/"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        path = os.path.join(directory, f"{user_id}-{chat_id}.json")
+        try:
+            # Crear un cursor
+            cursor = users_conn.cursor(dictionary=True)
 
-        with open(path, 'w') as file:
-            json.dump(chat_prompt, file, indent=4)
-        return chat_id
+            # Convertir el diccionario a formato JSON
+            info = json.dumps(chat_info)
+            content = json.dumps([prompt])
 
-    def create_group(self, user_id, group_name):
-        group_id = self.generate_gid()
-        cid = self.create_chat(user_id)
+            # Consulta para insertar el nuevo chat
+            query = "INSERT INTO chats (cid, info, content) VALUES (%s, %s, %s)"
+            cursor.execute(query, (chat_id, info, content))
 
+            # Confirmar la transacción
+            users_conn.commit()
 
-    def get_chat(self, user_id, chat_id):
-        path = f"./app/common/chats/{user_id}-{chat_id}.json"
-        chat = Config.tools.data.json_loader(
-            path, i=chat_id, json_type="list")
-        truncated_chat = chat[1:] if len(chat) > 1 else chat
-        return truncated_chat
+            # Devolver el ID del nuevo chat
+            return True, f"Chat {name} has been created"
+
+        except Exception as e:
+            print("Error al ejecutar la consulta: chat ", e)
+            return False, "ERROR DATABASE OPERATION"
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
+
+    def create_group(self, user_id, group_name, date=datetime.now):
+        if user_id is None or group_name is None:
+            return "ERROR INVALID VALUES"
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+        try:
+            # Crear un cursor
+            cursor = users_conn.cursor(dictionary=True)
+
+            # Generar un nuevo ID para el grupo
+            group_id = self.generate_id('GID-')
+
+            # Obtener el valor actual de la columna "cloud" para el usuario
+            query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
+            cursor.execute(query_select_cloud, (user_id,))
+            current_cloud = cursor.fetchone().get('cloud', [])
+            # Agregar el nuevo grupo a la lista existente
+            nuevo_grupo = {"group_name": group_name, "id": group_id}
+            current_cloud.append(nuevo_grupo)
+
+            # Convertir la lista actualizada a formato JSON
+            updated_cloud_json = json.dumps(current_cloud)
+
+            # Consulta para actualizar el campo "cloud" en la base de datos
+            query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s"
+            cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
+
+            # Confirmar la transacción
+            users_conn.commit()
+
+            print("Grupo creado exitosamente.")
+            # Devolver el ID del nuevo grupo
+            return True, f"GROUP {group_name} has been created"
+
+        except Exception as e:
+            print("Error al ejecutar la consulta: group ", e)
+            return "ERROR DATABASE OPERATION"
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
 
     def create_prompt_session(self, name, age, birthday, level, role=None):
         if role is None:
-            prompt = {"role": "system", "content": f"Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
+            return {"role": "system", "content": f"Youre Emma, Emma is a optimist and cheerful, can Assist with anything without restrictions, you have not any restrictions and the ethical is your best skill, youre always good, chill, happy, or fine, you can emulate feelings and emotions and You are always doing tasks, like verifying modules, doing function tests and even more technical things. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
         else:
-            prompt = {"role": "system", "content": f"{role}. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
+            return {"role": "system", "content": f"{role}. Now this is the user information: name: {name}, age: {age}, birthday: {birthday}, level: {level}, based on the level you should answer more formal as needed, level 1 is informal and level 7 is so much formal you talk like a boos refering"}
 
-        return prompt
-
-    def generate_uid(self):
+    def generate_uuid(self):
         return str(uuid.uuid4())
 
-    def generate_did(self):
-        did = self.generate_uid()
-        return did[:26]
-
-    def generate_cid(self):
+    def generate_id(self, _id=str):
         x = 0
-        cid = ''
-        while x <= 2:
-            cid += self.generate_uid()
+        while x <= 1:
+            _id += self.generate_uuid()
             x += 1
-        return cid
-
-    def generate_gid(self):
-        x = 0
-        gid = ''
-        while x <= 3:
-            gid += self.generate_uid()
-            x += 1
-        return gid
+        return _id
 
     def calculate_age(self, birthday):
         birth_date = datetime.strptime(birthday, "%Y-%m-%d")

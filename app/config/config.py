@@ -152,15 +152,6 @@ class _Config:
             return ""
 
     def format_source_code(source_code):
-        """
-        Format the source code for better readability.
-
-        Args:
-            source_code (str): The source code to format.
-
-        Returns:
-            str: Formatted source code.
-        """
         # Utiliza textwrap para indentar el código fuente
         formatted_code = textwrap.dedent(source_code)
         return formatted_code
@@ -203,7 +194,7 @@ config_structure = {
                 "agents": {
                     "@withelist": ["app.system.admin.agents.system._withelist.WhitelistAgent"],
                     "sys": ["app.system.admin.agents.system._system.SystemManager", ['SYS AGENT', None, '$app.system.core.queue']],
-                    "@db": "app.system.admin.agents.database._db.DatabaseAgent",
+                    "db": ["app.system.admin.agents.database._db.Database", ["DATABASE", "$app.system.core.queue"]],
                     "user": ["app.system.admin.agents.user._usr.UserManager", ["USER AGENT"]],
                     "session": ["app.system.admin.agents.sessions._sessions.SessionsAgent", ["SESSIONS AGENT", '$app.system.core.queue', '$app.system.core.event']]
 

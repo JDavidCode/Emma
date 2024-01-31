@@ -13,7 +13,16 @@ document.addEventListener('DOMContentLoaded', function () {
 	const voiceOption = document.getElementById("voice-toggle");
 	const notificationOption = document.getElementById("notification-toggle");
 
+	//LOGIN PAGE
+	var cardWrapper = document.querySelector('.card-3d-wrapper');
+	var loginForm = cardWrapper.querySelector('.login-card-front');
+	var signupForm = cardWrapper.querySelector('.signup-card-back');
+	const loginBtn = document.getElementById('login-btn');
+	const signUpBtn = document.getElementById('signup-btn');
+
 	//MAIN HEADER
+	const loginArticle = document.getElementById('login');
+	const homeArticle = document.getElementById('home');
 	const chatsSelectorBtn = document.getElementById("chats-selector-btn");
 	const groupsSelectorBtn = document.getElementById("groups-selector-btn");
 	const checkSelector = document.getElementById("chats-groups")
@@ -43,14 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	let currentUtterance;
 
 	function animateTransition() {
-		var loginArticle = document.getElementById('login');
-		var homeArticle = document.getElementById('home');
-
-		// Ocultar el artículo de inicio de sesión
-		loginArticle.classList.add('fade-out');
 		loginArticle.addEventListener('transitionend', function () {
 			loginArticle.classList.add('hidden');
 			loginArticle.classList.remove('fade-out');
+			loader.style.display = "none"
 
 			// Después de que se oculta, mostrar el artículo de inicio
 			homeArticle.classList.remove('hidden');
@@ -97,29 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-
-	notificationOption.addEventListener("change", function () {
-		if (this.checked) {
-			// Request permission to send notifications
-			Notification.requestPermission()
-				.then(permission => {
-					// Check if the user granted permission
-					if (permission === "granted") {
-						// Create and show the notification
-						const notification = new Notification("Hello, World!");
-					} else {
-						console.log("The user denied permission to send notifications.");
-					}
-				})
-				.catch(error => {
-					console.error("An error occurred while requesting permission:", error);
-				});
-		} else {
-			// Cancel any pending notifications
-			notification.close();
-		}
-	});
-
 	configBtn.addEventListener('click', () => {
 		configContainer.style.display = configContainer.style.display === "block" ? "none" : "block";
 	})
@@ -151,12 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		startSpeechRecognition();
 	});
 
-	toolkitsSelect.addEventListener('click', () => {
-		configContainer.style.display = 'none';
-		createChatContainer.style.display = 'none';
-		createGroupContainer.style.display = 'none';
-	})
-
 	createGroupSubmitBtn.addEventListener("click", () => {
 		const groupName = document.getElementById("new-group-name").value;
 		if (groupName) {
@@ -165,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: 'group_name=' + encodeURIComponent(groupName) + '&date=' + encodeURIComponent(currentDateTime),
+				body: 'group_name=' + encodeURIComponent(groupName) + "&uid=" + encodeURIComponent(uid) + '&date=' + encodeURIComponent(currentDateTime),
 			})
 				.then(response => response.text())
 				.then(data => {
@@ -206,6 +182,109 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 
+	// Event listener for the login button
+	loginBtn.addEventListener('click', function (e) {
+		e.preventDefault();
+
+		// Get login form values
+		var email = loginForm.querySelector('#logemail').value;
+		var password = loginForm.querySelector('#logpass').value;
+
+
+		fetch('/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				email: email,
+				password: password,
+			}),
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.uid) {
+					uid = data.uid
+					loginForm.querySelector('#logemail').value = '';
+					loginForm.querySelector('#logpass').value = '';
+					loginArticle.classList.add('fade-out');
+					loader.style.display = "flex";
+					socket = io.connect('', { uid: data.uid });
+					startSocket();
+				} else {
+					console.log(data)
+				}
+
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+
+	});
+
+	// Event listener for the signup button
+	signUpBtn.addEventListener('click', function (e) {
+		e.preventDefault();
+
+		// Get signup form values
+		var name = signupForm.querySelector('#logname').value;
+		var email = signupForm.querySelector('#logemail').value;
+		var date = signupForm.querySelector('#logdate').value;
+		var password = signupForm.querySelector('#logpass').value;
+
+		fetch('/signup', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: name,
+				email: email,
+				date: date,
+				password: password,
+			}),
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data) {
+					cardWrapper.classList.add('flipped');
+					signupForm.querySelector('#logname').value = '';
+					signupForm.querySelector('#logemail').value = '';
+					signupForm.querySelector('#logdate').value = '';
+					signupForm.querySelector('#logpass').value = '';
+				}
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+	});
+
+	notificationOption.addEventListener("change", function () {
+		if (this.checked) {
+			// Request permission to send notifications
+			Notification.requestPermission()
+				.then(permission => {
+					// Check if the user granted permission
+					if (permission === "granted") {
+						// Create and show the notification
+						const notification = new Notification("Hello, World!");
+					} else {
+						console.log("The user denied permission to send notifications.");
+					}
+				})
+				.catch(error => {
+					console.error("An error occurred while requesting permission:", error);
+				});
+		} else {
+			// Cancel any pending notifications
+			notification.close();
+		}
+	});
+
 	attachDocs.addEventListener("click", () => {
 		const input = document.createElement("input");
 		input.type = "file";
@@ -216,8 +295,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		};
 		input.click();
 	});
-
-
 
 	function startSpeechRecognition() {
 		recognition = new webkitSpeechRecognition();
@@ -256,43 +333,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	}
 
-	socket.on('update chat', function (data) {
-		processChat(data, 'user-message')
-	});
+	function startSocket() {
+		socket.on('update chat', function (data) {
+			processChat(data, 'user-message')
+		});
 
-	socket.on("load session", function (data) {
-		groupDict = data.groups
-		chatDict = data.chats
-		for (const groupId in data.groups) {
-			for (const group in data.groups[groupId]) {
-				groupDict[groupId] = group.chats;
+		socket.on("load session", function (data) {
+			groupDict = data.groups
+			chatDict = data.chats
+			for (const groupId in data.groups) {
+				for (const group in data.groups[groupId]) {
+					groupDict[groupId] = group.chats;
 
-				// Crea una carta para el grupo
-				createCard("", group.name, 'group');
+					// Crea una carta para el grupo
+					createCard("", group.name, 'group');
+
+				}
 			}
-		}
-	});
+			animateTransition();
+		});
 
-	socket.on('notification', function (data) {
-		new Notification(data)
-	})
+		socket.on('notification', function (data) {
+			new Notification(data)
+		})
 
-	socket.on('response', function (data) {
-		if (isLink(data)) {
-			// If it's a link, open it in a new tab/window
-			window.open(data, '_blank');
-		} else {
-			processChat(data, 'emma-message');
-			if (notificationOption.checked) {
-				new Notification(data)
+		socket.on('response', function (data) {
+			if (isLink(data)) {
+				// If it's a link, open it in a new tab/window
+				window.open(data, '_blank');
+			} else {
+				processChat(data, 'emma-message');
+				if (notificationOption.checked) {
+					new Notification(data)
+				}
+
+				if (voiceOption.checked) {
+					currentUtterance = new SpeechSynthesisUtterance(data);
+					window.speechSynthesis.speak(currentUtterance);
+				}
 			}
+		});
 
-			if (voiceOption.checked) {
-				currentUtterance = new SpeechSynthesisUtterance(data);
-				window.speechSynthesis.speak(currentUtterance);
-			}
-		}
-	});
+	}
 
 	function createCard(imageUrl, title, type) {
 		// Create main card div
@@ -385,20 +467,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	verifyInputState();
 	setInterval(verifyInputState, 500);
 
-	function getQueryParams(url) {
-		var queryParams = {};
-		var query = url.split('?')[1];
-		if (query) {
-			query.split('&').forEach(function (param) {
-				var parts = param.split('=');
-				if (parts.length >= 2) {
-					queryParams[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
-				}
-			});
-		}
-		return queryParams;
-	}
-
 	function scrollToBottom() {
 		chatBox.scrollTop = chatBox.scrollHeight;
 	}
@@ -415,94 +483,4 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	messageInput.addEventListener("keydown", handleKeyDown);
 
-	//LOGIN PAGE
-	//
-	//
-	//
-	var cardWrapper = document.querySelector('.card-3d-wrapper');
-	var loginForm = cardWrapper.querySelector('.card-front');
-	var signupForm = cardWrapper.querySelector('.card-back');
-	const loginBtn = document.getElementById('login-btn')
-	const signUpBtn = document.getElementById('signup-btn')
-
-
-	// Event listener for the login button
-	loginBtn.addEventListener('click', function (e) {
-		e.preventDefault();
-
-		// Get login form values
-		var email = loginForm.querySelector('#logemail').value;
-		var password = loginForm.querySelector('#logpass').value;
-
-
-		fetch('/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email: email,
-				password: password,
-			}),
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.uid) {
-					uid = data.uid
-					loginForm.querySelector('#logemail').value = '';
-					loginForm.querySelector('#logpass').value = '';
-					loader.style.display = "block";
-					socket = io.connect('', { uid: data.uid });
-				}
-
-
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
-
-
-	});
-
-	// Event listener for the signup button
-	signUpBtn.addEventListener('click', function (e) {
-		e.preventDefault();
-
-		// Get signup form values
-		var name = signupForm.querySelector('#logname').value;
-		var email = signupForm.querySelector('#logemail').value;
-		var date = signupForm.querySelector('#logdate').value;
-		var password = signupForm.querySelector('#logpass').value;
-
-		// Perform signup logic
-		console.log('Performing signup...');
-
-		fetch('/signup', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: name,
-				email: email,
-				date: date,
-				password: password,
-			}),
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data) {
-					cardWrapper.classList.add('flipped');
-					signupForm.querySelector('#logname').value = '';
-					signupForm.querySelector('#logemail').value = '';
-					signupForm.querySelector('#logdate').value = '';
-					signupForm.querySelector('#logpass').value = '';
-				}
-
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
-
-	});
 })

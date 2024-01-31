@@ -4,20 +4,11 @@ import time
 import traceback
 import datetime
 import threading
-import json
 
 
 class Logger:
     def __init__(self, name, queue_name, queue_handler, event_handler):
-        """
-        Initialize a Logger instance.
 
-        Args:
-            name (str): The name of the logger.
-            queue_name (str): The name of the queue to receive log messages.
-            queue_handler: An instance of QueueHandler for handling queues.
-            event_handler: An instance of EventHandler for handling events.
-        """
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler

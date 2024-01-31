@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<article id="login" class="hidden">
+	<article id="login">
 		<div class="container">
 			<div class="row full-height justify-content-center">
 				<div class="col-12 text-center align-self-center py-5">
@@ -37,7 +37,7 @@
 											<h4 class="mb-4 py-3">Log In</h4>
 											<div class="form-group">
 												<input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail"
-													autocomplete="off">
+													autocomplete="on">
 												<i class="input-icon icon-mail"></i>
 											</div>
 											<div class="form-group mt-2">
@@ -85,7 +85,7 @@
 			</div>
 		</div>
 	</article>
-	<article id="home" class="container-fluid row p-0 m-0">
+	<article id="home" class="container-fluid row p-0 m-0 hidden">
 		<section id="home-section" class="col-4 p-0 m-0 py-1">
 			<div id="home-header" class="row p-2 m-0 rounded col-11 mx-auto">
 				<h2 id="chat-header-title" class="col-8">Emma</h2>
@@ -154,9 +154,9 @@
 	</article>
 
 	<div class="models">
-<div class="loader-container" id="loader">
-  <div class="loader"></div>
-</div>
+		<div class="loader-container justify-content-center align-items-center" id="loader">
+			<div class="loader"></div>
+		</div>
 		<div id="new-chat-container" class="popup text-center">
 			<div class="config-header p-2 row justify-content-center">
 				<h3 class="mx-2">New Chat</h3>

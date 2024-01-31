@@ -36,27 +36,7 @@ defaults:
       thread_name: T0_CONSOLE
       visible: false
 
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.system.admin.agents.db
-      queue: WITHELIST_AGENT
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T1_WITHELIST
 
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.system.admin.agents.db
-      queue: DB_AGENT
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T1_DB
 
     - args:
       - queue_handler
@@ -110,6 +90,29 @@ defaults:
 #      queue_maxsize: 0
 #      thread_is_daemon: false
 #      thread_name: T3_API_STREAMING
+
+
+#   - args:
+#      - queue_handler
+#      - event_handler
+#      autorestart: true
+#      autostart: true
+#      endpoint: app.system.admin.agents.db
+#      queue: WITHELIST_AGENT
+#      queue_maxsize: 0
+#      thread_is_daemon: false
+#      thread_name: T1_WITHELIST
+
+#    - args:
+#      - queue_handler
+#      - event_handler
+#      autorestart: true
+#      autostart: true
+#      endpoint: app.system.admin.agents.db
+#      queue: DB_AGENT
+#      queue_maxsize: 0
+#      thread_is_daemon: false
+#      thread_name: T1_DB
 
 
 version: 1.0

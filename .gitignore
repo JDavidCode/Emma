@@ -4,3 +4,4 @@ proof.py
 emma/.AmyRootUser
 emma/services/external/
 .pyc
+app/system/core/logging/history/

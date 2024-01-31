@@ -19,7 +19,7 @@ class Console:
         self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event = threading.Event()
-        self.stop_flag = False        
+        self.stop_flag = False
 
     def main(self):
         """
@@ -28,14 +28,14 @@ class Console:
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
-        
+
         console_input = self.Input(self)
-        
+
         input_thread = threading.Thread(
             target=console_input.active_terminal, name=f"{self.name} input_thread")
         input_thread.start()
-        console_input.set_hotkeys()
-        
+        # console_input.set_hotkeys()
+
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
@@ -75,7 +75,8 @@ class Console:
 
         self.display_message(
             "Index", f"Attributes and methods of {section_path} section:")
-        index = Config.tools.data.format_json(Config.inspect_config_section(current_section))
+        index = Config.tools.data.format_json(
+            Config.inspect_config_section(current_section))
         self.display_message("Index", index)
 
     def clear_console(self):
@@ -147,7 +148,6 @@ class Console:
                         self.display_message("Error", "Unknown command.")
                 except:
                     pass
-             
 
         def set_hotkeys(self):
             """Set predefined hotkeys."""
@@ -155,7 +155,8 @@ class Console:
                 "ctrl+0", self._handle_shutdown)
             self.hotkey_ctrl_8 = keyboard.add_hotkey(
                 "ctrl+8", self.handle_stop_task)
-            self.hotkey_ctrl_1 = keyboard.add_hotkey("ctrl+1", self.handle_reload)
+            self.hotkey_ctrl_1 = keyboard.add_hotkey(
+                "ctrl+1", self.handle_reload)
 
         def add_custom_hotkey(self, hotkey_combination, handler_function):
             """

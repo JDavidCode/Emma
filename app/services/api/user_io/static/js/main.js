@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
-	let uid
-	let socket
+	let uid;
+	let socket;
 	const currentDateTime = new Date();
-	let chatDict = {};
 	let groupDict = {};
-
+	let chatDict = {};
+	let userInfo = {};
+	let socket_id;
 	///CONFIG
 	const configBtn = document.getElementById('config-btn');
 	const configContainer = document.getElementById('config-container');
@@ -51,16 +52,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	let currentUtterance;
 
-	function animateTransition() {
+	function animateLoad() {
+		loginArticle.classList.add('fade-out');
 		loginArticle.addEventListener('transitionend', function () {
 			loginArticle.classList.add('hidden');
-			loginArticle.classList.remove('fade-out');
-			loader.style.display = "none"
-
-			// Después de que se oculta, mostrar el artículo de inicio
-			homeArticle.classList.remove('hidden');
-			homeArticle.classList.add('fade-in');
 		});
+		loader.style.display = "flex";
+	}
+
+	function animateTransition() {
+		loginArticle.classList.remove('fade-out');
+		loader.classList.add('hidden');
+
+		// Después de que se oculta, mostrar el artículo de inicio
+		homeArticle.classList.remove('hidden');
+		homeArticle.classList.add('fade-in');
 	}
 	themeSelect.addEventListener("change", event => {
 		const selectedTheme = event.target.value;
@@ -207,9 +213,8 @@ document.addEventListener('DOMContentLoaded', function () {
 					uid = data.uid
 					loginForm.querySelector('#logemail').value = '';
 					loginForm.querySelector('#logpass').value = '';
-					loginArticle.classList.add('fade-out');
-					loader.style.display = "flex";
-					socket = io.connect('', { uid: data.uid });
+					animateLoad();
+					socket = io.connect('');
 					startSocket();
 				} else {
 					console.log(data)
@@ -337,24 +342,43 @@ document.addEventListener('DOMContentLoaded', function () {
 		socket.on('update chat', function (data) {
 			processChat(data, 'user-message')
 		});
+		socket.on("get_user", function (data) {
+			// Store user information globally
+			userInfo = data.user_info;
 
-		socket.on("load session", function (data) {
-			groupDict = data.groups
-			chatDict = data.chats
-			for (const groupId in data.groups) {
-				for (const group in data.groups[groupId]) {
-					groupDict[groupId] = group.chats;
+			// Process and create cards for groups
+			for (const group of data.groups) {
+				const groupId = group.id;
 
-					// Crea una carta para el grupo
-					createCard("", group.name, 'group');
+				// Store group information globally
+				groupDict[groupId] = group.content;
 
-				}
+				// Create a card for the group
+				createCard("", group.group_name, 'group');
 			}
+
+			// Process and create cards for chats
+			for (const chatId in data.chats) {
+				const chat = data.chats[chatId];
+				// Store chat information globally
+				chatDict[chatId] = chat;
+
+				// Create a card for the chat
+				createCard("", chat.name, 'chat');
+			}
+
+			// Animate transition after creating cards
 			animateTransition();
 		});
 
+
 		socket.on('notification', function (data) {
 			new Notification(data)
+		});
+		
+		socket.on('start_connection', function (data) {
+			socket_id = data.client_id // show it bottom with the user id
+			socket.emit('get_user', { uid: uid })
 		})
 
 		socket.on('response', function (data) {
@@ -379,14 +403,16 @@ document.addEventListener('DOMContentLoaded', function () {
 	function createCard(imageUrl, title, type) {
 		// Create main card div
 		var cardDiv = document.createElement("div");
-		cardDiv.className = "row mx-auto my-3 col-11" + type + "-card";
+		cardDiv.className = "row mx-auto my-3 col-11 " + type + "-card";
 
 		// Create image div
 		var imageDiv = document.createElement("div");
 		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2";
 		var image = document.createElement("img");
 		image.className = "round_image";
-		image.src = imageUrl;
+		if (imageUrl === "") {
+			image.src = "https://picsum.photos/200/200";
+		} else { image.src = imageUrl; }
 		imageDiv.appendChild(image);
 		cardDiv.appendChild(imageDiv);
 
@@ -412,8 +438,10 @@ document.addEventListener('DOMContentLoaded', function () {
 			var chatsBtn = document.createElement("button");
 			chatsBtn.className = "chats-group-list col-12 p-0 m-0 btn px-2 down-btn";
 			cardDiv.appendChild(chatsBtn);
+			groupsContainer.appendChild(cardDiv)
+		} else if (type === 'chat') {
+			chatsContainer.appendChild(cardDiv)
 		}
-
 
 	}
 

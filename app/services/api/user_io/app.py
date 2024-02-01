@@ -33,22 +33,18 @@ class App:
 
         @self.socketio.on("connect")
         def connect():
-            data = request.json
-            user_id = data.get("uid", None)
-
-            response = Config.app.system.admin.agents.session.verify_id(
-                user_id)
-
-            if response:
-                # Obtener el contenido de la sesión y emitir "load session"
-                groups, chats, = Config.app.system.admin.agents.session.load_data(
-                    user_id)
-                self.socketio.emit(
-                    "load session", {"groups": groups, "chats": chats})
-
+            client_id = request.sid  # ID único del cliente
+            self.socketio.emit("start_connection", {"client_id": client_id})
+            return jsonify({"response": "Connected"})
+ 
+        @self.socketio.on("get_user")
+        def get_user(data):
+            _, content = Config.app.system.admin.agents.session.get_user(data.get('uid'))
+            if _:
+                self.socketio.emit("get_user", content)
             else:
-                self.socketio.emit("connect_error", {
-                                   "error": "Unauthorized user"})
+                self.socketio.emit("ERROR", content)
+            # Assuming 'socket' is defined somewhere in your code
 
         @self.socketio.on("message")
         def handle_message(data):
@@ -112,8 +108,8 @@ class App:
                 group_name = request.form.get('group_name')
                 group_date = request.form.get('date')
                 uid = request.form.get('uid')
-                _, response = Config.app.system.admin.agents.session.create_group(uid,
-                                                                                  group_name, group_date)
+                _, response = Config.app.system.admin.agents.session.create_group(user_id=uid,
+                                                                                  group_name=group_name, date=group_date)
                 if _:
                     response_data = {'status': 'success',
                                      'message': response}
@@ -141,10 +137,6 @@ class App:
                 response_data = {'status': 'error',
                                  'message': 'Error processing the request'}
                 return jsonify(response_data)
-
-    def load_session(self, uid):
-        data = ""
-        self.socketio.emit("response", data)
 
     def process_responses(self):
         while not self.stop_flag:

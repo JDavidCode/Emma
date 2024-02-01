@@ -13,7 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/theme.css') }}" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/icon-robot.ico') }}" type="image/x-icon">
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -100,33 +100,13 @@
 				</div>
 				<div class="card-3d-wrap mx-auto p-0 m-0 card-3d-wrap-cg">
 					<div class="card-3d-wrapper" id="cardWrapper">
-						<div class="chats-card-front">
-							<div class="row mx-auto my-3 col-11 chat-card">
-								<div class="col-1 p-0 my-auto ml-1 mr-2">
-									<img class="round_image" src="../static/img/port.jpg" />
-								</div>
-								<div class="col-7 card-info my-auto p-0 ml-3">
-									<p class="card-title my-auto">Hola Chat</p>
-								</div>
-								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
-									<button class="mx-1 more-btn btn"></button>
-								</div>
-							</div>
+						<div class="chats-card-front" id="chats-card-front">
+							
 							<button class="btn rounded col-12 py-1 px-2" id="create-chat-btn">Create New Chat</button>
 						</div>
-						<div class="groups-card-back">
+						<div class="groups-card-back" id="groups-card-back">
 							<div class="row mx-auto my-3 col-11 chat-card">
-								<div class="col-1 p-0 my-auto ml-1 mr-2">
-									<img class="round_image" src="../static/img/port.jpg" />
-								</div>
-								<div class="col-7 card-info my-auto p-0 ml-3">
-									<p class="card-title my-auto">Hola Group</p>
-								</div>
-								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
-									<button class="mx-1 more-btn btn"></button>
-								</div>
-								<button class="chats-group-list col-12 p-0 m-0 btn px-2 down-btn"></button>
-							</div>
+
 							<button class="btn rounded col-12 py-1 px-2" id="create-group-btn">Create New Group</button>
 						</div>
 

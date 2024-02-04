@@ -90,9 +90,31 @@ class SessionsAgent:
             birthday = info.get('date')
             age = self.calculate_age(birthday)
 
-            # Create chat session and obtain the prompt
-            _, response = self.create_chat(
-                uid, group_id=gid, chat_id=cid, prompt=self.create_prompt_session(info['name'], age, birthday, 1))
+            # Create chat
+            chat_info = {
+                "uid": uid,
+                "gid": gid,
+                "name": "Hello World!",
+                "description": "I'm Playing with EMMA",
+            }
+
+            # Convertir el diccionario a formato JSON
+            content = json.dumps([self.create_prompt_session(
+                info.get('name', ""), age, birthday, '1')])
+
+            # Consulta para insertar el nuevo chat
+            query = "INSERT INTO chats (cid, info, content) VALUES (%s, %s, %s)"
+            cursor.execute(query, (cid, json.dumps(chat_info), content))
+
+            try:
+                # Confirmar la transacción
+                users_conn.commit()
+            except Exception as e:
+                return False, f"Error creating user {e}"
+
+            # Agregar el nuevo grupo a la lista existente
+            nuevo_grupo = {"group_name": "Default",
+                           "id": gid, "content": [cid]}
 
             # Create the new user
             nuevo_usuario = {
@@ -103,24 +125,20 @@ class SessionsAgent:
                 "level": "1"
             }
 
-            # Convert to JSON for database insertion
-            json_data = json.dumps(nuevo_usuario)
-
             # Query to insert the new user
             query_insert_user = "INSERT INTO users (uid, info, login, password, devices, cloud) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query_insert_user, (uid, json_data, info.get('email', ""), info.get(
-                'password', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([])))
+            cursor.execute(query_insert_user, (uid, json.dumps(nuevo_usuario), info.get('email', ""), info.get(
+                'password', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([nuevo_grupo])))
 
             # Confirm the transaction
             users_conn.commit()
 
-            # Create a default group for the user
-            self.create_group(uid, group_name="Default", group_id=gid)
-
             return True, "User Registered"
 
         except Exception as e:
-            print("Error executing query: signup", e)
+            print("Error al ejecutar la consulta: group ", e)
+            import traceback
+            traceback.print_exc()
             return False, "Error executing query: signup"
 
         finally:
@@ -148,14 +166,30 @@ class SessionsAgent:
             if not user_db_info:
                 return False, "User not found"
 
+            # Modify the query_chats to use the correct JSON path expression for MySQL
+            query_chats = "SELECT info, cid FROM chats WHERE JSON_UNQUOTE(info->'$.uid') = %s"
+            cursor.execute(query_chats, (user_id,))
+            user_db_chats = cursor.fetchall()
+            formatted_chats = [
+                {
+                    'name': json.loads(chat['info'])['name'],
+                    'description': json.loads(chat['info'])['description'],
+                    'id': chat['cid'],
+                    'gid': json.loads(chat['info'])['gid']
+                }
+                for chat in user_db_chats
+            ]
             # Parse JSON data for user information
             user_info['info'] = json.loads(user_db_info['info'])
             user_info['groups'] = json.loads(user_db_info['cloud'])
+            user_info['chats'] = formatted_chats
 
             return True, user_info
 
         except Exception as e:
             print("Error executing query: get_user", e)
+            import traceback
+            traceback.print_exc()  # Print the full traceback
             return False, "Error executing query: get_user"
 
         finally:
@@ -216,11 +250,10 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def create_chat(self, _id, group_id, chat_id=None, name=None, description=None, prompt=None):
+    def create_chat(self, _id, group_id, name=None, description=None, prompt=None):
         if _id is None:
             return "UID CANNOT BE NULL"
-        if chat_id is None:
-            chat_id = self.generate_id('CID-')
+        chat_id = self.generate_id('CID-')
         if name is None:
             name = "My Chat"
         if description is None:
@@ -229,8 +262,10 @@ class SessionsAgent:
             name, age, birthday, level = self.get_user_info(_id)
             prompt = self.create_prompt_session(
                 name, age, birthday, level)
+
         users_conn = Config.app.system.admin.agents.db.connect(
             "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+
         chat_info = {
             "uid": _id,
             "gid": group_id,
@@ -274,7 +309,7 @@ class SessionsAgent:
                 updated_cloud_json = json.dumps(current_cloud_list)
 
                 # Update the 'cloud' in the database with the modified JSON string
-                query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s & cloud->>id=%s"
+                query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s & cloud->>'id'=%s"
                 cursor.execute(query_update_cloud,
                                (updated_cloud_json, _id, group_id))
 
@@ -354,8 +389,8 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def remove_chat(self, chat_id):
-        if chat_id is None:
+    def remove_chat(self, uid, gid, cid):
+        if cid is None:
             return "Chat ID cannot be null"
 
         users_conn = Config.app.system.admin.agents.db.connect(
@@ -365,35 +400,19 @@ class SessionsAgent:
             # Create a cursor
             cursor = users_conn.cursor(dictionary=True)
 
-            # Check if the chat exists
-            query_check_chat = "SELECT gid, content FROM chats WHERE cid = %s"
-            cursor.execute(query_check_chat, (chat_id,))
-            chat_info = cursor.fetchone()
-
-            if not chat_info:
-                return False, f"Chat with ID {chat_id} not found"
-
-            # Get the group ID and content from the chat information
-            group_id = chat_info.get('gid')
-            chat_content = chat_info.get('content', [])
-
-            # Remove the chat ID from the content list
-            updated_content = [
-                item for item in chat_content if item != chat_id]
-
             # Update the content field in the user's cloud
             query_update_cloud = "UPDATE users SET cloud = JSON_SET(cloud, '$[%s].content', %s) WHERE JSON_CONTAINS_PATH(cloud, 'one', '$[%s]')"
-            cursor.execute(query_update_cloud, (group_id,
-                           json.dumps(updated_content), group_id))
+            cursor.execute(query_update_cloud, (gid,
+                           json.dumps(), gid))
 
             # Delete the chat from the database
             query_remove_chat = "DELETE FROM chats WHERE cid = %s"
-            cursor.execute(query_remove_chat, (chat_id,))
+            cursor.execute(query_remove_chat, (cid,))
 
             # Confirm the transaction
             users_conn.commit()
 
-            return True, f"Chat with ID {chat_id} has been removed"
+            return True, f"Chat with ID {cid} has been removed"
 
         except Exception as e:
             print("Error executing query: remove_chat", e)
@@ -408,7 +427,7 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def create_group(self, user_id, group_name, group_id=None, content=[], date=datetime.now):
+    def create_group(self, user_id, group_name, content=[], date=datetime.now):
         if user_id is None or group_name is None:
             return "ERROR INVALID VALUES"
         users_conn = Config.app.system.admin.agents.db.connect(
@@ -418,10 +437,9 @@ class SessionsAgent:
             cursor = users_conn.cursor(dictionary=True)
 
             # Generar un nuevo ID para el grupo
-            if group_id is None:
-                group_id = self.generate_id('GID-')
+            group_id = self.generate_id('GID-')
 
-             # Obtener el valor actual de la columna "cloud" para el usuario
+            # Obtener el valor actual de la columna "cloud" para el usuario
             query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
             cursor.execute(query_select_cloud, (user_id,))
             # Default to an empty list if 'cloud' is None
@@ -449,6 +467,7 @@ class SessionsAgent:
             print("Grupo creado exitosamente.")
             # Devolver el ID del nuevo grupo
             return True, f"GROUP {group_name} has been created"
+
         except Exception as e:
             print("Error al ejecutar la consulta: group ", e)
             import traceback

@@ -36,10 +36,11 @@ class App:
             client_id = request.sid  # ID único del cliente
             self.socketio.emit("start_connection", {"client_id": client_id})
             return jsonify({"response": "Connected"})
- 
+
         @self.socketio.on("get_user")
         def get_user(data):
-            _, content = Config.app.system.admin.agents.session.get_user(data.get('uid'))
+            _, content = Config.app.system.admin.agents.session.get_user(
+                data.get('uid'))
             if _:
                 self.socketio.emit("get_user", content)
             else:
@@ -90,6 +91,7 @@ class App:
         def user_signup():
             try:
                 data = request.json
+                print(type(data))
                 _, response = Config.app.system.admin.agents.session.user_signup(
                     data)
                 if _:
@@ -100,6 +102,64 @@ class App:
             except Exception as e:
                 response_data = {'status': 'error',
                                  'message': f'Error processing the request {e}'}
+                return jsonify(response_data)
+
+        @self.app.route("/create_chat", methods=['POST'])
+        def create_chat():
+            try:
+                chat_name = request.form.get('chat_name')
+                chat_description = request.form.get('chat_description')
+                uid = request.form.get('uid')
+                _, response = Config.app.system.admin.agents.session.create_chat(
+                    _id=uid, name=chat_name, description=chat_description)
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
+                    return jsonify(response_data)
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
+
+        @self.app.route("/edit_chat", methods=['POST'])
+        def edit_chat():
+            try:
+                uid = request.form.get('uid')
+
+                gid = request.form.get('gid')
+                _, response = Config.app.system.admin.agents.session.delete_group(
+                    uid, gid)
+                return jsonify({"response": "Edit chat", "uid": uid})
+
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
+                    return jsonify(response_data)
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
+
+        @self.app.route("/delete_chat", methods=['POST'])
+        def delete_chat():
+            try:
+                cid = request.form.get('cid')
+                gid = request.form.get('gid')
+                uid = request.form.get('uid')
+                _, response = Config.app.system.admin.agents.session.delete_chat(
+                    uid, gid, cid)
+                return jsonify({"response": "Removing chat", "uid": uid})
+
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
+                    return jsonify(response_data)
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
                 return jsonify(response_data)
 
         @self.app.route("/create_group", methods=['POST'])
@@ -120,14 +180,36 @@ class App:
                                  'message': 'Error processing the request'}
                 return jsonify(response_data)
 
-        @self.app.route("/create_chat", methods=['POST'])
-        def create_chat():
+        @self.app.route("/edit_group", methods=['POST'])
+        def edit_group():
             try:
-                chat_name = request.form.get('chat_name')
-                chat_description = request.form.get('chat_description')
                 uid = request.form.get('uid')
-                _, response = Config.app.system.admin.agents.session.create_chat(
-                    _id=uid, name=chat_name, description=chat_description)
+
+                gid = request.form.get('gid')
+                _, response = Config.app.system.admin.agents.session.delete_group(
+                    uid, gid)
+                return jsonify({"response": "Edit group", "uid": uid})
+
+                if _:
+                    response_data = {'status': 'success',
+                                     'message': response}
+                    return jsonify(response_data)
+
+            except Exception as e:
+                response_data = {'status': 'error',
+                                 'message': 'Error processing the request'}
+                return jsonify(response_data)
+
+        @self.app.route("/delete_group", methods=['POST'])
+        def delete_group():
+            try:
+                uid = request.form.get('uid')
+
+                gid = request.form.get('gid')
+                _, response = Config.app.system.admin.agents.session.delete_group(
+                    uid, gid)
+                return jsonify({"response": "Removing group", "uid": uid})
+
                 if _:
                     response_data = {'status': 'success',
                                      'message': response}

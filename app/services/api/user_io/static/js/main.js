@@ -2,10 +2,16 @@ document.addEventListener('DOMContentLoaded', function () {
 	let uid;
 	let socket;
 	const currentDateTime = new Date();
-	let groupDict = {};
-	let chatDict = {};
-	let userInfo = {};
+	let channelsDict = {};
+	let groupsDict = {};
+	let chatsDict = {};
+	let userInfo;
 	let socket_id;
+	let currentUtterance;
+
+
+	const focusLayer = document.getElementById('focus-layer');
+
 	///CONFIG
 	const configBtn = document.getElementById('config-btn');
 	const configContainer = document.getElementById('config-container');
@@ -24,22 +30,32 @@ document.addEventListener('DOMContentLoaded', function () {
 	//MAIN HEADER
 	const loginArticle = document.getElementById('login');
 	const homeArticle = document.getElementById('home');
+
 	const chatsSelectorBtn = document.getElementById("chats-selector-btn");
-	const groupsSelectorBtn = document.getElementById("groups-selector-btn");
-	const checkSelector = document.getElementById("chats-groups")
-	const chatsContainer = document.getElementById("chats-card-front")
-	const groupsContainer = document.getElementById("groups-card-back")
+	const channelsSelectorBtn = document.getElementById("channels-selector-btn");
+
+	const checkSelector = document.getElementById("chats-channels")
+	const chatsGroupsContainer = document.getElementById("chats-groups-card-front")
+	const chatElements = document.querySelectorAll('.chat-card, .group-card');
+	const channelsContainer = document.getElementById("channels-card-back")
 	const loader = document.getElementById("loader")
 
 	///TOOLKITS
 	const createChatBtn = document.getElementById("create-chat-btn");
 	const createGroupBtn = document.getElementById("create-group-btn");
-	const createGroupSubmitBtn = document.getElementById("create-group-submit-btn");
-	const createGroupContainer = document.getElementById("new-group-container");
+	const createChannelBtn = document.getElementById("create-channel-btn");
+
 	const createChatContainer = document.getElementById('new-chat-container');
+	const createGroupContainerBtn = document.getElementById("new-group-container");
+	const createChannelContainerBtn = document.getElementById("new-channel-container");
+
 	const createChatSubmitBtn = document.getElementById('create-chat-submit-btn');
-	const closeChatContainerBtn = document.getElementById('close-new-chat-container-btn')
+	const createGroupSubmitBtn = document.getElementById('create-group-submit-btn');
+	const createChannelsubmitBtn = document.getElementById("create-channel-submit-btn");
+
+	const closeChatContainerBtn = document.getElementById('close-new-chat-container-btn');
 	const closeGroupContainerBtn = document.getElementById('close-new-group-container-btn')
+	const closeChannelContainerBtn = document.getElementById('close-new-channel-container-btn');
 
 	///CHAT
 	const chatBox = document.getElementById("chat-content-box")
@@ -50,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	const messageSend = document.getElementById("message-send");
 	const speakBtn = document.getElementById('message-speak');
 
-	let currentUtterance;
 
 	function animateLoad() {
 		loginArticle.classList.add('fade-out');
@@ -58,7 +73,43 @@ document.addEventListener('DOMContentLoaded', function () {
 			loginArticle.classList.add('hidden');
 		});
 		loader.style.display = "flex";
+
 	}
+
+	chatElements.forEach(chatElement => {
+		// Find the select element within each chat element
+		const selectElement = chatElement.querySelector('.more-btn');
+
+		// Find the card title element within each chat element
+		const cardTitleElement = chatElement.querySelector('.card-title');
+		const isChatCard = chatElement.classList.contains('chat-card');
+		const isGroupCard = chatElement.classList.contains('group-card');
+		// Add an event listener to the select element
+		selectElement.addEventListener('change', function () {
+			// Get the selected value
+			const selectedValue = this.value;
+
+			// Get the name of the card associated with the chat
+			const cardName = cardTitleElement.innerText;
+			console.log(cardName)
+
+			// Perform actions based on the selected value and card name
+			if (selectedValue === 'Remove') {
+				if (isChatCard) {
+					deleteChat(cardName)
+				} else if (isGroupCard) {
+					deleteGroup(cardName)
+				}
+			} else if (selectedValue === 'Edit') {
+				if (isChatCard) {
+					editChat(cardName)
+				} else if (isGroupCard) {
+					editGroup(cardName)
+				}
+			}
+		});
+	});
+
 
 	function animateTransition() {
 		loginArticle.classList.remove('fade-out');
@@ -68,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		homeArticle.classList.remove('hidden');
 		homeArticle.classList.add('fade-in');
 	}
+
 	themeSelect.addEventListener("change", event => {
 		const selectedTheme = event.target.value;
 
@@ -89,11 +141,11 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 	createChatBtn.addEventListener('click', () => {
-		createChatContainer.style.display = 'block'
+		createChatContainer.style.display = 'block';
 
 	});
 	createGroupBtn.addEventListener('click', () => {
-		createGroupContainer.style.display = 'block'
+		createGroupContainerBtn.style.display = 'block';
 
 	});
 
@@ -102,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			checkSelector.checked = !checkSelector.checked;
 		}
 	});
-	groupsSelectorBtn.addEventListener('click', () => {
+	channelsSelectorBtn.addEventListener('click', () => {
 		if (!checkSelector.checked) {
 			checkSelector.checked = !checkSelector.checked;
 		}
@@ -113,15 +165,15 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 
 	closeConfigBtn.addEventListener('click', () => {
-		configContainer.style.display = 'none'
+		configContainer.style.display = 'none';
 	})
 
 	closeChatContainerBtn.addEventListener('click', () => {
-		createChatContainer.style.display = 'none'
+		createChatContainer.style.display = 'none';
 	})
 
 	closeGroupContainerBtn.addEventListener('click', () => {
-		createGroupContainer.style.display = 'none'
+		createGroupContainerBtn.style.display = 'none';
 	})
 
 
@@ -139,29 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		startSpeechRecognition();
 	});
 
-	createGroupSubmitBtn.addEventListener("click", () => {
-		const groupName = document.getElementById("new-group-name").value;
-		if (groupName) {
-			fetch('/create_group', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				body: 'group_name=' + encodeURIComponent(groupName) + "&uid=" + encodeURIComponent(uid) + '&date=' + encodeURIComponent(currentDateTime),
-			})
-				.then(response => response.text())
-				.then(data => {
-					// Manejar la respuesta del servidor
-					console.log(data);
-				})
-				.catch(error => {
-					console.error('Error:', error);
-				});
-			createGroupContainer.style.display = "none";
-		} else {
-			alert("Please enter a group name");
-		}
-	});
 
 	createChatSubmitBtn.addEventListener('click', function () {
 		const chatName = document.getElementById("new-chat-name").value;
@@ -172,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: 'chat_name=' + encodeURIComponent(chatName) + '&chat_description=' + encodeURIComponent(chatDescription) + '&date=' + encodeURIComponent(currentDateTime),
+			body: 'chat_name=' + encodeURIComponent(chatName) + '&chat_description=' + encodeURIComponent(chatDescription) + '&date=' + encodeURIComponent(currentDateTime) + "&uid=" + encodeURIComponent(uid) + "&gid=" + encodeURIComponent,
 		})
 			.then(response => response.text())
 			.then(data => {
@@ -183,10 +212,117 @@ document.addEventListener('DOMContentLoaded', function () {
 				console.error('Error:', error);
 			});
 
-		createGroupContainer.style.display = "none";
 		createChatContainer.style.display = 'none';
 	});
+	function deleteChat(chat_name) {
+		let cid;
+		let gid;
+		fetch('/delete_chat', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'cid=' + encodeURIComponent(cid) + '&gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
 
+	};
+
+	function editChat(chat_name) {
+		let cid;
+		let gid;
+		fetch('/edit_chat', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'cid=' + encodeURIComponent(cid) + '&gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+	};
+
+	createGroupSubmitBtn.addEventListener("click", () => {
+		const groupName = document.getElementById("new-group-name").value;
+		const groupDescription = document.getElementById("new-group-description").value;
+
+		if (groupName) {
+			fetch('/create_group', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: 'group_name=' + encodeURIComponent(groupName) + '&group_description=' + encodeURIComponent(groupDescription) + "&uid=" + encodeURIComponent(uid) + '&date=' + encodeURIComponent(currentDateTime),
+			})
+				.then(response => response.text())
+				.then(data => {
+					// Manejar la respuesta del servidor
+					console.log(data);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+			createGroupContainerBtn.style.display = "none";
+		} else {
+			alert("Please enter a Group name");
+		}
+	});
+
+
+	function deleteGroup(group_name) {
+		let gid;
+		fetch('/delete_group', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+	};
+
+	function editGroup(chat_name) {
+		let cid;
+		let gid;
+		fetch('/edit_group', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+	};
 
 	// Event listener for the login button
 	loginBtn.addEventListener('click', function (e) {
@@ -342,42 +478,47 @@ document.addEventListener('DOMContentLoaded', function () {
 		socket.on('update chat', function (data) {
 			processChat(data, 'user-message')
 		});
+
 		socket.on("get_user", function (data) {
-			// Store user information globally
-			userInfo = data.user_info;
+			// Store user information globally only if it hasn't been stored before
+			if (!userInfo) {
+				userInfo = JSON.stringify(data.info, null, 2);
+				console.log("this is user info :" + userInfo);
+			}
 
 			// Process and create cards for groups
 			for (const group of data.groups) {
 				const groupId = group.id;
 
-				// Store group information globally
-				groupDict[groupId] = group.content;
-
-				// Create a card for the group
-				createCard("", group.group_name, 'group');
+				if (!(groupId in groupsDict)) {
+					// Code inside the if block
+					groupsDict[groupId] = group.content;
+					createCard("", group.group_name, 'group');
+				}
 			}
+
 
 			// Process and create cards for chats
-			for (const chatId in data.chats) {
-				const chat = data.chats[chatId];
-				// Store chat information globally
-				chatDict[chatId] = chat;
-
-				// Create a card for the chat
-				createCard("", chat.name, 'chat');
+			for (const chat of data.chats) {
+				console.log(chat)
+				const chatId = chat.id;
+				if (!(chatId in chatsDict)) {
+					// Code inside the if block
+					chatsDict[chatId] = chat;
+					createCard("", chat.name, 'chat');
+				}
 			}
 
-			// Animate transition after creating cards
 			animateTransition();
 		});
-
 
 		socket.on('notification', function (data) {
 			new Notification(data)
 		});
-		
+
 		socket.on('start_connection', function (data) {
 			socket_id = data.client_id // show it bottom with the user id
+			console.log("This is socket id" + socket_id)
 			socket.emit('get_user', { uid: uid })
 		})
 
@@ -410,9 +551,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2";
 		var image = document.createElement("img");
 		image.className = "round_image";
-		if (imageUrl === "") {
-			image.src = "https://picsum.photos/200/200";
-		} else { image.src = imageUrl; }
+		image.src = imageUrl || "https://picsum.photos/200/200";
 		imageDiv.appendChild(image);
 		cardDiv.appendChild(imageDiv);
 
@@ -428,9 +567,21 @@ document.addEventListener('DOMContentLoaded', function () {
 		// Create card controls div
 		var controlsDiv = document.createElement("div");
 		controlsDiv.className = "col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center";
-		var moreBtn = document.createElement("button");
-		moreBtn.className = "mx-1 more-btn btn";
-		controlsDiv.appendChild(moreBtn);
+		var select = document.createElement("select");
+		select.className = "mx-1 more-btn btn col-12 p-0 m-0 btn px-2 down-btn";
+
+		// Create options for the select element
+		var removeOption = document.createElement("option");
+		removeOption.value = "Remove";
+		removeOption.textContent = "Remove";
+		select.appendChild(removeOption);
+
+		var editOption = document.createElement("option");
+		editOption.value = "Edit";
+		editOption.textContent = "Edit";
+		select.appendChild(editOption);
+
+		controlsDiv.appendChild(select);
 		cardDiv.appendChild(controlsDiv);
 
 		if (type === 'group') {
@@ -438,12 +589,18 @@ document.addEventListener('DOMContentLoaded', function () {
 			var chatsBtn = document.createElement("button");
 			chatsBtn.className = "chats-group-list col-12 p-0 m-0 btn px-2 down-btn";
 			cardDiv.appendChild(chatsBtn);
-			groupsContainer.appendChild(cardDiv)
-		} else if (type === 'chat') {
-			chatsContainer.appendChild(cardDiv)
+			// Assuming there's a container for chatsGroups
+			chatsGroupsContainer.appendChild(cardDiv);
+		} else if (type === 'chat' || type === 'channels') {
+			// Assuming there's a container for chatsGroups
+			chatsGroupsContainer.appendChild(cardDiv);
 		}
-
 	}
+
+	// Example usage:
+	createCard("https://example.com/image.jpg", "Hello World!", "chat");
+	createCard("", "hello2", "group");
+
 
 	function isLink(text) {
 		// Regular expression to match common URL patterns
@@ -484,12 +641,12 @@ document.addEventListener('DOMContentLoaded', function () {
 	function verifyInputState() {
 		let value = messageInput.value
 		if (value === '') {
-			speakBtn.style.display = 'block'
-			messageSend.style.display = 'none'
+			speakBtn.style.display = 'block';
+			messageSend.style.display = 'none';
 
 		} else {
-			speakBtn.style.display = 'none'
-			messageSend.style.display = 'block'
+			speakBtn.style.display = 'none';
+			messageSend.style.display = 'block';
 		}
 	}
 	verifyInputState();

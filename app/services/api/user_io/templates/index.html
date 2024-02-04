@@ -93,21 +93,54 @@
 			</div>
 
 			<div class="home-content mx-auto pl-1 pr-2 col-11">
-				<input class="home-content-checkbox " type="checkbox" id="chats-groups" name="chats-groups" />
+				<input class="home-content-checkbox " type="checkbox" id="chats-channels" name="chats-channels" />
 				<div class="col-10 content-selector py-2 d-flex justify-content-between mx-auto">
 					<button class=" btn col-5 rounded" id="chats-selector-btn">CHATS</button>
-					<button class="btn col-5 rounded" id="groups-selector-btn">GROUPS</button>
+					<button class="btn col-5 rounded" id="channels-selector-btn">CHANNELS</button>
 				</div>
 				<div class="card-3d-wrap mx-auto p-0 m-0 card-3d-wrap-cg">
 					<div class="card-3d-wrapper" id="cardWrapper">
-						<div class="chats-card-front" id="chats-card-front">
-							
-							<button class="btn rounded col-12 py-1 px-2" id="create-chat-btn">Create New Chat</button>
-						</div>
-						<div class="groups-card-back" id="groups-card-back">
-							<div class="row mx-auto my-3 col-11 chat-card">
+						<div class="chats-groups-card-front" id="chats-groups-card-front">
 
-							<button class="btn rounded col-12 py-1 px-2" id="create-group-btn">Create New Group</button>
+							<div class="row mx-auto my-3 col-11 chat-card">
+								<div class="col-1 p-0 my-auto ml-1 mr-2"><img class="round_image" src="https://picsum.photos/200/200">
+								</div>
+								<div class="col-7 card-info my-auto p-0 ml-3">
+									<p class="card-title my-auto">Hello World!</p>
+								</div>
+								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+									<select class="mx-1 more-btn btn col-12 p-0 m-0 btn px-2 down-btn">
+										<option value="Remove">Remove</option>
+										<option value="Edit">Edit</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row mx-auto my-3 col-11 group-card">
+								<div class="col-1 p-0 my-auto ml-1 mr-2"><img class="round_image" src="https://picsum.photos/200/200">
+								</div>
+								<div class="col-7 card-info my-auto p-0 ml-3">
+									<p class="card-title my-auto">hello2</p>
+								</div>
+								<div class="col-2 card-controls d-flex p-0 m-0 ml-3 align-items-center">
+									<select class="mx-1 more-btn btn col-12 p-0 m-0 btn px-2 down-btn">
+										<option value="Remove">Remove</option>
+										<option value="Edit">Edit</option>
+									</select>
+								</div>
+								<button class="chats-group-list col-12 p-0 m-0 btn px-2 down-btn"></button>
+							</div>
+
+							<div class="d-flex col-12 px-auto m-0 p-0 justify-content-center" id="create-chats-groups">
+								<button class="btn rounded col-5 py-1 px-2" id="create-chat-btn">Create New Chat</button>
+								<button class="btn rounded col-5 py-1 px-2" id="create-group-btn">Create Group Chat</button>
+							</div>
+
+						</div>
+
+						<div class="channels-card-back" id="channels-card-back">
+
+							<button class="btn rounded col-12 py-1 px-2" id="create-channel-btn">Create New channel</button>
 						</div>
 
 					</div>
@@ -134,6 +167,7 @@
 	</article>
 
 	<div class="models">
+		<div id="focus-layer" class="hidden"></div>
 		<div class="loader-container justify-content-center align-items-center" id="loader">
 			<div class="loader"></div>
 		</div>
@@ -150,20 +184,34 @@
 				<label for="new-chat-description" class="mr-2">Description</label>
 				<input type="text" id="new-chat-description" placeholder="Chat Description" />
 			</div>
+			<label for="group-select">Group</label>
+			<select id="group-select" class="form-select">
+				<option value="light">Light</option>
+				<option value="dark">Dark</option>
+				<option value="aqua">Aqua</option>
+				<option value="gray">Gray</option>
+				<option value="custom">Custom</option>
+			</select>
 			<button id="create-chat-submit-btn" class="float-right btn mt-1">Create chat</button>
 		</div>
 
 		<div id="new-group-container" class="popup text-center">
 			<div class="config-header p-2 row justify-content-center">
-				<h3 class="mx-2">Create Group</h3>
-				<button id="close-new-group-container-btn" class="close-btn p-1 mx-1 btn close-btn"></i></button>
+				<h3 class="mx-2">New Group</h3>
+				<button id="close-new-group-container-btn" class="close-btn p-1 mx-1 btn"><i class="ti-close"></i></button>
 			</div>
-			<div class="new-group-option justify-content-between my-2">
-				<label for=" new-group-name">Name</label>
+			<div class="new-group-option d-flex justify-content-between my-1">
+				<label for="new-group-name">Name</label>
 				<input type="text" id="new-group-name" placeholder="Group Name" />
 			</div>
-			<button id="create-group-submit-btn" class="btn float-right">Create Group</button>
+			<div class="new-group-option d-flex justify-content-between my-2">
+				<label for="new-group-description" class="mr-2">Description</label>
+				<input type="text" id="new-group-description" placeholder="Group Description" />
+			</div>
+
+			<button id="create-group-submit-btn" class="float-right btn mt-1">Create chat</button>
 		</div>
+
 
 		<div id="config-container" class="popup">
 			<div class="config-header p-2 row">

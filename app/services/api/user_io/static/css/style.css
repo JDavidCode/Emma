@@ -98,12 +98,12 @@ h6 span {
 
 .fade-out {
 	opacity: 0;
-	transition: opacity 0.5s ease-out;
+	transition: opacity 1.5s ease-out;
 }
 
 .fade-in {
 	opacity: 1;
-	transition: opacity 0.5s ease-in;
+	transition: opacity 1s ease-in;
 }
 
 
@@ -180,11 +180,11 @@ h6 span {
 }
 
 /*HOME CONTENT 3D CARD*/
-.card-3d-wrapper.flipped .chats-card-front {
+.card-3d-wrapper.flipped .chats-groups-card-front {
 	transform: rotateY(180deg);
 }
 
-.card-3d-wrapper.flipped .groups-card-back {
+.card-3d-wrapper.flipped .channels-card-back {
 	transform: rotateY(0deg);
 }
 
@@ -194,8 +194,8 @@ h6 span {
 	left: -9999px;
 }
 
-.chats-card-front,
-.groups-card-back {
+.chats-groups-card-front,
+.channels-card-back {
 	width: 100%;
 	height: 100%;
 	background-color: #2a2b38;
@@ -213,9 +213,10 @@ h6 span {
 	-moz-backface-visibility: hidden;
 	-o-backface-visibility: hidden;
 	backface-visibility: hidden;
+	overflow-y: scroll;
 }
 
-.groups-card-back {
+.channels-card-back {
 	transform: rotateY(180deg);
 }
 
@@ -224,8 +225,9 @@ h6 span {
 }
 
 
-/*CHATS GROUPS CARDS*/
+/*CHATS-GROUPS CHANNELS CARDS*/
 
+.channel-card,
 .group-card,
 .chat-card {
 	background-color: var(--color-secondary);
@@ -409,13 +411,21 @@ h6 span {
 	padding-top: 1em;
 	padding-bottom: 1em;
 	border-radius: .8em;
-	z-index: 1;
+	z-index: 2;
+}
+
+#focus-layer {
+	z-index: 2;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background-color: #05070c59;
 }
 
 #create-chat-submit-btn,
 #create-group-submit-btn {
 	color: var(--color-secondary);
-	background-color: var(--color);
+	background-color: var(--color-quaternary);
 }
 
 #create-chat-submit-btn:hover,
@@ -424,10 +434,11 @@ h6 span {
 	background-color: var(--color-primary);
 }
 
-#create-chat-btn,
-#create-group-btn {
+#create-channel-btn,
+#create-chats-groups {
 	bottom: 0;
 	position: absolute;
+	z-index: 3;
 }
 
 

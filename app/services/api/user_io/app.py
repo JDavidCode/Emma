@@ -123,13 +123,12 @@ class App:
                 return jsonify(response_data)
 
         @self.app.route("/edit_chat", methods=['POST'])
-        def edit_chat():
+        def edit_chat() :
             try:
                 uid = request.form.get('uid')
 
                 gid = request.form.get('gid')
-                _, response = Config.app.system.admin.agents.session.delete_group(
-                    uid, gid)
+                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
                 return jsonify({"response": "Edit chat", "uid": uid})
 
                 if _:
@@ -148,8 +147,7 @@ class App:
                 cid = request.form.get('cid')
                 gid = request.form.get('gid')
                 uid = request.form.get('uid')
-                _, response = Config.app.system.admin.agents.session.delete_chat(
-                    uid, gid, cid)
+                #_, response = Config.app.system.admin.agents.session.delete_chat(uid, gid, cid)
                 return jsonify({"response": "Removing chat", "uid": uid})
 
                 if _:
@@ -186,8 +184,7 @@ class App:
                 uid = request.form.get('uid')
 
                 gid = request.form.get('gid')
-                _, response = Config.app.system.admin.agents.session.delete_group(
-                    uid, gid)
+                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
                 return jsonify({"response": "Edit group", "uid": uid})
 
                 if _:
@@ -206,8 +203,7 @@ class App:
                 uid = request.form.get('uid')
 
                 gid = request.form.get('gid')
-                _, response = Config.app.system.admin.agents.session.delete_group(
-                    uid, gid)
+                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
                 return jsonify({"response": "Removing group", "uid": uid})
 
                 if _:
@@ -256,7 +252,7 @@ class App:
 
         try:
             self.socketio.run(self.app, host="0.0.0.0",
-                              port=3018, allow_unsafe_werkzeug=True)
+                              port=3019, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

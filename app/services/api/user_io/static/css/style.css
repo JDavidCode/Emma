@@ -437,8 +437,9 @@ h6 span {
 #create-channel-btn,
 #create-chats-groups {
 	bottom: 0;
-	position: absolute;
+	position: fixed;
 	z-index: 3;
+	background-color: var(--color-secondary);
 }
 
 

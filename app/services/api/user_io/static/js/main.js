@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		createChatContainer.style.display = 'none';
 	});
+
 	function deleteChat(chat_name) {
 		let cid;
 		let gid;
@@ -480,30 +481,33 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 
 		socket.on("get_user", function (data) {
-			// Store user information globally only if it hasn't been stored before
 			if (!userInfo) {
 				userInfo = JSON.stringify(data.info, null, 2);
-				console.log("this is user info :" + userInfo);
+				console.log("this is user info: " + userInfo);
 			}
+
+			// Use Sets to store unique group and chat IDs
+			const uniqueGroupIds = new Set(Object.keys(groupsDict));
+			const uniqueChatIds = new Set(Object.keys(chatsDict));
 
 			// Process and create cards for groups
 			for (const group of data.groups) {
 				const groupId = group.id;
 
-				if (!(groupId in groupsDict)) {
+				if (!uniqueGroupIds.has(groupId)) {
 					// Code inside the if block
+					uniqueGroupIds.add(groupId);
 					groupsDict[groupId] = group.content;
 					createCard("", group.group_name, 'group');
 				}
 			}
 
-
 			// Process and create cards for chats
 			for (const chat of data.chats) {
-				console.log(chat)
 				const chatId = chat.id;
-				if (!(chatId in chatsDict)) {
+				if (!uniqueChatIds.has(chatId)) {
 					// Code inside the if block
+					uniqueChatIds.add(chatId);
 					chatsDict[chatId] = chat;
 					createCard("", chat.name, 'chat');
 				}
@@ -511,6 +515,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			animateTransition();
 		});
+
 
 		socket.on('notification', function (data) {
 			new Notification(data)
@@ -548,7 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		// Create image div
 		var imageDiv = document.createElement("div");
-		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2";
+		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2 py-1";
 		var image = document.createElement("img");
 		image.className = "round_image";
 		image.src = imageUrl || "https://picsum.photos/200/200";
@@ -570,6 +575,13 @@ document.addEventListener('DOMContentLoaded', function () {
 		var select = document.createElement("select");
 		select.className = "mx-1 more-btn btn col-12 p-0 m-0 btn px-2 down-btn";
 
+		var defaultOption = document.createElement("option");
+		defaultOption.value = "";
+		defaultOption.textContent = "";
+		defaultOption.disabled = true;
+		defaultOption.selected = true;
+		defaultOption.style.display = "none";
+		select.appendChild(defaultOption);
 		// Create options for the select element
 		var removeOption = document.createElement("option");
 		removeOption.value = "Remove";
@@ -596,10 +608,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			chatsGroupsContainer.appendChild(cardDiv);
 		}
 	}
-
-	// Example usage:
-	createCard("https://example.com/image.jpg", "Hello World!", "chat");
-	createCard("", "hello2", "group");
 
 
 	function isLink(text) {

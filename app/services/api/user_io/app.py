@@ -37,15 +37,17 @@ class App:
             self.socketio.emit("start_connection", {"client_id": client_id})
             return jsonify({"response": "Connected"})
 
-        @self.socketio.on("get_user")
-        def get_user(data):
-            _, content = Config.app.system.admin.agents.session.get_user(
-                data.get('uid'))
+        @self.app.route("/get_user", methods=["POST"])
+        def get_user():
+            data = request.get_json()  # Assuming you're using Flask for your web server
+            uid = data.get('uid')
+            _, content = Config.app.system.admin.agents.session.get_user(uid)
             if _:
-                self.socketio.emit("get_user", content)
+                # Return the user information as JSON
+                return jsonify(content), 200
             else:
-                self.socketio.emit("ERROR", content)
-            # Assuming 'socket' is defined somewhere in your code
+                # Return an error message as JSON
+                return jsonify({"error": content}), 400
 
         @self.socketio.on("message")
         def handle_message(data):
@@ -69,7 +71,7 @@ class App:
                     for socket_id in self.sessions[uid][0]:
                         if socket_id != sid:
                             self.socketio.emit(
-                                "update chat", data, room=socket_id)
+                                "update_chat", data, room=socket_id)
 
         @self.app.route("/login", methods=['POST'])
         def user_login():
@@ -91,7 +93,6 @@ class App:
         def user_signup():
             try:
                 data = request.json
-                print(type(data))
                 _, response = Config.app.system.admin.agents.session.user_signup(
                     data)
                 if _:
@@ -107,14 +108,16 @@ class App:
         @self.app.route("/create_chat", methods=['POST'])
         def create_chat():
             try:
-                chat_name = request.form.get('chat_name')
-                chat_description = request.form.get('chat_description')
                 uid = request.form.get('uid')
+                gid = request.form.get('gid')
+                chat_name = request.form.get('name')
+                chat_description = request.form.get('description')
                 _, response = Config.app.system.admin.agents.session.create_chat(
                     _id=uid, name=chat_name, description=chat_description)
                 if _:
                     response_data = {'status': 'success',
-                                     'message': response}
+                                     'message': response[0]}
+                    self.socketio.emit("update_chat_list", response[1])
                     return jsonify(response_data)
 
             except Exception as e:
@@ -123,12 +126,12 @@ class App:
                 return jsonify(response_data)
 
         @self.app.route("/edit_chat", methods=['POST'])
-        def edit_chat() :
+        def edit_chat():
             try:
                 uid = request.form.get('uid')
-
                 gid = request.form.get('gid')
-                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
+                cid = request.form.get('cid')
+                # _, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
                 return jsonify({"response": "Edit chat", "uid": uid})
 
                 if _:
@@ -144,10 +147,11 @@ class App:
         @self.app.route("/delete_chat", methods=['POST'])
         def delete_chat():
             try:
-                cid = request.form.get('cid')
-                gid = request.form.get('gid')
+
                 uid = request.form.get('uid')
-                #_, response = Config.app.system.admin.agents.session.delete_chat(uid, gid, cid)
+                gid = request.form.get('gid')
+                cid = request.form.get('cid')
+                # _, response = Config.app.system.admin.agents.session.delete_chat(uid, gid, cid)
                 return jsonify({"response": "Removing chat", "uid": uid})
 
                 if _:
@@ -163,14 +167,17 @@ class App:
         @self.app.route("/create_group", methods=['POST'])
         def create_group():
             try:
-                group_name = request.form.get('group_name')
-                group_date = request.form.get('date')
                 uid = request.form.get('uid')
+                group_name = request.form.get('name')
+                group_description = request.form.get('description')
+                group_date = request.form.get('date')
                 _, response = Config.app.system.admin.agents.session.create_group(user_id=uid,
                                                                                   group_name=group_name, date=group_date)
                 if _:
                     response_data = {'status': 'success',
-                                     'message': response}
+                                     'message': response[0]}
+                    self.socketio.emit("update_group_list", response[1])
+
                 return jsonify(response_data)
 
             except Exception as e:
@@ -182,9 +189,8 @@ class App:
         def edit_group():
             try:
                 uid = request.form.get('uid')
-
                 gid = request.form.get('gid')
-                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
+                # _, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
                 return jsonify({"response": "Edit group", "uid": uid})
 
                 if _:
@@ -201,9 +207,9 @@ class App:
         def delete_group():
             try:
                 uid = request.form.get('uid')
-
                 gid = request.form.get('gid')
-                #_, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
+                _, response = Config.app.system.admin.agents.session.delete_group(
+                    uid, gid)
                 return jsonify({"response": "Removing group", "uid": uid})
 
                 if _:
@@ -230,10 +236,11 @@ class App:
                 if ssid in self.sessions:
                     for xids in self.sessions[ssid]:
                         if xids[1] == did:
-                            self.socketio.emit("response", data, room=xids[0])
+                            self.socketio.emit(
+                                "chat_response", data, room=xids[0])
                         else:
                             self.socketio.emit(
-                                "response", f"{data}", room=xids)
+                                "chat_response", f"{data}", room=xids)
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue(

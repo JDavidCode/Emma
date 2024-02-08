@@ -102,7 +102,7 @@
 					<div class="card-3d-wrapper" id="cardWrapper">
 						<div class="chats-groups-card-front" id="chats-groups-card-front">
 
-							
+
 							<div class="d-flex col-12 px-auto m-0 p-0 justify-content-center" id="create-chats-groups">
 								<button class="btn rounded col-5 py-1 px-2" id="create-chat-btn">Create New Chat</button>
 								<button class="btn rounded col-5 py-1 px-2" id="create-group-btn">Create Group Chat</button>
@@ -135,6 +135,7 @@
 				<button id="message-speak"></button>
 			</div>
 		</section>
+<p class="position-absolute m-0 p-0" id="socket-connection"></p>
 	</article>
 
 	<div class="models">
@@ -157,11 +158,8 @@
 			</div>
 			<label for="group-select">Group</label>
 			<select id="group-select" class="form-select">
-				<option value="light" disabled selected>Light</option>
-				<option value="dark">Dark</option>
-				<option value="aqua">Aqua</option>
-				<option value="gray">Gray</option>
-				<option value="custom">Custom</option>
+				<option value="light" selected>-</option>
+
 			</select>
 			<button id="create-chat-submit-btn" class="float-right btn mt-1">Create chat</button>
 		</div>

@@ -2,10 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	let uid;
 	let socket;
 	const currentDateTime = new Date();
-	let channelsDict = {};
-	let groupsDict = {};
-	let chatsDict = {};
-	let userInfo;
+	var channelsDict = {};
+	var groupsDict = {};
+	var chatsDict = {};
+	var userInfo = {};
 	let socket_id;
 	let currentUtterance;
 
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const chatElements = document.querySelectorAll('.chat-card, .group-card');
 	const channelsContainer = document.getElementById("channels-card-back")
 	const loader = document.getElementById("loader")
-
+	const _idlabel = document.getElementById("socket-connection")
 	///TOOLKITS
 	const createChatBtn = document.getElementById("create-chat-btn");
 	const createGroupBtn = document.getElementById("create-group-btn");
@@ -140,57 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
 			document.body.classList.add("gray-scale-theme");
 		}
 	});
+
+	//CHATS
 	createChatBtn.addEventListener('click', () => {
 		createChatContainer.style.display = 'block';
 
 	});
-	createGroupBtn.addEventListener('click', () => {
-		createGroupContainerBtn.style.display = 'block';
-
-	});
-
-	chatsSelectorBtn.addEventListener('click', () => {
-		if (checkSelector.checked) {
-			checkSelector.checked = !checkSelector.checked;
-		}
-	});
-	channelsSelectorBtn.addEventListener('click', () => {
-		if (!checkSelector.checked) {
-			checkSelector.checked = !checkSelector.checked;
-		}
-	});
-
-	configBtn.addEventListener('click', () => {
-		configContainer.style.display = configContainer.style.display === "block" ? "none" : "block";
-	})
-
-	closeConfigBtn.addEventListener('click', () => {
-		configContainer.style.display = 'none';
-	})
-
-	closeChatContainerBtn.addEventListener('click', () => {
-		createChatContainer.style.display = 'none';
-	})
-
-	closeGroupContainerBtn.addEventListener('click', () => {
-		createGroupContainerBtn.style.display = 'none';
-	})
-
-
-	messageSend.addEventListener('click', function () {
-		let message = messageInput.value;
-		if (message !== "") {
-			socket.emit('message', message);
-			processChat(message, 'user-message');
-		}
-	});
-
-	speakBtn.addEventListener('click', function () {
-		// Stop the ongoing speech synthesis, if any
-		stopSpeechSynthesis();
-		startSpeechRecognition();
-	});
-
 
 	createChatSubmitBtn.addEventListener('click', function () {
 		const chatName = document.getElementById("new-chat-name").value;
@@ -201,7 +156,31 @@ document.addEventListener('DOMContentLoaded', function () {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: 'chat_name=' + encodeURIComponent(chatName) + '&chat_description=' + encodeURIComponent(chatDescription) + '&date=' + encodeURIComponent(currentDateTime) + "&uid=" + encodeURIComponent(uid) + "&gid=" + encodeURIComponent,
+			body: 'name=' + encodeURIComponent(chatName) + '&description=' + encodeURIComponent(chatDescription) + '&date=' + encodeURIComponent(currentDateTime) + "&uid=" + encodeURIComponent(uid) + "&gid=" + encodeURIComponent,
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+				document.getElementById("new-chat-name").value = "";
+				document.getElementById("new-chat-description").value = "";
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+
+		createChatContainer.style.display = 'none';
+	});
+	function editChat(chat_name) {
+		let cid;
+		let gid;
+		fetch('/edit_chat', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'cid=' + encodeURIComponent(cid) + '&gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
 		})
 			.then(response => response.text())
 			.then(data => {
@@ -212,9 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				console.error('Error:', error);
 			});
 
-		createChatContainer.style.display = 'none';
-	});
-
+	};
 	function deleteChat(chat_name) {
 		let cid;
 		let gid;
@@ -236,26 +213,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	};
 
-	function editChat(chat_name) {
-		let cid;
-		let gid;
-		fetch('/edit_chat', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body: 'cid=' + encodeURIComponent(cid) + '&gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
-		})
-			.then(response => response.text())
-			.then(data => {
-				// Handle server response
-				console.log(data);
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
 
-	};
+	closeChatContainerBtn.addEventListener('click', () => {
+		createChatContainer.style.display = 'none';
+	});
+
+
+	//GROUPS
+	createGroupBtn.addEventListener('click', () => {
+		createGroupContainerBtn.style.display = 'block';
+	});
 
 	createGroupSubmitBtn.addEventListener("click", () => {
 		const groupName = document.getElementById("new-group-name").value;
@@ -267,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: 'group_name=' + encodeURIComponent(groupName) + '&group_description=' + encodeURIComponent(groupDescription) + "&uid=" + encodeURIComponent(uid) + '&date=' + encodeURIComponent(currentDateTime),
+				body: 'name=' + encodeURIComponent(groupName) + '&description=' + encodeURIComponent(groupDescription) + "&uid=" + encodeURIComponent(uid) + '&date=' + encodeURIComponent(currentDateTime),
 			})
 				.then(response => response.text())
 				.then(data => {
@@ -282,27 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			alert("Please enter a Group name");
 		}
 	});
-
-
-	function deleteGroup(group_name) {
-		let gid;
-		fetch('/delete_group', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body: 'gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
-		})
-			.then(response => response.text())
-			.then(data => {
-				// Handle server response
-				console.log(data);
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
-
-	};
 
 	function editGroup(chat_name) {
 		let cid;
@@ -325,14 +271,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	};
 
+	function deleteGroup(group_name) {
+		let gid;
+		fetch('/delete_group', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: 'gid=' + encodeURIComponent(gid) + '&uid=' + encodeURIComponent(uid),
+		})
+			.then(response => response.text())
+			.then(data => {
+				// Handle server response
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+	};
+
+
+	closeGroupContainerBtn.addEventListener('click', () => {
+		createGroupContainerBtn.style.display = 'none';
+	});
+
+
+	chatsSelectorBtn.addEventListener('click', () => {
+		if (checkSelector.checked) {
+			checkSelector.checked = !checkSelector.checked;
+		}
+	});
+	channelsSelectorBtn.addEventListener('click', () => {
+		if (!checkSelector.checked) {
+			checkSelector.checked = !checkSelector.checked;
+		}
+	});
+
+	configBtn.addEventListener('click', () => {
+		configContainer.style.display = configContainer.style.display === "block" ? "none" : "block";
+	})
+
+	closeConfigBtn.addEventListener('click', () => {
+		configContainer.style.display = 'none';
+	})
+
+
+
+
 	// Event listener for the login button
 	loginBtn.addEventListener('click', function (e) {
 		e.preventDefault();
 
+		// Deshabilitar el botón temporalmente para evitar clics repetidos
+		loginBtn.disabled = true;
+
 		// Get login form values
 		var email = loginForm.querySelector('#logemail').value;
 		var password = loginForm.querySelector('#logpass').value;
-
 
 		fetch('/login', {
 			method: 'POST',
@@ -353,22 +348,29 @@ document.addEventListener('DOMContentLoaded', function () {
 					animateLoad();
 					socket = io.connect('');
 					startSocket();
+					getUser();
+					loadContent();
 				} else {
 					console.log(data)
 				}
 
-
+				// Habilitar el botón nuevamente después de que se complete la solicitud
+				loginBtn.disabled = false;
 			})
 			.catch(error => {
 				console.error('Error:', error);
+
+				// Habilitar el botón nuevamente en caso de error
+				loginBtn.disabled = false;
 			});
-
-
 	});
 
 	// Event listener for the signup button
 	signUpBtn.addEventListener('click', function (e) {
 		e.preventDefault();
+
+		// Deshabilitar el botón temporalmente para evitar clics repetidos
+		signUpBtn.disabled = true;
 
 		// Get signup form values
 		var name = signupForm.querySelector('#logname').value;
@@ -398,12 +400,17 @@ document.addEventListener('DOMContentLoaded', function () {
 					signupForm.querySelector('#logpass').value = '';
 				}
 
+				// Habilitar el botón nuevamente después de que se complete la solicitud
+				signUpBtn.disabled = false;
 			})
 			.catch(error => {
 				console.error('Error:', error);
-			});
 
+				// Habilitar el botón nuevamente en caso de error
+				signUpBtn.disabled = false;
+			});
 	});
+
 
 	notificationOption.addEventListener("change", function () {
 		if (this.checked) {
@@ -425,17 +432,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Cancel any pending notifications
 			notification.close();
 		}
-	});
-
-	attachDocs.addEventListener("click", () => {
-		const input = document.createElement("input");
-		input.type = "file";
-		input.onchange = (event) => {
-			const file = event.target.files[0];
-			const fileName = file.name;
-			console.log("Attaching document: " + fileName);
-		};
-		input.click();
 	});
 
 	function startSpeechRecognition() {
@@ -472,62 +468,140 @@ document.addEventListener('DOMContentLoaded', function () {
 		chatBox.appendChild(listItem);
 		messageInput.value = '';
 		scrollToBottom();
-
 	}
 
+	function parseData(data) {
+		var temporalCID;
+
+		data.groups.forEach(function (group) {
+			var groupExist = false;
+			for (var key in groupsDict) {
+				if (groupsDict.hasOwnProperty(key)) {
+					var groupObject = groupsDict[key];
+					if (groupObject.id === group.id) {
+						groupExist = true;
+						break;
+					}
+				}
+			}
+			if (groupExist) {
+				return;
+			}
+
+			var groupContent = {};
+			var temporalGID = 'gid_' + Math.random().toString(8).substr(2, 9);
+			group.content.forEach(function (chatId) {
+				var chatExist = false;
+				for (var key in chatsDict) {
+					if (chatsDict.hasOwnProperty(key)) {
+						var chatObject = chatsDict[key];
+						if (chatObject.id === chatId) {
+							chatExist = true;
+							break;
+						}
+					}
+				}
+				if (!chatExist) {
+					temporalCID = 'cid_' + Math.random().toString(8).substr(2, 9);
+					chatsDict[temporalCID] = {
+						id: chatId,
+						name: '',
+						description: ''
+					};
+				}
+				groupContent[temporalCID] = chatId;
+			});
+			groupsDict[temporalGID] = {
+				id: group.id,
+				name: group.name,
+				content: groupContent
+			};
+		});
+
+		data.chats.forEach(function (chat) {
+			chatsDict[temporalCID] = {
+				id: chat.id,
+				name: chat.name,
+				description: chat.description
+			};
+		});
+
+		Object.keys(groupsDict).forEach(function (key) {
+			var group = groupsDict[key];
+			var groupId = group.id;
+			var name = group.name;
+			var groupContent = group.content;
+			Object.keys(groupContent).forEach(function (key) {
+				var chatId = groupContent[key];
+				var chat = chatsDict[key];
+				if (chat) {
+					chat.groupId = groupId;
+				}
+			});
+		});
+		return true;
+	}
+	function getUser() {
+		fetch("/get_user", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ uid: uid })
+		})
+			.then(function (response) {
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				return response.json();
+			})
+			.then(function (data) {
+				if (data) {
+					userInfo = JSON.stringify(data.info, null, 2);
+					parseData(data)
+					animateTransition();
+				}
+			})
+			.catch(function (error) {
+				console.error("Error:", error);
+				// Handle error
+			});
+	}
+	function loadContent() {
+		console.log(JSON.stringify(chatsDict, null, 2))
+
+		for (const chatKey in chatsDict) {
+			const chat = chatsDict[chatKey];
+			const groupId = chat.groupId;
+			// Call the createCard function with the appropriate parameters
+			createCard(chat.imageUrl, chat.name, 'chat', chat.id);
+		}
+
+		// If you also want to create cards for groups, you can iterate over groups similarly
+		for (const groupKey in groupsDict) {
+			const group = groupsDict[groupKey];
+
+			// Call the createCard function with the appropriate parameters
+			createCard(group.imageUrl, group.name, 'group', group.id);
+		}
+	};
+
 	function startSocket() {
-		socket.on('update chat', function (data) {
+		socket.on('start_connection', function (data) {
+			socket_id = data.client_id
+			_idlabel.textContent = "SID: " + socket_id
+		});
+
+		socket.on('update_chat', function (data) {
 			processChat(data, 'user-message')
 		});
 
-		socket.on("get_user", function (data) {
-			if (!userInfo) {
-				userInfo = JSON.stringify(data.info, null, 2);
-				console.log("this is user info: " + userInfo);
-			}
-
-			// Use Sets to store unique group and chat IDs
-			const uniqueGroupIds = new Set(Object.keys(groupsDict));
-			const uniqueChatIds = new Set(Object.keys(chatsDict));
-
-			// Process and create cards for groups
-			for (const group of data.groups) {
-				const groupId = group.id;
-
-				if (!uniqueGroupIds.has(groupId)) {
-					// Code inside the if block
-					uniqueGroupIds.add(groupId);
-					groupsDict[groupId] = group.content;
-					createCard("", group.group_name, 'group');
-				}
-			}
-
-			// Process and create cards for chats
-			for (const chat of data.chats) {
-				const chatId = chat.id;
-				if (!uniqueChatIds.has(chatId)) {
-					// Code inside the if block
-					uniqueChatIds.add(chatId);
-					chatsDict[chatId] = chat;
-					createCard("", chat.name, 'chat');
-				}
-			}
-
-			animateTransition();
-		});
-
-
 		socket.on('notification', function (data) {
-			new Notification(data)
+			new Notification(data.content)
 		});
 
-		socket.on('start_connection', function (data) {
-			socket_id = data.client_id // show it bottom with the user id
-			console.log("This is socket id" + socket_id)
-			socket.emit('get_user', { uid: uid })
-		})
 
-		socket.on('response', function (data) {
+		socket.on('chat_response', function (data) {
 			if (isLink(data)) {
 				// If it's a link, open it in a new tab/window
 				window.open(data, '_blank');
@@ -544,13 +618,24 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 
+		socket.on('update_chat_list', function (data) {
+			createCard("", data, "chat")
+		});
+		socket.on('update_group_list', function (data) {
+			createCard("", data, "group")
+
+		});
+		socket.on('update_group_chat_list', function (data) {
+			createCard("", data, "group") //update this
+
+		});
 	}
 
-	function createCard(imageUrl, title, type) {
+	function createCard(imageUrl, title, type, id) {
 		// Create main card div
 		var cardDiv = document.createElement("div");
 		cardDiv.className = "row mx-auto my-3 col-11 " + type + "-card";
-
+		cardDiv.id = id
 		// Create image div
 		var imageDiv = document.createElement("div");
 		imageDiv.className = "col-1 p-0 my-auto ml-1 mr-2 py-1";
@@ -601,6 +686,13 @@ document.addEventListener('DOMContentLoaded', function () {
 			var chatsBtn = document.createElement("button");
 			chatsBtn.className = "chats-group-list col-12 p-0 m-0 btn px-2 down-btn";
 			cardDiv.appendChild(chatsBtn);
+
+			// Create chats list
+			var chatsList = document.createElement("div");
+			chatsList.className = "chats-list";
+			// Assuming there's a container for chatsGroups
+			cardDiv.appendChild(chatsList);
+
 			// Assuming there's a container for chatsGroups
 			chatsGroupsContainer.appendChild(cardDiv);
 		} else if (type === 'chat' || type === 'channels') {
@@ -608,6 +700,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			chatsGroupsContainer.appendChild(cardDiv);
 		}
 	}
+
 
 
 	function isLink(text) {
@@ -621,30 +714,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		return urlPattern.test(decodedText);
 	}
 
-	function chatContent(data) {
-		// Agregar mensajes del historial al DOM
-		data.forEach(message => {
-			// Verificar si el mensaje ya está presente en el chat para evitar duplicados
-			if (!isMessagePresent(chatBox, message.content)) {
-				const listItem = document.createElement('p');
-				listItem.textContent = message.content;
-				listItem.classList.add("message", message.role === 'user' ? 'user-message' : 'emma-message');
-				chatBox.appendChild(listItem);
-			}
-		});
-		scrollToBottom();
-	}
 
-	function isMessagePresent(chat, messageContent) {
-		// Verificar si el mensaje ya está presente en el chat
-		const existingMessages = chat.querySelectorAll('.message');
-		for (const existingMessage of existingMessages) {
-			if (existingMessage.textContent === messageContent) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	function verifyInputState() {
 		let value = messageInput.value
@@ -676,4 +746,29 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	messageInput.addEventListener("keydown", handleKeyDown);
 
+
+	messageSend.addEventListener('click', function () {
+		let message = messageInput.value;
+		if (message !== "") {
+			socket.emit('message', message);
+			processChat(message, 'user-message');
+		}
+	});
+
+	speakBtn.addEventListener('click', function () {
+		// Stop the ongoing speech synthesis, if any
+		stopSpeechSynthesis();
+		startSpeechRecognition();
+	});
+
+	attachDocs.addEventListener("click", () => {
+		const input = document.createElement("input");
+		input.type = "file";
+		input.onchange = (event) => {
+			const file = event.target.files[0];
+			const fileName = file.name;
+			console.log("Attaching document: " + fileName);
+		};
+		input.click();
+	});
 })

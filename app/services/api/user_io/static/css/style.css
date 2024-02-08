@@ -440,8 +440,15 @@ h6 span {
 	position: fixed;
 	z-index: 3;
 	background-color: var(--color-secondary);
+
 }
 
+#socket-connection {
+	font-size: .6em;
+	color: #c4c3ca5e;
+	bottom: 0;
+	left: 1em;
+}
 
 /*LOGIN*/
 .icon-user::before {

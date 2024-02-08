@@ -92,7 +92,6 @@ class SessionsAgent:
 
             # Create chat
             chat_info = {
-                "uid": uid,
                 "gid": gid,
                 "name": "Hello World!",
                 "description": "I'm Playing with EMMA",
@@ -103,8 +102,8 @@ class SessionsAgent:
                 info.get('name', ""), age, birthday, '1')])
 
             # Consulta para insertar el nuevo chat
-            query = "INSERT INTO chats (cid, info, content) VALUES (%s, %s, %s)"
-            cursor.execute(query, (cid, json.dumps(chat_info), content))
+            query = "INSERT INTO chats (cid,uid,  info, content) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query, (cid, uid, json.dumps(chat_info), content))
 
             try:
                 # Confirmar la transacción
@@ -113,7 +112,7 @@ class SessionsAgent:
                 return False, f"Error creating user {e}"
 
             # Agregar el nuevo grupo a la lista existente
-            nuevo_grupo = {"group_name": "Default",
+            nuevo_grupo = {"name": "Default",
                            "id": gid, "content": [cid]}
 
             # Create the new user
@@ -167,7 +166,7 @@ class SessionsAgent:
                 return False, "User not found"
 
             # Modify the query_chats to use the correct JSON path expression for MySQL
-            query_chats = "SELECT info, cid FROM chats WHERE JSON_UNQUOTE(info->'$.uid') = %s"
+            query_chats = "SELECT info, cid FROM chats WHERE uid = %s"
             cursor.execute(query_chats, (user_id,))
             user_db_chats = cursor.fetchall()
             formatted_chats = [
@@ -213,8 +212,8 @@ class SessionsAgent:
             cursor = users_conn.cursor(dictionary=True)
 
             # Query to obtain information of the chat
-            query = "SELECT info, content FROM chats WHERE cid = %s"
-            cursor.execute(query, (chat_id,))
+            query = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
+            cursor.execute(query, (chat_id, user_id))
 
             # Get the results
             result = cursor.fetchone()
@@ -267,7 +266,6 @@ class SessionsAgent:
             "localhost", "root", "2k3/XekPx3E6dqaN", "session")
 
         chat_info = {
-            "uid": _id,
             "gid": group_id,
             "name": name,
             "description": description,
@@ -282,8 +280,8 @@ class SessionsAgent:
             content = json.dumps([prompt])
 
             # Consulta para insertar el nuevo chat
-            query = "INSERT INTO chats (cid, info, content) VALUES (%s, %s, %s)"
-            cursor.execute(query, (chat_id, info, content))
+            query = "INSERT INTO chats (cid, uid, info, content) VALUES (%s,%s, %s, %s)"
+            cursor.execute(query, (chat_id, _id, info, content))
 
             # Confirmar la transacción
             users_conn.commit()
@@ -317,7 +315,7 @@ class SessionsAgent:
                 users_conn.commit()
             else:
                 print(f"Chat ID {chat_id} already exists in the list.")
-            return True, f"Chat {name} has been created"
+            return True, (f"Chat {name} has been created", name)
 
         except Exception as e:
             print("Error al ejecutar la consulta: chat ", e)
@@ -331,7 +329,7 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def update_chat(self, chat_id, name=None, description=None, prompt=None):
+    def edit_chat(self, uid, chat_id, name=None, description=None):
         if chat_id is None:
             return "Chat ID cannot be null"
 
@@ -343,8 +341,8 @@ class SessionsAgent:
             cursor = users_conn.cursor(dictionary=True)
 
             # Retrieve existing chat information
-            query_get_chat = "SELECT info, content FROM chats WHERE cid = %s"
-            cursor.execute(query_get_chat, (chat_id,))
+            query_get_chat = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
+            cursor.execute(query_get_chat, (chat_id, uid))
             chat_info = cursor.fetchone()
 
             if not chat_info:
@@ -359,8 +357,6 @@ class SessionsAgent:
                 chat_info['info']['name'] = name
             if description is not None:
                 chat_info['info']['description'] = description
-            if prompt is not None:
-                chat_info['content'].append(prompt)
 
             # Convert the updated information back to JSON
             updated_info = json.dumps(chat_info['info'])
@@ -370,6 +366,40 @@ class SessionsAgent:
             query_update_chat = "UPDATE chats SET info = %s, content = %s WHERE cid = %s"
             cursor.execute(query_update_chat,
                            (updated_info, updated_content, chat_id))
+
+            # Confirm the transaction
+            users_conn.commit()
+
+            return True, f"Chat with ID {chat_id} has been updated"
+
+        except Exception as e:
+            print("Error executing query: update_chat", e)
+            return False, "Error executing query: update_chat"
+
+        finally:
+            if users_conn:
+                try:
+                    users_conn.close()
+                except Exception as e:
+                    print("Error closing connection:", e)
+                finally:
+                    self.users_conn = None
+
+    def update_chat(self, uid, chat_id, content):
+        if chat_id is None:
+            return "Chat ID cannot be null"
+
+        users_conn = Config.app.system.admin.agents.db.connect(
+            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+
+        try:
+            # Create a cursor
+            cursor = users_conn.cursor(dictionary=True)
+
+            # Update the chat in the database
+            query_update_chat = "UPDATE chats SET content = %s WHERE cid = %s & uid = %s"
+            cursor.execute(query_update_chat,
+                           ("updated_content", chat_id, uid))
 
             # Confirm the transaction
             users_conn.commit()
@@ -402,7 +432,7 @@ class SessionsAgent:
 
             # Update the content field in the user's cloud
             query_update_cloud = "UPDATE users SET cloud = JSON_SET(cloud, '$[%s].content', %s) WHERE JSON_CONTAINS_PATH(cloud, 'one', '$[%s]')"
-            cursor.execute(query_update_cloud, (gid,
+            cursor.execute(query_update_cloud, (cid,
                            json.dumps(), gid))
 
             # Delete the chat from the database
@@ -427,8 +457,8 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def create_group(self, user_id, group_name, content=[], date=datetime.now):
-        if user_id is None or group_name is None:
+    def create_group(self, user_id, name, content=[], date=datetime.now):
+        if user_id is None or name is None:
             return "ERROR INVALID VALUES"
         users_conn = Config.app.system.admin.agents.db.connect(
             "localhost", "root", "2k3/XekPx3E6dqaN", "session")
@@ -450,7 +480,7 @@ class SessionsAgent:
             content = content or []
 
             # Agregar el nuevo grupo a la lista existente
-            nuevo_grupo = {"group_name": group_name,
+            nuevo_grupo = {"name": name,
                            "id": group_id, "content": content}
             current_cloud.append(nuevo_grupo)
 
@@ -466,7 +496,7 @@ class SessionsAgent:
 
             print("Grupo creado exitosamente.")
             # Devolver el ID del nuevo grupo
-            return True, f"GROUP {group_name} has been created"
+            return True, (f"GROUP {name} has been created", name)
 
         except Exception as e:
             print("Error al ejecutar la consulta: group ", e)
@@ -483,7 +513,7 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def update_group(self, user_id, from_group_id, to_group_id, content_add, content_remove):
+    def edit_group(self, user_id, from_group_id, to_group_id, content_add, content_remove):
         if user_id is None or from_group_id is None or to_group_id is None:
             return "ERROR INVALID VALUES"
 
@@ -554,7 +584,7 @@ class SessionsAgent:
                 finally:
                     self.users_conn = None
 
-    def remove_group(self, user_id, group_id):
+    def delete_group(self, user_id, group_id):
         if user_id is None or group_id is None:
             return "ERROR INVALID VALUES"
 

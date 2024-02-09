@@ -100,12 +100,12 @@ h6 span {
 
 .fade-out {
 	opacity: 0;
-	transition: opacity 1.5s ease-out;
+	transition: opacity .7s ease-out;
 }
 
 .fade-in {
 	opacity: 1;
-	transition: opacity 1s ease-in;
+	transition: opacity 1.3s ease-in;
 }
 
 

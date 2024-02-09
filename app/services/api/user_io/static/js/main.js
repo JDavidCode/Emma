@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var channelsDict = {};
 	var groupsDict = {};
 	var chatsDict = {};
-	var userInfo = {};
+	var userInfo;
 	let socket_id;
 	let currentUtterance;
 
@@ -69,12 +69,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function animateLoad() {
 		loginArticle.classList.add('fade-out');
-		loginArticle.addEventListener('transitionend', function () {
-			loginArticle.classList.add('hidden');
-		});
 		loader.style.display = "flex";
 
+		loginArticle.addEventListener('transitionend',  () => {
+			loginArticle.classList.add('hidden');
+		});
 	}
+	function animateLogin() {
+		loader.classList.add('hidden');
+
+		// Después de que se oculta, mostrar el artículo de inicio
+		homeArticle.classList.remove('hidden');
+		homeArticle.classList.add('fade-in');
+	}
+
 
 	chatElements.forEach(chatElement => {
 		// Find the select element within each chat element
@@ -111,14 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 
-	function animateTransition() {
-		loginArticle.classList.remove('fade-out');
-		loader.classList.add('hidden');
-
-		// Después de que se oculta, mostrar el artículo de inicio
-		homeArticle.classList.remove('hidden');
-		homeArticle.classList.add('fade-in');
-	}
 
 	themeSelect.addEventListener("change", event => {
 		const selectedTheme = event.target.value;
@@ -317,7 +317,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
 	// Event listener for the login button
 	loginBtn.addEventListener('click', function (e) {
 		e.preventDefault();
@@ -350,6 +349,8 @@ document.addEventListener('DOMContentLoaded', function () {
 					startSocket();
 					getUser();
 					loadContent();
+					animateLogin();
+
 				} else {
 					console.log(data)
 				}
@@ -559,7 +560,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (data) {
 					userInfo = JSON.stringify(data.info, null, 2);
 					parseData(data)
-					animateTransition();
 				}
 			})
 			.catch(function (error) {
@@ -584,6 +584,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Call the createCard function with the appropriate parameters
 			createCard(group.imageUrl, group.name, 'group', group.id);
 		}
+
+
 	};
 
 	function startSocket() {

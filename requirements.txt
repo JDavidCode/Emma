@@ -18,6 +18,7 @@ openai
 pyatv
 flask-socketio
 Flask
+flask_cors
 geopy
 selenium
 chromedriver_autoinstaller
@@ -25,3 +26,4 @@ Panda3D
 mplfinance
 keyboard
 Pillow
+PyTelegramBotAPI

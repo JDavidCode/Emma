@@ -31,8 +31,8 @@ class CommandRouter:
         self.event.wait()
 
         while not self.stop_flag:
-            ids, data = self.queue_handler.get_queue(
-                "COMMAND", 0.1, (None, None))
+            ids, data, channel = self.queue_handler.get_queue(
+                "COMMAND", 0.1, (None, None, None))
             if ids is None or data is None:
                 continue
 
@@ -44,11 +44,11 @@ class CommandRouter:
                 args_key = command_info.get('args_key')
 
                 self.execute_command(module, function_name,
-                                     ids, args, args_key)
+                                     ids, channel, args, args_key)
             except Exception as e:
                 self.handle_error(e)
 
-    def execute_command(self, module, function_name, ids, args, args_key):
+    def execute_command(self, module, function_name, ids, channel, args, args_key):
         try:
             function = getattr(module, function_name)
         except AttributeError as e:
@@ -67,7 +67,7 @@ class CommandRouter:
                 key, r = result
                 if key:
                     self.queue_handler.add_to_queue(
-                        'API_RESPONSE', (ids, r))
+                        f'{channel}_RESPONSE', (ids, r))
                 self.queue_handler.add_to_queue(
                     "LOGGING", (self.name, f"{function_name} executed with args {args}. Session: {ids}"))
             else:

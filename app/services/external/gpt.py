@@ -8,7 +8,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler):
-        openai.api_key = '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'
+        openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -70,28 +70,32 @@ class GPT:
                     "CONSOLE", [self.name, "Is Started"])
                 first = False
 
-            ids, data = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None))
-
-            if ids is None:
+            ids, data, channel = self.queue_handler.get_queue(
+                self.queue_name, 0.1, (None, None, None))
+            if data == None or channel == None:
                 continue
-
-            session_id, user_id, chat_id, device_id = ids
-            message = {
-                "role": "user",
-                "content": f"{data}",
-            }
-            self.update_chat(user_id, session_id, message)
-            chat = self.get_chat(user_id, session_id)
+            else:
+                message = {
+                    "role": "user",
+                    "content": f"{data}",
+                }
+            if channel == "TELEGRAM_API":
+                chat = [message]
+            elif channel == "WEB_API":
+                session_id, user_id, chat_id, device_id = ids
+                self.update_chat(user_id, session_id, message)
+                chat = self.get_chat(user_id, session_id)
+            else:
+                continue
 
             if data is None or data == "":
                 continue
             else:
                 try:
                     response = openai.chat.completions.create(
-                        model="gpt-3.5-turbo-0613",
+                        model="gpt-3.5-turbo-0125",
                         messages=chat,
-                        max_tokens=230,
+                        max_tokens=400,
                         functions=self.functions,
                         function_call="auto",
                         temperature=0)
@@ -119,15 +123,15 @@ class GPT:
                             "LOGGING", (self.name, function_call))
 
                         self.queue_handler.add_to_queue(
-                            'RESPONSE', ['funcall', [function_name, ], ids])
+                            'GPT_RESPONSE', ['funcall', [function_name, ], ids, channel])
 
                         message = {
                             "role": "function",
                             "name": function_name,
                             "content": "The function has been executed",
                         }
-
-                        self.update_chat(user_id, session_id, message)
+                        if channel == "WEB_API":
+                            self.update_chat(user_id, session_id, message)
                     else:
                         answer = response["choices"][0]["message"]["content"]
                         message = {
@@ -135,11 +139,12 @@ class GPT:
                             "content": answer
                         }
 
-                        self.update_chat(user_id, session_id, message)
+                        if channel == "WEB_API":
+                            self.update_chat(user_id, session_id, message)
 
                         if "Lo siento" not in answer and "I'm sorry" not in answer:
                             self.queue_handler.add_to_queue(
-                                'RESPONSE', ['answer', answer, ids])
+                                'GPT_RESPONSE', ['answer', answer, ids, channel])
 
                 except TimeoutError as t:
                     self.queue_handler.add_to_queue(

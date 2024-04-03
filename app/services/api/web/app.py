@@ -63,7 +63,7 @@ class App:
 
             data = data.get("message").lower()  # Convert data to lowercase
             self.queue_handler.add_to_queue(
-                "API_INPUT", ((sid, uid, chat_id, device_id), data))
+                "WEB_API_INPUT", ((sid, uid, chat_id, device_id), data, "WEB_API"))
 
             # Broadcast the message to other clients in the same session
             if uid in self.sessions:
@@ -225,7 +225,7 @@ class App:
     def process_responses(self):
         while not self.stop_flag:
             ids, data = self.queue_handler.get_queue(
-                "API_RESPONSE", 0.1, (None, None))
+                "WEB_API_RESPONSE", 0.1, (None, None))
             if ids is None:
                 continue
 
@@ -270,7 +270,7 @@ class App:
     def run(self):
         self.event.set()
         self.response_thread = threading.Thread(
-            target=self.process_responses, name=f"{self.name} process_responses")
+            target=self.process_responses, name=f"{self.name}_RESPONSES")
         self.response_thread.start()
 
     def stop(self):

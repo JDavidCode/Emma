@@ -187,7 +187,6 @@ config_structure = {
                 "event": ["app.system.core._event.EventHandler", ['EVENT HANDLER', None, '$app.system.core.queue']],
                 "@_console": "app.system.core._console.Console",
                 "@_logger": "app.system.core.logging.logger.Logger",
-
             },
 
             "admin": {
@@ -214,11 +213,13 @@ config_structure = {
 
 
         "services": {
-            "core": {
-                "@gpt": "app.services.gpt.GPT",
-                "@api_user": "app.services.api.user_io.app.App",
+            "api": {
+                "@web_api": "app.services.api.web.app.App",
+                "@telegram_api": "app.services.api.telegram.app.App",
                 # "@api_streaming": "app.services.api.streaming.app.App",
             },
+            "external": {"@gpt": "app.services.external.gpt.GPT",
+                         },
             "task": {
                 "miscellaneous": ["app.services.task.miscellaneous.MiscellaneousTask", []],
                 "ost": ["app.services.task.ost.OsTask", []],

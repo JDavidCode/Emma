@@ -63,7 +63,7 @@ class EventHandler:
         """
         for subscriber in self.subscribers:
             try:
-                subscriber.__handle_shutdown()
+                subscriber.handle_shutdown()
                 self.queue_handler.add_to_queue(
                     "CONSOLE", (self.name, f"{subscriber} HAS BEEN NOTIFIED OF SHUTDOWN"))
             except Exception as e:

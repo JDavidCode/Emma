@@ -1,36 +1,33 @@
 import os
 import pkg_resources
 import subprocess
-from app.config.config import Config
 
 
 class Run:
     """
-    this class for initializing the application and starting services.
+    Esta clase se utiliza para inicializar la aplicación y comenzar los servicios.
 
     Args:
-        name (str): The name of this instance.
-        queue_name (str): The name of the queue.
-        queue_handler: An object responsible for handling the queue.
-        thread_manager: An object responsible for managing threads.
-        system_events: An object for managing system events.
-        tools (list, optional): Additional tools to use. Defaults to an empty list.
+        name (str): El nombre de esta instancia.
+        queue_name (str): El nombre de la cola.
+        queue_handler: Un objeto responsable de manejar la cola.
+        thread_manager: Un objeto responsable de gestionar los hilos.
+        system_events: Un objeto para gestionar eventos del sistema.
+        tools (list, opcional): Herramientas adicionales para usar. Por defecto, una lista vacía.
     """
 
-    def __init__(self, name, queue_name, queue_handler, thread_manager, system_events, tools=[]):
-        self.name = name
-        self.queue_name = queue_name
+    def establish_connections(self):
+        """
+        Establece las conexiones necesarias para la aplicación. #actualizar requisitos etc
+        """
         self.required_packages = [
-            'pywhatkit',
-            'pygame',
-            'Pandas',
-            'NumPy',
+            'pandas',
+            'numpy',
             'matplotlib',
             'opencv-python',
-            'pywhatkit',
             'opencv-contrib-python',
             'youtube-dl',
-            'PyAutoGUI',
+            'pyautogui',
             'mysql-connector-python',
             'imutils',
             'pyyaml',
@@ -39,63 +36,53 @@ class Run:
             'openai',
             'pyatv',
             'flask-socketio',
-            'Flask',
+            'flask',
             'geopy',
             'selenium',
             'chromedriver_autoinstaller',
-            'Panda3D',
+            'panda3d',
             'mplfinance',
             'keyboard',
-            'Pillow'
+            'pillow',
+            'pytelegrambotapi',
+            'langchain',
+            'pypdf2',
+            'faiss-cpu',
+            'google-generativeai',
+            'langchain_google_genai'
         ]
-        self.tools_da, self.miscellaneous = tools
-        self.establish_connections()
-        self.set_environ_variables()
-        self.queue_handler = queue_handler
-        self.thread_manager = thread_manager
-        self.system_events = system_events
-        _, clock = self.miscellaneous.date_clock(2)
-        os.environ["DATE"] = f"{clock}"
-
-    def establish_connections(self):
-        """
-        Establish connections required for the application.
-        """
-        Config.app.system.admin.agents.sys.update_database()
-        pass
 
     def set_environ_variables(self):
         """
-        Set environment variables based on user configuration.
+        Establece variables de entorno basadas en la configuración del usuario.
         """
         pass
 
-    def initialize_configuration(self):
-        """
-        Initialize the application's configuration.
-        """
-        # self.check_dependencies()
-
-        Config.app.system.admin.agents.sys.verify_paths()
-        Config.app.system.admin.agents.sys.initialize_queues()
-        Config.app.system.admin.agents.sys.instance_threads()
-
     def check_dependencies(self):
         """
-        Check and handle application dependencies.
+        Comprueba y maneja las dependencias de la aplicación.
         """
         missing_packages = self.get_missing_packages()
 
         if missing_packages:
-            print("Missing dependencies. Installing...")
+            print("Faltan dependencias. Instalando...", " : ", missing_packages)
+
             self.install_dependencies(missing_packages)
-            print("Dependencies installed.")
+            print("Dependencias instaladas.")
         else:
-            print("All dependencies are met.")
+            print("Todas las dependencias están satisfechas.")
+
+    def store_installed_libraries_to_env(self):
+        """
+        Almacena las bibliotecas instaladas en una variable de entorno.
+        """
+        installed_packages = self.get_installed_packages()
+        libraries_str = ",".join(installed_packages)
+        os.environ[self.env_var_name] = libraries_str
 
     def get_installed_packages(self):
         """
-        Get a list of installed packages.
+        Obtiene una lista de paquetes instalados.
         """
         installed_packages = [pkg.project_name.lower()
                               for pkg in pkg_resources.working_set]
@@ -103,17 +90,18 @@ class Run:
 
     def get_missing_packages(self):
         """
-        Get a list of missing packages.
+        Obtiene una lista de paquetes faltantes.
         """
-        installed_packages = self.get_installed_packages()
-        missing_packages = [
-            pkg for pkg in self.required_packages if pkg.lower() not in installed_packages
-        ]
+        missing_packages = []
+        for package in self.required_packages:
+            if not self.is_package_installed(package):
+                missing_packages.append(package)
+
         return missing_packages
 
     def install_dependencies(self, packages):
         """
-        Install missing packages using pip.
+        Instala paquetes faltantes usando pip.
         """
         try:
             # Verifica la versión de pip y actualiza si es necesario
@@ -122,11 +110,11 @@ class Run:
             for package in packages:
                 # Verifica si el paquete ya está instalado
                 if not self.is_package_installed(package):
-                    print(f"Installing {package}...")
+                    print(f"Instalando {package}...")
                     subprocess.run(
                         f'pip install {package}', shell=True, check=True)
                 else:
-                    print(f"{package} is already installed.")
+                    print(f"{package} ya está instalado.")
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
 
@@ -141,44 +129,15 @@ class Run:
         except subprocess.CalledProcessError:
             return False
 
-    def start_services(self, package_list):
-        """
-        Start application services.
-
-        Args:
-            package_list (list): List of packages to start.
-        """
-        Config.inspect_config_section(Config.forge)
-        Config.forge.run(package_list=package_list)
-        Config.app.system.admin.agents.sys.instance_threads(forge=True)
-
     def perform_health_checks(self):
         """
-        Perform health checks for the application.
-        """
-        pass
-
-    def setup_logging(self):
-        """
-        Set up logging for the application.
-        """
-        pass
-
-    def handle_errors(self):
-        """
-        Handle errors and exceptions in the application.
-        """
-        pass
-
-    def trigger_startup_events(self):
-        """
-        Trigger startup events for the application.
+        Realiza comprobaciones de salud para la aplicación.
         """
         pass
 
     def run(self):
         """
-        Run the application startup process.
+        Ejecuta el proceso de inicio de la aplicación.
         """
         package_list = [
             {
@@ -186,11 +145,7 @@ class Run:
                 "package_name": "trading_bots",
             }
         ]
-        self.initialize_configuration()
         self.establish_connections()
+        self.set_environ_variables()
         self.check_dependencies()
-        self.start_services(package_list=[])
         self.perform_health_checks()
-        self.setup_logging()
-        self.handle_errors()
-        self.trigger_startup_events()

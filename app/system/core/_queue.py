@@ -1,6 +1,7 @@
 import queue
 import traceback
 
+
 class QueueHandler:
     def __init__(self, name, queue_name):
         """
@@ -16,17 +17,22 @@ class QueueHandler:
         self.secure_queues = {}
         self.coutdown = 150
 
-    def create_queue(self, name, size=None):
+    def create_queue(self, names, sizes=None):
         """
-        Create a new queue.
+        Create new queue(s).
 
         Args:
-            name (str): The name of the queue.
-            size (int, optional): The maximum size of the queue. Defaults to None.
+            names (str or list): The name(s) of the queue(s).
+            size (int, optional): The maximum size of the queue(s). Defaults to None.
         """
-        if name in self.queues:
-            raise ValueError(f"Queue with name {name} already exists")
-        self.queues[name] = queue.Queue(maxsize=size)
+        if isinstance(names, str) and isinstance(sizes, int):
+            names = [names]  # Convert single name to list
+            sizes = [sizes]
+
+        for name, size in zip(names, sizes):
+            if name in self.queues:
+                raise ValueError(f"Queue with name {name} already exists")
+            self.queues[name] = queue.Queue(maxsize=size)
 
     def create_secure_queue(self, name, size=None):
         """
@@ -177,5 +183,6 @@ class QueueHandler:
             special_id (str): An identifier for the secure queue item.
         """
         if name not in self.secure_queues or special_id not in self.secure_queues[name]:
-            raise ValueError(f"No secure queue item found with name {name} and special_id {special_id}")
+            raise ValueError(
+                f"No secure queue item found with name {name} and special_id {special_id}")
         del self.secure_queues[name][special_id]

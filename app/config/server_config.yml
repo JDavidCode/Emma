@@ -5,14 +5,8 @@ defaults:
     password: root
     user: root
   queues:
-  - queue: TELEGRAM_API_RESPONSE
-    queue_maxsize: 0
-  - queue: WEB_API_RESPONSE
-    queue_maxsize: 0
   - queue: GPT_RESPONSE
     queue_maxsize: 1
-  - queue: CONSOLE
-    queue_maxsize: 0
   secure_queues:
   - queue: SECURE_NET_SESSIONS
     queue_maxsize: 0
@@ -34,6 +28,8 @@ defaults:
       autorestart: true
       autostart: true
       endpoint: app.system.core._console
+      queue: CONSOLE
+      queue_maxsize: 0
       thread_is_daemon: false
       thread_name: T0_CONSOLE
       visible: false
@@ -68,15 +64,32 @@ defaults:
       queue_maxsize: 1
       thread_is_daemon: false
       thread_name: T3_GPT
-      
+
     - args:
       - queue_handler
       - event_handler
       autorestart: true
       autostart: true
-      endpoint: app.services.api.web_api
-      queue: WEB_API_INPUT
+      endpoint: app.services.external.aidoc_reader
+      queue: AI_DOC_READER
       queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T3_AI_DOC
+      
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: false
+      endpoint: app.services.api.web_api
+      queue: 
+      - WEB_API_TEXT
+      - WEB_API_DOC
+      - WEB_API_RESPONSE
+      queue_maxsize: 
+      - 0
+      - 0
+      - 0
       thread_is_daemon: false
       thread_name: T3_WEB_API
 
@@ -86,8 +99,14 @@ defaults:
       autorestart: true
       autostart: true
       endpoint: app.services.api.telegram_api
-      queue: TELEGRAM_API_INPUT
-      queue_maxsize: 0
+      queue:
+      - TELEGRAM_API_TEXT
+      - TELEGRAM_API_DOC
+      - TELEGRAM_API_RESPONSE
+      queue_maxsize: 
+      - 0
+      - 0
+      - 0
       thread_is_daemon: false
       thread_name: T3_TELEGRAM_API
 

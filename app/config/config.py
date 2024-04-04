@@ -219,6 +219,7 @@ config_structure = {
                 # "@api_streaming": "app.services.api.streaming.app.App",
             },
             "external": {"@gpt": "app.services.external.gpt.GPT",
+                         "@aidoc_reader": "app.services.external.aidoc_reader.AIDOC_READER",
                          },
             "task": {
                 "miscellaneous": ["app.services.task.miscellaneous.MiscellaneousTask", []],

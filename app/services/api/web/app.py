@@ -63,7 +63,7 @@ class App:
 
             data = data.get("message").lower()  # Convert data to lowercase
             self.queue_handler.add_to_queue(
-                "WEB_API_INPUT", ((sid, uid, chat_id, device_id), data, "WEB_API"))
+                "WEB_API_TEXT", ((sid, uid, chat_id, device_id), data, "WEB_API"))
 
             # Broadcast the message to other clients in the same session
             if uid in self.sessions:

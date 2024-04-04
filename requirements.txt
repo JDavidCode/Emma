@@ -27,3 +27,10 @@ mplfinance
 keyboard
 Pillow
 PyTelegramBotAPI
+
+#document reader
+langchain
+PyPDF2
+faiss-cpu
+google-generativeai
+langchain_google_genai

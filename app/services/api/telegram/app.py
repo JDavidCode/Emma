@@ -29,16 +29,19 @@ class App:
         def send_help(message):
             self.bot.reply_to(message, "Busca ayuda en otro lado")
 
-        @self.bot.message_handler(content_types=['document', 'audio'])
+        @self.bot.message_handler(content_types=['document'])
         def handle_docs_audio(message):
-            pass
+            cid = message.chat.id
+            uid = message.from_user.id
+            self.queue_handler.add_to_queue("CONSOLE", (self.name, message))
+            self.queue_handler.add_to_queue("TELEGRAM_API_DOC", ((uid, cid), message.document, "TELEGRAM_API"))
 
         @self.bot.message_handler(func=lambda m: True)
         def echo_all(message):
             cid = message.chat.id
             uid = message.from_user.id
             self.queue_handler.add_to_queue(
-                "TELEGRAM_API_INPUT", ((uid, cid), message.text, "TELEGRAM_API"))
+                "TELEGRAM_API_TEXT", ((uid, cid), message.text, "TELEGRAM_API"))
 
     def process_responses(self):
         while not self.stop_flag:
@@ -56,10 +59,10 @@ class App:
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
-        self.register_routes()
-        self.bot.polling(none_stop=True)
 
         try:
+            self.register_routes()
+            self.bot.polling(none_stop=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

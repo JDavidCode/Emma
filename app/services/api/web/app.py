@@ -1,4 +1,4 @@
-from flask import Flask, make_response, redirect, render_template, request, jsonify, url_for
+                                       from flask import Flask, make_response, redirect, render_template, request, jsonify, url_for
 from flask_socketio import SocketIO, join_room
 from flask_cors import CORS
 import logging

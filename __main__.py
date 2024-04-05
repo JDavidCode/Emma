@@ -45,15 +45,15 @@ class RUN:
             self.server_thread.stop_flag.set()
 
     def initialize(self):
-        #Main Server Connections, updates, corrections, etc
+        # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
         self.init = init_module.Run()
-        self.init.run()
-        #Server Starup
+        #self.init.run()
+        # Server Starup
         config_module = importlib.import_module('app.config.config')
         self.Config = config_module.Config
         self.Config.auto_populate_config(config_structure)
-        
+
         _, clock = self.Config.app.services.task.miscellaneous.date_clock(2)
         os.environ["DATE"] = f"{clock}"
         self.thread_handler = self.Config.app.system.core.thread
@@ -69,13 +69,14 @@ class RUN:
         Args:
             package_list (list): List of packages to start.
         """
-        # Config.app.system.admin.agents.sys.update_database()
-        # Config.app.system.admin.agents.sys.verify_paths()
-        # Config.app.system.admin.agents.sys.initialize_queues()
-        # Config.app.system.admin.agents.sys.instance_threads()
-        # Config.inspect_config_section(Config.forge)
-        # Config.forge.run(package_list=package_list)
-        # Config.app.system.admin.agents.sys.instance_threads(forge=True)
+        self.Config.app.system.admin.agents.sys.update_database()
+        self.Config.app.system.admin.agents.sys.verify_paths()
+        self.Config.app.system.admin.agents.sys.initialize_queues()
+        self.Config.app.system.admin.agents.sys.instance_threads()
+        self.Config.inspect_config_section(self.Config.forge)
+        self.Config.forge.run(package_list=package_list)
+        self.Config.app.system.admin.agents.sys.instance_threads(
+            forge=True)
 
     def run(self):
         self.initialize()

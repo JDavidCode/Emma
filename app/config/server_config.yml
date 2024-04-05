@@ -71,8 +71,14 @@ defaults:
       autorestart: true
       autostart: true
       endpoint: app.services.external.aidoc_reader
-      queue: AI_DOC_READER
-      queue_maxsize: 0
+      queue: 
+      - AIDOC_READER
+      - AIDOC_READER_QUESTION
+      - AIDOC_READER_RESPONSE
+      queue_maxsize: 
+      - 0
+      - 0
+      - 0
       thread_is_daemon: false
       thread_name: T3_AI_DOC
       

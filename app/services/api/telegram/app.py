@@ -1,6 +1,7 @@
 import threading
 import traceback
 import telebot
+import mimetypes
 
 
 class App:
@@ -17,31 +18,63 @@ class App:
         self.stop_flag = False
         self.response_thread = None
         self.sessions = {}
+        self.user_context = {}
 
     def register_routes(self):
         self.event.wait()
 
         @self.bot.message_handler(commands=['start'])
         def send_welcome(message):
-            self.bot.reply_to(message, "Hola mundo, Yo soy Emma.")
+            self.bot.reply_to(message, "¡Hola mundo!, Mi nombre es Emma.")
 
-        @self.bot.message_handler(commands=['help', 'ayuda'])
-        def send_help(message):
-            self.bot.reply_to(message, "Busca ayuda en otro lado")
+        # @self.bot.message_handler(commands=['help', 'ayuda'])
+        # def send_help(message):
+        #   self.bot.reply_to(message, "Busca ayuda en otro lado")
+
+        @self.bot.message_handler(func=lambda message: message.text is not None and message.reply_to_message is None)
+        def echo_text(message):
+            cid = message.chat.id
+            uid = message.from_user.id
+            if message.text != "":
+
+                self.queue_handler.add_to_queue(
+                    "TELEGRAM_API_TEXT", ((uid, cid), message.text, "TELEGRAM_API"))
+
+        @self.bot.message_handler(content_types=['audio'])
+        def handle_audio(message):
+            pass
 
         @self.bot.message_handler(content_types=['document'])
-        def handle_docs_audio(message):
+        def handle_docs(message):
             cid = message.chat.id
             uid = message.from_user.id
-            self.queue_handler.add_to_queue("CONSOLE", (self.name, message))
-            self.queue_handler.add_to_queue("TELEGRAM_API_DOC", ((uid, cid), message.document, "TELEGRAM_API"))
+            fid = message.document.file_unique_id
+            doc_name = message.document.file_name
+            file_info = self.bot.get_file(
+                message.document.file_id)
 
-        @self.bot.message_handler(func=lambda m: True)
-        def echo_all(message):
+            file_bytes = self.bot.download_file(file_path=file_info.file_path)
+            file_path = f"app/common/.temp/{message.document.file_name}"
+            with open(file_path, 'wb') as f:
+                f.write(file_bytes)
+
+            # self.queue_handler.add_to_queue("CONSOLE", (self.name, file_bytes))
+            self.queue_handler.add_to_queue(
+                "TELEGRAM_API_DOC", ("write", (uid, cid, fid), (doc_name, file_path), "TELEGRAM_API"))
+
+        @self.bot.message_handler(func=lambda message: message.reply_to_message is not None and message.reply_to_message.document is not None)
+        def reply_to_doc(message):
             cid = message.chat.id
             uid = message.from_user.id
+            reply_message = message.reply_to_message
+            fid = reply_message.document.file_unique_id
+
+            _ask = reply_message.document
+
+            # Aquí puedes acceder a los datos del mensaje original y del documento adjunto
+            original_text = message.text
             self.queue_handler.add_to_queue(
-                "TELEGRAM_API_TEXT", ((uid, cid), message.text, "TELEGRAM_API"))
+                "TELEGRAM_API_DOC", ("read", (uid, cid, fid), original_text, "TELEGRAM_API"))
 
     def process_responses(self):
         while not self.stop_flag:

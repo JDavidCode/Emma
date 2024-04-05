@@ -41,7 +41,7 @@ class InputRouter:
             target=self.gpt_responses, name=f"{self.name}_GPT_RESPONSES")
         gpt_response_thread.start()
         aidoc_responses_thread = threading.Thread(
-            target=self.gpt_responses, name=f"{self.name}_AIDOC_RESPONSES")
+            target=self.aidoc_responses, name=f"{self.name}_AIDOC_RESPONSES")
         aidoc_responses_thread.start()
 
     def web_api_input(self):
@@ -69,11 +69,15 @@ class InputRouter:
     def telegram_api_doc(self):
         while not self.stop_flag:
             try:
-                ids, data, channel = self.queue_handler.get_queue(
-                    "TELEGRAM_API_DOC", timeout=0.1, default=(None, None, None))
+                _, ids, data, channel = self.queue_handler.get_queue(
+                    "TELEGRAM_API_DOC", timeout=0.1, default=(None, None, None, None))
                 if ids != None:
-                    self.queue_handler.add_to_queue(
-                        'AI_DOC_READER', (ids, data, channel))
+                    if _ == 'write':
+                        self.queue_handler.add_to_queue(
+                            'AIDOC_READER', (ids, data, channel))
+                    elif _ == 'read':
+                        self.queue_handler.add_to_queue(
+                            'AIDOC_READER_QUESTION', (ids, data, channel))
             except Exception as e:
                 self.handle_error(e)
 
@@ -95,10 +99,14 @@ class InputRouter:
 
     def aidoc_responses(self):
         while not self.stop_flag:
-            ids, channel = self.queue_handler.get_queue(
+            key, ids, data,  channel = self.queue_handler.get_queue(
                 "AIDOC_READER_RESPONSE")
-            self.queue_handler.add_to_queue(
-                'TELEGRAM_API_RESPONSE', (ids, "DOCUMENT HAS BEEN LOADED", channel))
+            if key == "load":
+                self.queue_handler.add_to_queue(
+                    f'{channel}_RESPONSE', (ids, f"Document {data} has been loaded"))
+            elif key == "response":
+                self.queue_handler.add_to_queue(
+                    f'{channel}_RESPONSE', (ids, data))
 
     def command_indexer(self, keyword, off_key=False):
         dictionary = Config.tools.data.json_loader(

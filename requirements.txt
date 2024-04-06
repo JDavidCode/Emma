@@ -24,7 +24,7 @@ mplfinance
 keyboard
 Pillow
 PyTelegramBotAPI
-bs4
+beautifulsoup4
 
 #document reader
 langchain

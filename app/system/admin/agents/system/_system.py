@@ -207,6 +207,8 @@ class SystemManager:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
         for dic in data["defaults"]["queues"]:
+            if dic is None and not isinstance(dic, str):
+                continue
             if dic.get("queue") and dic.get("queue_maxsize"):
                 # Handle single or multiple queue names
                 queue_names = dic["queue"] if isinstance(
@@ -220,6 +222,8 @@ class SystemManager:
                     queue.create_queue(queue_name, queue_maxsize)
 
         for dic in data["defaults"]["secure_queues"]:
+            if dic is None and not isinstance(dic, str):
+                continue
             if dic["queue"]:
                 queue.create_secure_queue(dic["queue"], dic["queue_maxsize"])
 

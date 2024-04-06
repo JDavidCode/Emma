@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 import time
 import openai
@@ -71,7 +72,7 @@ class GPT:
                 first = False
 
             ids, data, channel = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None, None))
+                self.queue_name[0], 0.1, (None, None, None))
             if data == None or channel == None:
                 continue
             else:

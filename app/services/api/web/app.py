@@ -1,4 +1,4 @@
-                                       from flask import Flask, make_response, redirect, render_template, request, jsonify, url_for
+from flask import Flask, make_response, redirect, render_template, request, jsonify, url_for
 from flask_socketio import SocketIO, join_room
 from flask_cors import CORS
 import logging
@@ -225,7 +225,8 @@ class App:
     def process_responses(self):
         while not self.stop_flag:
             ids, data = self.queue_handler.get_queue(
-                "WEB_API_RESPONSE", 0.1, (None, None))
+                "WEB_API_RESPONSE", 0.1, (None, None)
+                )
             if ids is None:
                 continue
 
@@ -259,7 +260,7 @@ class App:
 
         try:
             self.socketio.run(self.app, host="0.0.0.0",
-                              port=3019, allow_unsafe_werkzeug=True)
+                              port=3018, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

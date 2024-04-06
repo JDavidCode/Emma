@@ -1,6 +1,5 @@
-emma/web_server/history/
 .conda
-emma/.AmyRootUser
-emma/services/external/
+
 *.pyc
 app/system/core/logging/history/
+app/common/.temp/

@@ -37,7 +37,7 @@ class SessionsAgent:
         email = info.get('email')
         password = info.get('password')
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
         try:
             # Crear un cursor
             cursor = users_conn.cursor(dictionary=True)
@@ -48,7 +48,7 @@ class SessionsAgent:
             user_data = cursor.fetchone()
 
             # Verificar si se encontró el usuario y la contraseña coincide
-            if user_data and user_data["password"] == password:
+            if user_data and user_data["pass"] == password:
                 return True, user_data["uid"]
             else:
                 return False, "Credenciales incorrectas. Inicio de sesión fallido."
@@ -66,7 +66,7 @@ class SessionsAgent:
 
     def user_signup(self, info):
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -125,9 +125,9 @@ class SessionsAgent:
             }
 
             # Query to insert the new user
-            query_insert_user = "INSERT INTO users (uid, info, login, password, devices, cloud) VALUES (%s, %s, %s, %s, %s, %s)"
+            query_insert_user = "INSERT INTO users (uid, info, login, pass, devices, cloud) VALUES (%s, %s, %s, %s, %s, %s)"
             cursor.execute(query_insert_user, (uid, json.dumps(nuevo_usuario), info.get('email', ""), info.get(
-                'password', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([nuevo_grupo])))
+                'pass', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([nuevo_grupo])))
 
             # Confirm the transaction
             users_conn.commit()
@@ -151,13 +151,13 @@ class SessionsAgent:
 
     def get_user(self, user_id):
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
         user_info = {}
         try:
             # Create a cursor
             cursor = users_conn.cursor(dictionary=True)
 
-            # Retrieve user information (excluding password)
+            # Retrieve user information (excluding pass)
             query_get_user = "SELECT login, info, cloud FROM users WHERE uid = %s"
             cursor.execute(query_get_user, (user_id,))
             user_db_info = cursor.fetchone()
@@ -205,7 +205,7 @@ class SessionsAgent:
             return "User ID and Chat ID cannot be null."
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -263,7 +263,7 @@ class SessionsAgent:
                 name, age, birthday, level)
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         chat_info = {
             "gid": group_id,
@@ -334,7 +334,7 @@ class SessionsAgent:
             return "Chat ID cannot be null"
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -390,7 +390,7 @@ class SessionsAgent:
             return "Chat ID cannot be null"
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -424,7 +424,7 @@ class SessionsAgent:
             return "Chat ID cannot be null"
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -461,7 +461,7 @@ class SessionsAgent:
         if user_id is None or name is None:
             return "ERROR INVALID VALUES"
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
         try:
             # Crear un cursor
             cursor = users_conn.cursor(dictionary=True)
@@ -518,7 +518,7 @@ class SessionsAgent:
             return "ERROR INVALID VALUES"
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor
@@ -589,7 +589,7 @@ class SessionsAgent:
             return "ERROR INVALID VALUES"
 
         users_conn = Config.app.system.admin.agents.db.connect(
-            "localhost", "root", "2k3/XekPx3E6dqaN", "session")
+            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
 
         try:
             # Create a cursor

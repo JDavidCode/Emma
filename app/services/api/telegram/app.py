@@ -95,7 +95,7 @@ class App:
 
         try:
             self.register_routes()
-            self.bot.polling(none_stop=True)
+            self.bot.infinity_polling()
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

@@ -48,7 +48,7 @@ class RUN:
         # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
         self.init = init_module.Run()
-        #self.init.run()
+        # self.init.run()
         # Server Starup
         config_module = importlib.import_module('app.config.config')
         self.Config = config_module.Config

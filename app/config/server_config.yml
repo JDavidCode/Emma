@@ -11,17 +11,7 @@ defaults:
     queue_maxsize: 0
     
   Threads:
-    - args:
-      - queue_handler
-      - event_handler
-      autorestart: true
-      autostart: true
-      endpoint: app.system.core._logger
-      queue: LOGGING
-      queue_maxsize: 0
-      thread_is_daemon: false
-      thread_name: T0_LOGGER
-
+  
     - args:
       - queue_handler
       autorestart: true
@@ -32,6 +22,17 @@ defaults:
       thread_is_daemon: false
       thread_name: T0_CONSOLE
       visible: false
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: true
+      endpoint: app.system.core._logger
+      queue: LOGGING
+      queue_maxsize: 0
+      thread_is_daemon: false
+      thread_name: T0_LOGGER
 
     - args:
       - queue_handler

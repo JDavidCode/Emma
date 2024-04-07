@@ -18,7 +18,9 @@ class SessionsAgent:
         self.event = threading.Event()
         self.lock = threading.Lock()
         self.stop_flag = False
-        self.users_conn = None
+        self.users_conn = Config.app.system.admin.agents.db.connect(
+            os.getenv("db_host"), os.getenv(
+                "db_user"), os.getenv("db_pw"), os.getenv("db_name"))
 
     def handle_shutdown(self):
         try:
@@ -36,11 +38,9 @@ class SessionsAgent:
     def user_login(self, info):
         email = info.get('email')
         password = info.get('password')
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
         try:
             # Crear un cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Consulta para obtener información del usuario por correo electrónico
             query = "SELECT * FROM users WHERE login = %s"
@@ -54,23 +54,13 @@ class SessionsAgent:
                 return False, "Credenciales incorrectas. Inicio de sesión fallido."
 
         except Exception as e:
-            return False, "Error al ejecutar la consulta: login "
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
+            traceback_str = traceback.format_exc()
+            return False, f"Error al ejecutar la consulta: login {traceback_str}"
 
     def user_signup(self, info):
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Check if the user with the provided email already exists
             query_check_user = "SELECT COUNT(*) as count FROM users WHERE login = %s"
@@ -107,7 +97,7 @@ class SessionsAgent:
 
             try:
                 # Confirmar la transacción
-                users_conn.commit()
+                self.users_conn.commit()
             except Exception as e:
                 return False, f"Error creating user {e}"
 
@@ -130,7 +120,7 @@ class SessionsAgent:
                 'pass', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([nuevo_grupo])))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             return True, "User Registered"
 
@@ -140,22 +130,11 @@ class SessionsAgent:
             traceback.print_exc()
             return False, "Error executing query: signup"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def get_user(self, user_id):
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
         user_info = {}
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Retrieve user information (excluding pass)
             query_get_user = "SELECT login, info, cloud FROM users WHERE uid = %s"
@@ -191,25 +170,12 @@ class SessionsAgent:
             traceback.print_exc()  # Print the full traceback
             return False, "Error executing query: get_user"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def get_chat(self, chat_id, user_id):
         if user_id is None or chat_id is None:
             return "User ID and Chat ID cannot be null."
-
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Query to obtain information of the chat
             query = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
@@ -240,15 +206,6 @@ class SessionsAgent:
             print("Error executing query: get_chat ", e)
             return "Error retrieving chat information from the database."
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def create_chat(self, _id, group_id, name=None, description=None, prompt=None):
         if _id is None:
             return "UID CANNOT BE NULL"
@@ -262,9 +219,6 @@ class SessionsAgent:
             prompt = self.create_prompt_session(
                 name, age, birthday, level)
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         chat_info = {
             "gid": group_id,
             "name": name,
@@ -273,7 +227,7 @@ class SessionsAgent:
 
         try:
             # Crear un cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Convertir el diccionario a formato JSON
             info = json.dumps(chat_info)
@@ -284,7 +238,7 @@ class SessionsAgent:
             cursor.execute(query, (chat_id, _id, info, content))
 
             # Confirmar la transacción
-            users_conn.commit()
+            self.users_conn.commit()
 
             # Select the current 'cloud' from the database
             query_select_cloud = "SELECT cloud FROM users WHERE uid = %s AND cloud->>'id'=%s"
@@ -312,7 +266,7 @@ class SessionsAgent:
                                (updated_cloud_json, _id, group_id))
 
                 # Confirm the transaction after the update
-                users_conn.commit()
+                self.users_conn.commit()
             else:
                 print(f"Chat ID {chat_id} already exists in the list.")
             return True, (f"Chat {name} has been created", name)
@@ -320,25 +274,14 @@ class SessionsAgent:
         except Exception as e:
             print("Error al ejecutar la consulta: chat ", e)
             return False, "ERROR DATABASE OPERATION"
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
 
     def edit_chat(self, uid, chat_id, name=None, description=None):
         if chat_id is None:
             return "Chat ID cannot be null"
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Retrieve existing chat information
             query_get_chat = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
@@ -368,7 +311,7 @@ class SessionsAgent:
                            (updated_info, updated_content, chat_id))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             return True, f"Chat with ID {chat_id} has been updated"
 
@@ -376,25 +319,13 @@ class SessionsAgent:
             print("Error executing query: update_chat", e)
             return False, "Error executing query: update_chat"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def update_chat(self, uid, chat_id, content):
         if chat_id is None:
             return "Chat ID cannot be null"
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Update the chat in the database
             query_update_chat = "UPDATE chats SET content = %s WHERE cid = %s & uid = %s"
@@ -402,7 +333,7 @@ class SessionsAgent:
                            ("updated_content", chat_id, uid))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             return True, f"Chat with ID {chat_id} has been updated"
 
@@ -410,25 +341,13 @@ class SessionsAgent:
             print("Error executing query: update_chat", e)
             return False, "Error executing query: update_chat"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def remove_chat(self, uid, gid, cid):
         if cid is None:
             return "Chat ID cannot be null"
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Update the content field in the user's cloud
             query_update_cloud = "UPDATE users SET cloud = JSON_SET(cloud, '$[%s].content', %s) WHERE JSON_CONTAINS_PATH(cloud, 'one', '$[%s]')"
@@ -440,7 +359,7 @@ class SessionsAgent:
             cursor.execute(query_remove_chat, (cid,))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             return True, f"Chat with ID {cid} has been removed"
 
@@ -448,23 +367,13 @@ class SessionsAgent:
             print("Error executing query: remove_chat", e)
             return False, "Error executing query: remove_chat"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def create_group(self, user_id, name, content=[], date=datetime.now):
         if user_id is None or name is None:
             return "ERROR INVALID VALUES"
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
+
         try:
             # Crear un cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Generar un nuevo ID para el grupo
             group_id = self.generate_id('GID-')
@@ -492,7 +401,7 @@ class SessionsAgent:
             cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
 
             # Confirmar la transacción
-            users_conn.commit()
+            self.users_conn.commit()
 
             print("Grupo creado exitosamente.")
             # Devolver el ID del nuevo grupo
@@ -504,25 +413,13 @@ class SessionsAgent:
             traceback.print_exc()  # Print the full traceback
             return False, "ERROR DATABASE OPERATION"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def edit_group(self, user_id, from_group_id, to_group_id, content_add, content_remove):
         if user_id is None or from_group_id is None or to_group_id is None:
             return "ERROR INVALID VALUES"
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Obtaining the current value of the "cloud" column for the user
             query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
@@ -566,7 +463,7 @@ class SessionsAgent:
             cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             print("Grupo actualizado exitosamente.")
             return True, f"GROUP {from_group_id} has been updated"
@@ -575,25 +472,13 @@ class SessionsAgent:
             print("Error executing query: group update", e)
             return "ERROR DATABASE OPERATION"
 
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
-
     def delete_group(self, user_id, group_id):
         if user_id is None or group_id is None:
             return "ERROR INVALID VALUES"
 
-        users_conn = Config.app.system.admin.agents.db.connect(
-            "34.75.103.56", "emma", "EH[R>dkK1_Bp3vIu", "south-1")
-
         try:
             # Create a cursor
-            cursor = users_conn.cursor(dictionary=True)
+            cursor = self.users_conn.cursor(dictionary=True)
 
             # Get the current value of the "cloud" column for the user
             query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
@@ -623,7 +508,7 @@ class SessionsAgent:
             cursor.execute(query_remove_chats, (group_id,))
 
             # Confirm the transaction
-            users_conn.commit()
+            self.users_conn.commit()
 
             print(
                 f"Group with ID {group_id} and associated chats have been removed successfully.")
@@ -632,15 +517,6 @@ class SessionsAgent:
         except Exception as e:
             print("Error executing query: remove_group", e)
             return False, "ERROR DATABASE OPERATION"
-
-        finally:
-            if users_conn:
-                try:
-                    users_conn.close()
-                except Exception as e:
-                    print("Error closing connection:", e)
-                finally:
-                    self.users_conn = None
 
     def create_prompt_session(self, name, age, birthday, level, role=None):
         if role is None:

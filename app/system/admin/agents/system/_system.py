@@ -91,7 +91,6 @@ class SystemManager:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
         arg_mapping = {
-            "console_handler": Config.app.system.core._console,
             "queue_handler": Config.app.system.core.queue,
             "event_handler": Config.app.system.core.event,
             "thread_handler": Config.app.system.core.thread,

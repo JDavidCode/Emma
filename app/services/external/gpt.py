@@ -56,17 +56,10 @@ class GPT:
             Config.app.system.admin.agents.sys.create_new_worker(thread_name)
 
     def main(self):
-        first = True
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
-
         self.event.wait()
-
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
-            if not self.stop_flag and first:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", [self.name, "Is Started"])
-                first = False
 
             ids, data, channel = self.queue_handler.get_queue(
                 self.queue_name[0], 0.1, (None, None, None))
@@ -157,6 +150,9 @@ class GPT:
     def run(self):
         self.event.set()
 
+    def _handle_system_ready(self):
+        return True
+
     def stop(self):
         self.stop_flag = True
 
@@ -167,8 +163,14 @@ class GPT:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
-        self.stop_flag = False
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

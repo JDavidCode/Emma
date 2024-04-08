@@ -20,7 +20,7 @@ class SystemAgent:
         queue_handler: An object responsible for handling the queue.
     """
 
-    def __init__(self, name, queue_name, queue_handler=None):
+    def __init__(self, name, queue_name, queue_handler):
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -75,7 +75,7 @@ class SystemAgent:
             current_obj = getattr(current_obj, attribute)
         return current_obj
 
-    def instance_threads(self, forge=False):
+    def instance_classes(self, forge=False):
         """
         Initialize threads based on configuration data.
 
@@ -110,7 +110,7 @@ class SystemAgent:
             if "queue" in dic and dic["queue"]:
                 Config.app.system.core.queue.create_queue(
                     dic["queue"], dic["queue_maxsize"])
-
+        classes = []
         for dic in data:
             args = dic.get("args", [])
             if forge:
@@ -131,42 +131,48 @@ class SystemAgent:
                         self.queue_handler.add_to_queue(
                             "LOGGING", ("Error", f"Invalid argument: {arg}"))
 
-                func_instance = self.get_nested_attribute(Config, endpoint)
-                func_instance = func_instance(*processed_args)
+                class_instance = self.get_nested_attribute(Config, endpoint)
+                class_instance = class_instance(*processed_args)
                 thread_name = dic.get("thread_name")
                 visible = dic.get("visible", True)
 
-                if visible and "T0" not in thread_name:
-                    self.func_instances[thread_name] = func_instance
+                if visible:
+                    self.func_instances[thread_name] = class_instance
 
                 thread_is_daemon = dic.get("thread_is_daemon", False)
                 autostart = dic.get("autostart", False)
-                self.initialize_thread(
-                    func_instance, thread_name, autostart, thread_is_daemon)
+                if "T0" in thread_name:
+                    self.instance_threads([[class_instance, thread_name,
+                                          autostart, thread_is_daemon]])
+                    self.initialize_thread([[thread_name, class_instance]])
+                else:
+                    classes.append([class_instance, thread_name,
+                                   autostart, thread_is_daemon])
 
         Config.app.thread_instances = self.func_instances
+        return classes
 
-    def initialize_thread(self, func_instance, thread_name, autostart=True, thread_is_daemon=False):
-        """
-        Initialize and start a thread.
-
-        Args:
-            func_instance: The thread instance.
-            thread_name (str): The name of the thread.
-            autostart (bool, optional): Whether to start the thread immediately. Defaults to True.
-            thread_is_daemon (bool, optional): Whether the thread is a daemon thread. Defaults to False.
-        """
-        Config.app.system.core.thread.add_thread(
-            threading.Thread(
-                target=lambda: func_instance.main(),
-                name=thread_name,
-                daemon=thread_is_daemon,
+    def instance_threads(self, instances):
+        threads = []
+        for class_instance, thread_name, autostart, thread_is_daemon in instances:
+            Config.app.system.core.thread.add_thread(
+                threading.Thread(
+                    target=lambda: class_instance.main(),
+                    name=thread_name,
+                    daemon=thread_is_daemon,
+                )
             )
-        )
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, f"{thread_name} Has been instanciated"))
+            threads.append([thread_name, class_instance])
+        return threads
 
-        if autostart:
+    def initialize_thread(self, threads):
+        for thread_name, instance in threads:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, (thread_name, instance)))
             Config.app.system.core.thread.start_thread(thread_name)
-            func_instance.run()
+            instance.run()
 
     def create_new_worker(self, thread_name):
         """
@@ -340,24 +346,6 @@ class SystemAgent:
         for i in clear:
             os.environ[i[0]] = i[1]
 
-    def verify_paths(self):
-        """
-        Verify and create directory paths if they don't exist.
-
-        Returns:
-            str: Confirmation message.
-        """
-        DirsStructure = [
-            "./app/common/.temp",
-            "./app/services/external",
-        ]
-
-        for path in DirsStructure:
-            if not os.path.exists(path):
-                os.makedirs(path)
-
-        return "All Directories have been verified correctly"
-
     def update_database(self):
         """
         Update data automatically.
@@ -433,7 +421,7 @@ class SystemAgent:
         except Exception as e:
             self.handle_error(e)
 
-            return False, traceback_str
+            return False
 
 
 if __name__ == "__main__":

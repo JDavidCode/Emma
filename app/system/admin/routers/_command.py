@@ -16,20 +16,10 @@ class CommandRouter:
 
         self.event_handler.subscribe(self)
 
-    def handle_shutdown(self):
-        try:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.name, "Handling shutdown..."))
-            # Consider implementing shutdown logic here
-            self.event_handler.subscribers_shutdown_flag(self)
-        except Exception as e:
-            self.handle_error(e)
-
     def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
-
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             ids, data, channel = self.queue_handler.get_queue(
                 "COMMAND", 0.1, (None, None, None))
@@ -81,7 +71,9 @@ class CommandRouter:
 
     def run(self):
         self.event.set()
-        self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])
+
+    def _handle_system_ready(self):
+        return True
 
     def stop(self):
         self.stop_flag = True
@@ -93,13 +85,12 @@ class CommandRouter:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
+    def _handle_shutdown(self):
         try:
-            # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
+                self)
         except Exception as e:
             self.handle_error(e)
 

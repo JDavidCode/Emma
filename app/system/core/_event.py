@@ -15,7 +15,7 @@ class EventHandler:
         """
         self.name = name
         self.queue_name = queue_name
-        self.subscribers = []
+        self.subscribers = {}
         self.queue_handler = queue_handler
         self.shutdown_flag = []
 
@@ -26,7 +26,43 @@ class EventHandler:
         Args:
             subscriber: The component to subscribe.
         """
-        self.subscribers.append(subscriber)
+        self.subscribers[subscriber] = "not-ready"
+
+    def unsubscribe(self, subscriber):
+        """
+        Unsubscribe a component from the event handler.
+
+        Args:
+            subscriber: The component to unsubscribe.
+        """
+        if subscriber in self.subscribers:
+            self.subscribers.remove(subscriber)
+
+    def notify_system_ready(self):
+        for subscriber in self.subscribers:
+            try:
+                subscriber._handle_system_ready()
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.name, (e, traceback_str)))
+                continue
+
+    def notify_shutdown(self):
+        """
+        Notify subscribers of a shutdown event.
+        """
+        for subscriber in self.subscribers:
+            try:
+                subscriber._handle_shutdown()
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", (self.name, f"{subscriber} HAS BEEN NOTIFIED OF SHUTDOWN"))
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.name, (e, traceback_str)))
+                continue
+        self.subscribers = []
 
     def subscribers_shutdown_flag(self, subscriber=None, start=False):
         """
@@ -46,35 +82,6 @@ class EventHandler:
                 if subscriber_to_remove in self.subscribers:
                     self.subscribers.remove(subscriber_to_remove)
             return len(self.subscribers) == 0
-
-    def unsubscribe(self, subscriber):
-        """
-        Unsubscribe a component from the event handler.
-
-        Args:
-            subscriber: The component to unsubscribe.
-        """
-        if subscriber in self.subscribers:
-            self.subscribers.remove(subscriber)
-
-    def notify_shutdown(self):
-        """
-        Notify subscribers of a shutdown event.
-        """
-        for subscriber in self.subscribers:
-            try:
-                subscriber.handle_shutdown()
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", (self.name, f"{subscriber} HAS BEEN NOTIFIED OF SHUTDOWN"))
-            except Exception as e:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", (self.name, f"ERROR WHEN NOTIFYING {subscriber} OF SHUTDOWN: {e}"))
-                traceback_str = traceback.format_exc()
-                self.queue_handler.add_to_queue(
-                    "LOGGING", (self.name, (e, traceback_str)))
-                continue
-        time.sleep(3)
-        self.subscribers = []
 
     def notify_overload(self):
         """

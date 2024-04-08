@@ -1,12 +1,13 @@
 import datetime
 import os
 import threading
+import traceback
 import keyboard
 from app.config.config import Config
 
 
 class Console:
-    def __init__(self, name, queue_name, queue_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
         """
         Initialize the Console object.
 
@@ -18,6 +19,8 @@ class Console:
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        self.event_handler.subscribe(self)
         self.event = threading.Event()
         self.stop_flag = False
 
@@ -25,20 +28,10 @@ class Console:
         """
         Start the main loop to display console messages.
         """
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
 
-        console_input = self.Input(self)
-
-        input_thread = threading.Thread(
-            target=console_input.active_terminal, name=f"{self.name} input_thread")
-        input_thread.start()
-        # console_input.set_hotkeys()
-
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             remitent, output = self.queue_handler.get_queue("CONSOLE")
             self.display_message(remitent, output)
@@ -104,16 +97,33 @@ class Console:
         self.display_message("Progress", f"[{progress_bar}] {percentage:.2f}%")
 
     def run(self):
-        """
-        Set the event to start the console.
-        """
         self.event.set()
 
+    def _handle_system_ready(self):
+        console_input = self.Input(self)
+        input_thread = threading.Thread(
+            target=console_input.active_terminal, name=f"{self.name} input_thread")
+        input_thread.start()
+        return True
+
     def stop(self):
-        """
-        Stop the console.
-        """
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
     class Input:
         """
@@ -220,24 +230,29 @@ class Console:
             self.hotkey_ctrl_8.resume()
             self.hotkey_ctrl_1.resume()
 
-        def _handle_shutdown(self):
-            """Handle local shutdown."""
-            Config.app.system.admin.agents.sys.server_shutdown()
-
         def handle_reload(self):
             """Handle server reload."""
             Config.app.system.admin.agents.sys.server_restart()
 
-        def handle_shutdown(self):
-            """Handle shutting down the HotKeys instance."""
-            try:
-                keyboard.remove_hotkey(self.hotkey_ctrl_0)
-                keyboard.remove_hotkey(self.hotkey_ctrl_8)
-                keyboard.remove_hotkey(self.hotkey_ctrl_1)
-            except:
-                pass
-            self.__stop()
-
         def handle_stop_task(self):
             """Handle stopping a task."""
             print("Stop task hotkey pressed")
+
+        def _handle_system_ready(self):
+            return True
+        def handle_error(self, error, message=None):
+            error_message = f"Error in {self.name}: {error}"
+            if message:
+                error_message += f" - {message}"
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.name, traceback_str))
+
+        def _handle_shutdown(self):
+            try:
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", (self.name, "Handling shutdown..."))
+                self.event_handler.subscribers_shutdown_flag(
+                    self)
+            except Exception as e:
+                self.handle_error(e)

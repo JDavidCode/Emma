@@ -15,34 +15,10 @@ class InputRouter:
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
 
-    def handle_shutdown(self):
-        try:
-            # Handle shutdown logic here
-            message = (self.name, "Handling shutdown...")
-            self.queue_handler.add_to_queue("CONSOLE", message)
-            self.event_handler.subscribers_shutdown_flag(self)
-        except Exception as e:
-            self.handle_error(e)
-
     def main(self):
-        message = (self.name, "Has been instantiated")
-        self.queue_handler.add_to_queue("CONSOLE", message)
         self.event.wait()
-        web_api_thread = threading.Thread(
-            target=self.web_api_input, name=f"{self.name}_WEB")
-        web_api_thread.start()
-        telegram_api_text_thread = threading.Thread(
-            target=self.telegram_api_text, name=f"{self.name}_TELEGRAM_TEXT")
-        telegram_api_text_thread.start()
-        telegram_api_doc_thread = threading.Thread(
-            target=self.telegram_api_doc, name=f"{self.name}_TELEGRAM_DOC")
-        telegram_api_doc_thread.start()
-        gpt_response_thread = threading.Thread(
-            target=self.gpt_responses, name=f"{self.name}_GPT_RESPONSES")
-        gpt_response_thread.start()
-        aidoc_responses_thread = threading.Thread(
-            target=self.aidoc_responses, name=f"{self.name}_AIDOC_RESPONSES")
-        aidoc_responses_thread.start()
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
 
     def web_api_input(self):
         while not self.stop_flag:
@@ -127,8 +103,24 @@ class InputRouter:
 
     def run(self):
         self.event.set()
-        message = (self.name, "Is Started")
-        self.queue_handler.add_to_queue("CONSOLE", message)
+
+    def _handle_system_ready(self):
+        web_api_thread = threading.Thread(
+            target=self.web_api_input, name=f"{self.name}_WEB")
+        web_api_thread.start()
+        telegram_api_text_thread = threading.Thread(
+            target=self.telegram_api_text, name=f"{self.name}_TELEGRAM_TEXT")
+        telegram_api_text_thread.start()
+        telegram_api_doc_thread = threading.Thread(
+            target=self.telegram_api_doc, name=f"{self.name}_TELEGRAM_DOC")
+        telegram_api_doc_thread.start()
+        gpt_response_thread = threading.Thread(
+            target=self.gpt_responses, name=f"{self.name}_GPT_RESPONSES")
+        gpt_response_thread.start()
+        aidoc_responses_thread = threading.Thread(
+            target=self.aidoc_responses, name=f"{self.name}_AIDOC_RESPONSES")
+        aidoc_responses_thread.start()
+        return True
 
     def stop(self):
         self.stop_flag = True
@@ -140,13 +132,12 @@ class InputRouter:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
+    def _handle_shutdown(self):
         try:
-            # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
+                self)
         except Exception as e:
             self.handle_error(e)
 

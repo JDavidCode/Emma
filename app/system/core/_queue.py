@@ -56,7 +56,7 @@ class QueueHandler:
         """
         if name not in self.queues:
             if self.coutdown >= 150:
-                print(f"No queue found with name {name}")
+                print(f"No queue found with name {name} comand={command}")
                 self.coutdown = 0
             else:
                 self.coutdown += 1

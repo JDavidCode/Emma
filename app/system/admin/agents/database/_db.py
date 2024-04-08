@@ -41,9 +41,7 @@ class Database:
             return self.conn
         except mysql.connector.Error as e:
             self.handle_error(e)
-
             return False
-
 
     def close_connection(self):
         """
@@ -78,12 +76,9 @@ class DatabaseAgent:
         self.databases = {}
 
     def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
 
         while not self.stop_flag:
             try:
@@ -144,6 +139,9 @@ class DatabaseAgent:
     def run(self):
         self.event.set()
 
+    def _handle_system_ready(self):
+        return True
+
     def stop(self):
         self.stop_flag = True
 
@@ -154,8 +152,14 @@ class DatabaseAgent:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
-        self.stop_flag = False
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

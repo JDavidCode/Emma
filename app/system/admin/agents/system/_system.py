@@ -433,7 +433,7 @@ class SystemAgent:
         except Exception as e:
             self.handle_error(e)
 
-            return False, traceback_str
+            return False
 
 
 if __name__ == "__main__":

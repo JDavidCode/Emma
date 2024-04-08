@@ -31,9 +31,7 @@ class SessionsAgent:
                 self)  # put it when ready for shutdown
 
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+            self.handle_error(e)
 
     def user_login(self, info):
         email = info.get('email')

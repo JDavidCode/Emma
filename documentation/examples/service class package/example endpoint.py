@@ -1,5 +1,6 @@
 import importlib
 import threading
+import traceback
 
 
 class myclass:
@@ -13,21 +14,20 @@ class myclass:
         self.thread_handler = thread_handler
         self.thread_utils = importlib.import_module(
             "system.utils._attach").Attach()
-        # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
 
     def main(self):
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
+
         if not self.stop_flag:
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
+
         while not self.stop_flag:
-            request, session_data = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None))
-            if request is None:
-                continue  # SERVICE/PLUGIN/APP enpoint here the app start when the thread start
+            # CLASS MAIN LOGIC HERE
+            continue
 
     def attach_components(self, module_name):
         attachable_module = __import__(module_name)
@@ -45,11 +45,18 @@ class myclass:
                 self.thread_utils.attach_variable(
                     self, component_name, component)
 
-    def handle_shutdown(self):  # This for event handling
-        self.stop_flag = False
-
     def run(self):
         self.event.set()
 
     def stop(self):
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def handle_shutdown(self):  # This for event handling
+        self.stop_flag = False

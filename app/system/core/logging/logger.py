@@ -1,4 +1,5 @@
 import importlib
+import logging
 import os
 import time
 import traceback
@@ -26,25 +27,22 @@ class Logger:
 
         This method listens for log messages in the specified queue and saves them to the log buffer.
         """
-        first = True
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
-
+        if not self.stop_flag:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Is Started"))
         while not self.stop_flag:
-            if not self.stop_flag and first:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", [self.name, "Is Started"])
-                first = False
-
             remitent, output = self.queue_handler.get_queue('LOGGING')
             dateTime = datetime.datetime.now()
-            clock = dateTime.time()
             log_entry = {
                 "timestamp": dateTime.isoformat(),
                 "remitent": remitent,
                 "output": output,
             }
+            logging.exception(output)
+
             self.save_log(log_entry)  # Add the log entry to the buffer
 
     def save_log(self, log_entry):

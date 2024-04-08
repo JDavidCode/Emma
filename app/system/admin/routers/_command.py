@@ -90,9 +90,18 @@ class CommandRouter:
         error_message = f"Error in {self.name}: {error}"
         if message:
             error_message += f" - {message}"
-        logging.error(error_message)
         traceback_str = traceback.format_exc()
-        logging.error(traceback_str)
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def handle_shutdown(self):
+        try:
+            # Handle shutdown logic here
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)  # put it when ready for shutdown
+        except Exception as e:
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

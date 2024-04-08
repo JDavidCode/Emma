@@ -11,7 +11,7 @@ import sys
 
 class ToolKit:
     def __init__(self):
-        sys.path.append('../amyassistant')
+        sys.path.append('../app')
         _localDataTools = importlib.import_module(
             'tools.data.local.kit')
 

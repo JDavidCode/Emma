@@ -1,15 +1,17 @@
 import threading
 import mysql.connector
+import traceback
 
 
 class Database:
-    def __init__(self, tag, queue_handler):
+    def __init__(self, name, queue_handler):
         self.queue_handler = queue_handler
-        self.tag = tag
+        self.name = name
         self.host = None
         self.user = None
         self.password = None
         self.database = None
+        self.conn = None
 
     def connect(self, host, user, password, database):
         """
@@ -24,25 +26,24 @@ class Database:
         Returns:
             bool: True if the connection was successful, False otherwise.
         """
-        self.tag = f"{self.tag}-{user}"
+        self.name = f"{self.name}-{user}"
         self.host = host
         self.user = user
         self.password = password
         self.database = database
         try:
-            conn = mysql.connector.connect(
+            self.conn = mysql.connector.connect(
                 host=self.host,
                 user=self.user,
                 password=self.password,
                 database=self.database
             )
-            return conn
+            return self.conn
         except mysql.connector.Error as e:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.tag, f"Error connecting to MySQL: {e}"))
+            self.handle_error(e)
+
             return False
 
-    # Add other database-related methods here...
 
     def close_connection(self):
         """
@@ -51,6 +52,13 @@ class Database:
         if self.conn:
             self.conn.close()
             self.conn = None
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
 
 class DatabaseAgent:
@@ -78,8 +86,14 @@ class DatabaseAgent:
                 "CONSOLE", [self.name, "Is Started"])
 
         while not self.stop_flag:
-            request, data = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None))
+            try:
+                request, data = self.queue_handler.get_queue(
+                    self.queue_name, 0.1, (None, None))
+                # Handle request and data here...
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.name, (e, traceback_str)))
 
     def create_database(self, tag):
         """
@@ -119,14 +133,30 @@ class DatabaseAgent:
         Close all database connections managed by this manager.
         """
         for db in self.databases.values():
-            db.close_connection()
-            del db
-
-    def handle_shutdown(self):  # This for event handling
-        self.stop_flag = False
+            try:
+                db.close_connection()
+                del db
+            except Exception as e:
+                traceback_str = traceback.format_exc()
+                self.queue_handler.add_to_queue(
+                    "LOGGING", (self.name, (e, traceback_str)))
 
     def run(self):
         self.event.set()
 
     def stop(self):
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def handle_shutdown(self):
+        self.stop_flag = False
+
+
+if __name__ == "__main__":
+    pass

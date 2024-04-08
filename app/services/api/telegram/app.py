@@ -21,108 +21,124 @@ class App:
         self.user_context = {}
 
     def register_routes(self):
-        self.event.wait()
+        try:
+            self.event.wait()
 
-        @self.bot.message_handler(commands=['start'])
-        def send_welcome(message):
-            self.bot.reply_to(message, "¡Hola mundo!, Mi nombre es Emma.")
+            @self.bot.message_handler(commands=['start'])
+            def send_welcome(message):
+                self.bot.reply_to(message, "¡Hola mundo!, Mi nombre es Emma.")
 
-        # @self.bot.message_handler(commands=['help', 'ayuda'])
-        # def send_help(message):
-        #   self.bot.reply_to(message, "Busca ayuda en otro lado")
+            # @self.bot.message_handler(commands=['help', 'ayuda'])
+            # def send_help(message):
+            #   self.bot.reply_to(message, "Busca ayuda en otro lado")
 
-        @self.bot.message_handler(func=lambda message: message.text is not None and message.reply_to_message is None)
-        def echo_text(message):
-            cid = message.chat.id
-            uid = message.from_user.id
-            if message.text != "":
+            @self.bot.message_handler(func=lambda message: message.text is not None and message.reply_to_message is None)
+            def echo_text(message):
+                try:
+                    cid = message.chat.id
+                    uid = message.from_user.id
+                    if message.text != "":
+                        self.queue_handler.add_to_queue(
+                            "TELEGRAM_API_TEXT", ((uid, cid), message.text, "TELEGRAM_API"))
+                except Exception as e:
+                    self.handle_error(e)
 
-                self.queue_handler.add_to_queue(
-                    "TELEGRAM_API_TEXT", ((uid, cid), message.text, "TELEGRAM_API"))
+            @self.bot.message_handler(content_types=['audio'])
+            def handle_audio(message):
+                pass
 
-        @self.bot.message_handler(content_types=['audio'])
-        def handle_audio(message):
-            pass
+            @self.bot.message_handler(content_types=['document'])
+            def handle_docs(message):
+                try:
+                    cid = message.chat.id
+                    uid = message.from_user.id
+                    fid = message.document.file_unique_id
+                    doc_name = message.document.file_name
+                    file_info = self.bot.get_file(
+                        message.document.file_id)
 
-        @self.bot.message_handler(content_types=['document'])
-        def handle_docs(message):
-            cid = message.chat.id
-            uid = message.from_user.id
-            fid = message.document.file_unique_id
-            doc_name = message.document.file_name
-            file_info = self.bot.get_file(
-                message.document.file_id)
+                    file_bytes = self.bot.download_file(
+                        file_path=file_info.file_path)
+                    file_path = f"app/common/.temp/{message.document.file_name}"
+                    with open(file_path, 'wb') as f:
+                        f.write(file_bytes)
 
-            file_bytes = self.bot.download_file(file_path=file_info.file_path)
-            file_path = f"app/common/.temp/{message.document.file_name}"
-            with open(file_path, 'wb') as f:
-                f.write(file_bytes)
+                    self.queue_handler.add_to_queue(
+                        "TELEGRAM_API_DOC", ("write", (uid, cid, fid), (doc_name, file_path), "TELEGRAM_API"))
+                except Exception as e:
+                    self.handle_error(e)
 
-            # self.queue_handler.add_to_queue("CONSOLE", (self.name, file_bytes))
-            self.queue_handler.add_to_queue(
-                "TELEGRAM_API_DOC", ("write", (uid, cid, fid), (doc_name, file_path), "TELEGRAM_API"))
+            @self.bot.message_handler(func=lambda message: message.reply_to_message is not None and message.reply_to_message.document is not None)
+            def reply_to_doc(message):
+                try:
+                    cid = message.chat.id
+                    uid = message.from_user.id
+                    reply_message = message.reply_to_message
+                    fid = reply_message.document.file_unique_id
 
-        @self.bot.message_handler(func=lambda message: message.reply_to_message is not None and message.reply_to_message.document is not None)
-        def reply_to_doc(message):
-            cid = message.chat.id
-            uid = message.from_user.id
-            reply_message = message.reply_to_message
-            fid = reply_message.document.file_unique_id
-
-            _ask = reply_message.document
-
-            # Aquí puedes acceder a los datos del mensaje original y del documento adjunto
-            original_text = message.text
-            self.queue_handler.add_to_queue(
-                "TELEGRAM_API_DOC", ("read", (uid, cid, fid), original_text, "TELEGRAM_API"))
+                    original_text = message.text
+                    self.queue_handler.add_to_queue(
+                        "TELEGRAM_API_DOC", ("read", (uid, cid, fid), original_text, "TELEGRAM_API"))
+                except Exception as e:
+                    self.handle_error(e)
+        except Exception as e:
+            self.handle_error(e)
 
     def process_responses(self):
-        while not self.stop_flag:
-            ids, data = self.queue_handler.get_queue(
-                "TELEGRAM_API_RESPONSE", 0.1, (None, None))
-            if ids is None:
-                continue
-            else:
-                self.bot.send_message(ids[1], data)
+        try:
+            while not self.stop_flag:
+                ids, data = self.queue_handler.get_queue(
+                    "TELEGRAM_API_RESPONSE", 0.1, (None, None))
+                if ids is None:
+                    continue
+                else:
+                    self.bot.send_message(ids[1], data)
+        except Exception as e:
+            self.handle_error(e)
 
     def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
-        self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
-
         try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.name, "Has been instantiated"])
+            self.event.wait()
+            if not self.stop_flag:
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", [self.name, "Is Started"])
+
             self.register_routes()
-            self.bot.polling(none_stop=True)
+            self.bot.infinity_polling()
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+            self.handle_error(e)
 
     def run(self):
-        self.event.set()
-        self.response_thread = threading.Thread(
-            target=self.process_responses, name=f"{self.name}_RESPONSES")
-        self.response_thread.start()
+        try:
+            self.event.set()
+            self.response_thread = threading.Thread(
+                target=self.process_responses, name=f"{self.name}_RESPONSES")
+            self.response_thread.start()
+        except Exception as e:
+            self.handle_error(e)
 
     def stop(self):
         self.stop_flag = True
 
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
     def handle_shutdown(self):
         try:
-            # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
+                self)
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

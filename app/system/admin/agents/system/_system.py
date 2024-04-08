@@ -10,12 +10,12 @@ from app.config.config import Config
 import traceback
 
 
-class SystemManager:
+class SystemAgent:
     """
     Class for managing system-related operations.
 
     Args:
-        name (str): The name of the SystemManager instance.
+        name (str): The name of the SystemAgent instance.
         queue_name (str): The name of the queue.
         queue_handler: An object responsible for handling the queue.
     """
@@ -91,7 +91,6 @@ class SystemManager:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
         arg_mapping = {
-            "console_handler": Config.app.system.core._console,
             "queue_handler": Config.app.system.core.queue,
             "event_handler": Config.app.system.core.event,
             "thread_handler": Config.app.system.core.thread,
@@ -376,15 +375,11 @@ class SystemManager:
                 try:
                     os.rmdir(x)
                 except Exception as e:
-                    traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue(
-                        "LOGGING", (self.name, (e, traceback_str)))
+                    self.handle_error(e)
                 try:
                     os.remove(x)
                 except Exception as e:
-                    traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue(
-                        "LOGGING", (self.name, (e, traceback_str)))
+                    self.handle_error(e)
 
     def module_reloader(self, module_name, is_thread=False):
         """
@@ -436,9 +431,8 @@ class SystemManager:
                 return False, message
 
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+            self.handle_error(e)
+
             return False, traceback_str
 
 

@@ -1,6 +1,3 @@
-import threading
-
-
 class Attach:
     @staticmethod
     def attach_function(instance, function_name, function):

@@ -10,7 +10,7 @@ COPY . /app
 # Instala las dependencias necesarias
 RUN pip install --no-cache-dir -r requirements.txt
 
-
 EXPOSE 3018
+
 # Indica que el punto de entrada de la aplicación es __main__.py
 CMD ["python", "__main__.py"]

@@ -48,7 +48,7 @@ class RUN:
         # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
         self.init = init_module.Run()
-        #self.init.run()
+        # self.init.run()
         # Server Starup
         config_module = importlib.import_module('app.config.config')
         self.Config = config_module.Config
@@ -119,7 +119,7 @@ config_structure = {
             "admin": {
                 "agents": {
                     "@withelist": ["app.system.admin.agents.system._withelist.WhitelistAgent"],
-                    "sys": ["app.system.admin.agents.system._system.SystemManager", ['SYS AGENT', None, '$app.system.core.queue']],
+                    "sys": ["app.system.admin.agents.system._system.SystemAgent", ['SYS AGENT', None, '$app.system.core.queue']],
                     "db": ["app.system.admin.agents.database._db.Database", ["DATABASE", "$app.system.core.queue"]],
                     "user": ["app.system.admin.agents.user._usr.UserManager", ["USER AGENT"]],
                     "session": ["app.system.admin.agents.sessions._sessions.SessionsAgent", ["SESSIONS AGENT", '$app.system.core.queue', '$app.system.core.event']]

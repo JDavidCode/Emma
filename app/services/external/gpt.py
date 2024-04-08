@@ -1,7 +1,5 @@
 import json
-import logging
 import threading
-import time
 import openai
 from app.config.config import Config
 import traceback
@@ -28,9 +26,8 @@ class GPT:
                 "LOGGING", (self.name, (user_id, session_id, message)))
 
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+            self.handle_error(e)
+
             # manage unidentified session
         with open(path, 'w') as file:
             json.dump(sessions, file, indent=4)
@@ -155,12 +152,24 @@ class GPT:
                         "LOGGING", (self.name, (t, traceback_str)))
 
                 except Exception as e:
-                    traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue(
-                        "LOGGING", (self.name, (e, traceback_str)))
+                    self.handle_error(e)
 
     def run(self):
         self.event.set()
 
     def stop(self):
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def handle_shutdown(self):
+        self.stop_flag = False
+
+
+if __name__ == "__main__":
+    pass

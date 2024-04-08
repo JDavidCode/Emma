@@ -102,7 +102,7 @@ class QueueHandler:
         except Exception as e:
             traceback_str = traceback.format_exc()
             self.add_to_queue(
-                "LOGGING", (self.name, (e, traceback_str)))
+                "LOGGING", (self.name, (traceback_str)))
             if default is not None:
                 return default
 

@@ -60,7 +60,6 @@ class GPT:
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
-
             ids, data, channel = self.queue_handler.get_queue(
                 self.queue_name[0], 0.1, (None, None, None))
             if data == None or channel == None:
@@ -151,6 +150,7 @@ class GPT:
         self.event.set()
 
     def _handle_system_ready(self):
+        self.run()
         return True
 
     def stop(self):

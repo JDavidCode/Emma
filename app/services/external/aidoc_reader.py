@@ -78,14 +78,9 @@ class AIDOC_READER:
 
     def main(self):
         try:
-
             self.event.wait()
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
-
-            if not self.stop_flag:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", [self.name, "Is Started"])
 
             while not self.stop_flag:
                 try:
@@ -156,6 +151,7 @@ class AIDOC_READER:
         aidoc_reader_thread = threading.Thread(
             target=self.document_loader, name=f"{self.name}_WEB")
         aidoc_reader_thread.start()
+        self.run()
         return True
 
     def stop(self):

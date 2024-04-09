@@ -141,13 +141,12 @@ class SystemAgent:
 
                 thread_is_daemon = dic.get("thread_is_daemon", False)
                 autostart = dic.get("autostart", False)
+                self.instance_threads([[class_instance, thread_name,
+                                        autostart, thread_is_daemon]])
                 if "T0" in thread_name:
-                    self.instance_threads([[class_instance, thread_name,
-                                          autostart, thread_is_daemon]])
-                    self.initialize_thread([[thread_name, class_instance]])
+                    self.initialize_thread([thread_name])
                 else:
-                    classes.append([class_instance, thread_name,
-                                   autostart, thread_is_daemon])
+                    classes.append(thread_name)
 
         Config.app.thread_instances = self.func_instances
         return classes
@@ -162,17 +161,15 @@ class SystemAgent:
                     daemon=thread_is_daemon,
                 )
             )
+
+            threads.append(thread_name)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, f"{thread_name} Has been instanciated"))
-            threads.append([thread_name, class_instance])
         return threads
 
     def initialize_thread(self, threads):
-        for thread_name, instance in threads:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.name, (thread_name, instance)))
+        for thread_name in threads:
             Config.app.system.core.thread.start_thread(thread_name)
-            instance.run()
 
     def create_new_worker(self, thread_name):
         """

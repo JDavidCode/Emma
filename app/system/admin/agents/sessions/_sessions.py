@@ -20,9 +20,9 @@ class SessionsAgent:
         self.stop_flag = False
 
     def _handle_system_ready(self):
-        self.users_conn = Config.app.system.admin.agents.db.connect(
-            os.getenv("db_host"), os.getenv(
-                "db_user"), os.getenv("db_pw"), os.getenv("db_name"))
+        #self.users_conn = Config.app.system.admin.agents.db.connect(
+        #    os.getenv("db_host"), os.getenv(
+        #        "db_user"), os.getenv("db_pw"), os.getenv("db_name"))
         return True
 
     def handle_error(self, error, message=None):

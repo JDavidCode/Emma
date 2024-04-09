@@ -84,7 +84,6 @@ class DatabaseAgent:
             try:
                 request, data = self.queue_handler.get_queue(
                     self.queue_name, 0.1, (None, None))
-                # Handle request and data here...
             except Exception as e:
                 traceback_str = traceback.format_exc()
                 self.queue_handler.add_to_queue(
@@ -140,6 +139,7 @@ class DatabaseAgent:
         self.event.set()
 
     def _handle_system_ready(self):
+        self.run()
         return True
 
     def stop(self):

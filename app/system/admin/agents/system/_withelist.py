@@ -88,6 +88,7 @@ class WhitelistAgent:
         self.event.set()
 
     def _handle_system_ready(self):
+        self.run()
         return True
 
     def stop(self):

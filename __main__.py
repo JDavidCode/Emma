@@ -54,32 +54,29 @@ class RUN:
 
         self.Config.app._app = self
 
-    def start_services(self, package_list):
+    def start_services(self, package_list=None):
         """
         Start application services.
 
         Args:
             package_list (list): List of packages to start.
         """
-        classes = self.Config.app.system.admin.agents.sys.instance_classes()
+        threads = self.Config.app.system.admin.agents.sys.instance_classes()
         self.Config.app.system.admin.agents.sys.initialize_queues()
-        threads = self.Config.app.system.admin.agents.sys.instance_threads(
-            classes)
+
+        self.Config.app.system.admin.agents.sys.initialize_thread(threads)
 
         self.Config.app.system.core.event.notify_system_ready()
 
-        # HANDLE THREADS READY FLAGS
-
-        self.Config.app.system.admin.agents.sys.initialize_thread(
-            threads)
         # FORGE THREADS START
-        self.Config.forge.run(package_list=package_list)
-        classes = self.Config.app.system.admin.agents.sys.instance_classes(
-            forge=True)
-        if classes is not None:
+
+        if package_list != None:
+
+            self.Config.forge.run(package_list=package_list)
+            classes = self.Config.app.system.admin.agents.sys.instance_classes(
+                forge=True)
             threads = self.Config.app.system.admin.agents.sys.instance_threads(
                 classes)
-
             self.Config.app.system.admin.agents.sys.initialize_thread(
                 threads)
 
@@ -90,7 +87,7 @@ class RUN:
         self.queue_handler = self.Config.app.system.core.queue
         self.console_handler = self.Config.app.system.core._console
 
-        self.start_services(package_list=[])
+        self.start_services()
 
         self.server_thread = ServerIntegrityThread(
             self.thread_handler, self.queue_handler)

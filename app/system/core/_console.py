@@ -104,6 +104,7 @@ class Console:
         input_thread = threading.Thread(
             target=console_input.active_terminal, name=f"{self.name} input_thread")
         input_thread.start()
+        self.run()
         return True
 
     def stop(self):
@@ -138,16 +139,11 @@ class Console:
 
         def __init__(self, pa):
             self.pa = pa
-            self.hotkey_ctrl_0 = None
-            self.hotkey_ctrl_8 = None
-            self.hotkey_ctrl_1 = None
-            self.custom_hotkeys = {}
 
         def active_terminal(self):
             while True:
                 current_time = datetime.datetime.now().strftime("%H:%M:%S")
                 try:
-                    print("")
                     input_text = input(f"[{current_time}] >> ")
                     if input_text == "shutdown" or input_text == "exit":
                         self._handle_shutdown()
@@ -159,77 +155,6 @@ class Console:
                 except:
                     pass
 
-        def set_hotkeys(self):
-            """Set predefined hotkeys."""
-            self.hotkey_ctrl_0 = keyboard.add_hotkey(
-                "ctrl+0", self._handle_shutdown)
-            self.hotkey_ctrl_8 = keyboard.add_hotkey(
-                "ctrl+8", self.handle_stop_task)
-            self.hotkey_ctrl_1 = keyboard.add_hotkey(
-                "ctrl+1", self.handle_reload)
-
-        def add_custom_hotkey(self, hotkey_combination, handler_function):
-            """
-            Add a custom hotkey with a specified handler function.
-
-            Args:
-                hotkey_combination (str): The hotkey combination (e.g., "ctrl+alt+X").
-                handler_function (callable): The function to be called when the hotkey is triggered.
-            """
-            custom_hotkey = keyboard.add_hotkey(
-                hotkey_combination, handler_function)
-            self.custom_hotkeys[hotkey_combination] = custom_hotkey
-
-        def remove_custom_hotkey(self, hotkey_combination):
-            """
-            Remove a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be removed.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                keyboard.remove_hotkey(hotkey)
-                del self.custom_hotkeys[hotkey_combination]
-
-        def pause_hotkey(self, hotkey_combination):
-            """
-            Pause a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be paused.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                hotkey.pause()
-
-        def resume_hotkey(self, hotkey_combination):
-            """
-            Resume a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be resumed.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                hotkey.resume()
-
-        def pause_all_hotkeys(self):
-            """Pause all custom hotkeys and predefined hotkeys."""
-            for hotkey in self.custom_hotkeys.values():
-                hotkey.pause()
-            self.hotkey_ctrl_0.pause()
-            self.hotkey_ctrl_8.pause()
-            self.hotkey_ctrl_1.pause()
-
-        def resume_all_hotkeys(self):
-            """Resume all custom hotkeys and predefined hotkeys."""
-            for hotkey in self.custom_hotkeys.values():
-                hotkey.resume()
-            self.hotkey_ctrl_0.resume()
-            self.hotkey_ctrl_8.resume()
-            self.hotkey_ctrl_1.resume()
-
         def handle_reload(self):
             """Handle server reload."""
             Config.app.system.admin.agents.sys.server_restart()
@@ -240,6 +165,7 @@ class Console:
 
         def _handle_system_ready(self):
             return True
+        
         def handle_error(self, error, message=None):
             error_message = f"Error in {self.name}: {error}"
             if message:
@@ -252,7 +178,7 @@ class Console:
             try:
                 self.queue_handler.add_to_queue(
                     "CONSOLE", (self.name, "Handling shutdown..."))
-                self.event_handler.subscribers_shutdown_flag(
+                self.pa.event_handler.subscribers_shutdown_flag(
                     self)
             except Exception as e:
                 self.handle_error(e)

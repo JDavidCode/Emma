@@ -120,6 +120,8 @@ class InputRouter:
         aidoc_responses_thread = threading.Thread(
             target=self.aidoc_responses, name=f"{self.name}_AIDOC_RESPONSES")
         aidoc_responses_thread.start()
+
+        self.run()
         return True
 
     def stop(self):

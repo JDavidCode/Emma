@@ -293,6 +293,7 @@ class App:
         self.response_thread = threading.Thread(
                     target=self.process_responses, name=f"{self.name}_RESPONSES")
         self.response_thread.start()
+        self.run()
         return True
 
     def stop(self):

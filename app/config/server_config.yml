@@ -15,7 +15,7 @@ defaults:
       endpoint: app.system.core._console
       queue: CONSOLE
       queue_maxsize: 0
-      thread_is_daemon: false
+      thread_is_daemon: true
       thread_name: T0_CONSOLE
       visible: false
 
@@ -27,8 +27,9 @@ defaults:
       endpoint: app.system.core._logger
       queue: LOGGING
       queue_maxsize: 0
-      thread_is_daemon: false
+      thread_is_daemon: true
       thread_name: T0_LOGGER
+      visible: false
 
     - args:
       - queue_handler

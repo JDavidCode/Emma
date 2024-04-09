@@ -102,10 +102,12 @@ class Console:
         self.event.set()
 
     def _handle_system_ready(self):
+        '''
         console_input = self.Input(self)
         input_thread = threading.Thread(
             target=console_input.active_terminal, name=f"{self.name} input_thread")
         input_thread.start()
+        '''
         self.run()
         return True
 
@@ -148,7 +150,6 @@ class Console:
                 current_time = datetime.datetime.now().strftime("%H:%M:%S")
                 try:
                     input_text = input(f"[{current_time}] >> ")
-                    sys.stdin.close()
                     if input_text == "shutdown" or input_text == "exit":
                         Config.app.system.admin.agents.sys.server_shutdown()
                     elif input_text.startswith("index "):
@@ -169,7 +170,7 @@ class Console:
 
         def _handle_system_ready(self):
             return True
-        
+
         def handle_error(self, error, message=None):
             error_message = f"Error in {self.name}: {error}"
             if message:

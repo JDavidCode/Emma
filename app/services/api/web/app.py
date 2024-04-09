@@ -26,8 +26,6 @@ class App:
 
     def register_routes(self):
         try:
-            self.event.wait()
-
             @self.app.route("/")
             def index():
                 return render_template("index.html")
@@ -243,7 +241,6 @@ class App:
         except Exception as e:
             self.handle_error(e)
 
-
     def process_responses(self):
         try:
             while not self.stop_flag:
@@ -273,15 +270,13 @@ class App:
         except Exception as e:
             self.handle_error(e)
 
-
     def main(self):
         try:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Has been instantiated"])
+
             self.event.wait()
-            if not self.stop_flag:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", [self.name, "Is Started"])
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.name, "Is Started"])
+
             self.register_routes()
 
             self.socketio.run(self.app, host="0.0.0.0",
@@ -291,16 +286,15 @@ class App:
         except Exception as e:
             self.handle_error(e)
 
-
     def run(self):
-        try:
-            self.event.set()
-            self.response_thread = threading.Thread(
-                target=self.process_responses, name=f"{self.name}_RESPONSES")
-            self.response_thread.start()
-        except Exception as e:
-            self.handle_error(e)
+        self.event.set()
 
+    def _handle_system_ready(self):
+        self.response_thread = threading.Thread(
+                    target=self.process_responses, name=f"{self.name}_RESPONSES")
+        self.response_thread.start()
+        self.run()
+        return True
 
     def stop(self):
         self.stop_flag = True
@@ -312,16 +306,14 @@ class App:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
+    def _handle_shutdown(self):
         try:
-            # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
+                self)
         except Exception as e:
             self.handle_error(e)
-
 
 
 if __name__ == "__main__":

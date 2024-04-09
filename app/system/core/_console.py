@@ -1,12 +1,15 @@
 import datetime
 import os
+import sys
 import threading
+import time
+import traceback
 import keyboard
 from app.config.config import Config
 
 
 class Console:
-    def __init__(self, name, queue_name, queue_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
         """
         Initialize the Console object.
 
@@ -18,6 +21,8 @@ class Console:
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        self.event_handler.subscribe(self)
         self.event = threading.Event()
         self.stop_flag = False
 
@@ -25,20 +30,10 @@ class Console:
         """
         Start the main loop to display console messages.
         """
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
 
-        console_input = self.Input(self)
-
-        input_thread = threading.Thread(
-            target=console_input.active_terminal, name=f"{self.name} input_thread")
-        input_thread.start()
-        # console_input.set_hotkeys()
-
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             remitent, output = self.queue_handler.get_queue("CONSOLE")
             self.display_message(remitent, output)
@@ -104,16 +99,36 @@ class Console:
         self.display_message("Progress", f"[{progress_bar}] {percentage:.2f}%")
 
     def run(self):
-        """
-        Set the event to start the console.
-        """
         self.event.set()
 
+    def _handle_system_ready(self):
+        '''
+        console_input = self.Input(self)
+        input_thread = threading.Thread(
+            target=console_input.active_terminal, name=f"{self.name} input_thread")
+        input_thread.start()
+        '''
+        self.run()
+        return True
+
     def stop(self):
-        """
-        Stop the console.
-        """
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
     class Input:
         """
@@ -128,19 +143,15 @@ class Console:
 
         def __init__(self, pa):
             self.pa = pa
-            self.hotkey_ctrl_0 = None
-            self.hotkey_ctrl_8 = None
-            self.hotkey_ctrl_1 = None
-            self.custom_hotkeys = {}
 
         def active_terminal(self):
-            while True:
+            time.sleep(8)
+            while not self.pa.stop_flag:
                 current_time = datetime.datetime.now().strftime("%H:%M:%S")
                 try:
-                    print("")
                     input_text = input(f"[{current_time}] >> ")
                     if input_text == "shutdown" or input_text == "exit":
-                        self._handle_shutdown()
+                        Config.app.system.admin.agents.sys.server_shutdown()
                     elif input_text.startswith("index "):
                         instance_name = input_text.split(" ")[1]
                         self.pa.handle_index(instance_name)
@@ -149,95 +160,30 @@ class Console:
                 except:
                     pass
 
-        def set_hotkeys(self):
-            """Set predefined hotkeys."""
-            self.hotkey_ctrl_0 = keyboard.add_hotkey(
-                "ctrl+0", self._handle_shutdown)
-            self.hotkey_ctrl_8 = keyboard.add_hotkey(
-                "ctrl+8", self.handle_stop_task)
-            self.hotkey_ctrl_1 = keyboard.add_hotkey(
-                "ctrl+1", self.handle_reload)
-
-        def add_custom_hotkey(self, hotkey_combination, handler_function):
-            """
-            Add a custom hotkey with a specified handler function.
-
-            Args:
-                hotkey_combination (str): The hotkey combination (e.g., "ctrl+alt+X").
-                handler_function (callable): The function to be called when the hotkey is triggered.
-            """
-            custom_hotkey = keyboard.add_hotkey(
-                hotkey_combination, handler_function)
-            self.custom_hotkeys[hotkey_combination] = custom_hotkey
-
-        def remove_custom_hotkey(self, hotkey_combination):
-            """
-            Remove a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be removed.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                keyboard.remove_hotkey(hotkey)
-                del self.custom_hotkeys[hotkey_combination]
-
-        def pause_hotkey(self, hotkey_combination):
-            """
-            Pause a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be paused.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                hotkey.pause()
-
-        def resume_hotkey(self, hotkey_combination):
-            """
-            Resume a custom hotkey by its hotkey combination.
-
-            Args:
-                hotkey_combination (str): The hotkey combination to be resumed.
-            """
-            if hotkey_combination in self.custom_hotkeys:
-                hotkey = self.custom_hotkeys[hotkey_combination]
-                hotkey.resume()
-
-        def pause_all_hotkeys(self):
-            """Pause all custom hotkeys and predefined hotkeys."""
-            for hotkey in self.custom_hotkeys.values():
-                hotkey.pause()
-            self.hotkey_ctrl_0.pause()
-            self.hotkey_ctrl_8.pause()
-            self.hotkey_ctrl_1.pause()
-
-        def resume_all_hotkeys(self):
-            """Resume all custom hotkeys and predefined hotkeys."""
-            for hotkey in self.custom_hotkeys.values():
-                hotkey.resume()
-            self.hotkey_ctrl_0.resume()
-            self.hotkey_ctrl_8.resume()
-            self.hotkey_ctrl_1.resume()
-
-        def _handle_shutdown(self):
-            """Handle local shutdown."""
-            Config.app.system.admin.agents.sys.server_shutdown()
-
         def handle_reload(self):
             """Handle server reload."""
             Config.app.system.admin.agents.sys.server_restart()
 
-        def handle_shutdown(self):
-            """Handle shutting down the HotKeys instance."""
-            try:
-                keyboard.remove_hotkey(self.hotkey_ctrl_0)
-                keyboard.remove_hotkey(self.hotkey_ctrl_8)
-                keyboard.remove_hotkey(self.hotkey_ctrl_1)
-            except:
-                pass
-            self.__stop()
-
         def handle_stop_task(self):
             """Handle stopping a task."""
             print("Stop task hotkey pressed")
+
+        def _handle_system_ready(self):
+            return True
+
+        def handle_error(self, error, message=None):
+            error_message = f"Error in {self.name}: {error}"
+            if message:
+                error_message += f" - {message}"
+            traceback_str = traceback.format_exc()
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.name, traceback_str))
+
+        def _handle_shutdown(self):
+            try:
+                self.queue_handler.add_to_queue(
+                    "CONSOLE", (self.name, "Handling shutdown..."))
+                self.pa.event_handler.subscribers_shutdown_flag(
+                    self)
+            except Exception as e:
+                self.handle_error(e)

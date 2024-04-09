@@ -18,18 +18,26 @@ class SessionsAgent:
         self.event = threading.Event()
         self.lock = threading.Lock()
         self.stop_flag = False
-        self.users_conn = Config.app.system.admin.agents.db.connect(
-            os.getenv("db_host"), os.getenv(
-                "db_user"), os.getenv("db_pw"), os.getenv("db_name"))
 
-    def handle_shutdown(self):
+    def _handle_system_ready(self):
+        #self.users_conn = Config.app.system.admin.agents.db.connect(
+        #    os.getenv("db_host"), os.getenv(
+        #        "db_user"), os.getenv("db_pw"), os.getenv("db_name"))
+        return True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
         try:
-            # Handle shutdown logic here
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))
             self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
-
+                self)
         except Exception as e:
             self.handle_error(e)
 

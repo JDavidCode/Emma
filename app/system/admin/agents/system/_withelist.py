@@ -1,5 +1,6 @@
 import json
 import threading
+import traceback
 
 
 class WhitelistAgent:
@@ -20,12 +21,9 @@ class WhitelistAgent:
         pass
 
     def main(self):
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instanciate"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Is Started"])
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
 
         while not self.stop_flag:
             request, data = self.queue_handler.get_queue(
@@ -86,14 +84,31 @@ class WhitelistAgent:
         except Exception as e:
             print(f"Error loading whitelist: {str(e)}")
 
-    def handle_shutdown(self):  # This for event handling
-        self.stop_flag = False
-
     def run(self):
         self.event.set()
 
+    def _handle_system_ready(self):
+        self.run()
+        return True
+
     def stop(self):
         self.stop_flag = True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 # Example usage:

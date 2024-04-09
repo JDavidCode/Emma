@@ -11,6 +11,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 
+
 class AIDOC_READER:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
@@ -20,7 +21,8 @@ class AIDOC_READER:
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
-        os.environ.setdefault("GOOGLE_API_KEY", "AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U")
+        os.environ.setdefault(
+            "GOOGLE_API_KEY", "AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U")
         self.ai = genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
         self.chain = None
         self.embeddings = None
@@ -35,7 +37,8 @@ class AIDOC_READER:
         return text
 
     def get_text_chunks(self, text):
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=10000, chunk_overlap=1000)
         chunks = text_splitter.split_text(text)
         return chunks
 
@@ -52,7 +55,8 @@ class AIDOC_READER:
         """
 
         model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
-        prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
+        prompt = PromptTemplate(template=prompt_template, input_variables=[
+                                "context", "question"])
         chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
         return chain
 
@@ -68,24 +72,20 @@ class AIDOC_READER:
 
         pdf_path = file_path + ".pdf"
         if file_path.lower().endswith(".docx") or file_path.lower().endswith(".doc"):
-            subprocess.run(["libreoffice", "--headless", "--convert-to", "pdf", file_path])
+            subprocess.run(["libreoffice", "--headless",
+                           "--convert-to", "pdf", file_path])
         return pdf_path
 
     def main(self):
         try:
-            self.queue_handler.add_to_queue("CONSOLE", [self.name, "Has been instantiated"])
             self.event.wait()
-
-            if not self.stop_flag:
-                self.queue_handler.add_to_queue("CONSOLE", [self.name, "Is Started"])
-                self.chain = self.get_conversational_chain()
-                self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-                aidoc_reader_thread = threading.Thread(target=self.document_loader, name=f"{self.name}_WEB")
-                aidoc_reader_thread.start()
+            self.queue_handler.add_to_queue(
+                "CONSOLE", [self.name, "Is Started"])
 
             while not self.stop_flag:
                 try:
-                    ids, data, channel = self.queue_handler.get_queue("AIDOC_READER_QUESTION", 0.1, (None, None, None))
+                    ids, data, channel = self.queue_handler.get_queue(
+                        "AIDOC_READER_QUESTION", 0.1, (None, None, None))
                     if ids is None:
                         continue
                     for uid in self.loaded_documents:
@@ -94,23 +94,27 @@ class AIDOC_READER:
                                 if ids[2] == fid:
                                     docs = self.loaded_documents[uid][fid]
                                     docs = docs.similarity_search(data)
-                                    response = self.chain({"input_documents": docs, "question": data}, return_only_outputs=True)["output_text"]
-                                    self.queue_handler.add_to_queue("AIDOC_READER_RESPONSE", ("response", ids, response, channel))
+                                    response = self.chain(
+                                        {"input_documents": docs, "question": data}, return_only_outputs=True)["output_text"]
+                                    self.queue_handler.add_to_queue(
+                                        "AIDOC_READER_RESPONSE", ("response", ids, response, channel))
                 except Exception as e:
                     traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+                    self.queue_handler.add_to_queue(
+                        "LOGGING", (self.name, (e, traceback_str)))
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.name, (e, traceback_str)))
 
         return response
 
     def document_loader(self):
         try:
-            self.event.wait()
             while not self.stop_flag:
                 try:
-                    ids, doc, channel = self.queue_handler.get_queue("AIDOC_READER", 0.1, (None, None, None))
+                    ids, doc, channel = self.queue_handler.get_queue(
+                        "AIDOC_READER", 0.1, (None, None, None))
                     if ids is None:
                         continue
 
@@ -122,23 +126,33 @@ class AIDOC_READER:
                         elif not isinstance(doc_path, list):
                             doc_path = [doc_path]
                         self.document_vectorizing(ids[0], ids[2], doc_path)
-                        self.queue_handler.add_to_queue(f'AIDOC_READER_RESPONSE', ("load",  ids,  doc_name, channel))
+                        self.queue_handler.add_to_queue(
+                            f'AIDOC_READER_RESPONSE', ("load",  ids,  doc_name, channel))
                     except Exception as e:
                         traceback_str = traceback.format_exc()
-                        self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+                        self.queue_handler.add_to_queue(
+                            "LOGGING", (self.name, (e, traceback_str)))
                 except Exception as e:
                     traceback_str = traceback.format_exc()
-                    self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+                    self.queue_handler.add_to_queue(
+                        "LOGGING", (self.name, (e, traceback_str)))
         except Exception as e:
             traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+            self.queue_handler.add_to_queue(
+                "LOGGING", (self.name, (e, traceback_str)))
 
     def run(self):
-        try:
-            self.event.set()
-        except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (self.name, (e, traceback_str)))
+        self.event.set()
+
+    def _handle_system_ready(self):
+        self.chain = self.get_conversational_chain()
+        self.embeddings = GoogleGenerativeAIEmbeddings(
+            model="models/embedding-001")
+        aidoc_reader_thread = threading.Thread(
+            target=self.document_loader, name=f"{self.name}_WEB")
+        aidoc_reader_thread.start()
+        self.run()
+        return True
 
     def stop(self):
         self.stop_flag = True
@@ -149,9 +163,15 @@ class AIDOC_READER:
             error_message += f" - {message}"
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
-    def handle_shutdown(self):
-        self.stop_flag = False
-        
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

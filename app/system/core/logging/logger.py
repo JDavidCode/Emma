@@ -27,12 +27,9 @@ class Logger:
 
         This method listens for log messages in the specified queue and saves them to the log buffer.
         """
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Has been instantiated"])
         self.event.wait()
-        if not self.stop_flag:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.name, "Is Started"))
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
         while not self.stop_flag:
             remitent, output = self.queue_handler.get_queue('LOGGING')
             dateTime = datetime.datetime.now()
@@ -41,9 +38,8 @@ class Logger:
                 "remitent": remitent,
                 "output": output,
             }
-            logging.exception(output)
-
             self.save_log(log_entry)  # Add the log entry to the buffer
+            logging.exception(output)
 
     def save_log(self, log_entry):
         """
@@ -71,30 +67,21 @@ class Logger:
         self.log_buffer.append(log_entry)
 
     def run(self):
-        """
-        Start the Logger thread.
-        """
         self.event.set()
 
+    def _handle_system_ready(self):
+        self.run()
+        return True
+
     def stop(self):
-        """
-        Stop the Logger thread.
-        """
         self.stop_flag = True
 
-    def handle_shutdown(self):
-        """
-        Handle the shutdown logic for the Logger.
-        """
-        try:
-            # Handle shutdown logic here
-            self.queue_handler.add_to_queue(
-                "LOGGING", ("LOGGER", "Handling shutdown..."))
-            self.event_handler.subscribers_shutdown_flag(
-                self)  # put it when ready for shutdown
-        except Exception as e:
-            traceback_str = traceback.format_exc()
-            self.queue_handler.add_to_queue("LOGGING", (e, traceback_str))
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
     def attach_components(self, module_name):
         """
@@ -117,6 +104,15 @@ class Logger:
             else:
                 self.thread_utils.attach_variable(
                     self, component_name, component)
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 class LogBuffer:

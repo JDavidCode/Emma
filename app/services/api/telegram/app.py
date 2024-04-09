@@ -22,8 +22,6 @@ class App:
 
     def register_routes(self):
         try:
-            self.event.wait()
-
             @self.bot.message_handler(commands=['start'])
             def send_welcome(message):
                 self.bot.reply_to(message, "¡Hola mundo!, Mi nombre es Emma.")
@@ -97,29 +95,27 @@ class App:
             self.handle_error(e)
 
     def main(self):
-        try:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", [self.name, "Has been instantiated"])
-            self.event.wait()
-            if not self.stop_flag:
-                self.queue_handler.add_to_queue(
-                    "CONSOLE", [self.name, "Is Started"])
+        self.event.wait()
 
+        self.queue_handler.add_to_queue(
+            "CONSOLE", [self.name, "Is Started"])
+        try:
             self.register_routes()
-            self.bot.infinity_polling()
+            self.bot.polling(none_stop=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:
             self.handle_error(e)
 
     def run(self):
-        try:
-            self.event.set()
-            self.response_thread = threading.Thread(
-                target=self.process_responses, name=f"{self.name}_RESPONSES")
-            self.response_thread.start()
-        except Exception as e:
-            self.handle_error(e)
+        self.event.set()
+
+    def _handle_system_ready(self):
+        self.response_thread = threading.Thread(
+            target=self.process_responses, name=f"{self.name}_RESPONSES")
+        self.response_thread.start()
+        self.run()
+        return True
 
     def stop(self):
         self.stop_flag = True
@@ -131,7 +127,7 @@ class App:
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
 
-    def handle_shutdown(self):
+    def _handle_shutdown(self):
         try:
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "Handling shutdown..."))

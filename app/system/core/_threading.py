@@ -63,15 +63,17 @@ class ThreadHandler:
                 if parent_thread_id in self.subthreads:
                     # Check if the subthread is already associated with the parent thread
                     if id(subthread) not in [sub['id'] for sub in self.subthreads[parent_thread_id]]:
-                        self.subthreads[parent_thread_id].append({'id': id(subthread), 'name': subthread.name})
+                        self.subthreads[parent_thread_id].append(
+                            {'id': id(subthread), 'name': subthread.name})
                         return True, f"Subthread '{subthread.name}' has been added to '{parent_thread.name}'."
                     else:
                         return True, f"Subthread '{subthread.name}' is already associated with '{parent_thread.name}'."
                 else:
                     # If the parent thread ID is not in the dictionary, create a new list with the first subthread
-                    self.subthreads[parent_thread_id] = [{'id': id(subthread), 'name': subthread.name}]
+                    self.subthreads[parent_thread_id] = [
+                        {'id': id(subthread), 'name': subthread.name}]
                     return True, f"Subthread '{subthread.name}' has been created and added to '{parent_thread.name}'."
-        
+
         return False, f"Parent thread '{parent_thread_name}' not found."
 
     def get_subthreads_dict(self, thread):
@@ -103,7 +105,6 @@ class ThreadHandler:
             status = thread.is_alive()
             status_list.append((thread, status))
         return True, status_list
-    
 
     def get_thread_info(self, thread_name):
         """
@@ -161,14 +162,16 @@ class ThreadHandler:
         for _, thread in self.threads.items():
             if str(thread.name) == thread_name:
                 if thread.is_alive():
-                    thread_instance = Config.app.thread_instances.get(thread_name)
-                    
+                    thread_instance = Config.app.thread_instances.get(
+                        thread_name)
+
                     # Check if the thread has associated child threads
                     thread_id = id(thread)
                     if thread_id in self.subthreads:
                         for subthread_info in self.subthreads[thread_id]:
                             subthread_id = subthread_info['id']
-                            subthread_instance = self.get_thread_instance(subthread_id)
+                            subthread_instance = self.get_thread_instance(
+                                subthread_id)
                             if subthread_instance and subthread_instance.is_alive():
                                 subthread_instance.__stop()
 

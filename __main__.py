@@ -1,5 +1,4 @@
 import importlib
-import os
 import threading
 import time
 
@@ -31,7 +30,6 @@ class ServerIntegrityThread(threading.Thread):
 
 class RUN:
     def __init__(self):
-        self.event = threading.Event()
         self.server_thread = None
         self.Config = None
 
@@ -48,39 +46,48 @@ class RUN:
         # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
         self.init = init_module.Run()
-        # self.init.run()
+
         # Server Starup
         config_module = importlib.import_module('app.config.config')
         self.Config = config_module.Config
         self.Config.auto_populate_config(config_structure)
 
-        _, clock = self.Config.app.services.task.miscellaneous.date_clock(2)
-        os.environ["DATE"] = f"{clock}"
-        self.thread_handler = self.Config.app.system.core.thread
-        self.queue_handler = self.Config.app.system.core.queue
-        self.console_handler = self.Config.app.system.core._console
-        self.event.set()
         self.Config.app._app = self
 
-    def start_services(self, package_list):
+    def start_services(self, package_list=None):
         """
         Start application services.
 
         Args:
             package_list (list): List of packages to start.
         """
-        self.Config.app.system.admin.agents.sys.update_database()
-        self.Config.app.system.admin.agents.sys.verify_paths()
+        threads = self.Config.app.system.admin.agents.sys.instance_classes()
         self.Config.app.system.admin.agents.sys.initialize_queues()
-        self.Config.app.system.admin.agents.sys.instance_threads()
-        self.Config.inspect_config_section(self.Config.forge)
-        self.Config.forge.run(package_list=package_list)
-        self.Config.app.system.admin.agents.sys.instance_threads(
-            forge=True)
+
+        self.Config.app.system.admin.agents.sys.initialize_thread(threads)
+
+        self.Config.app.system.core.event.notify_system_ready()
+
+        # FORGE THREADS START
+
+        if package_list != None:
+
+            self.Config.forge.run(package_list=package_list)
+            classes = self.Config.app.system.admin.agents.sys.instance_classes(
+                forge=True)
+            threads = self.Config.app.system.admin.agents.sys.instance_threads(
+                classes)
+            self.Config.app.system.admin.agents.sys.initialize_thread(
+                threads)
 
     def run(self):
         self.initialize()
-        self.start_services(package_list=[])
+
+        self.thread_handler = self.Config.app.system.core.thread
+        self.queue_handler = self.Config.app.system.core.queue
+        self.console_handler = self.Config.app.system.core._console
+
+        self.start_services()
 
         self.server_thread = ServerIntegrityThread(
             self.thread_handler, self.queue_handler)

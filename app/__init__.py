@@ -58,6 +58,24 @@ class Run:
         """
         pass
 
+    def verify_paths(self):
+        """
+        Verify and create directory paths if they don't exist.
+
+        Returns:
+            str: Confirmation message.
+        """
+        DirsStructure = [
+            "./app/common/.temp",
+            "./app/services/external",
+        ]
+
+        for path in DirsStructure:
+            if not os.path.exists(path):
+                os.makedirs(path)
+
+        return "All Directories have been verified correctly"
+
     def check_dependencies(self):
         """
         Comprueba y maneja las dependencias de la aplicación.
@@ -147,5 +165,6 @@ class Run:
         ]
         self.establish_connections()
         self.set_environ_variables()
+        self.verify_paths()
         self.check_dependencies()
         self.perform_health_checks()

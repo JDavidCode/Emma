@@ -61,6 +61,7 @@ class InputRouter:
         while not self.stop_flag:
             key, data, ids, channel = self.queue_handler.get_queue(
                 "GPT_RESPONSE")
+
             if key == 's0offline':
                 self.command_indexer(keyword=data, off_key=True)
             elif key == 'funcall':

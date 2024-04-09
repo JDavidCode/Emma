@@ -38,9 +38,8 @@ class Logger:
                 "remitent": remitent,
                 "output": output,
             }
-            logging.exception(output)
-
             self.save_log(log_entry)  # Add the log entry to the buffer
+            logging.exception(output)
 
     def save_log(self, log_entry):
         """

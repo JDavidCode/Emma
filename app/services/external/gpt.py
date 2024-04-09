@@ -6,11 +6,13 @@ import traceback
 
 
 class GPT:
-    def __init__(self, name, queue_name, queue_handler):
+    def __init__(self, name, queue_name, queue_handler, event_handler):
         openai.api_key = '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'
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
+        self.event_handler = event_handler
+        self.event_handler.subscribe(self)
         self.stop_flag = False
         self.event = threading.Event()
         self.functions = Config.tools.data.json_loader(
@@ -69,6 +71,7 @@ class GPT:
                     "role": "user",
                     "content": f"{data}",
                 }
+
             if channel == "TELEGRAM_API":
                 chat = [message]
             elif channel == "WEB_API":
@@ -88,7 +91,7 @@ class GPT:
                         max_tokens=400,
                         functions=self.functions,
                         function_call="auto",
-                        temperature=0)
+                        temperature=0.3)
 
                     response = response.model_dump_json()
                     response = json.loads(response)

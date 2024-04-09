@@ -1,6 +1,8 @@
 import datetime
 import os
+import sys
 import threading
+import time
 import traceback
 import keyboard
 from app.config.config import Config
@@ -141,12 +143,14 @@ class Console:
             self.pa = pa
 
         def active_terminal(self):
-            while True:
+            time.sleep(8)
+            while not self.pa.stop_flag:
                 current_time = datetime.datetime.now().strftime("%H:%M:%S")
                 try:
                     input_text = input(f"[{current_time}] >> ")
+                    sys.stdin.close()
                     if input_text == "shutdown" or input_text == "exit":
-                        self._handle_shutdown()
+                        Config.app.system.admin.agents.sys.server_shutdown()
                     elif input_text.startswith("index "):
                         instance_name = input_text.split(" ")[1]
                         self.pa.handle_index(instance_name)

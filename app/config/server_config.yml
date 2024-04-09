@@ -6,7 +6,6 @@ defaults:
     queue_maxsize: 0
     
   Threads:
-  
     - args:
       - queue_handler
       - event_handler
@@ -54,6 +53,7 @@ defaults:
 
     - args:
       - queue_handler
+      - event_handler
       autorestart: true
       autostart: true
       endpoint: app.services.external.gpt

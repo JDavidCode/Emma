@@ -1,5 +1,4 @@
 import json
-import threading
 import traceback
 
 
@@ -8,31 +7,11 @@ class WhitelistAgent:
         self.name = name
         self.queue_name = queue_name
         self.stop_flag = False
-        self.event = threading.Event()
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
         self.whitelist = {}
-
-    def handle_request(self, request, data):
-        # Este método maneja una solicitud de la cola
-        # Debes implementar la lógica adecuada aquí
-        pass
-
-    def main(self):
-        self.event.wait()
-        self.queue_handler.add_to_queue(
-            "CONSOLE", [self.name, "Is Started"])
-
-        while not self.stop_flag:
-            request, data = self.queue_handler.get_queue(
-                self.queue_name, 0.1, (None, None))
-            if request is not None and data is not None:
-                # Crear un hilo temporal para manejar la solicitud
-                request_thread = threading.Thread(
-                    target=self.handle_request, args=(request, data))
-                request_thread.start()
 
     def add_user(self, username, additional_info=None):
         if not username or username in self.whitelist:
@@ -84,15 +63,11 @@ class WhitelistAgent:
         except Exception as e:
             print(f"Error loading whitelist: {str(e)}")
 
-    def run(self):
-        self.event.set()
 
     def _handle_system_ready(self):
         self.run()
         return True
 
-    def stop(self):
-        self.stop_flag = True
 
     def handle_error(self, error, message=None):
         error_message = f"Error in {self.name}: {error}"

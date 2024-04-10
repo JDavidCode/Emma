@@ -3,7 +3,7 @@ import json
 import traceback
 from app.config.config import Config
 import os
-
+from sqlalchemy import Integer, MetaData, Table, Column, String, JSON, DateTime
 
 class UserGroupsAgent:
     def __init__(self, name, queue_handler, event_handler):
@@ -13,159 +13,160 @@ class UserGroupsAgent:
         # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
 
-    def create_group(self, user_id, name, content=[], date=datetime.now):
+
+    def create_group(self, user_id, name, content=[], date=datetime.now()):
         if user_id is None or name is None:
             return "ERROR INVALID VALUES"
 
         try:
-            # Crear un cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                                Column('uid', Integer, primary_key=True),
+                                Column('cloud', JSON)
+                                )
 
-            # Generar un nuevo ID para el grupo
-            group_id = self.generate_id('GID-')
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the user
+                user = session.query(users_table).filter(
+                    users_table.uid == user_id).first()
 
-            # Obtener el valor actual de la columna "cloud" para el usuario
-            query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
-            cursor.execute(query_select_cloud, (user_id,))
-            # Default to an empty list if 'cloud' is None
-            current_cloud_json = cursor.fetchone().get('cloud', '[]')
-            current_cloud = json.loads(current_cloud_json)
+                if not user:
+                    return False, f"User with ID {user_id} not found"
 
-            # If 'content' is provided, use it; otherwise, initialize as an empty list
-            content = content or []
+                # Generate a new group ID (assuming you have a separate function)
+                group_id = self.generate_id('GID-')
 
-            # Agregar el nuevo grupo a la lista existente
-            nuevo_grupo = {"name": name,
-                           "id": group_id, "content": content}
-            current_cloud.append(nuevo_grupo)
+                # Prepare group data (assuming content is a list)
+                new_group = {"name": name, "id": group_id,
+                             "content": content or []}
 
-            # Convertir la lista actualizada a formato JSON
-            updated_cloud_json = json.dumps(current_cloud)
+                # Update user's cloud (assuming cloud is a JSON column)
+                current_cloud = user.cloud or []  # Default to empty list if None
+                current_cloud.append(new_group)
+                user.cloud = current_cloud
 
-            # Consulta para actualizar el campo "cloud" en la base de datos
-            query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s"
-            cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
+                # Commit changes
+                session.commit()
 
-            # Confirmar la transacción
-            self.users_conn.commit()
-
-            print("Grupo creado exitosamente.")
-            # Devolver el ID del nuevo grupo
-            return True, (f"GROUP {name} has been created", name)
+                print("Grupo creado exitosamente.")
+                return True, (f"GROUP {name} has been created", name)
 
         except Exception as e:
-            print("Error al ejecutar la consulta: group ", e)
-            import traceback
-            traceback.print_exc()  # Print the full traceback
+            self.handle_error(e)
             return False, "ERROR DATABASE OPERATION"
 
-    def edit_group(self, user_id, from_group_id, to_group_id, content_add, content_remove):
+    def edit_group(self, user_id, from_group_id, to_group_id, content_add=[], content_remove=[]):
         if user_id is None or from_group_id is None or to_group_id is None:
             return "ERROR INVALID VALUES"
 
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                Column('uid', Integer, primary_key=True),
+                Column('cloud', JSON)
+            )
 
-            # Obtaining the current value of the "cloud" column for the user
-            query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
-            cursor.execute(query_select_cloud, (user_id,))
-            current_cloud = cursor.fetchone().get('cloud', [])
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the user
+                user = session.query(users_table).filter(users_table.uid == user_id).first()
 
-            # Find the index of the group to update and check if it exists
-            from_group_index = None
-            for index, group in enumerate(current_cloud):
-                if group.get('id') == from_group_id:
-                    from_group_index = index
-                    break
+                if not user:
+                    return False, f"User with ID {user_id} not found"
 
-            if from_group_index is None:
-                return "ERROR GROUP NOT FOUND"
+                # Find the group to update
+                from_group = session.query(users_table.c.cloud) \
+                    .filter(users_table.uid == user_id) \
+                    .filter(users_table.c.cloud.op('->>')['id'] == from_group_id).first()
 
-            # Remove content from the specified group
-            if content_remove:
-                current_content = current_cloud[from_group_index].get(
-                    'content', [])
-                updated_content = [
-                    item for item in current_content if item not in content_remove]
-                current_cloud[from_group_index]['content'] = updated_content
+                if not from_group:
+                    return False, "ERROR GROUP NOT FOUND"
 
-            # Add content to the new group
-            to_group_exists = False
-            for group in current_cloud:
-                if group.get('id') == to_group_id:
-                    to_group_exists = True
-                    group['content'].extend(content_add)
-                    break
+                # Update content within the from_group (if provided)
+                from_group_data = json.loads(from_group[0])
+                current_content = from_group_data.get('content', [])
+                if content_remove:
+                    updated_content = [item for item in current_content if item not in content_remove]
+                    from_group_data['content'] = updated_content
 
-            if not to_group_exists:
-                return "ERROR TO GROUP NOT FOUND"
+                # Find or create the to_group (assuming cloud is a list)
+                to_group_data = None
+                for group in user.cloud or []:  # Check if cloud exists and is a list
+                    if group['id'] == to_group_id:
+                        to_group_data = group
+                        break
 
-            # Convert the updated list to JSON
-            updated_cloud_json = json.dumps(current_cloud)
+                if not to_group_data:
+                    # Create a new group if not found
+                    to_group_data = {"name": "New Group", "id": to_group_id, "content": []}
+                    user.cloud.append(to_group_data)
 
-            # Update the "cloud" column in the database
-            query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s"
-            cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
+                # Add content to the to_group # Update the user's cloud
+                to_group_data['content'].extend(content_add)
+                user.cloud = from_group_data and user.cloud or [from_group_data]  # Handle potential None values
 
-            # Confirm the transaction
-            self.users_conn.commit()
+                # Commit changes
+                session.commit()
 
-            print("Grupo actualizado exitosamente.")
-            return True, f"GROUP {from_group_id} has been updated"
+                print("Grupo actualizado exitosamente.")
+                return True, f"GROUP {from_group_id} has been updated"
 
         except Exception as e:
-            print("Error executing query: group update", e)
-            return "ERROR DATABASE OPERATION"
+            self.handle_error(e)
+            return False, "ERROR DATABASE OPERATION"
 
     def delete_group(self, user_id, group_id):
         if user_id is None or group_id is None:
             return "ERROR INVALID VALUES"
 
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                Column('uid', Integer, primary_key=True),
+                Column('cloud', JSON)
+            )
+            chats_table = Table('chats', metadata,
+                Column('cid', String, primary_key=True),  # Assuming cid is a string
+                Column('info', JSON)
+            )
 
-            # Get the current value of the "cloud" column for the user
-            query_select_cloud = "SELECT cloud FROM users WHERE uid = %s"
-            cursor.execute(query_select_cloud, (user_id,))
-            current_cloud = cursor.fetchone().get('cloud', [])
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the user
+                user = session.query(users_table).filter(users_table.uid == user_id).first()
 
-            # Check if the group exists in the user's cloud
-            group_exists = any(
-                group['id'] == group_id for group in current_cloud)
+                if not user:
+                    return False, f"User with ID {user_id} not found"
 
-            if not group_exists:
-                return False, f"Group with ID {group_id} not found"
+                # Check if the group exists (using list comprehension)
+                group_to_delete = [group for group in user.cloud or [] if group['id'] == group_id]
 
-            # Remove the group from the user's cloud
-            updated_cloud = [
-                group for group in current_cloud if group['id'] != group_id]
+                if not group_to_delete:
+                    return False, f"Group with ID {group_id} not found"
 
-            # Convert the updated list to JSON
-            updated_cloud_json = json.dumps(updated_cloud)
+                # Remove the group from user's cloud
+                user.cloud = [group for group in user.cloud or [] if group['id'] != group_id]
 
-            # Update the "cloud" field in the database
-            query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s"
-            cursor.execute(query_update_cloud, (updated_cloud_json, user_id))
+                # Delete chats associated with the group
+                session.query(chats_table).filter(chats_table.c.info.op('->>')['gid'] == group_id).delete()
 
-            # Remove chats associated with the group
-            query_remove_chats = "DELETE FROM chats WHERE info->>'gid' = %s"
-            cursor.execute(query_remove_chats, (group_id,))
+                # Commit changes
+                session.commit()
 
-            # Confirm the transaction
-            self.users_conn.commit()
-
-            print(
-                f"Group with ID {group_id} and associated chats have been removed successfully.")
-            return True, f"Group with ID {group_id} has been removed"
+                print(
+                    f"Group with ID {group_id} and associated chats have been removed successfully.")
+                return True, f"Group with ID {group_id} has been removed"
 
         except Exception as e:
-            print("Error executing query: remove_group", e)
+            self.handle_error(e)
             return False, "ERROR DATABASE OPERATION"
 
     def _handle_system_ready(self):
-        self.users_conn = Config.app.system.admin.agents.db.connect(os.getenv(
+        self.engine = Config.app.system.admin.agents.db.connect(os.getenv(
             "DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_USER_PW"), os.getenv("DB_NAME"))
         return True
 

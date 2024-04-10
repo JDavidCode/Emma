@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from app.config.config import Config
 import os
-
+from sqlalchemy import Integer, MetaData, Table, Column, String, Boolean,JSON
 
 class UserAuthAgent:
     def __init__(self, name, queue_handler, event_handler):
@@ -13,140 +13,169 @@ class UserAuthAgent:
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
 
-    def user_login(self, info):
+
+    def user_login(self, engine, info):
         email = info.get('email')
         password = info.get('password')
+
         try:
-            # Crear un cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                                Column('uid', Integer, primary_key=True),
+                                Column('login', String),
+                                Column('_pass', String),
+                                Column('active', Boolean)
+                                )
 
-            # Consulta para obtener información del usuario por correo electrónico
-            query = "SELECT * FROM users WHERE login = %s"
-            cursor.execute(query, (email,))
-            user_data = cursor.fetchone()
+            # Create a database session
+            with engine.begin() as session:
+                # Query for the user
+                user = session.query(users_table).filter(
+                    users_table.c.login == email).first()
 
-            # Verificar si se encontró el usuario y la contraseña coincide
-            if user_data and user_data["pass"] == password:
-                return True, user_data["uid"]
-            else:
-                return False, "Credenciales incorrectas. Inicio de sesión fallido."
+                # Check if user exists and password matches
+                if user and user._pass == password and user.active:
+                    return True, user.uid
+                else:
+                    return False, "Incorrect credentials. Login failed."
 
         except Exception as e:
-            traceback_str = traceback.format_exc()
-            return False, f"Error al ejecutar la consulta: login {traceback_str}"
+            self.handle_error(e)
+            return False, "Error executing query: login"
 
-    def user_signup(self, info):
+    def user_signup(self, engine, info):
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                Column('uid', Integer, primary_key=True),
+                Column('info', JSON),
+                Column('login', String),
+                Column('_pass', String),
+                Column('devices', JSON),
+                Column('cloud', JSON)
+            )
+            chats_table = Table('chats', metadata,
+                Column('cid', String, primary_key=True),
+                Column('uid', Integer),
+                Column('info', JSON),
+                Column('content', JSON)
+            )
 
-            # Check if the user with the provided email already exists
-            query_check_user = "SELECT COUNT(*) as count FROM users WHERE login = %s"
-            cursor.execute(query_check_user, (info.get('email', ''),))
-            user_count = cursor.fetchone().get('count', 0)
+            # Create a database session
+            with engine.begin() as session:
+                # Check if user exists (using SQLAlchemy query)
+                existing_user = session.query(users_table).filter(users_table.c.login == info.get('email', '')).first()
 
-            if user_count > 0:
-                return False, "User with this email already exists."
+                if existing_user:
+                    return False, "User with this email already exists."
 
-            # Generate IDs
-            uid = self.generate_uuid()
-            did = self.generate_id('DID-')
-            cid = self.generate_id('CID-')
-            gid = self.generate_id('GID-')
+                # Generate IDs (assuming you have separate functions)
+                uid = self.generate_uuid()
+                did = self.generate_id('DID-')
+                cid = self.generate_id('CID-')
+                gid = self.generate_id('GID-')
 
-            # Calculate the age
-            birthday = info.get('date')
-            age = self.calculate_age(birthday)
+                # Calculate the age
+                birthday = info.get('date')
+                age = self.calculate_age(birthday)
 
-            # Create chat
-            chat_info = {
-                "gid": gid,
-                "name": "Hello World!",
-                "description": "I'm Playing with EMMA",
-            }
+                # Create chat data
+                chat_info = {
+                    "gid": gid,
+                    "name": "Hello World!",
+                    "description": "I'm Playing with EMMA",
+                }
 
-            # Convertir el diccionario a formato JSON
-            content = json.dumps([self.create_prompt_session(
-                info.get('name', ""), age, birthday, '1')])
+                # Create initial prompt session content (assuming a function)
+                content = json.dumps([self.create_prompt_session(
+                    info.get('name', ""), age, birthday, '1')])
 
-            # Consulta para insertar el nuevo chat
-            query = "INSERT INTO chats (cid,uid,  info, content) VALUES (%s, %s, %s, %s)"
-            cursor.execute(query, (cid, uid, json.dumps(chat_info), content))
+                # Create new chat object
+                new_chat = chats_table.insert().values(cid=cid, uid=uid, info=chat_info, content=content)
+                session.execute(new_chat)
 
-            try:
-                # Confirmar la transacción
-                self.users_conn.commit()
-            except Exception as e:
-                return False, f"Error creating user {e}"
+                # Create new user data
+                new_user = {
+                    "name": info.get('name', ""),
+                    "email": info.get('email', ""),
+                    "age": age,
+                    "birthday": birthday,
+                    "level": "1"
+                }
+                user_devices = [{
+                    "id": did,
+                    "device_name": "Unknown Device"
+                }]
+                user_cloud = [{"name": "Default", "id": gid, "content": [cid]}]
 
-            # Agregar el nuevo grupo a la lista existente
-            nuevo_grupo = {"name": "Default",
-                           "id": gid, "content": [cid]}
+                # Create new user object
+                new_user_obj = users_table.insert().values(
+                    uid=uid, info=new_user, login=info.get('email', ""), _pass=info.get('pass', ""), devices=user_devices, cloud=user_cloud)
+                session.execute(new_user_obj)
 
-            # Create the new user
-            nuevo_usuario = {
-                "name": info.get('name', ""),
-                "email": info.get('email', ""),
-                "age": age,
-                "birthday": birthday,
-                "level": "1"
-            }
+                # Commit changes
+                session.commit()
 
-            # Query to insert the new user
-            query_insert_user = "INSERT INTO users (uid, info, login, pass, devices, cloud) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query_insert_user, (uid, json.dumps(nuevo_usuario), info.get('email', ""), info.get(
-                'pass', ""), json.dumps([{"id": did, "device_name": "Unknown Device"}]), json.dumps([nuevo_grupo])))
-
-            # Confirm the transaction
-            self.users_conn.commit()
-
-            return True, "User Registered"
+                return True, "User Registered"
 
         except Exception as e:
-            print("Error al ejecutar la consulta: group ", e)
-            import traceback
-            traceback.print_exc()
+            self.handle_error(e)
             return False, "Error executing query: signup"
 
-    def get_user(self, user_id):
-        user_info = {}
+    def get_user(self, engine, user_id):
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            users_table = Table('users', metadata,
+                Column('uid', Integer, primary_key=True),
+                Column('login', String),
+                Column('info', JSON),
+                Column('cloud', JSON)
+            )
+            chats_table = Table('chats', metadata,
+                Column('cid', String, primary_key=True),
+                Column('uid', Integer),
+                Column('info', JSON)
+            )
 
-            # Retrieve user information (excluding pass)
-            query_get_user = "SELECT login, info, cloud FROM users WHERE uid = %s"
-            cursor.execute(query_get_user, (user_id,))
-            user_db_info = cursor.fetchone()
+            # Create a database session
+            with engine.begin() as session:
+                # Query for the user with relevant information
+                user = session.query(users_table.c.login, users_table.c.info, users_table.c.cloud) \
+                    .filter(users_table.c.uid == user_id).first()
 
-            if not user_db_info:
-                return False, "User not found"
+                if not user:
+                    return False, "User not found"
 
-            # Modify the query_chats to use the correct JSON path expression for MySQL
-            query_chats = "SELECT info, cid FROM chats WHERE uid = %s"
-            cursor.execute(query_chats, (user_id,))
-            user_db_chats = cursor.fetchall()
-            formatted_chats = [
-                {
-                    'name': json.loads(chat['info'])['name'],
-                    'description': json.loads(chat['info'])['description'],
-                    'id': chat['cid'],
-                    'gid': json.loads(chat['info'])['gid']
+                # Construct user data dictionary
+                user_info = {
+                    "login": user.login,
+                    "info": user.info,
+                    "groups": user.cloud,
+                    "chats": []  # Empty list for chats
                 }
-                for chat in user_db_chats
-            ]
-            # Parse JSON data for user information
-            user_info['info'] = json.loads(user_db_info['info'])
-            user_info['groups'] = json.loads(user_db_info['cloud'])
-            user_info['chats'] = formatted_chats
 
-            return True, user_info
+                # Query for chats (avoiding JSON parsing within the query)
+                chats = session.query(chats_table.c.info, chats_table.c.cid).filter(chats_table.c.uid == user_id).all()
 
+                # Format chat data
+                user_info["chats"] = [
+                    {
+                        "name": chat[0]["name"],
+                        "description": chat[0]["description"],
+                        "id": chat[1],
+                        "gid": chat[0]["gid"],
+                    }
+                    for chat in chats
+                ]
+
+                return True, user_info
         except Exception as e:
-            print("Error executing query: get_user", e)
-            import traceback
-            traceback.print_exc()  # Print the full traceback
+            self.handle_error(e)
             return False, "Error executing query: get_user"
+
 
     def create_prompt_session(self, name, age, birthday, level, role=None):
         if role is None:

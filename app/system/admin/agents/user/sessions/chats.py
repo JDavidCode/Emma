@@ -1,6 +1,7 @@
 import json
 import traceback
 from app.config.config import Config
+from sqlalchemy import Integer, MetaData, Table, Column, String, JSON
 import os
 
 class UserChatsAgent:
@@ -13,42 +14,51 @@ class UserChatsAgent:
     def get_chat(self, chat_id, user_id):
         if user_id is None or chat_id is None:
             return "User ID and Chat ID cannot be null."
+
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            chats_table = Table('chats', metadata,
+                                Column('cid', Integer, primary_key=True),
+                                Column('uid', Integer),
+                                Column('info', JSON),
+                                Column('content', JSON)
+                                )
 
-            # Query to obtain information of the chat
-            query = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
-            cursor.execute(query, (chat_id, user_id))
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the chat using SQLAlchemy syntax
+                result = session.query(chats_table) \
+                    .filter(chats_table.cid == chat_id) \
+                    .filter(chats_table.uid == user_id) \
+                    .first()
 
-            # Get the results
-            result = cursor.fetchone()
-
-            if result:
-                # Verify if the user has access to the chat
-                chat_info = json.loads(result['info'])
-                if chat_info.get('uid') == user_id:
-                    # Return information of the chat
-                    chat_data = {
-                        'info': {
-                            "name": chat_info.get('name', ""),
-                            "description": chat_info.get('description', ""),
-                        },
-                        'content': json.loads(result['content'])
-                    }
-                    return chat_data
+                if result:
+                    # Check user access to the chat
+                    chat_info = result.info
+                    if chat_info.get('uid') == user_id:
+                        # Return chat data as a dictionary
+                        chat_data = {
+                            'info': {
+                                "name": chat_info.get('name', ""),
+                                "description": chat_info.get('description', ""),
+                            },
+                            'content': result.content
+                        }
+                        return chat_data
+                    else:
+                        return "User does not have access to this chat."
                 else:
-                    return "User does not have access to this chat."
-            else:
-                return "Chat not found."
+                    return "Chat not found."
 
         except Exception as e:
-            print("Error executing query: get_chat ", e)
+            self.handle_error(e)
             return "Error retrieving chat information from the database."
-
+    
     def create_chat(self, _id, group_id, name=None, description=None, prompt=None):
         if _id is None:
             return "UID CANNOT BE NULL"
+
         chat_id = self.generate_id('CID-')
         if name is None:
             name = "My Chat"
@@ -56,8 +66,7 @@ class UserChatsAgent:
             description = "Hello World!"
         if prompt is None:
             name, age, birthday, level = self.get_user_info(_id)
-            prompt = self.create_prompt_session(
-                name, age, birthday, level)
+            prompt = self.create_prompt_session(name, age, birthday, level)
 
         chat_info = {
             "gid": group_id,
@@ -66,97 +75,86 @@ class UserChatsAgent:
         }
 
         try:
-            # Crear un cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            chats_table = Table('chats', metadata,
+                                # Assuming cid is a string
+                                Column('cid', String, primary_key=True),
+                                Column('uid', Integer),
+                                Column('info', JSON),
+                                Column('content', JSON)
+                                )
+            users_table = Table('users', metadata,  # Assuming a users table exists
+                                Column('uid', Integer, primary_key=True),
+                                Column('cloud', JSON)
+                                )
 
-            # Convertir el diccionario a formato JSON
-            info = json.dumps(chat_info)
-            content = json.dumps([prompt])
+            # Create a database session
+            with self.engine.begin() as session:
+                # Insert chat data
+                new_chat = chats_table(
+                    cid=chat_id, uid=_id, info=chat_info, content=json.dumps([prompt]))
+                session.add(new_chat)
 
-            # Consulta para insertar el nuevo chat
-            query = "INSERT INTO chats (cid, uid, info, content) VALUES (%s,%s, %s, %s)"
-            cursor.execute(query, (chat_id, _id, info, content))
+                # Update user's cloud (assuming cloud is a JSON column)
+                user = session.query(users_table).filter(users_table.uid == _id).filter(
+                    users_table.cloud.op('->>')['id'] == group_id).first()
 
-            # Confirmar la transacción
-            self.users_conn.commit()
+                if user:  # Check if user exists in the specified cloud
+                    current_cloud = user.cloud or []  # Default to empty list if None
+                    if chat_id not in current_cloud:
+                        current_cloud.append(chat_id)
+                        user.cloud = current_cloud
+                else:
+                    print(f"User with ID {_id} not found in group {group_id}.")
 
-            # Select the current 'cloud' from the database
-            query_select_cloud = "SELECT cloud FROM users WHERE uid = %s AND cloud->>'id'=%s"
-            cursor.execute(query_select_cloud, (_id, group_id))
-            # Default to an empty list if 'cloud' is None
-            current_cloud_json = cursor.fetchone().get('cloud', '[]')
+                # Commit changes
+                session.commit()
 
-            # Convert the JSON string to a Python list
-            current_cloud_list = json.loads(current_cloud_json)
-
-            # Assuming 'chat_id' is the variable holding the chat ID you want to add
-            chat_id = 'example_chat_id'
-
-            # Check if the 'chat_id' is not already in the list before adding
-            if chat_id not in current_cloud_list:
-                # Add the 'chat_id' to the list
-                current_cloud_list.append(chat_id)
-
-                # Convert the modified list back to a JSON string
-                updated_cloud_json = json.dumps(current_cloud_list)
-
-                # Update the 'cloud' in the database with the modified JSON string
-                query_update_cloud = "UPDATE users SET cloud = %s WHERE uid = %s & cloud->>'id'=%s"
-                cursor.execute(query_update_cloud,
-                               (updated_cloud_json, _id, group_id))
-
-                # Confirm the transaction after the update
-                self.users_conn.commit()
-            else:
-                print(f"Chat ID {chat_id} already exists in the list.")
-            return True, (f"Chat {name} has been created", name)
+                return True, (f"Chat {name} has been created", name)
 
         except Exception as e:
-            print("Error al ejecutar la consulta: chat ", e)
+            self.handle_error(e)
             return False, "ERROR DATABASE OPERATION"
-
+        
     def edit_chat(self, uid, chat_id, name=None, description=None):
         if chat_id is None:
             return "Chat ID cannot be null"
 
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            chats_table = Table('chats', metadata,
+                Column('cid', String, primary_key=True),  # Assuming cid is a string
+                Column('uid', Integer),
+                Column('info', JSON),
+                Column('content', JSON)
+            )
 
-            # Retrieve existing chat information
-            query_get_chat = "SELECT info, content FROM chats WHERE cid = %s & uid = %s"
-            cursor.execute(query_get_chat, (chat_id, uid))
-            chat_info = cursor.fetchone()
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the chat
+                chat = session.query(chats_table) \
+                    .filter(chats_table.cid == chat_id) \
+                    .filter(chats_table.uid == uid) \
+                    .first()
 
-            if not chat_info:
-                return False, f"Chat with ID {chat_id} not found"
+                if not chat:
+                    return False, f"Chat with ID {chat_id} not found"
 
-            # Parse JSON data for chat information
-            chat_info['info'] = json.loads(chat_info['info'])
-            chat_info['content'] = json.loads(chat_info['content'])
+                # Update chat information if new values are provided
+                if name is not None:
+                    chat.info['name'] = name
+                if description is not None:
+                    chat.info['description'] = description
 
-            # Update chat information if new values are provided
-            if name is not None:
-                chat_info['info']['name'] = name
-            if description is not None:
-                chat_info['info']['description'] = description
+                # Commit changes (no need to convert to JSON as SQLAlchemy handles it)
+                session.commit()
 
-            # Convert the updated information back to JSON
-            updated_info = json.dumps(chat_info['info'])
-            updated_content = json.dumps(chat_info['content'])
-
-            # Update the chat in the database
-            query_update_chat = "UPDATE chats SET info = %s, content = %s WHERE cid = %s"
-            cursor.execute(query_update_chat,
-                           (updated_info, updated_content, chat_id))
-
-            # Confirm the transaction
-            self.users_conn.commit()
-
-            return True, f"Chat with ID {chat_id} has been updated"
+                return True, f"Chat with ID {chat_id} has been updated"
 
         except Exception as e:
-            print("Error executing query: update_chat", e)
+            self.handle_error(e)
             return False, "Error executing query: update_chat"
 
     def update_chat(self, uid, chat_id, content):
@@ -164,51 +162,90 @@ class UserChatsAgent:
             return "Chat ID cannot be null"
 
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            chats_table = Table('chats', metadata,
+                                # Assuming cid is a string
+                                Column('cid', String, primary_key=True),
+                                Column('uid', Integer),
+                                Column('info', JSON),
+                                Column('content', JSON)
+                                )
 
-            # Update the chat in the database
-            query_update_chat = "UPDATE chats SET content = %s WHERE cid = %s & uid = %s"
-            cursor.execute(query_update_chat,
-                           ("updated_content", chat_id, uid))
+            # Create a database session
+            with self.engine.begin() as session:
+                # Query for the chat
+                chat = session.query(chats_table) \
+                    .filter(chats_table.cid == chat_id) \
+                    .filter(chats_table.uid == uid) \
+                    .first()
 
-            # Confirm the transaction
-            self.users_conn.commit()
+                if not chat:
+                    return False, f"Chat with ID {chat_id} not found"
 
-            return True, f"Chat with ID {chat_id} has been updated"
+                # Update content (clear and concise)
+                chat.content = content
+
+                # Commit changes
+                session.commit()
+
+                return True, f"Chat with ID {chat_id} has been updated"
 
         except Exception as e:
-            print("Error executing query: update_chat", e)
+            self.handle_error(e)
             return False, "Error executing query: update_chat"
+
 
     def remove_chat(self, uid, gid, cid):
         if cid is None:
             return "Chat ID cannot be null"
 
         try:
-            # Create a cursor
-            cursor = self.users_conn.cursor(dictionary=True)
+            # Define table metadata
+            metadata = MetaData()
+            chats_table = Table('chats', metadata,
+                                # Assuming cid is a string
+                                Column('cid', String, primary_key=True),
+                                Column('uid', Integer),
+                                Column('info', JSON),
+                                Column('content', JSON)
+                                )
+            users_table = Table('users', metadata,  # Assuming a users table exists
+                                Column('uid', Integer, primary_key=True),
+                                Column('cloud', JSON)
+                                )
 
-            # Update the content field in the user's cloud
-            query_update_cloud = "UPDATE users SET cloud = JSON_SET(cloud, '$[%s].content', %s) WHERE JSON_CONTAINS_PATH(cloud, 'one', '$[%s]')"
-            cursor.execute(query_update_cloud, (cid,
-                           json.dumps(), gid))
+            # Create a database session
+            with self.engine.begin() as session:
+                # Delete chat from database (efficient)
+                session.query(chats_table).filter(chats_table.cid == cid).delete()
 
-            # Delete the chat from the database
-            query_remove_chat = "DELETE FROM chats WHERE cid = %s"
-            cursor.execute(query_remove_chat, (cid,))
+                # Update user's cloud (if applicable, assuming cloud is a list)
+                user = session.query(users_table).filter(users_table.uid == uid).filter(
+                    users_table.cloud.op('->>')['id'] == gid).first()
 
-            # Confirm the transaction
-            self.users_conn.commit()
+                if user and user.cloud:  # Only update if user and cloud exist
+                    try:
+                        current_cloud = json.loads(user.cloud)
+                        if cid in current_cloud:
+                            current_cloud.remove(cid)
+                            user.cloud = json.dumps(
+                                current_cloud)  # Update cloud JSON
+                    except Exception as e:  # Handle potential JSON parsing errors
+                        print(
+                            f"Error parsing user cloud for ID {uid} (group {gid}):", e)
 
-            return True, f"Chat with ID {cid} has been removed"
+                # Commit changes
+                session.commit()
+
+                return True, f"Chat with ID {cid} has been removed"
 
         except Exception as e:
-            print("Error executing query: remove_chat", e)
-            return False, "Error executing query: remove_chat"
+            self.handle_error(e)
+            return False
 
     def _handle_system_ready(self):
-        self.users_conn = Config.app.system.admin.agents.db.connect(os.getenv("DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_USER_PW"), os.getenv("DB_NAME"))
+        self.engine = Config.app.system.admin.agents.db.connect(os.getenv("DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_USER_PW"), os.getenv("DB_NAME"))
         return True
 
     def handle_error(self, error, message=None):

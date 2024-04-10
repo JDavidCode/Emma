@@ -3,7 +3,6 @@ Pandas
 NumPy
 matplotlib
 youtube-dl
-mysql-connector-python
 imutils
 pyyaml
 img2pdf
@@ -20,6 +19,8 @@ mplfinance
 Pillow
 PyTelegramBotAPI
 beautifulsoup4
+sqlalchemy
+pymsql
 
 #document reader
 langchain

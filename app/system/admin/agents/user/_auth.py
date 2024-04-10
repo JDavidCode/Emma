@@ -1,10 +1,9 @@
 import json
-import os
 import uuid
-from app.config.config import Config
 import traceback
 from datetime import datetime
-import yaml
+from app.config.config import Config
+import os
 
 
 class UserAuthAgent:
@@ -12,17 +11,7 @@ class UserAuthAgent:
         self.name = name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
-        # Subscribe itself to the EventHandler
         self.event_handler.subscribe(self)
-
-    def _handle_shutdown(self):
-        try:
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.name, "Handling shutdown..."))
-            self.event_handler.subscribers_shutdown_flag(
-                self)
-        except Exception as e:
-            self.handle_error(e)
 
     def user_login(self, info):
         email = info.get('email')
@@ -186,8 +175,11 @@ class UserAuthAgent:
         return age
 
     def _handle_system_ready(self):
-        self.users_conn = Config.app.system.admin.agents.db.connect(os.getenv(
-            "DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_USER_PW"), os.getenv("DB_NAME"))
+        self.users_conn = Config.app.system.admin.agents.db.connect(
+            os.getenv("DB_HOST"),
+            os.getenv("DB_USER"),
+            os.getenv("DB_USER_PW"),
+            os.getenv("DB_NAME"))
         return True
 
     def handle_error(self, error, message=None):
@@ -196,6 +188,15 @@ class UserAuthAgent:
             error_message += f" - {message}"
         traceback_str = traceback.format_exc()
         self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)
 
 
 if __name__ == "__main__":

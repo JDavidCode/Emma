@@ -6,7 +6,6 @@ import yaml
 import threading
 import psutil
 import importlib
-from app.config.config import Config
 import traceback
 
 

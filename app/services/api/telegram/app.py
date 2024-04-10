@@ -1,3 +1,4 @@
+import os
 import threading
 import traceback
 import telebot
@@ -5,8 +6,7 @@ import telebot
 class App:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
-        self.TOKEN = "7043619976:AAHa1x9nm2ooqdyxIRoS2V6ud7Np81C82PI"
-        self.bot = telebot.TeleBot(self.TOKEN)
+        self.bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_API_KEY"))
         self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event_handler = event_handler

@@ -62,10 +62,11 @@ class RUN:
         Args:
             package_list (list): List of packages to start.
         """
-        threads = self.Config.app.system.admin.agents.sys.instance_classes()
-        self.Config.app.system.admin.agents.sys.initialize_queues()
+        threads = self.Config.app.system.admin.agents.system.sys.instance_classes()
+        self.Config.app.system.admin.agents.system.sys.initialize_queues()
 
-        self.Config.app.system.admin.agents.sys.initialize_thread(threads)
+        self.Config.app.system.admin.agents.system.sys.initialize_thread(
+            threads)
 
         self.Config.app.system.core.event.notify_system_ready()
 
@@ -74,11 +75,11 @@ class RUN:
         if package_list != None:
 
             self.Config.forge.run(package_list=package_list)
-            classes = self.Config.app.system.admin.agents.sys.instance_classes(
+            classes = self.Config.app.system.admin.agents.system.sys.instance_classes(
                 forge=True)
-            threads = self.Config.app.system.admin.agents.sys.instance_threads(
+            threads = self.Config.app.system.admin.agents.system.sys.instance_threads(
                 classes)
-            self.Config.app.system.admin.agents.sys.initialize_thread(
+            self.Config.app.system.admin.agents.system.sys.initialize_thread(
                 threads)
 
     def run(self):
@@ -134,10 +135,10 @@ config_structure = {
                         "auth": ["app.system.admin.agents.user._auth.UserAuthAgent", ["SESSIONS AGENT", '$app.system.core.queue', '$app.system.core.event']],
                         "sessions": {
                             "chats": ["app.system.admin.agents.user.sessions.chats.UserChatsAgent",  ["USR_SESSIONS CHATS", '$app.system.core.queue', '$app.system.core.event']],
-                            "groups": ["app.system.admin.agents.user.sessions.groups.UserChatsAgent",  ["USR_SESSIONS GROUPS", '$app.system.core.queue', '$app.system.core.event']]
-                            },
+                            "groups": ["app.system.admin.agents.user.sessions.groups.UserGroupsAgent",  ["USR_SESSIONS GROUPS", '$app.system.core.queue', '$app.system.core.event']]
+                        },
                     },
-                    "db": ["app.system.admin.agents._db.DatabaseAgent", ["SYS_AGENT DATABASE", "$app.system.core.queue"]],
+                    "db": ["app.system.admin.agents._db.DatabaseAgent", ["SYS_AGENT DATABASE", "$app.system.core.queue", '$app.system.core.event']],
                     "@withelist": ["app.system.admin.agents._withelist.WhitelistAgent"]
                 },
                 "routers": {
@@ -174,5 +175,16 @@ config_structure = {
 
 
 if __name__ == "__main__":
+    os.environ.setdefault('TELEGRAM_BOT_API_KEY',
+                          '7043619976:AAHa1x9nm2ooqdyxIRoS2V6ud7Np81C82PI')
+    os.environ.setdefault(
+        'OPENAI_API_KEY', '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')
+    os.environ.setdefault(
+        'GOOGLE_API_KEY', 'AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U')
+    os.environ.setdefault('DB_HOST', "")
+    os.environ.setdefault('DB_USER', "")
+    os.environ.setdefault('DB_USER_PW', "")
+    os.environ.setdefault('DB_NAME', "")
+
     run_instance = RUN()
     run_instance.run()

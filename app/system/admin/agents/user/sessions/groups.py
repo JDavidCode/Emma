@@ -1,5 +1,8 @@
 from datetime import datetime
 import json
+import traceback
+from app.config.config import Config
+import os
 
 
 class UserGroupsAgent:
@@ -160,3 +163,24 @@ class UserGroupsAgent:
         except Exception as e:
             print("Error executing query: remove_group", e)
             return False, "ERROR DATABASE OPERATION"
+
+    def _handle_system_ready(self):
+        self.users_conn = Config.app.system.admin.agents.db.connect(os.getenv(
+            "DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_USER_PW"), os.getenv("DB_NAME"))
+        return True
+
+    def handle_error(self, error, message=None):
+        error_message = f"Error in {self.name}: {error}"
+        if message:
+            error_message += f" - {message}"
+        traceback_str = traceback.format_exc()
+        self.queue_handler.add_to_queue("LOGGING", (self.name, traceback_str))
+
+    def _handle_shutdown(self):
+        try:
+            self.queue_handler.add_to_queue(
+                "CONSOLE", (self.name, "Handling shutdown..."))
+            self.event_handler.subscribers_shutdown_flag(
+                self)
+        except Exception as e:
+            self.handle_error(e)

@@ -4,7 +4,6 @@ import sys
 import threading
 import time
 import traceback
-import keyboard
 from app.config.config import Config
 
 

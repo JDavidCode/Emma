@@ -2,17 +2,13 @@
 Pandas
 NumPy
 matplotlib
-opencv-python
-opencv-contrib-python
 youtube-dl
-PyAutoGUI
 mysql-connector-python
 imutils
 pyyaml
 img2pdf
 psutil
 openai
-pyatv
 flask-socketio
 Flask
 flask_cors
@@ -21,7 +17,6 @@ selenium
 chromedriver_autoinstaller
 Panda3D
 mplfinance
-keyboard
 Pillow
 PyTelegramBotAPI
 beautifulsoup4

@@ -1,4 +1,5 @@
 import importlib
+import os
 import threading
 import time
 
@@ -125,12 +126,19 @@ config_structure = {
 
             "admin": {
                 "agents": {
-                    "@withelist": ["app.system.admin.agents.system._withelist.WhitelistAgent"],
-                    "sys": ["app.system.admin.agents.system._system.SystemAgent", ['SYS AGENT', None, '$app.system.core.queue']],
-                    "db": ["app.system.admin.agents.database._db.Database", ["DATABASE", "$app.system.core.queue"]],
-                    "user": ["app.system.admin.agents.user._usr.UserManager", ["USER AGENT"]],
-                    "session": ["app.system.admin.agents.sessions._sessions.SessionsAgent", ["SESSIONS AGENT", '$app.system.core.queue', '$app.system.core.event']]
-
+                    "system": {
+                        "auth": ["app.system.admin.agents.system._auth.SystemAuthAgent", ["SYS_AGENT AUTH"]],
+                        "sys": ["app.system.admin.agents.system._system.SystemAgent", ['SYS_AGENT', None, '$app.system.core.queue']]
+                    },
+                    "user": {
+                        "auth": ["app.system.admin.agents.user._auth.UserAuthAgent", ["SESSIONS AGENT", '$app.system.core.queue', '$app.system.core.event']],
+                        "sessions": {
+                            "chats": ["app.system.admin.agents.user.sessions.chats.UserChatsAgent",  ["USR_SESSIONS CHATS", '$app.system.core.queue', '$app.system.core.event']],
+                            "groups": ["app.system.admin.agents.user.sessions.groups.UserChatsAgent",  ["USR_SESSIONS GROUPS", '$app.system.core.queue', '$app.system.core.event']]
+                            },
+                    },
+                    "db": ["app.system.admin.agents._db.DatabaseAgent", ["SYS_AGENT DATABASE", "$app.system.core.queue"]],
+                    "@withelist": ["app.system.admin.agents._withelist.WhitelistAgent"]
                 },
                 "routers": {
                     "@_input": "app.system.admin.routers._input.InputRouter",
@@ -143,8 +151,6 @@ config_structure = {
             "thread_instances": {},  # change on runing,
             "_app": None  # reference to the complete app should be change the value on runing
         },
-
-
 
         "services": {
             "api": {

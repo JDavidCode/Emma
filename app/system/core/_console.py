@@ -151,7 +151,7 @@ class Console:
                 try:
                     input_text = input(f"[{current_time}] >> ")
                     if input_text == "shutdown" or input_text == "exit":
-                        Config.app.system.admin.agents.sys.server_shutdown()
+                        Config.app.system.admin.agents.system.sys.server_shutdown()
                     elif input_text.startswith("index "):
                         instance_name = input_text.split(" ")[1]
                         self.pa.handle_index(instance_name)
@@ -162,7 +162,7 @@ class Console:
 
         def handle_reload(self):
             """Handle server reload."""
-            Config.app.system.admin.agents.sys.server_restart()
+            Config.app.system.admin.agents.system.sys.server_restart()
 
         def handle_stop_task(self):
             """Handle stopping a task."""

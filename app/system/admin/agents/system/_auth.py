@@ -2,7 +2,7 @@
 import requests
 
 
-class SystemNetworkAuth:
+class SystemAuthAgent:
     def __init__(self, api_key):
         self.api_key = api_key
 

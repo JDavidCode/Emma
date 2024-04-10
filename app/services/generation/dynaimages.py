@@ -52,13 +52,13 @@ class DYNA:
                 "CONSOLE", ("", "creating new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            Config.app.system.admin.agents.sys.create_new_worker(thread_name)
+            Config.app.system.admin.agents.system.sys.create_new_worker(
+                thread_name)
 
     def main(self):
         self.event.wait()
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Is Started"])
-
 
     def run(self):
         self.event.set()

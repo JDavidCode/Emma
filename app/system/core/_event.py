@@ -96,7 +96,8 @@ class EventHandler:
         Args:
             thread_name (str): The name of the overloaded worker thread.
         """
-        Config.app.system.admin.agents.sys.create_new_worker(thread_name)
+        Config.app.system.admin.agents.system.sys.create_new_worker(
+            thread_name)
 
     def notify_connection(self):
         """

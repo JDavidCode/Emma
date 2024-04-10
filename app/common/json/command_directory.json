@@ -1,11 +1,11 @@
 {
     "server_shutdown": {
-    "module": "app.system.admin.agents.sys",
+    "module": "app.system.admin.agents.system.sys",
     "args_key": "None",
     "required_lvl": 1
 },
     "server_restart": {
-    "module": "app.system.admin.agents.sys",
+    "module": "app.system.admin.agents.system.sys",
     "args_key": "None",
     "required_lvl": 1
 },
@@ -35,7 +35,7 @@
     "required_lvl": 1
 },
     "module_reloader": {
-    "module": "app.system.admin.agents.sys",
+    "module": "app.system.admin.agents.system.sys",
     "args_key": "*args",
     "required_lvl": 2
 },

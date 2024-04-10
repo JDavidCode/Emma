@@ -1,4 +1,5 @@
 import json
+import os
 import threading
 import openai
 from app.config.config import Config
@@ -7,7 +8,7 @@ import traceback
 
 class GPT:
     def __init__(self, name, queue_name, queue_handler, event_handler):
-        openai.api_key = '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'
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.name = name
         self.queue_name = queue_name
         self.queue_handler = queue_handler
@@ -55,7 +56,8 @@ class GPT:
                 "CONSOLE", ("", "creating a new worker"))
             current_thread = threading.current_thread()
             thread_name = current_thread.name
-            Config.app.system.admin.agents.sys.create_new_worker(thread_name)
+            Config.app.system.admin.agents.system.sys.create_new_worker(
+                thread_name)
 
     def main(self):
         self.event.wait()

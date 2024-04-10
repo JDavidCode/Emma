@@ -45,7 +45,7 @@ class App:
                 try:
                     data = request.get_json()  # Assuming you're using Flask for your web server
                     uid = data.get('uid')
-                    _, content = Config.app.system.admin.agents.session.get_user(
+                    _, content = Config.app.system.admin.agents.user.auth.get_user(
                         uid)
                     if _:
                         return jsonify(content), 200
@@ -86,7 +86,7 @@ class App:
             def user_login():
                 try:
                     data = request.json
-                    _, response = Config.app.system.admin.agents.session.user_login(
+                    _, response = Config.app.system.admin.agents.user.auth.user_login(
                         data)
                     if _:
                         return jsonify({"uid": response})
@@ -102,7 +102,7 @@ class App:
             def user_signup():
                 try:
                     data = request.json
-                    _, response = Config.app.system.admin.agents.session.user_signup(
+                    _, response = Config.app.system.admin.agents.user.auth.user_signup(
                         data)
                     if _:
                         return jsonify({"uid": response})
@@ -122,7 +122,7 @@ class App:
                     gid = request.form.get('gid')
                     chat_name = request.form.get('name')
                     chat_description = request.form.get('description')
-                    _, response = Config.app.system.admin.agents.session.create_chat(
+                    _, response = Config.app.system.admin.agents.user.auth.create_chat(
                         _id=uid, name=chat_name, description=chat_description)
                     if _:
                         response_data = {'status': 'success',
@@ -143,7 +143,7 @@ class App:
                     uid = request.form.get('uid')
                     gid = request.form.get('gid')
                     cid = request.form.get('cid')
-                    # _, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
+                    # _, response = Config.app.system.admin.agents.user.auth.delete_group(uid, gid)
                     return jsonify({"response": "Edit chat", "uid": uid})
 
                     if _:
@@ -164,7 +164,7 @@ class App:
                     uid = request.form.get('uid')
                     gid = request.form.get('gid')
                     cid = request.form.get('cid')
-                    # _, response = Config.app.system.admin.agents.session.delete_chat(uid, gid, cid)
+                    # _, response = Config.app.system.admin.agents.user.auth.delete_chat(uid, gid, cid)
                     return jsonify({"response": "Removing chat", "uid": uid})
 
                     if _:
@@ -185,8 +185,8 @@ class App:
                     group_name = request.form.get('name')
                     group_description = request.form.get('description')
                     group_date = request.form.get('date')
-                    _, response = Config.app.system.admin.agents.session.create_group(user_id=uid,
-                                                                                      group_name=group_name, date=group_date)
+                    _, response = Config.app.system.admin.agents.user.auth.create_group(user_id=uid,
+                                                                                        group_name=group_name, date=group_date)
                     if _:
                         response_data = {'status': 'success',
                                          'message': response[0]}
@@ -205,7 +205,7 @@ class App:
                 try:
                     uid = request.form.get('uid')
                     gid = request.form.get('gid')
-                    # _, response = Config.app.system.admin.agents.session.delete_group(uid, gid)
+                    # _, response = Config.app.system.admin.agents.user.auth.delete_group(uid, gid)
                     return jsonify({"response": "Edit group", "uid": uid})
 
                     if _:
@@ -224,7 +224,7 @@ class App:
                 try:
                     uid = request.form.get('uid')
                     gid = request.form.get('gid')
-                    _, response = Config.app.system.admin.agents.session.delete_group(
+                    _, response = Config.app.system.admin.agents.user.auth.delete_group(
                         uid, gid)
                     return jsonify({"response": "Removing group", "uid": uid})
 
@@ -291,7 +291,7 @@ class App:
 
     def _handle_system_ready(self):
         self.response_thread = threading.Thread(
-                    target=self.process_responses, name=f"{self.name}_RESPONSES")
+            target=self.process_responses, name=f"{self.name}_RESPONSES")
         self.response_thread.start()
         self.run()
         return True

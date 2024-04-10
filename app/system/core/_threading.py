@@ -141,7 +141,7 @@ class ThreadHandler:
             if str(thread.name) == thread_name:
                 if thread.is_alive():
                     self.stop_thread(thread_name)
-                    Config.app.system.admin.agents.sys.module_reloader(
+                    Config.app.system.admin.agents.system.sys.module_reloader(
                         thread_name, True)
                     self.start_thread(thread_name)
                     return True, f"{thread_name} has been restarted."

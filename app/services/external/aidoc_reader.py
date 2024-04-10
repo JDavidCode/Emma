@@ -21,8 +21,6 @@ class AIDOC_READER:
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
-        os.environ.setdefault(
-            "GOOGLE_API_KEY", "AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U")
         self.ai = genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
         self.chain = None
         self.embeddings = None

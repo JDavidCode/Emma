@@ -30,6 +30,20 @@ class App:
             def index():
                 return render_template("index.html")
 
+            @self.app.route("/webhook", methods=['POST'])
+            def webhook_handler():
+                try:
+                    update = request.json
+                    # Procesar la actualización recibida
+                    # Aquí puedes manejar la actualización según tus necesidades
+                    # Por ejemplo, responder al mensaje
+                    chat_id = update['message']['chat']['id']
+                    message_text = update['message']['text']
+                    # Aquí puedes realizar acciones basadas en el mensaje recibido
+                    return 'OK'
+                except Exception as e:
+                    self.handle_error(e)
+
             @self.socketio.on("connect")
             def connect():
                 try:

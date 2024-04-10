@@ -1,15 +1,12 @@
 import threading
 import traceback
 import telebot
-import mimetypes
-
 
 class App:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
         self.TOKEN = "7043619976:AAHa1x9nm2ooqdyxIRoS2V6ud7Np81C82PI"
         self.bot = telebot.TeleBot(self.TOKEN)
-
         self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
@@ -101,7 +98,9 @@ class App:
             "CONSOLE", [self.name, "Is Started"])
         try:
             self.register_routes()
-            self.bot.polling(none_stop=True)
+            WEBHOOK_URL = 'localhost:3018/webhook'
+            self.bot.remove_webhook()
+            self.bot.set_webhook(url=WEBHOOK_URL)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

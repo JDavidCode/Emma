@@ -46,7 +46,9 @@ class RUN:
     def initialize(self):
         # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
-        self.init = init_module.Run()
+        init = init_module.Run()
+        init.run()
+        
 
         # Server Starup
         config_module = importlib.import_module('app.config.config')
@@ -159,7 +161,8 @@ config_structure = {
                 "@telegram_api": "app.services.api.telegram.app.App",
                 # "@api_streaming": "app.services.api.streaming.app.App",
             },
-            "external": {"@gpt": "app.services.external.gpt.GPT",
+            "external": {
+                "@gpt": "app.services.external.gpt.GPT",
                          "@aidoc_reader": "app.services.external.aidoc_reader.AIDOC_READER",
                          },
             "task": {
@@ -168,7 +171,11 @@ config_structure = {
                 "web": ["app.services.task.web.WebTask", []]
             },
             "common": {
-            }
+            },
+            "webhook": {
+                "@telegram": "app.services.webhook.telegram.WebHook",
+
+}
         },
     },
 }

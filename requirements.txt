@@ -20,7 +20,7 @@ Pillow
 PyTelegramBotAPI
 beautifulsoup4
 sqlalchemy
-pymsql
+pymysql
 
 #document reader
 langchain

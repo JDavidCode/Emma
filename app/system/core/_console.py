@@ -29,6 +29,9 @@ class Console:
         """
         Start the main loop to display console messages.
         """
+        for i in range(0, 101, 1):
+            self.progress_bar(i)
+            time.sleep(.3)
         self.event.wait()
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Is Started"])
@@ -95,18 +98,17 @@ class Console:
         num_blocks = int(bar_length * percentage / 100)
         progress_bar = "#" * num_blocks + "-" * (bar_length - num_blocks)
         self.clear_console()
-        self.display_message("Progress", f"[{progress_bar}] {percentage:.2f}%")
+        self.display_message("Loading", f"[{progress_bar}] {percentage:.2f}%")
 
     def run(self):
         self.event.set()
 
     def _handle_system_ready(self):
-        '''
+        
         console_input = self.Input(self)
         input_thread = threading.Thread(
             target=console_input.active_terminal, name=f"{self.name} input_thread")
         input_thread.start()
-        '''
         self.run()
         return True
 
@@ -144,7 +146,6 @@ class Console:
             self.pa = pa
 
         def active_terminal(self):
-            time.sleep(8)
             while not self.pa.stop_flag:
                 current_time = datetime.datetime.now().strftime("%H:%M:%S")
                 try:

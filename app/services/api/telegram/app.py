@@ -98,7 +98,7 @@ class App:
             "CONSOLE", [self.name, "Is Started"])
         try:
             self.register_routes()
-            WEBHOOK_URL = 'localhost:3018/webhook'
+            WEBHOOK_URL = 'localhost:88/webhook'
             self.bot.remove_webhook()
             self.bot.set_webhook(url=WEBHOOK_URL)
             self.queue_handler.add_to_queue(

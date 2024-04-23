@@ -99,7 +99,6 @@ class DatabaseAgent:
             return False
 
     def _handle_system_ready(self):
-        self.run()
         return True
 
     def handle_error(self, error, message=None):

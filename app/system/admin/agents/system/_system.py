@@ -7,7 +7,7 @@ import threading
 import psutil
 import importlib
 import traceback
-
+from app.config.config import Config
 
 class SystemAgent:
     """

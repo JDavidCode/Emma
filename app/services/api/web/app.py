@@ -11,13 +11,13 @@ class App:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
         self.queue_name = queue_name
-        self.app = Flask(__name__)
-        self.socketio = SocketIO(self.app)
-        CORS(self.app)  # Apply CORS to the Flask app
         self.queue_handler = queue_handler
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
+        self.app = Flask(__name__)
+        self.socketio = SocketIO(self.app)
+        CORS(self.app)  # Apply CORS to the Flask app
         self.stop_flag = False
         self.response_thread = None
         log = logging.getLogger('werkzeug')
@@ -29,20 +29,6 @@ class App:
             @self.app.route("/")
             def index():
                 return render_template("index.html")
-
-            @self.app.route("/webhook", methods=['POST'])
-            def webhook_handler():
-                try:
-                    update = request.json
-                    # Procesar la actualización recibida
-                    # Aquí puedes manejar la actualización según tus necesidades
-                    # Por ejemplo, responder al mensaje
-                    chat_id = update['message']['chat']['id']
-                    message_text = update['message']['text']
-                    # Aquí puedes realizar acciones basadas en el mensaje recibido
-                    return 'OK'
-                except Exception as e:
-                    self.handle_error(e)
 
             @self.socketio.on("connect")
             def connect():

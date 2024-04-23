@@ -104,6 +104,19 @@ defaults:
       - queue_handler
       - event_handler
       autorestart: true
+      autostart: True
+      endpoint: app.services.webhook.telegram
+      queue: 
+      -
+      queue_maxsize: 
+      -
+      thread_is_daemon: false
+      thread_name: T3_TELEGRAM_WEBHOOK
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
       autostart: true
       endpoint: app.services.api.telegram_api
       queue:

@@ -19,7 +19,7 @@ class WebHook:
         log.setLevel(logging.ERROR)
         self.bot_token = os.getenv('TELEGRAM_BOT_API_TOKEN')
         self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        base_url = "localhost:88"
+        base_url = "https://emma-htj4sne22a-vp.a.run.app:8080"
         self.webhook_path = f'/webhook/{self.webhook_secret}'
         self.webhook_url = f"{base_url}{self.webhook_path}"
 

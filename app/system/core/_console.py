@@ -28,17 +28,22 @@ class Console:
     def main(self):
         """
         Start the main loop to display console messages.
-        """
         for i in range(0, 101, 1):
             self.progress_bar(i)
             time.sleep(.3)
+        """
+
         self.event.wait()
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Is Started"])
 
         while not self.stop_flag:
-            remitent, output = self.queue_handler.get_queue("CONSOLE")
-            self.display_message(remitent, output)
+            try:
+                remitent, output = self.queue_handler.get_queue("CONSOLE")
+                self.display_message(remitent, output)
+            except Exception as e:
+                self.display_message("CONSOLE ERROR", e)
+
 
     def display_message(self, remitent, output):
         """
@@ -104,11 +109,6 @@ class Console:
         self.event.set()
 
     def _handle_system_ready(self):
-        
-        console_input = self.Input(self)
-        input_thread = threading.Thread(
-            target=console_input.active_terminal, name=f"{self.name} input_thread")
-        input_thread.start()
         self.run()
         return True
 

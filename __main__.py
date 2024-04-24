@@ -47,8 +47,7 @@ class RUN:
         # Main Server Connections, updates, corrections, etc
         init_module = importlib.import_module('app.__init__')
         init = init_module.Run()
-        init.run()
-        
+        #init.run()
 
         # Server Starup
         config_module = importlib.import_module('app.config.config')
@@ -159,12 +158,14 @@ config_structure = {
             "api": {
                 "@web_api": "app.services.api.web.app.App",
                 "@telegram_api": "app.services.api.telegram.app.App",
+                "@whatsapp_api": "app.services.api.whatsapp.app.App",
+
                 # "@api_streaming": "app.services.api.streaming.app.App",
             },
             "external": {
                 "@gpt": "app.services.external.gpt.GPT",
-                         "@aidoc_reader": "app.services.external.aidoc_reader.AIDOC_READER",
-                         },
+                "@aidoc_reader": "app.services.external.aidoc_reader.AIDOC_READER",
+            },
             "task": {
                 "miscellaneous": ["app.services.task.miscellaneous.MiscellaneousTask", []],
                 "ost": ["app.services.task.ost.OsTask", []],
@@ -174,20 +175,17 @@ config_structure = {
             },
             "webhook": {
                 "@telegram": "app.services.webhook.telegram.WebHook",
+                "@whatsapp": "app.services.webhook.whatsapp.WebHook",
 
-}
+            }
         },
     },
 }
 
 
 if __name__ == "__main__":
-    os.environ.setdefault('TELEGRAM_BOT_API_KEY',
-                          '7043619976:AAHa1x9nm2ooqdyxIRoS2V6ud7Np81C82PI')
-    os.environ.setdefault(
-        'OPENAI_API_KEY', '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')
-    os.environ.setdefault(
-        'GOOGLE_API_KEY', 'AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U')
+
+
     os.environ.setdefault('DB_HOST', "")
     os.environ.setdefault('DB_USER', "")
     os.environ.setdefault('DB_USER_PW', "")

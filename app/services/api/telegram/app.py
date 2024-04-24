@@ -3,10 +3,10 @@ import threading
 import traceback
 import telebot
 
+
 class App:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name
-        self.bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_API_KEY"))
         self.queue_name = queue_name
         self.queue_handler = queue_handler
         self.event_handler = event_handler
@@ -14,8 +14,8 @@ class App:
         self.event = threading.Event()
         self.stop_flag = False
         self.response_thread = None
-        self.sessions = {}
-        self.user_context = {}
+        self.bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_API_TOKEN"))
+        self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
 
     def register_routes(self):
         try:
@@ -93,16 +93,21 @@ class App:
 
     def main(self):
         self.event.wait()
-
+        self.bot.remove_webhook()
         self.queue_handler.add_to_queue(
             "CONSOLE", [self.name, "Is Started"])
         try:
             self.register_routes()
-            WEBHOOK_URL = 'localhost:88/webhook'
-            self.bot.remove_webhook()
-            self.bot.set_webhook(url=WEBHOOK_URL)
-            self.queue_handler.add_to_queue(
-                "CONSOLE", (self.name, "API IS RUNNING"))
+            while not self.stop_flag:
+                data = self.queue_handler.get_queue(
+                    "TELEGRAM_WEBHOOK", 0.1, (None))
+                if data is None:
+                    continue
+                else:
+                    update_json = data.get('update')
+                    update = telebot.types.Update.de_json(
+                        update_json)
+                    self.bot.process_new_updates([update])
         except Exception as e:
             self.handle_error(e)
 

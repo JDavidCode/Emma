@@ -1,9 +1,9 @@
-import logging
 import os
 import threading
-import traceback
-from flask import Flask, request, render_template, jsonify
 import requests
+import logging
+import traceback
+from flask import Flask, request, jsonify
 
 
 class WebHook:
@@ -17,44 +17,26 @@ class WebHook:
         self.event = threading.Event()
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
-        self.bot_token = os.getenv('TELEGRAM_BOT_API_TOKEN')
-        self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        base_url = "localhost:88"
-        self.webhook_path = f'/webhook/{self.webhook_secret}'
-        self.webhook_url = f"{base_url}{self.webhook_path}"
+        self.webhook_secret = os.getenv("WHATSAPP_WEBHOOK_SECRET")
+        self.webhook_path = f"/webhook/{self.webhook_secret}"
 
     def register_routes(self):
-        try:
-            @self.app.route('/')
-            def index():
-                return 'Servidor de Webhook para Bot de Telegram'
-
-            @self.app.route(self.webhook_path, methods=['POST'])
-            def webhook_handler():
+        @self.app.route("/")
+        def index():
+            return "Servidor de Webhook para WhatsApp API"
+        
+        @self.app.route(self.webhook_path, methods=['POST'])
+        def webhook_handler():
                 try:
                     update = request.json
                     if 'message' in update:
                         self.queue_handler.add_to_queue(
-                            'TELEGRAM_WEBHOOK', update)
+                            'WHATSAPP_WEBHOOK', update)
+
                     return jsonify({'status': 'ok'}), 200
                 except Exception as e:
                     self.handle_error(e)
                     return 'ERROR', 500
-        except Exception as e:
-            self.handle_error(e)
-
-    def register_telegram_webhook(self):
-        '''Registra el webhook en Telegram.'''
-        url = f'https://api.telegram.org/bot{self.bot_token}/setWebhook'
-        payload = {'url': self.webhook_url}
-        response = requests.post(url, json=payload)
-
-        if response.status_code == 200:
-            self.queue_handler.add_to_queue(
-                'CONSOLE', (self.name, 'Webhook registrado con éxito'))
-        else:
-            self.queue_handler.add_to_queue(
-                'CONSOLE', (self.name, f"Error al registrar el webhook: {response.text}"))
 
     def main(self):
         self.event.wait()
@@ -62,8 +44,7 @@ class WebHook:
             'CONSOLE', [self.name, 'Is Started'])
         try:
             self.register_routes()
-            self.register_telegram_webhook()
-            self.app.run(host='localhost', port=8080)
+            self.app.run(host='localhost', port=2000)
         except Exception as e:
             self.handle_error(e)
 
@@ -94,5 +75,5 @@ class WebHook:
             self.handle_error(e)
 
 
-if __name__ == '__main__':
-    pass
+if __name__ == "__main__":
+   pass

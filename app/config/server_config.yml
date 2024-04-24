@@ -40,7 +40,7 @@ defaults:
       queue: COMMAND
       queue_maxsize: 0
       thread_is_daemon: false
-      thread_name: T2_COMMANDS
+      thread_name: T1_COMMANDS
 
     - args:
       - queue_handler
@@ -49,7 +49,7 @@ defaults:
       autostart: true
       endpoint: app.system.admin.routers._input
       thread_is_daemon: false
-      thread_name: T2_INPUT
+      thread_name: T1_INPUT
 
     - args:
       - queue_handler
@@ -82,7 +82,33 @@ defaults:
       - 0
       thread_is_daemon: false
       thread_name: T3_AI_DOC
-      
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: True
+      endpoint: app.services.webhook.whatsapp
+      queue: 
+      - WHATSAPP_WEBHOOK
+      queue_maxsize: 
+      - 0
+      thread_is_daemon: false
+      thread_name: T3_WHATSAPP_WEBHOOK
+
+    - args:
+      - queue_handler
+      - event_handler
+      autorestart: true
+      autostart: True
+      endpoint: app.services.webhook.telegram
+      queue: 
+      - TELEGRAM_WEBHOOK
+      queue_maxsize: 
+      - 0
+      thread_is_daemon: false
+      thread_name: T3_TELEGRAM_WEBHOOK
+
     - args:
       - queue_handler
       - event_handler
@@ -104,14 +130,16 @@ defaults:
       - queue_handler
       - event_handler
       autorestart: true
-      autostart: True
-      endpoint: app.services.webhook.telegram
-      queue: 
-      -
+      autostart: true
+      endpoint: app.services.api.whatsapp_api
+      queue:
+      - WHATSAPP_API
+      - WHATSAPP_API_RESPONSE
       queue_maxsize: 
-      -
+      - 0
+      - 0
       thread_is_daemon: false
-      thread_name: T3_TELEGRAM_WEBHOOK
+      thread_name: T3_WHATSAPP_API
 
     - args:
       - queue_handler
@@ -142,27 +170,5 @@ defaults:
 #      thread_name: T3_API_STREAMING
 
 
-#   - args:
-#      - queue_handler
-#      - event_handler
-#      autorestart: true
-#      autostart: true
-#      endpoint: app.system.admin.agents.db
-#      queue: WITHELIST_AGENT
-#      queue_maxsize: 0
-#      thread_is_daemon: false
-#      thread_name: T1_WITHELIST
 
-#    - args:
-#      - queue_handler
-#      - event_handler
-#      autorestart: true
-#      autostart: true
-#      endpoint: app.system.admin.agents.db
-#      queue: DB_AGENT
-#      queue_maxsize: 0
-#      thread_is_daemon: false
-#      thread_name: T1_DB
-
-
-version: 1.0
+version: 1.2

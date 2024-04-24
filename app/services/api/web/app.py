@@ -15,7 +15,7 @@ class App:
         self.event_handler = event_handler
         self.event_handler.subscribe(self)
         self.event = threading.Event()
-        self.app = Flask(__name__)
+        self.app = Flask(self.name)
         self.socketio = SocketIO(self.app)
         CORS(self.app)  # Apply CORS to the Flask app
         self.stop_flag = False
@@ -28,7 +28,7 @@ class App:
         try:
             @self.app.route("/")
             def index():
-                return render_template("index.html")
+                return render_template("404")
 
             @self.socketio.on("connect")
             def connect():

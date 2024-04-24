@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   annotations:
     autopilot.gke.io/resource-adjustment: >-
-      {"input":{"containers":[{"name":"emma-sha256-1"}]},"output":{"containers":[{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"name":"emma-sha256-1"}]},"modified":true}
+      {"input":{"containers":[{"name":"emma-1"}]},"output":{"containers":[{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"name":"emma-1"}]},"modified":true}
     autopilot.gke.io/warden-version: 2.8.74
   labels:
     app: emma
@@ -40,8 +40,52 @@ metadata:
                 'f:app': {}
             'f:spec':
               'f:containers':
-                'k:{"name":"emma-sha256-1"}':
+                'k:{"name":"emma-1"}':
                   .: {}
+                  'f:env':
+                    .: {}
+                    'k:{"name":"GOOGLE_API_KEY"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"OPENAI_API_KEY"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"TELEGRAM_BOT_API_TOKEN"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"TELEGRAM_WEBHOOK_SECRET"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"WHATSAPP_BUSINESS_TOKEN"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"WHATSAPP_PHONE_ID"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"WHATSAPP_WEBHOOK_SECRET"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
                   'f:image': {}
                   'f:imagePullPolicy': {}
                   'f:name': {}
@@ -55,7 +99,7 @@ metadata:
               'f:terminationGracePeriodSeconds': {}
       manager: GoogleCloudConsole
       operation: Update
-      time: '2024-04-24T15:38:23Z'
+      time: '2024-04-24T21:44:33Z'
     - apiVersion: apps/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -89,7 +133,7 @@ metadata:
       manager: kube-controller-manager
       operation: Update
       subresource: status
-      time: '2024-04-24T15:43:39Z'
+      time: '2024-04-24T21:53:50Z'
   name: emma
   namespace: default
 spec:
@@ -108,9 +152,45 @@ spec:
         app: emma
     spec:
       containers:
-        - image: gcr.io/perceptive-map-419512/github.com/itsmaper/emma
+        - env:
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: GOOGLE_API_KEY
+                  name: emma-config-3k2e
+            - name: OPENAI_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: OPENAI_API_KEY
+                  name: emma-config-3k2e
+            - name: TELEGRAM_WEBHOOK_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: TELEGRAM_WEBHOOK_SECRET
+                  name: emma-config-3k2e
+            - name: TELEGRAM_BOT_API_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: TELEGRAM_BOT_API_TOKEN
+                  name: emma-config-3k2e
+            - name: WHATSAPP_BUSINESS_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: WHATSAPP_BUSINESS_TOKEN
+                  name: emma-config-3k2e
+            - name: WHATSAPP_PHONE_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: WHATSAPP_PHONE_ID
+                  name: emma-config-3k2e
+            - name: WHATSAPP_WEBHOOK_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: WHATSAPP_WEBHOOK_SECRET
+                  name: emma-config-3k2e
+          image: gcr.io/perceptive-map-419512/github.com/itsmaper/emma
           imagePullPolicy: IfNotPresent
-          name: emma-sha256-1
+          name: emma-1
           resources:
             limits:
               cpu: 500m
@@ -156,7 +236,7 @@ metadata:
             'f:name': {}
       manager: GoogleCloudConsole
       operation: Update
-      time: '2024-04-24T15:38:23Z'
+      time: '2024-04-24T21:44:34Z'
     - apiVersion: autoscaling/v2
       fieldsType: FieldsV1
       fieldsV1:
@@ -191,8 +271,8 @@ metadata:
       manager: vpa-recommender
       operation: Update
       subresource: status
-      time: '2024-04-24T15:52:11Z'
-  name: emma-hpa-cosd
+      time: '2024-04-24T22:00:52Z'
+  name: emma-hpa-m8zp
   namespace: default
 spec:
   maxReplicas: 5
@@ -255,7 +335,7 @@ metadata:
           'f:type': {}
       manager: GoogleCloudConsole
       operation: Update
-      time: '2024-04-24T15:39:23Z'
+      time: '2024-04-24T21:45:33Z'
     - apiVersion: v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -269,35 +349,35 @@ metadata:
       manager: cloud-controller-manager
       operation: Update
       subresource: status
-      time: '2024-04-24T15:41:19Z'
+      time: '2024-04-24T21:46:17Z'
   name: emma-service
   namespace: default
 spec:
   allocateLoadBalancerNodePorts: true
-  clusterIP: 34.118.239.211
+  clusterIP: 34.118.228.102
   clusterIPs:
-    - 34.118.239.211
+    - 34.118.228.102
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
   ipFamilies:
     - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-    - name: 8080-to-8080-tcp
-      nodePort: 32688
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
     - name: 8000-to-8000-tcp
-      nodePort: 31895
+      nodePort: 30649
       port: 8000
       protocol: TCP
       targetPort: 8000
     - name: 8020-to-8020-tcp
-      nodePort: 32376
+      nodePort: 30494
       port: 8020
       protocol: TCP
       targetPort: 8020
+    - name: 8080-to-8080-tcp
+      nodePort: 30846
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: emma
   sessionAffinity: None

@@ -19,7 +19,7 @@ class WebHook:
         log.setLevel(logging.ERROR)
         self.bot_token = os.getenv('TELEGRAM_BOT_API_TOKEN')
         self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        base_url = "https://emma-htj4sne22a-vp.a.run.app:8080"
+        base_url = "https://emma-htj4sne22a-vp.a.run.app:80"
         self.webhook_path = f'/webhook/{self.webhook_secret}'
         self.webhook_url = f"{base_url}{self.webhook_path}"
 
@@ -63,7 +63,7 @@ class WebHook:
         try:
             self.register_routes()
             self.register_telegram_webhook()
-            self.app.run(host='localhost', port=8080)
+            self.app.run(host='localhost', port=80)
         except Exception as e:
             self.handle_error(e)
 

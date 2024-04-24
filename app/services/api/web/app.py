@@ -280,7 +280,7 @@ class App:
             self.register_routes()
 
             self.socketio.run(self.app, host="0.0.0.0",
-                              port=3018, allow_unsafe_werkzeug=True)
+                              port=8020, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(
                 "CONSOLE", (self.name, "API IS RUNNING"))
         except Exception as e:

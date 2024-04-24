@@ -44,7 +44,7 @@ class WebHook:
             'CONSOLE', [self.name, 'Is Started'])
         try:
             self.register_routes()
-            self.app.run(host='localhost', port=2000)
+            self.app.run(host='localhost', port=8000)
         except Exception as e:
             self.handle_error(e)
 

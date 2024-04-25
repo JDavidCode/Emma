@@ -91,8 +91,10 @@ class WebHook:
         try:
             self.register_routes()
             self.register_telegram_webhook()
-            self.app.run(host=self.WEBHOOK_LISTEN, port=self.WEBHOOK_PORT, ssl_context=(self.WEBHOOK_SSL_CERT, self.WEBHOOK_SSL_PRIV),
-                         debug=True)
+            # self.app.run(host=self.WEBHOOK_LISTEN, port=self.WEBHOOK_PORT, ssl_context=(self.WEBHOOK_SSL_CERT, self.WEBHOOK_SSL_PRIV), debug=True)
+
+            self.app.run(host=self.WEBHOOK_LISTEN,
+                         port=self.WEBHOOK_PORT, debug=True)
         except Exception as e:
             self.handle_error(e)
 

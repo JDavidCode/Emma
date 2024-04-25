@@ -1,6 +1,6 @@
 import threading
 import traceback
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 import logging
 from app.config.config import Config
@@ -26,7 +26,7 @@ class App:
         try:
             @self.app.route("/")
             def index():
-                return render_template('index.html')
+                return jsonify('MAIN API IS RUNNING')
 
             @self.socketio.on("connect")
             def connect():
@@ -41,7 +41,7 @@ class App:
             @self.app.route("/get_user", methods=["POST"])
             def get_user():
                 try:
-                    data = request.get_json()  # Assuming you're using Flask for your web server
+                    data = request.get_json()
                     uid = data.get('uid')
                     _, content = Config.app.system.admin.agents.user.auth.get_user(
                         uid)

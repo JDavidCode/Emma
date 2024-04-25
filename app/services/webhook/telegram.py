@@ -17,11 +17,26 @@ class WebHook:
         self.event = threading.Event()
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
-        self.bot_token = os.getenv('TELEGRAM_BOT_API_TOKEN')
-        self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        base_url = "34.171.193.92:80"
-        self.webhook_path = f'/webhook/{self.webhook_secret}'
-        self.webhook_url = f"{base_url}{self.webhook_path}"
+        self.API_TOKEN = os.getenv('TELEGRAM_BOT_API_TOKEN')
+        self.WEBHOOK_SECRET = os.getenv('TELEGRAM_WEBHOOK_SECRET')
+        self.WEBHOOK_HOST = "34.171.193.92"
+        self.WEBHOOK_PORT = 8443
+        self.WEBHOOK_LISTEN = '0.0.0.0'
+        self.webhook_lock = threading.Lock()
+        # self.WEBHOOK_SSL_CERT = './webhook_cert.pem'
+        # self.WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
+        # Quick'n'dirty SSL certificate generation:
+        #
+        # openssl genrsa -out webhook_pkey.pem 2048
+        # openssl req -new -x509 -days 3650 -key webhook_pkey.pem -out webhook_cert.pem
+        #
+        # When asked for "Common Name (e.g. server FQDN or YOUR name)" you should reply
+        # with the same value in you put in self.WEBHOOK_HOST
+
+        self.WEBHOOK_URL_BASE = "%s:%s" % (
+            self.WEBHOOK_HOST, self.WEBHOOK_PORT)
+        self.WEBHOOK_URL_PATH = "/%s/%s/" % (self.API_TOKEN,
+                                             self.WEBHOOK_SECRET)
 
     def register_routes(self):
         try:
@@ -29,15 +44,16 @@ class WebHook:
             def index():
                 return jsonify('TELEGRAM WEBHOOK IS RUNNING')
 
-            @self.app.route(self.webhook_path, methods=['POST'])
+            @self.app.route(self.WEBHOOK_URL_BASE, methods=['POST'])
             def webhook_handler():
                 try:
-                    update = request.json
-                    self.queue_handler.add_to_queue('CONSOLE', (self.name, update))
-                    if 'message' in update:
+                    if request.headers.get('content-type') == 'application/json':
+                        update = request.get_data().decode('utf-8')
+                        self.queue_handler.add_to_queue(
+                            'CONSOLE', (self.name, update))
                         self.queue_handler.add_to_queue(
                             'TELEGRAM_WEBHOOK', update)
-                    return jsonify({'status': 'ok'}), 200
+                        return jsonify({'status': 'ok'}), 200
                 except Exception as e:
                     self.handle_error(e)
                     return 'ERROR', 500
@@ -46,16 +62,27 @@ class WebHook:
 
     def register_telegram_webhook(self):
         '''Registra el webhook en Telegram.'''
-        url = f'https://api.telegram.org/bot{self.bot_token}/setWebhook'
-        payload = {'url': self.webhook_url}
-        response = requests.post(url, json=payload)
+        if not self.webhook_lock.acquire(blocking=False):
+            # Another pod is already registering the webhook, skip registration
+            self.queue_handler.add_to_queue(
+                'CONSOLE', (self.name, 'Webhook registration skipped (already registered)'))
+            return
 
-        if response.status_code == 200:
-            self.queue_handler.add_to_queue(
-                'CONSOLE', (self.name, 'Webhook registrado con éxito'))
-        else:
-            self.queue_handler.add_to_queue(
-                'CONSOLE', (self.name, f"Error al registrar el webhook: {response.text}"))
+        try:
+            url = f'https://api.telegram.org/bot{self.API_TOKEN}/setWebhook'
+            payload = {'url': self.WEBHOOK_URL_PATH}
+            response = requests.post(url, json=payload)
+
+            if response.status_code == 200:
+                self.queue_handler.add_to_queue(
+                    'CONSOLE', (self.name, 'Webhook registrado con éxito'))
+            else:
+                self.queue_handler.add_to_queue(
+                    'CONSOLE', (self.name, f"Error al registrar el webhook: {response.text}"))
+        except Exception as e:
+            self.handle_error(e)
+        finally:
+            self.webhook_lock.release()  # Release the lock even in case of exceptions
 
     def main(self):
         self.event.wait()
@@ -64,7 +91,8 @@ class WebHook:
         try:
             self.register_routes()
             self.register_telegram_webhook()
-            self.app.run(host='0.0.0.0', port=80)
+            self.app.run(host=self.WEBHOOK_LISTEN, port=self.WEBHOOK_PORT, ssl_context=(self.WEBHOOK_SSL_CERT, self.WEBHOOK_SSL_PRIV),
+                         debug=True)
         except Exception as e:
             self.handle_error(e)
 

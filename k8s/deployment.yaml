@@ -1,384 +1,100 @@
-apiVersion: apps/v1
-kind: Deployment
+---
+apiVersion: "v1"
+kind: "Namespace"
 metadata:
-  annotations:
-    autopilot.gke.io/resource-adjustment: >-
-      {"input":{"containers":[{"name":"emma-1"}]},"output":{"containers":[{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"name":"emma-1"}]},"modified":true}
-    autopilot.gke.io/warden-version: 2.8.74
+  name: "emma"
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "emma-config-odlw"
+  namespace: "emma"
   labels:
-    app: emma
-  managedFields:
-    - apiVersion: apps/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          'f:replicas': {}
-      manager: vpa-recommender
-      operation: Update
-      subresource: scale
-    - apiVersion: apps/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-        'f:spec':
-          'f:progressDeadlineSeconds': {}
-          'f:revisionHistoryLimit': {}
-          'f:selector': {}
-          'f:strategy':
-            'f:rollingUpdate':
-              .: {}
-              'f:maxSurge': {}
-              'f:maxUnavailable': {}
-            'f:type': {}
-          'f:template':
-            'f:metadata':
-              'f:labels':
-                .: {}
-                'f:app': {}
-            'f:spec':
-              'f:containers':
-                'k:{"name":"emma-1"}':
-                  .: {}
-                  'f:env':
-                    .: {}
-                    'k:{"name":"GOOGLE_API_KEY"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"OPENAI_API_KEY"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"TELEGRAM_BOT_API_TOKEN"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"TELEGRAM_WEBHOOK_SECRET"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"WHATSAPP_BUSINESS_TOKEN"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"WHATSAPP_PHONE_ID"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                    'k:{"name":"WHATSAPP_WEBHOOK_SECRET"}':
-                      .: {}
-                      'f:name': {}
-                      'f:valueFrom':
-                        .: {}
-                        'f:configMapKeyRef': {}
-                  'f:image': {}
-                  'f:imagePullPolicy': {}
-                  'f:name': {}
-                  'f:resources': {}
-                  'f:terminationMessagePath': {}
-                  'f:terminationMessagePolicy': {}
-              'f:dnsPolicy': {}
-              'f:restartPolicy': {}
-              'f:schedulerName': {}
-              'f:securityContext': {}
-              'f:terminationGracePeriodSeconds': {}
-      manager: GoogleCloudConsole
-      operation: Update
-      time: '2024-04-24T21:44:33Z'
-    - apiVersion: apps/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:annotations':
-            'f:deployment.kubernetes.io/revision': {}
-        'f:status':
-          'f:availableReplicas': {}
-          'f:conditions':
-            .: {}
-            'k:{"type":"Available"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-            'k:{"type":"Progressing"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-          'f:observedGeneration': {}
-          'f:readyReplicas': {}
-          'f:replicas': {}
-          'f:updatedReplicas': {}
-      manager: kube-controller-manager
-      operation: Update
-      subresource: status
-      time: '2024-04-24T21:53:50Z'
-  name: emma
-  namespace: default
+    app: "emma"
+data:
+  GOOGLE_API_KEY: "AIzaSyAWE6advew5ze_OM6WqQBxag9m_Wpl1V0U"
+  OPENAI_API_KEY: "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"
+  TELEGRAM_WEBHOOK_SECRET: "FJB5PTPdKH6jxaBwm_Wpl1V0U"
+  TELEGRAM_BOT_API_TOKEN: "7043619976:AAHa1x9nm2ooqdyxIRoS2V6ud7Np81C82PI"
+  WHATSAPP_BUSINESS_TOKEN: "314529168401421"
+  WHATSAPP_PHONE_ID: "253767711162169"
+  WHATSAPP_WEBHOOK_SECRET: "FJB5PTPdKH6jxqaBwmPW2_Wpl1V0U"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "emma"
+  namespace: "emma"
+  labels:
+    app: "emma"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: emma
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      app: "emma"
   template:
     metadata:
       labels:
-        app: emma
+        app: "emma"
     spec:
       containers:
-        - env:
-            - name: GOOGLE_API_KEY
-              valueFrom:
-                configMapKeyRef:
-                  key: GOOGLE_API_KEY
-                  name: emma-config-3k2e
-            - name: OPENAI_API_KEY
-              valueFrom:
-                configMapKeyRef:
-                  key: OPENAI_API_KEY
-                  name: emma-config-3k2e
-            - name: TELEGRAM_WEBHOOK_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  key: TELEGRAM_WEBHOOK_SECRET
-                  name: emma-config-3k2e
-            - name: TELEGRAM_BOT_API_TOKEN
-              valueFrom:
-                configMapKeyRef:
-                  key: TELEGRAM_BOT_API_TOKEN
-                  name: emma-config-3k2e
-            - name: WHATSAPP_BUSINESS_TOKEN
-              valueFrom:
-                configMapKeyRef:
-                  key: WHATSAPP_BUSINESS_TOKEN
-                  name: emma-config-3k2e
-            - name: WHATSAPP_PHONE_ID
-              valueFrom:
-                configMapKeyRef:
-                  key: WHATSAPP_PHONE_ID
-                  name: emma-config-3k2e
-            - name: WHATSAPP_WEBHOOK_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  key: WHATSAPP_WEBHOOK_SECRET
-                  name: emma-config-3k2e
-          image: gcr.io/perceptive-map-419512/github.com/itsmaper/emma
-          imagePullPolicy: IfNotPresent
-          name: emma-1
-          resources:
-            limits:
-              cpu: 500m
-              ephemeral-storage: 1Gi
-              memory: 2Gi
-            requests:
-              cpu: 500m
-              ephemeral-storage: 1Gi
-              memory: 2Gi
-          securityContext:
-            capabilities:
-              drop:
-                - NET_RAW
-      securityContext:
-        seccompProfile:
-          type: RuntimeDefault
-      tolerations:
-        - effect: NoSchedule
-          key: kubernetes.io/arch
-          operator: Equal
-          value: amd64
+      - name: "github-itsmaper-emma-1"
+        image: "gcr.io/perceptive-map-419512/github_itsmaper_emma:$SHORT_SHA"
+        env:
+        - name: "GOOGLE_API_KEY"
+          valueFrom:
+            configMapKeyRef:
+              key: "GOOGLE_API_KEY"
+              name: "emma-config-odlw"
+        - name: "OPENAI_API_KEY"
+          valueFrom:
+            configMapKeyRef:
+              key: "OPENAI_API_KEY"
+              name: "emma-config-odlw"
+        - name: "TELEGRAM_WEBHOOK_SECRET"
+          valueFrom:
+            configMapKeyRef:
+              key: "TELEGRAM_WEBHOOK_SECRET"
+              name: "emma-config-odlw"
+        - name: "TELEGRAM_BOT_API_TOKEN"
+          valueFrom:
+            configMapKeyRef:
+              key: "TELEGRAM_BOT_API_TOKEN"
+              name: "emma-config-odlw"
+        - name: "WHATSAPP_BUSINESS_TOKEN"
+          valueFrom:
+            configMapKeyRef:
+              key: "WHATSAPP_BUSINESS_TOKEN"
+              name: "emma-config-odlw"
+        - name: "WHATSAPP_PHONE_ID"
+          valueFrom:
+            configMapKeyRef:
+              key: "WHATSAPP_PHONE_ID"
+              name: "emma-config-odlw"
+        - name: "WHATSAPP_WEBHOOK_SECRET"
+          valueFrom:
+            configMapKeyRef:
+              key: "WHATSAPP_WEBHOOK_SECRET"
+              name: "emma-config-odlw"
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
 metadata:
+  name: "emma-hpa-kk1u"
+  namespace: "emma"
   labels:
-    app: emma
-  managedFields:
-    - apiVersion: autoscaling/v2
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-        'f:spec':
-          'f:maxReplicas': {}
-          'f:metrics': {}
-          'f:minReplicas': {}
-          'f:scaleTargetRef':
-            'f:apiVersion': {}
-            'f:kind': {}
-            'f:name': {}
-      manager: GoogleCloudConsole
-      operation: Update
-      time: '2024-04-24T21:44:34Z'
-    - apiVersion: autoscaling/v2
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:status':
-          'f:conditions':
-            .: {}
-            'k:{"type":"AbleToScale"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-            'k:{"type":"ScalingActive"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-            'k:{"type":"ScalingLimited"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-          'f:currentMetrics': {}
-          'f:currentReplicas': {}
-          'f:desiredReplicas': {}
-          'f:lastScaleTime': {}
-      manager: vpa-recommender
-      operation: Update
-      subresource: status
-      time: '2024-04-24T22:00:52Z'
-  name: emma-hpa-m8zp
-  namespace: default
+    app: "emma"
 spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "emma"
+    apiVersion: "apps/v1"
+  minReplicas: 1
   maxReplicas: 5
   metrics:
-    - resource:
-        name: cpu
-        target:
-          averageUtilization: 80
-          type: Utilization
-      type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: emma
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    cloud.google.com/neg: '{"ingress":true}'
-  finalizers:
-    - service.kubernetes.io/load-balancer-cleanup
-  labels:
-    app: emma
-  managedFields:
-    - apiVersion: v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-        'f:spec':
-          'f:allocateLoadBalancerNodePorts': {}
-          'f:externalTrafficPolicy': {}
-          'f:internalTrafficPolicy': {}
-          'f:ports':
-            .: {}
-            'k:{"port":8000,"protocol":"TCP"}':
-              .: {}
-              'f:name': {}
-              'f:port': {}
-              'f:protocol': {}
-              'f:targetPort': {}
-            'k:{"port":8020,"protocol":"TCP"}':
-              .: {}
-              'f:name': {}
-              'f:port': {}
-              'f:protocol': {}
-              'f:targetPort': {}
-            'k:{"port":8080,"protocol":"TCP"}':
-              .: {}
-              'f:name': {}
-              'f:port': {}
-              'f:protocol': {}
-              'f:targetPort': {}
-          'f:selector': {}
-          'f:sessionAffinity': {}
-          'f:type': {}
-      manager: GoogleCloudConsole
-      operation: Update
-      time: '2024-04-24T21:45:33Z'
-    - apiVersion: v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:finalizers':
-            .: {}
-            'v:"service.kubernetes.io/load-balancer-cleanup"': {}
-        'f:status':
-          'f:loadBalancer':
-            'f:ingress': {}
-      manager: cloud-controller-manager
-      operation: Update
-      subresource: status
-      time: '2024-04-24T21:46:17Z'
-  name: emma-service
-  namespace: default
-spec:
-  allocateLoadBalancerNodePorts: true
-  clusterIP: 34.118.228.102
-  clusterIPs:
-    - 34.118.228.102
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-    - IPv4
-  ipFamilyPolicy: SingleStack
-  ports:
-    - name: 8000-to-8000-tcp
-      nodePort: 30649
-      port: 8000
-      protocol: TCP
-      targetPort: 8000
-    - name: 8020-to-8020-tcp
-      nodePort: 30494
-      port: 8020
-      protocol: TCP
-      targetPort: 8020
-    - name: 8080-to-8080-tcp
-      nodePort: 30846
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-  selector:
-    app: emma
-  sessionAffinity: None
-  type: LoadBalancer
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80

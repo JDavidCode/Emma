@@ -2,7 +2,6 @@ import threading
 import traceback
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO
-from flask_cors import CORS
 import logging
 from app.config.config import Config
 
@@ -17,7 +16,6 @@ class App:
         self.event = threading.Event()
         self.app = Flask(self.name)
         self.socketio = SocketIO(self.app)
-        CORS(self.app)  # Apply CORS to the Flask app
         self.stop_flag = False
         self.response_thread = None
         log = logging.getLogger('werkzeug')
@@ -272,13 +270,10 @@ class App:
 
     def main(self):
         try:
-
             self.event.wait()
             self.queue_handler.add_to_queue(
                 "CONSOLE", [self.name, "Is Started"])
-
             self.register_routes()
-
             self.socketio.run(self.app, host="0.0.0.0",
                               port=8020, allow_unsafe_werkzeug=True)
             self.queue_handler.add_to_queue(

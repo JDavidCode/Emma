@@ -63,7 +63,7 @@ class WebHook:
         try:
             self.register_routes()
             self.register_telegram_webhook()
-            self.app.run(host='localhost', port=80)
+            self.app.run(host='0.0.0.0', port=80)
         except Exception as e:
             self.handle_error(e)
 

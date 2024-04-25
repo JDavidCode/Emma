@@ -19,11 +19,11 @@ class WebHook:
         log.setLevel(logging.ERROR)
         self.API_TOKEN = os.getenv('TELEGRAM_BOT_API_TOKEN')
         self.WEBHOOK_SECRET = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        self.WEBHOOK_HOST = "emmaserver.hopto.org"
+        self.WEBHOOK_HOST = "34.171.193.92"
         self.WEBHOOK_PORT = 8443
         self.WEBHOOK_LISTEN = '0.0.0.0'
-        self.WEBHOOK_SSL_CERT = './webhook_cert.pem'
-        self.WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
+        #self.WEBHOOK_SSL_CERT = './webhook_cert.pem'
+        #self.WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
         # Quick'n'dirty SSL certificate generation:
         #
         # openssl genrsa -out webhook_pkey.pem 2048

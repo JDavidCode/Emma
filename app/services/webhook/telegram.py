@@ -33,6 +33,7 @@ class WebHook:
             def webhook_handler():
                 try:
                     update = request.json
+                    self.queue_handler.add_to_queue('CONSOLE', (self.name, update))
                     if 'message' in update:
                         self.queue_handler.add_to_queue(
                             'TELEGRAM_WEBHOOK', update)

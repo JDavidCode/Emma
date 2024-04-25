@@ -23,7 +23,8 @@ class WebHook:
     def register_routes(self):
         @self.app.route("/")
         def index():
-            return "Servidor de Webhook para WhatsApp API"
+            return jsonify('WHATSAPP WEBHOOK IS RUNNING')
+
         
         @self.app.route(self.webhook_path, methods=['POST'])
         def webhook_handler():

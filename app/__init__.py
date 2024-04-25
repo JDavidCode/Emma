@@ -46,7 +46,8 @@ class Run:
             'pypdf2',
             'faiss-cpu',
             'google-generativeai',
-            'langchain_google_genai'
+            'langchain_google_genai',
+            'flask-cors'
         ]
 
     def set_environ_variables(self):

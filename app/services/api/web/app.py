@@ -28,7 +28,7 @@ class App:
         try:
             @self.app.route("/")
             def index():
-                return render_template("404")
+                return render_template('index')
 
             @self.socketio.on("connect")
             def connect():

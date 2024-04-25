@@ -10,7 +10,7 @@ psutil
 openai
 flask-socketio
 Flask
-flask_cors
+flask-cors
 geopy
 selenium
 chromedriver_autoinstaller

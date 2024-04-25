@@ -19,7 +19,7 @@ class WebHook:
         log.setLevel(logging.ERROR)
         self.bot_token = os.getenv('TELEGRAM_BOT_API_TOKEN')
         self.webhook_secret = os.getenv('TELEGRAM_WEBHOOK_SECRET')
-        base_url = "https://emma-htj4sne22a-vp.a.run.app:80"
+        base_url = "34.171.193.92:80"
         self.webhook_path = f'/webhook/{self.webhook_secret}'
         self.webhook_url = f"{base_url}{self.webhook_path}"
 
@@ -27,7 +27,7 @@ class WebHook:
         try:
             @self.app.route('/')
             def index():
-                return 'Servidor de Webhook para Bot de Telegram'
+                return jsonify('TELEGRAM WEBHOOK IS RUNNING')
 
             @self.app.route(self.webhook_path, methods=['POST'])
             def webhook_handler():

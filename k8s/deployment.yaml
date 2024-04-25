@@ -4,13 +4,13 @@ metadata:
   annotations:
     autopilot.gke.io/resource-adjustment: '{"input":{"containers":[{"name":"github-itsmaper-emma-1"}]},"output":{"containers":[{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"name":"github-itsmaper-emma-1"}]},"modified":true}'
     autopilot.gke.io/warden-version: 2.8.74
-    deployment.kubernetes.io/revision: "4"
-    gcb-build-id: 66089bb0-47fc-425b-beb6-428b5e337791
+    deployment.kubernetes.io/revision: "5"
+    gcb-build-id: 2d2dbc39-0d91-4aa0-b028-045dd1720afd
     gcb-trigger-id: 5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"autopilot.gke.io/resource-adjustment":"{\"input\":{\"containers\":[{\"name\":\"github-itsmaper-emma-1\"}]},\"output\":{\"containers\":[{\"limits\":{\"cpu\":\"500m\",\"ephemeral-storage\":\"1Gi\",\"memory\":\"2Gi\"},\"requests\":{\"cpu\":\"500m\",\"ephemeral-storage\":\"1Gi\",\"memory\":\"2Gi\"},\"name\":\"github-itsmaper-emma-1\"}]},\"modified\":true}","autopilot.gke.io/warden-version":"2.8.74","gcb-build-id":"66089bb0-47fc-425b-beb6-428b5e337791","gcb-trigger-id":"5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07"},"labels":{"app":"emma","app.kubernetes.io/managed-by":"gcp-cloud-build-deploy","app.kubernetes.io/name":"emma","app.kubernetes.io/version":"6125df58e02ea1616bbf52ead9c46fdb6e1a344f"},"managedFields":[{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:replicas":{}}},"manager":"vpa-recommender","operation":"Update","subresource":"scale"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:progressDeadlineSeconds":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:strategy":{"f:rollingUpdate":{".":{},"f:maxSurge":{},"f:maxUnavailable":{}},"f:type":{}},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"github-itsmaper-emma-1\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"GOOGLE_API_KEY\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"OPENAI_API_KEY\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"TELEGRAM_BOT_API_TOKEN\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"TELEGRAM_WEBHOOK_SECRET\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_BUSINESS_TOKEN\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_PHONE_ID\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_WEBHOOK_SECRET\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}}},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}}}},"manager":"GoogleCloudConsole","operation":"Update","time":"2024-04-25T01:47:31Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:deployment.kubernetes.io/revision":{}}},"f:status":{"f:availableReplicas":{},"f:conditions":{".":{},"k:{\"type\":\"Available\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Progressing\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updatedReplicas":{}}},"manager":"kube-controller-manager","operation":"Update","subresource":"status","time":"2024-04-25T01:52:48Z"}],"name":"emma","namespace":"emma"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"emma"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"gcb-build-id":"66089bb0-47fc-425b-beb6-428b5e337791","gcb-trigger-id":"5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07"},"labels":{"app":"emma","app.kubernetes.io/managed-by":"gcp-cloud-build-deploy","app.kubernetes.io/name":"emma","app.kubernetes.io/version":"6125df58e02ea1616bbf52ead9c46fdb6e1a344f"}},"spec":{"containers":[{"env":[{"name":"GOOGLE_API_KEY","valueFrom":{"configMapKeyRef":{"key":"GOOGLE_API_KEY","name":"emma-config-q90s"}}},{"name":"OPENAI_API_KEY","valueFrom":{"configMapKeyRef":{"key":"OPENAI_API_KEY","name":"emma-config-q90s"}}},{"name":"TELEGRAM_WEBHOOK_SECRET","valueFrom":{"configMapKeyRef":{"key":"TELEGRAM_WEBHOOK_SECRET","name":"emma-config-q90s"}}},{"name":"TELEGRAM_BOT_API_TOKEN","valueFrom":{"configMapKeyRef":{"key":"TELEGRAM_BOT_API_TOKEN","name":"emma-config-q90s"}}},{"name":"WHATSAPP_BUSINESS_TOKEN","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_BUSINESS_TOKEN","name":"emma-config-q90s"}}},{"name":"WHATSAPP_PHONE_ID","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_PHONE_ID","name":"emma-config-q90s"}}},{"name":"WHATSAPP_WEBHOOK_SECRET","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_WEBHOOK_SECRET","name":"emma-config-q90s"}}}],"image":"gcr.io/perceptive-map-419512/github.com/itsmaper/emma@sha256:0813667d17ae53e94a7359e55d7400c0094f6efa71821eaf850d48af2433661e","imagePullPolicy":"IfNotPresent","name":"github-itsmaper-emma-1","resources":{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"}},"securityContext":{"capabilities":{"drop":["NET_RAW"]}}}],"securityContext":{"seccompProfile":{"type":"RuntimeDefault"}},"tolerations":[{"effect":"NoSchedule","key":"kubernetes.io/arch","operator":"Equal","value":"amd64"}]}}}}
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"autopilot.gke.io/resource-adjustment":"{\"input\":{\"containers\":[{\"name\":\"github-itsmaper-emma-1\"}]},\"output\":{\"containers\":[{\"limits\":{\"cpu\":\"500m\",\"ephemeral-storage\":\"1Gi\",\"memory\":\"2Gi\"},\"requests\":{\"cpu\":\"500m\",\"ephemeral-storage\":\"1Gi\",\"memory\":\"2Gi\"},\"name\":\"github-itsmaper-emma-1\"}]},\"modified\":true}","autopilot.gke.io/warden-version":"2.8.74","deployment.kubernetes.io/revision":"4","gcb-build-id":"2d2dbc39-0d91-4aa0-b028-045dd1720afd","gcb-trigger-id":"5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07"},"creationTimestamp":"2024-04-25T01:47:31Z","generation":5,"labels":{"app":"emma","app.kubernetes.io/managed-by":"gcp-cloud-build-deploy","app.kubernetes.io/name":"emma","app.kubernetes.io/version":"6125df58e02ea1616bbf52ead9c46fdb6e1a344f"},"managedFields":[{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:replicas":{}}},"manager":"vpa-recommender","operation":"Update","subresource":"scale"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:progressDeadlineSeconds":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:strategy":{"f:rollingUpdate":{".":{},"f:maxSurge":{},"f:maxUnavailable":{}},"f:type":{}},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"github-itsmaper-emma-1\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"GOOGLE_API_KEY\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"OPENAI_API_KEY\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"TELEGRAM_BOT_API_TOKEN\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"TELEGRAM_WEBHOOK_SECRET\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_BUSINESS_TOKEN\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_PHONE_ID\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}},"k:{\"name\":\"WHATSAPP_WEBHOOK_SECRET\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:configMapKeyRef":{}}}},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}}}},"manager":"GoogleCloudConsole","operation":"Update","time":"2024-04-25T01:47:31Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:gcb-build-id":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{"f:app.kubernetes.io/version":{}}},"f:spec":{"f:template":{"f:metadata":{"f:annotations":{"f:gcb-build-id":{}},"f:labels":{"f:app.kubernetes.io/version":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"github-itsmaper-emma-1\"}":{"f:image":{}}}}}}},"manager":"kubectl-client-side-apply","operation":"Update","time":"2024-04-25T03:08:11Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:deployment.kubernetes.io/revision":{}}},"f:status":{"f:availableReplicas":{},"f:conditions":{".":{},"k:{\"type\":\"Available\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Progressing\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updatedReplicas":{}}},"manager":"kube-controller-manager","operation":"Update","subresource":"status","time":"2024-04-25T03:09:04Z"}],"name":"emma","namespace":"emma","resourceVersion":"341189","uid":"dd9f34ff-f48a-4a79-89dc-b4f67106306b"},"spec":{"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"emma"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"gcb-build-id":"2d2dbc39-0d91-4aa0-b028-045dd1720afd","gcb-trigger-id":"5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07"},"creationTimestamp":null,"labels":{"app":"emma","app.kubernetes.io/managed-by":"gcp-cloud-build-deploy","app.kubernetes.io/name":"emma","app.kubernetes.io/version":"6125df58e02ea1616bbf52ead9c46fdb6e1a344f"}},"spec":{"containers":[{"env":[{"name":"GOOGLE_API_KEY","valueFrom":{"configMapKeyRef":{"key":"GOOGLE_API_KEY","name":"emma-config-q90s"}}},{"name":"OPENAI_API_KEY","valueFrom":{"configMapKeyRef":{"key":"OPENAI_API_KEY","name":"emma-config-q90s"}}},{"name":"TELEGRAM_WEBHOOK_SECRET","valueFrom":{"configMapKeyRef":{"key":"TELEGRAM_WEBHOOK_SECRET","name":"emma-config-q90s"}}},{"name":"TELEGRAM_BOT_API_TOKEN","valueFrom":{"configMapKeyRef":{"key":"TELEGRAM_BOT_API_TOKEN","name":"emma-config-q90s"}}},{"name":"WHATSAPP_BUSINESS_TOKEN","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_BUSINESS_TOKEN","name":"emma-config-q90s"}}},{"name":"WHATSAPP_PHONE_ID","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_PHONE_ID","name":"emma-config-q90s"}}},{"name":"WHATSAPP_WEBHOOK_SECRET","valueFrom":{"configMapKeyRef":{"key":"WHATSAPP_WEBHOOK_SECRET","name":"emma-config-q90s"}}}],"image":"gcr.io/perceptive-map-419512/github.com/itsmaper/emma@sha256:6f05d806eab147ae85dba114fef93b34784f98e9fa7682ec764f0248dae46db0","imagePullPolicy":"IfNotPresent","name":"github-itsmaper-emma-1","resources":{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"2Gi"}},"securityContext":{"capabilities":{"drop":["NET_RAW"]}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{"seccompProfile":{"type":"RuntimeDefault"}},"terminationGracePeriodSeconds":30,"tolerations":[{"effect":"NoSchedule","key":"kubernetes.io/arch","operator":"Equal","value":"amd64"}]}}},"status":{"availableReplicas":1,"conditions":[{"lastTransitionTime":"2024-04-25T01:47:34Z","lastUpdateTime":"2024-04-25T01:47:34Z","message":"Deployment has minimum availability.","reason":"MinimumReplicasAvailable","status":"True","type":"Available"},{"lastTransitionTime":"2024-04-25T01:47:31Z","lastUpdateTime":"2024-04-25T03:09:04Z","message":"ReplicaSet \"emma-6585666458\" has successfully progressed.","reason":"NewReplicaSetAvailable","status":"True","type":"Progressing"}],"observedGeneration":5,"readyReplicas":1,"replicas":1,"updatedReplicas":1}}
   creationTimestamp: "2024-04-25T01:47:31Z"
-  generation: 5
+  generation: 6
   labels:
     app: emma
     app.kubernetes.io/managed-by: gcp-cloud-build-deploy
@@ -130,7 +130,7 @@ metadata:
                 f:image: {}
     manager: kubectl-client-side-apply
     operation: Update
-    time: "2024-04-25T03:08:11Z"
+    time: "2024-04-25T03:53:41Z"
   - apiVersion: apps/v1
     fieldsType: FieldsV1
     fieldsV1:
@@ -164,10 +164,10 @@ metadata:
     manager: kube-controller-manager
     operation: Update
     subresource: status
-    time: "2024-04-25T03:09:04Z"
+    time: "2024-04-25T03:54:23Z"
   name: emma
   namespace: emma
-  resourceVersion: "341189"
+  resourceVersion: "376386"
   uid: dd9f34ff-f48a-4a79-89dc-b4f67106306b
 spec:
   progressDeadlineSeconds: 600
@@ -184,7 +184,7 @@ spec:
   template:
     metadata:
       annotations:
-        gcb-build-id: 66089bb0-47fc-425b-beb6-428b5e337791
+        gcb-build-id: 2d2dbc39-0d91-4aa0-b028-045dd1720afd
         gcb-trigger-id: 5cce0b0d-22cb-4e13-bdb7-3c8aa0155d07
       creationTimestamp: null
       labels:
@@ -230,7 +230,7 @@ spec:
             configMapKeyRef:
               key: WHATSAPP_WEBHOOK_SECRET
               name: emma-config-q90s
-        image: gcr.io/perceptive-map-419512/github.com/itsmaper/emma@sha256:0813667d17ae53e94a7359e55d7400c0094f6efa71821eaf850d48af2433661e
+        image: gcr.io/perceptive-map-419512/github.com/itsmaper/emma@sha256:6f05d806eab147ae85dba114fef93b34784f98e9fa7682ec764f0248dae46db0
         imagePullPolicy: IfNotPresent
         name: github-itsmaper-emma-1
         resources:
@@ -270,12 +270,12 @@ status:
     status: "True"
     type: Available
   - lastTransitionTime: "2024-04-25T01:47:31Z"
-    lastUpdateTime: "2024-04-25T03:09:04Z"
-    message: ReplicaSet "emma-6585666458" has successfully progressed.
+    lastUpdateTime: "2024-04-25T03:54:23Z"
+    message: ReplicaSet "emma-7dd47f8989" has successfully progressed.
     reason: NewReplicaSetAvailable
     status: "True"
     type: Progressing
-  observedGeneration: 5
+  observedGeneration: 6
   readyReplicas: 1
   replicas: 1
   updatedReplicas: 1

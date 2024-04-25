@@ -41,7 +41,7 @@ class App:
             @self.app.route("/get_user", methods=["POST"])
             def get_user():
                 try:
-                    data = request.get_json()  # Assuming you're using Flask for your web server
+                    data = request.get_json()
                     uid = data.get('uid')
                     _, content = Config.app.system.admin.agents.user.auth.get_user(
                         uid)

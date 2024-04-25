@@ -3,7 +3,6 @@ import threading
 import traceback
 import requests
 
-
 class App:
     def __init__(self, name, queue_name, queue_handler, event_handler):
         self.name = name

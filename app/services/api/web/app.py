@@ -1,6 +1,6 @@
 import threading
 import traceback
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 import logging
 from app.config.config import Config
@@ -26,7 +26,7 @@ class App:
         try:
             @self.app.route("/")
             def index():
-                return render_template('index.html')
+                return jsonify('MAIN API IS RUNNING')
 
             @self.socketio.on("connect")
             def connect():
